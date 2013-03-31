@@ -68,6 +68,7 @@ namespace OpenLawOffice.Server.Core.DBOs.Security
                     else
                         return null;
                 }))
+                .ForMember(dst => dst.Children, opt => opt.Ignore())
                 .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dst => dst.Description, opt => opt.MapFrom(src => src.Description));
 

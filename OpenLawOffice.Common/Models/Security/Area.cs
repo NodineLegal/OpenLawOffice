@@ -40,6 +40,7 @@ namespace OpenLawOffice.Common.Models.Security
                         else
                             return null;
                     }))
+                .ForMember(dst => dst.Children, opt => opt.Ignore())
                 .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dst => dst.Description, opt => opt.MapFrom(src => src.Description));
 
@@ -65,6 +66,7 @@ namespace OpenLawOffice.Common.Models.Security
                 .ForMember(dst => dst.DisabledBy, opt => opt.MapFrom(src => src.UtcDisabled))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Parent, opt => opt.MapFrom(src => src.Parent))
+                .ForMember(dst => dst.Children, opt => opt.Ignore())
                 .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dst => dst.Description, opt => opt.MapFrom(src => src.Description));
         }
