@@ -10,9 +10,6 @@ namespace OpenLawOffice.WinClient
     /// </summary>
     public partial class MainWindow : RibbonWindow
     {
-        //private Windows.Matters _mattersListWindow;
-        private Windows.Contacts _contactsListWindow;
-
         public MainWindow()
         {
             InitializeComponent();
@@ -21,6 +18,7 @@ namespace OpenLawOffice.WinClient
             Globals.Instance.MainWindow = this;
             Common.ObjectMapper.MapAssembly(typeof(Common.ObjectMapper).Assembly);
             Common.ObjectMapper.MapAssembly(typeof(MainWindow).Assembly);
+            ControllerManager.Instance.ScanAssembly(typeof(MainWindow).Assembly);
 
             DockManager.DocumentClosed += delegate(object sender, AvalonDock.DocumentClosedEventArgs args)
                 {
@@ -39,84 +37,6 @@ namespace OpenLawOffice.WinClient
                     iwin.Dispose();
                     if (iwin.OnDispose != null) iwin.OnDispose(iwin);
                 };
-
-
-            //DTOs.Response.Matters.Matter matterResponse = new DTOs.Response.Matters.Matter()
-            //{
-            //    Id = 1,
-            //    Title = "Test Matter",
-            //    Description = "Test Matter Description",
-            //    CreatedByUserId = 1,
-            //    ModifiedByUserId = 1,
-            //    DisabledByUserId = null,
-            //    UtcCreated = DateTime.Now,
-            //    UtcModified = DateTime.Now,
-            //    UtcDisabled = null
-            //};
-            //matterResponse.MatterTags = new System.Collections.Generic.List<DTOs.Response.Matters.MatterTag>();
-            //matterResponse.MatterTags.Add(new DTOs.Response.Matters.MatterTag()
-            //{
-            //    Id = Guid.NewGuid(), 
-            //    MatterId = 1, 
-            //    Tag = "Tag1",
-            //    MatterTagCategoryId = 5
-            //});
-            //matterResponse.MatterTags.Add(new DTOs.Response.Matters.MatterTag()
-            //{
-            //    Id = Guid.NewGuid(),
-            //    MatterId = 1,
-            //    Tag = "Tag2",
-            //    MatterTagCategoryId = 2
-            //});
-
-            //Models.Matters.Matter matter = new Models.Matters.Matter()
-            //{
-            //    Id = 1,
-            //    Title = "Test Matter",
-            //    Description = "Test description",
-            //    CreatedBy = new Models.User() { Id = 2, IsStub = true },
-            //    ModifiedBy = new Models.User() { Id = 2, IsStub = true },
-            //    DisabledBy = null,
-            //    UtcCreated = DateTime.Now,
-            //    UtcModified = DateTime.Now,
-            //    UtcDisabled = null,
-            //    IsStub = false,
-            //    MatterTags = new System.Collections.Generic.List<Models.Matters.MatterTag>()
-            //};
-            //matter.MatterTags.Add(new Models.Matters.MatterTag()
-            //{
-            //    Id = Guid.NewGuid(),
-            //    Matter = new Models.Matters.Matter()
-            //    {
-            //        Id = 1,
-            //        IsStub = true
-            //    },
-            //    MatterTagCategory = new Models.Matters.MatterTagCategory()
-            //    {
-            //        Id = 5,
-            //        IsStub = true
-            //    },
-            //    Tag = "Tag1"
-            //});
-            //matter.MatterTags.Add(new Models.Matters.MatterTag()
-            //{
-            //    Id = Guid.NewGuid(),
-            //    Matter = new Models.Matters.Matter()
-            //    {
-            //        Id = 1,
-            //        IsStub = true
-            //    },
-            //    MatterTagCategory = new Models.Matters.MatterTagCategory()
-            //    {
-            //        Id = 3,
-            //        IsStub = true
-            //    },
-            //    Tag = "Tag2"
-            //});
-
-
-            //Models.Matters.Matter matterMade = ModelManager.ImportAs<Models.Matters.Matter>(matterResponse);
-            //DTOs.Requests.Matters.Matter matterRqMade = ModelManager.ExportAs<DTOs.Requests.Matters.Matter>(matter);
 
             Globals.Instance.MainWindow.DisableUserControl();
             Windows.LoginWindow loginWindow = new Windows.LoginWindow();
@@ -205,8 +125,7 @@ namespace OpenLawOffice.WinClient
 
         private void Home_Security_Areas_Click(object sender, RoutedEventArgs e)
         {
-            Controllers.Security.Area area = new Controllers.Security.Area();
-            area.Load();
+            ControllerManager.Instance.LoadUI<Common.Models.Security.Area>();
         }
                 
         private void Matters_List_Title_UserDataChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)

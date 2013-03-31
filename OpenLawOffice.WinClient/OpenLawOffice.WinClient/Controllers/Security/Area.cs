@@ -2,13 +2,15 @@
 using System.Windows.Input;
 using AutoMapper;
 using System.Collections.Generic;
+using DW.SharpTools;
 
 namespace OpenLawOffice.WinClient.Controllers.Security
 {
-    public class Area
+    [Handle(typeof(Common.Models.Security.Area))]
+    public class Area : ControllerBase
     {
         private MainWindow MainWindow = Globals.Instance.MainWindow;
-        private Type _masterControlType = typeof(Controls.ListGridView);
+        private Type _masterControlType = typeof(Controls.TreeGridView);
         private Type _detailControlType = typeof(Views.Security.AreaDetail);
         private Controls.MasterDetailWindow _window;
         private Consumers.Security.Area _consumer;
@@ -27,9 +29,8 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             set { _window.DetailControl = value; }
         }
 
-        public void Load()
+        public override void LoadUI()
         {
-            Common.Rest.Requests.Security.Area request;
             _window = new Controls.MasterDetailWindow() { Title = "Security Areas" };
             _consumer = new Consumers.Security.Area();
             _lastRequest = null;
@@ -39,27 +40,20 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             _detailControl = (Views.Security.AreaDetail)_detailControlType.GetConstructor(new Type[] { }).Invoke(null);
 
             _masterControl
-                .AddResource(typeof(Area), new System.Windows.HierarchicalDataTemplate()
+                .AddResource(typeof(ViewModels.Security.Area), new System.Windows.HierarchicalDataTemplate()
                 {
-                    DataType = typeof(Area),
+                    DataType = typeof(ViewModels.Security.Area),
                     ItemsSource = new System.Windows.Data.Binding("Children")
                 })
-                .SetExpanderColumnTemplate("Name", "Name")
-                .AddColumn(new System.Windows.Controls.GridViewColumn()
-                {
-                    Header = "Name",
-                    DisplayMemberBinding = new System.Windows.Data.Binding("Name") 
-                    { 
-                        Mode = System.Windows.Data.BindingMode.TwoWay 
-                    }
-                })
+                .SetExpanderColumnTemplate("Name", "Name", 225)
                 .AddColumn(new System.Windows.Controls.GridViewColumn()
                 {
                     Header = "Description",
                     DisplayMemberBinding = new System.Windows.Data.Binding("Description")
                     {
                         Mode = System.Windows.Data.BindingMode.TwoWay
-                    }
+                    },
+                    Width = 200
                 });
             
             // Show the security tab
@@ -100,43 +94,85 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                 MainWindow.SecurityAreas_List_Name.IsEnabled = true;
             };
 
+            _window.OnClose += iwin =>
+            {
+                MainWindow.SecurityAreaTab.Visibility = System.Windows.Visibility.Hidden;
+            };
+
             // load window
             _window.Load();
-            
-            // Could use a UI progress overlay or something here
 
+            GetData();
+        }
+
+        public override void GetData(ViewModels.IViewModel obj = null)
+        {
+            bool pushToDataContext = false;
+            ViewModels.Security.Area areaVM = null;
+            Common.Rest.Requests.Security.Area request;            
+            
             request = new Common.Rest.Requests.Security.Area()
             {
                 AuthToken = Globals.Instance.AuthToken
             };
-
-            _consumer.GetList(new Common.Rest.Requests.Security.Area()
+            
+            if (obj != null && obj.GetType() == typeof(ViewModels.Security.Area))
             {
-                AuthToken = Globals.Instance.AuthToken
-            }, 
+                areaVM = (ViewModels.Security.Area)obj;
+                if (areaVM != null && areaVM.Id.HasValue)
+                    request.ParentId = areaVM.Id.Value;
+                areaVM.Children.Clear();
+            }            
+            
+            // Could use a UI progress overlay or something here
+
+            _consumer.GetList(request,
             result =>
             {
-                List<ViewModels.Security.Area> viewModels = new List<ViewModels.Security.Area>();
+                EnhancedObservableCollection<ViewModels.Security.Area> viewModels;
 
                 // Put the last request updating here, while it could go outside the callback,
                 // I am putting it in here to be certain we never have a race condition
                 _lastRequest = result.Request;
                 _lastRestSharpResponse = result.RestSharpResponse;
 
+                if (areaVM != null)
+                {
+                    viewModels = areaVM.Children;
+                    
+                    App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                    {
+                        viewModels.Clear();
+                    }), System.Windows.Threading.DispatcherPriority.Normal);
+                }
+                else
+                {
+                    viewModels = new EnhancedObservableCollection<ViewModels.Security.Area>();
+                    pushToDataContext = true;
+                }
+
                 if (result.RestSharpResponse.StatusCode != System.Net.HttpStatusCode.OK)
                 {
                     throw new Exception("Need error handling!!!");
                 }
-                
+
                 foreach (Common.Rest.Responses.Security.Area area in result.Response)
                 {
                     Common.Models.Security.Area sysModel = Mapper.Map<Common.Models.Security.Area>(area);
                     ViewModels.Security.Area viewModel = new ViewModels.Security.Area();
                     viewModel.AttachModel(sysModel);
-                    viewModels.Add(viewModel);
+                    App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                    {
+                        viewModels.Add(viewModel);
+                        viewModel.AddChild(new ViewModels.Security.Area()
+                        {
+                            IsDummy = true
+                        });
+                    }), System.Windows.Threading.DispatcherPriority.Normal);
                 }
 
-                _window.UpdateMasterDataContext(result.Response);
+                if (pushToDataContext)
+                    _window.UpdateMasterDataContext(viewModels);
             });
         }
     }

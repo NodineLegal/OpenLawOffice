@@ -130,6 +130,9 @@
     <Compile Include="Consumers\Security\Authentication.cs" />
     <Compile Include="Consumers\Security\SecuredResource.cs" />
     <Compile Include="Consumers\Security\SecuredResourceAcl.cs" />
+    <Compile Include="ControllerManager.cs" />
+    <Compile Include="Controllers\ControllerBase.cs" />
+    <Compile Include="Controllers\HandleAttribute.cs" />
     <Compile Include="Controllers\Security\Area.cs" />
     <Compile Include="Controls\ListGridView.xaml.cs">
       <DependentUpon>ListGridView.xaml</DependentUpon>
@@ -156,6 +159,7 @@
     <Compile Include="Globals.cs" />
     <Compile Include="ViewModels\CoreModel.cs" />
     <Compile Include="ViewModels\IHierarchicalModel.cs" />
+    <Compile Include="ViewModels\IViewModel.cs" />
     <Compile Include="ViewModels\ModelBase.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="ViewModels\ModelWithDatesOnly.cs" />
@@ -290,6 +294,9 @@
       <Project>{042206B5-2D13-42E0-B1B9-30254952BACA}</Project>
       <Name>OpenLawOffice.Common</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="LICENSE.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

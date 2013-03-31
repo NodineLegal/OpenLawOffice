@@ -12,6 +12,7 @@ namespace OpenLawOffice.Server.Core.Services.Security
         public override List<DBOs.Security.Area> GetList(Rest.Requests.Security.Area request, IDbConnection db)
         {
             string filterClause = "";
+            int parentid = 0;
 
             if (!string.IsNullOrEmpty(request.Name))
                 filterClause += " LOWER(\"Name\") like LOWER('%@Name%') AND";
@@ -20,7 +21,10 @@ namespace OpenLawOffice.Server.Core.Services.Security
             { 
                 // honor parent
                 if (request.ParentId.HasValue && request.ParentId.Value > 0)
+                {
                     filterClause += " \"ParentId\"=@ParentId AND";
+                    parentid = request.ParentId.Value;
+                }
                 else
                     filterClause += " \"ParentId\" is null AND";
             }
@@ -28,7 +32,7 @@ namespace OpenLawOffice.Server.Core.Services.Security
             filterClause += " \"UtcDisabled\" is null";
 
             return db.Query<DBOs.Security.Area>("SELECT * FROM \"Area\" WHERE" + filterClause,
-                new { Name = request.Name });
+                new { Name = request.Name, ParentId = parentid });
         }
     }
 }
