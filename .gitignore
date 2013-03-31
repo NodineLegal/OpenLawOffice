@@ -1,0 +1,11 @@
+*.suo
+*.user
+bin
+obj
+*.pdb
+*.cache
+*_svn
+*.svn
+*.suo
+*.user
+packages

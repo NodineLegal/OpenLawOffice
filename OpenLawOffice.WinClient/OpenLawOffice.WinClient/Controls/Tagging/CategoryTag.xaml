@@ -1,0 +1,116 @@
+﻿<UserControl x:Class="OpenLawOffice.WinClient.Controls.Tagging.CategoryTag"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
+             d:DesignHeight="25" d:DesignWidth="200" Height="Auto" Width="Auto" Margin="5,0,5,0" 
+             KeyUp="UserControl_KeyUp">
+    
+    <WrapPanel>
+
+        <Border CornerRadius="5" BorderBrush="DarkGray" BorderThickness="1" Height="Auto" Width="Auto" Name="UIReadonlyContainer">
+            <Grid Height="Auto" Width="Auto">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border CornerRadius="5,0,0,5" BorderBrush="DarkGray" BorderThickness="1" Grid.Column="0" Height="Auto" Width="Auto">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Color="AliceBlue" Offset="0" />
+                            <GradientStop Color="#000000FF" Offset="1" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <WrapPanel>
+                        <Label Content="{Binding Path=MatterTagCategory.Name}" Padding="3 1 3 1" VerticalAlignment="Center" HorizontalAlignment="Center" Height="Auto" Width="Auto" />
+                    </WrapPanel>
+                </Border>
+                <Border CornerRadius="0,5,5,0" BorderBrush="DarkGray" BorderThickness="1" Grid.Column="1" Height="Auto" Width="Auto">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Color="AliceBlue" Offset="0" />
+                            <GradientStop Color="#00000000" Offset="1" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <WrapPanel>
+                        <Label Content="{Binding Path=Tag}" Padding="3 1 3 1" VerticalAlignment="Center" HorizontalAlignment="Center" Height="Auto" Width="Auto" />
+                    </WrapPanel>
+                </Border>
+            </Grid>
+        </Border>
+        
+        <Button Name="UIViewContainer" BorderThickness="0" BorderBrush="Transparent" Background="Transparent" Padding="-4" Click="UIViewContainer_Click" >
+            <Button.Content>
+                <Grid Height="Auto" Width="Auto">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Border CornerRadius="5,0,0,5" BorderBrush="DarkGray" BorderThickness="1" Grid.Column="0" Height="Auto" Width="Auto">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Color="AliceBlue" Offset="0" />
+                                <GradientStop Color="#000000FF" Offset="1" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <WrapPanel>
+                            <Label Name="UICategoryLabelView" Content="{Binding Path=MatterTagCategory.Name}" Padding="3 1 3 1" VerticalAlignment="Center" HorizontalAlignment="Center" Height="Auto" Width="Auto" />
+                        </WrapPanel>
+                    </Border>
+                    <Border CornerRadius="0,5,5,0" BorderBrush="DarkGray" BorderThickness="1" Grid.Column="1" Height="Auto" Width="Auto">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Color="AliceBlue" Offset="0" />
+                                <GradientStop Color="#00000000" Offset="1" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <WrapPanel>
+                            <Label Name="UITagLabelView" Content="{Binding Path=Tag}" Padding="3 1 3 1" VerticalAlignment="Center" HorizontalAlignment="Center" Height="Auto" Width="Auto" />
+                        </WrapPanel>
+                    </Border>
+                </Grid>
+            </Button.Content>
+        </Button>
+
+        <Border CornerRadius="5" BorderBrush="DarkGray" BorderThickness="1" Height="Auto" Width="Auto" Name="UIEditContainer">
+            <Grid Height="Auto" Width="Auto">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="20" />
+                </Grid.ColumnDefinitions>
+                <Border CornerRadius="5,0,0,5" BorderBrush="DarkGray" BorderThickness="1" Grid.Column="0" Height="Auto" Width="Auto">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Color="AliceBlue" Offset="0" />
+                            <GradientStop Color="#000000FF" Offset="1" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <ComboBox Name="UICategorySelector" SelectedItem="{Binding Path=MatterTagCategory}" Padding="3 1 3 1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="Auto" Width="Auto" />
+                </Border>
+                <Border CornerRadius="0,0,0,0" BorderBrush="DarkGray" BorderThickness="1" Grid.Column="1" Height="Auto" Width="Auto">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Color="AliceBlue" Offset="0" />
+                            <GradientStop Color="#00000000" Offset="1" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <WrapPanel>
+                        <TextBox Name="UITagText" Text="{Binding Path=Tag}"  Padding="3 1 3 1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="Auto" Width="Auto" />
+                    </WrapPanel>
+                </Border>
+                <Button Name="Delete" Content="X" Foreground="#666666" FontWeight="UltraBold" Grid.Column="2"
+                    VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="Delete_Click">
+                    <Button.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Color="AliceBlue" Offset="0" />
+                            <GradientStop Color="#00FF0000" Offset="1" />
+                        </LinearGradientBrush>
+                    </Button.Background>
+                </Button>
+            </Grid>
+        </Border>
+    </WrapPanel>
+</UserControl>

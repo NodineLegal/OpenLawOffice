@@ -1,0 +1,121 @@
+﻿<ribbon:RibbonWindow x:Class="OpenLawOffice.WinClient.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ribbon="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControlsLibrary"    
+        xmlns:avalondock="http://avalondock.codeplex.com"
+        Title="MainWindow"
+		x:Name="RibbonWindow" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" d:DesignWidth="885" 
+                     SizeToContent="Manual" d:DesignHeight="527"
+                     Width="900" Height="600"
+                     xmlns:ctrls="clr-namespace:OpenLawOffice.WinClient.Controls">
+
+	<Grid x:Name="LayoutRoot">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <ribbon:Ribbon x:Name="Ribbon">
+            <ribbon:Ribbon.ApplicationMenu>
+                <ribbon:RibbonApplicationMenu SmallImageSource="Images\SmallIcon.png">
+                    <ribbon:RibbonApplicationMenuItem Header="Hello _Ribbon"
+                                                      x:Name="MenuItem1"
+                                                      ImageSource="Images\LargeIcon.png"/>
+                </ribbon:RibbonApplicationMenu>
+            </ribbon:Ribbon.ApplicationMenu>
+            
+            <ribbon:RibbonTab x:Name="HomeTab" Header="Home">
+                <ribbon:RibbonGroup Header="Areas">
+                    <ribbon:RibbonButton x:Name="Home_Matters" LargeImageSource="Images\LargeIcon.png" Label="Matters" Click="Home_Matters_Click" />
+                    <ribbon:RibbonButton x:Name="Home_Contacts" LargeImageSource="Images\LargeIcon.png" Label="Contacts" Click="Home_Contacts_Click" />
+                    <ribbon:RibbonMenuButton x:Name="Home_Security" LargeImageSource="Images\LargeIcon.png" Label="Security">
+                        <ribbon:RibbonMenuItem x:Name="Home_Security_Users" ImageSource="Images\SmallIcon.png" Header="Users" />
+                        <ribbon:RibbonMenuItem x:Name="Home_Security_Areas" ImageSource="Images\SmallIcon.png" Header="Areas" Click="Home_Security_Areas_Click" />
+                        <ribbon:RibbonMenuItem x:Name="Home_Security_AreaAcls" ImageSource="Images\SmallIcon.png" Header="Area ACLs" />
+                    </ribbon:RibbonMenuButton>
+                </ribbon:RibbonGroup>
+                <ribbon:RibbonGroup Header="My Items">
+                    <ribbon:RibbonButton x:Name="Home_Tasks" LargeImageSource="Images\LargeIcon.png" Label="Tasks" />
+                </ribbon:RibbonGroup>
+            </ribbon:RibbonTab>
+
+            <ribbon:RibbonTab x:Name="MattersTab" Header="Matters" Visibility="Hidden">
+                <ribbon:RibbonGroup x:Name="Matters_Group" Header="Matters">
+                    <ribbon:RibbonButton x:Name="Matters_List" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="List" IsEnabled="False" Click="Matters_List_Click" />
+                    <ctrls:WatermarkedRibbonTextBox x:Name="Matters_List_Title" x:FieldModifier="public" Watermark="Title Filter" TextBoxWidth="150" UserDataChanged="Matters_List_Title_UserDataChanged" />
+                    <ctrls:WatermarkedRibbonTextBox x:Name="Matters_List_Tags" x:FieldModifier="public" Watermark="Tag Filter" TextBoxWidth="150" UserDataChanged="Matters_List_Tags_UserDataChanged" />
+                </ribbon:RibbonGroup>
+                <ribbon:RibbonGroup x:Name="Matters_Relationships" Header="Relationships">
+                    <ribbon:RibbonButton x:Name="Matters_Contacts" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Contacts" IsEnabled="False" Click="Matters_Contacts_Click" />
+                    <ribbon:RibbonButton x:Name="Matters_Tasks" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Tasks" IsEnabled="False" Click="Matters_Tasks_Click" />
+                    <ribbon:RibbonButton x:Name="Matters_Documents" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Documents" IsEnabled="False" Click="Matters_Documents_Click" />
+                    <ribbon:RibbonButton x:Name="Matters_Notes" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Notes" IsEnabled="False" Click="Matters_Notes_Click" />
+                </ribbon:RibbonGroup>
+                <ribbon:RibbonGroup x:Name="Matters_Actions" Header="Actions">
+                    <ribbon:RibbonToggleButton x:Name="Matters_Edit" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Edit" IsEnabled="True" Click="Matters_Edit_Click" />
+                    <ribbon:RibbonButton x:Name="Matters_Save" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Save" IsEnabled="False" />
+                    <ribbon:RibbonButton x:Name="Matters_Cancel" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Cancel" IsEnabled="False" Click="Matters_Cancel_Click" />
+                </ribbon:RibbonGroup>
+            </ribbon:RibbonTab>
+
+            <ribbon:RibbonTab x:Name="ContactsTab" Header="Contacts" Visibility="Hidden">
+            </ribbon:RibbonTab>
+
+            <ribbon:RibbonTab x:Name="SecurityAreaTab" Header="Security Areas" Visibility="Hidden">
+                <ribbon:RibbonGroup x:Name="SecurityAreas_Group" Header="Matters">
+                    <ribbon:RibbonButton x:Name="SecurityAreas_List" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="List" IsEnabled="False" />
+                    <ctrls:WatermarkedRibbonTextBox x:Name="SecurityAreas_List_Name" x:FieldModifier="public" Watermark="Name Filter" TextBoxWidth="150" />
+                </ribbon:RibbonGroup>
+                <ribbon:RibbonGroup x:Name="SecurityAreas_Relationships" Header="Relationships">
+                    <ribbon:RibbonButton x:Name="SecurityAreas_Acls" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="ACLs" IsEnabled="False" />
+                </ribbon:RibbonGroup>
+                <ribbon:RibbonGroup x:Name="SecurityAreas_Actions" Header="Actions">
+                    <ribbon:RibbonToggleButton x:Name="SecurityAreas_Create" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Create" IsEnabled="True" />
+                    <ribbon:RibbonToggleButton x:Name="SecurityAreas_Edit" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Edit" IsEnabled="True" />
+                    <ribbon:RibbonButton x:Name="SecurityAreas_Save" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Save" IsEnabled="False" />
+                    <ribbon:RibbonButton x:Name="SecurityAreas_Cancel" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Cancel" IsEnabled="False" />
+                </ribbon:RibbonGroup>
+            </ribbon:RibbonTab>
+
+            <ribbon:RibbonTab x:Name="TasksTab" Header="Tasks" Visibility="Hidden">
+                <ribbon:RibbonGroup x:Name="Tasks_Group" Header="Group">
+                    <ribbon:RibbonButton x:Name="Tasks_List" LargeImageSource="Images\LargeIcon.png" Label="List" />
+                </ribbon:RibbonGroup>
+                <ribbon:RibbonGroup x:Name="Tasks_Item" Header="Item">
+                    <ribbon:RibbonButton x:Name="Tasks_Contacts" LargeImageSource="Images\LargeIcon.png" Label="Contacts" />
+                    <ribbon:RibbonButton x:Name="Tasks_Tasks" LargeImageSource="Images\LargeIcon.png" Label="Tasks" />
+                    <ribbon:RibbonButton x:Name="Tasks_Notes" LargeImageSource="Images\LargeIcon.png" Label="Notes" />
+                </ribbon:RibbonGroup>
+            </ribbon:RibbonTab>
+
+            <!--<ribbon:Ribbon.ContextualTabGroups>
+                <ribbon:RibbonContextualTabGroup Header="Matter Tools" Visibility="Visible" Background="Green" />
+                <ribbon:RibbonContextualTabGroup Header="Task Tools" Visibility="Visible" Background="Green" />
+            </ribbon:Ribbon.ContextualTabGroups>-->
+        </ribbon:Ribbon>
+
+
+        <avalondock:DockingManager Grid.Row="1" x:Name="DockManager" x:FieldModifier="public">
+            <avalondock:DockingManager.Theme>
+                <avalondock:AeroTheme/>
+            </avalondock:DockingManager.Theme>
+            <avalondock:LayoutRoot>
+                <avalondock:LayoutPanel Orientation="Horizontal">
+                    <avalondock:LayoutAnchorablePane DockWidth="150" x:Name="LeftToolPanel">
+                    </avalondock:LayoutAnchorablePane>
+                    <avalondock:LayoutDocumentPaneGroup>
+                        <avalondock:LayoutDocumentPane x:Name="LayoutPanel">
+                        </avalondock:LayoutDocumentPane>
+                    </avalondock:LayoutDocumentPaneGroup>
+                    <avalondock:LayoutAnchorablePaneGroup DockWidth="150" x:Name="RightToolPanel">
+                        <avalondock:LayoutAnchorablePane>
+                        </avalondock:LayoutAnchorablePane>
+                    </avalondock:LayoutAnchorablePaneGroup>
+                </avalondock:LayoutPanel>
+
+
+            </avalondock:LayoutRoot>
+        </avalondock:DockingManager>
+    </Grid>
+</ribbon:RibbonWindow>
