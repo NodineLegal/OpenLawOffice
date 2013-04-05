@@ -9,7 +9,11 @@ namespace OpenLawOffice.WinClient.ViewModels.Security
     {
         public int? Id
         {
-            get { return _model.Id; }
+            get 
+            {
+                if (IsDummy && _model == null) return null;
+                return _model.Id; 
+            }
             set
             {
                 _model.Id = value;
@@ -45,7 +49,11 @@ namespace OpenLawOffice.WinClient.ViewModels.Security
 
         public string Name
         {
-            get { return _model.Name; }
+            get
+            {
+                if (IsDummy && _model == null) return null; 
+                return _model.Name;
+            }
             set
             {
                 _model.Name = value;
@@ -55,7 +63,11 @@ namespace OpenLawOffice.WinClient.ViewModels.Security
 
         public string Description
         {
-            get { return _model.Description; }
+            get
+            {
+                if (IsDummy && _model == null) return null; 
+                return _model.Description;
+            }
             set
             {
                 _model.Description = value;
@@ -86,6 +98,8 @@ namespace OpenLawOffice.WinClient.ViewModels.Security
                 _children = value;
             }
         }
+
+        public override bool IsHierarchical { get { return true; } }
 
         public Area()
         {

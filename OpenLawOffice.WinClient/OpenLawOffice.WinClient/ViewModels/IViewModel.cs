@@ -4,6 +4,8 @@ namespace OpenLawOffice.WinClient.ViewModels
 {
     public interface IViewModel
     {
-        void AttachModel(Common.Models.ModelBase model);
+        bool IsHierarchical { get; }
+        IViewModel AttachModel(Common.Models.ModelBase model);
+        void Synchronize(Action a);
     }
 }

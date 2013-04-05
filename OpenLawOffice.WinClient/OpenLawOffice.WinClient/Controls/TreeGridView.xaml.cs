@@ -63,8 +63,22 @@ namespace OpenLawOffice.WinClient.Controls
         private void TreeViewItemExpanded(object sender, RoutedEventArgs e)
         {
             DW.WPFToolkit.TreeListViewItem treeItem = (DW.WPFToolkit.TreeListViewItem)e.OriginalSource;
+            ViewModels.IViewModel vm = (ViewModels.IViewModel)treeItem.DataContext;
 
-            ControllerManager.Instance.GetData((ViewModels.IViewModel)treeItem.DataContext);
+            ControllerManager.Instance.GetData(data =>
+            {
+                vm.Synchronize(()=>
+                {
+                    ControllerManager.Instance.UpdateUI(vm, data);
+                });                
+            }, (ViewModels.IViewModel)treeItem.DataContext);
+
+            object o = treeItem.DataContext;
+        }
+
+        private void UITree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (OnSelectionChanged != null) OnSelectionChanged(this, GetSelectedItem());
         }
     }
 }

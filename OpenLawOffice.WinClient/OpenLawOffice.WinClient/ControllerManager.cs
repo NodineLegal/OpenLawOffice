@@ -45,7 +45,13 @@ namespace OpenLawOffice.WinClient
             _modelMapToController[typeof(TModel)].LoadUI();
         }
 
-        public void GetData(ViewModels.IViewModel obj)
+        public void GetData<TModel>(Action<object> onComplete, object filter)
+            where TModel : Common.Models.ModelBase
+        {
+            _modelMapToController[typeof(TModel)].GetData<TModel>(onComplete, filter);
+        }
+
+        public void GetData(Action<object> onComplete, ViewModels.IViewModel obj)
         {
             System.Reflection.FieldInfo fi = obj.GetType().GetField("_model", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
@@ -54,7 +60,19 @@ namespace OpenLawOffice.WinClient
 
             Common.Models.ModelBase model = (Common.Models.ModelBase)fi.GetValue(obj);
 
-            _modelMapToController[model.GetType()].GetData(obj);
+            _modelMapToController[model.GetType()].GetData(onComplete, obj);
+        }
+
+        public void UpdateUI(ViewModels.IViewModel viewModel, object data)
+        {
+            System.Reflection.FieldInfo fi = viewModel.GetType().GetField("_model", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+            if (fi == null)
+                throw new ArgumentException("Object does not have a _model field.");
+
+            Common.Models.ModelBase model = (Common.Models.ModelBase)fi.GetValue(viewModel);
+
+            _modelMapToController[model.GetType()].UpdateUI(viewModel, data);
         }
     }
 }

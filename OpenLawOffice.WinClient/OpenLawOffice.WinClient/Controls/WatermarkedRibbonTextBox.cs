@@ -22,6 +22,15 @@ namespace OpenLawOffice.WinClient.Controls
                 return Text.Trim().Length > 0;
             }
         }
+        public new string Text
+        {
+            get
+            {
+                if (base.Text == Watermark) return "";
+                else return base.Text;
+            }
+            set { base.Text = value; }
+        }
         public event TextChangedEventHandler UserDataChanged;
 
         public WatermarkedRibbonTextBox()

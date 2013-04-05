@@ -2,6 +2,7 @@
 using System.Windows;
 using Microsoft.Windows.Controls.Ribbon;
 using AvalonDock.Layout;
+using System.Windows.Input;
 
 namespace OpenLawOffice.WinClient
 {
@@ -41,6 +42,12 @@ namespace OpenLawOffice.WinClient
             Globals.Instance.MainWindow.DisableUserControl();
             Windows.LoginWindow loginWindow = new Windows.LoginWindow();
             loginWindow.Load();
+
+
+            Home_Security_Areas.Command = new Commands.RelayCommand(x => 
+            {
+                ControllerManager.Instance.LoadUI<Common.Models.Security.Area>();
+            });
         }
 
         public void DisableUserControl()
@@ -121,11 +128,6 @@ namespace OpenLawOffice.WinClient
             //{
             //    _contactsListWindow.Activate();
             //}
-        }
-
-        private void Home_Security_Areas_Click(object sender, RoutedEventArgs e)
-        {
-            ControllerManager.Instance.LoadUI<Common.Models.Security.Area>();
         }
                 
         private void Matters_List_Title_UserDataChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)

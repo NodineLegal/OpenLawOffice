@@ -9,7 +9,8 @@
     
     <Grid>
         <toolkit:TreeListView Name="UITree" Grid.Row="0" VerticalAlignment="Stretch" 
-                              HorizontalAlignment="Stretch" ItemsSource="{Binding}">
+                              HorizontalAlignment="Stretch" ItemsSource="{Binding}"
+                              SelectedItemChanged="UITree_SelectedItemChanged">
             <toolkit:TreeListView.View>
                 <GridView x:Name="UIGridView">
                     <GridViewColumn x:Name="ExpanderColumn" />

@@ -15,7 +15,7 @@ namespace OpenLawOffice.Server.Core.Services.Security
             int parentid = 0;
 
             if (!string.IsNullOrEmpty(request.Name))
-                filterClause += " LOWER(\"Name\") like LOWER('%@Name%') AND";
+                filterClause += " LOWER(\"Name\") like '%' || LOWER(@Name) || '%' AND";
 
             if (!request.ShowAll.HasValue || !request.ShowAll.Value)
             { 

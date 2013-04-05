@@ -31,7 +31,7 @@
                     <ribbon:RibbonButton x:Name="Home_Contacts" LargeImageSource="Images\LargeIcon.png" Label="Contacts" Click="Home_Contacts_Click" />
                     <ribbon:RibbonMenuButton x:Name="Home_Security" LargeImageSource="Images\LargeIcon.png" Label="Security">
                         <ribbon:RibbonMenuItem x:Name="Home_Security_Users" ImageSource="Images\SmallIcon.png" Header="Users" />
-                        <ribbon:RibbonMenuItem x:Name="Home_Security_Areas" ImageSource="Images\SmallIcon.png" Header="Areas" Click="Home_Security_Areas_Click" />
+                        <ribbon:RibbonMenuItem x:Name="Home_Security_Areas" ImageSource="Images\SmallIcon.png" Header="Areas" />
                         <ribbon:RibbonMenuItem x:Name="Home_Security_AreaAcls" ImageSource="Images\SmallIcon.png" Header="Area ACLs" />
                     </ribbon:RibbonMenuButton>
                 </ribbon:RibbonGroup>
@@ -63,18 +63,18 @@
             </ribbon:RibbonTab>
 
             <ribbon:RibbonTab x:Name="SecurityAreaTab" Header="Security Areas" Visibility="Hidden">
-                <ribbon:RibbonGroup x:Name="SecurityAreas_Group" Header="Matters">
-                    <ribbon:RibbonButton x:Name="SecurityAreas_List" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="List" IsEnabled="False" />
+                <ribbon:RibbonGroup x:Name="SecurityAreas_Group" Header="Security Areas">
+                    <ribbon:RibbonButton x:Name="SecurityAreas_List" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="List" />
                     <ctrls:WatermarkedRibbonTextBox x:Name="SecurityAreas_List_Name" x:FieldModifier="public" Watermark="Name Filter" TextBoxWidth="150" />
                 </ribbon:RibbonGroup>
                 <ribbon:RibbonGroup x:Name="SecurityAreas_Relationships" Header="Relationships">
-                    <ribbon:RibbonButton x:Name="SecurityAreas_Acls" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="ACLs" IsEnabled="False" />
+                    <ribbon:RibbonButton x:Name="SecurityAreas_Acls" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="ACLs" />
                 </ribbon:RibbonGroup>
                 <ribbon:RibbonGroup x:Name="SecurityAreas_Actions" Header="Actions">
-                    <ribbon:RibbonToggleButton x:Name="SecurityAreas_Create" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Create" IsEnabled="True" />
-                    <ribbon:RibbonToggleButton x:Name="SecurityAreas_Edit" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Edit" IsEnabled="True" />
-                    <ribbon:RibbonButton x:Name="SecurityAreas_Save" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Save" IsEnabled="False" />
-                    <ribbon:RibbonButton x:Name="SecurityAreas_Cancel" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Cancel" IsEnabled="False" />
+                    <ribbon:RibbonToggleButton x:Name="SecurityAreas_Create" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Create" />
+                    <ribbon:RibbonToggleButton x:Name="SecurityAreas_Edit" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Edit" />
+                    <ribbon:RibbonButton x:Name="SecurityAreas_Save" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Save" />
+                    <ribbon:RibbonButton x:Name="SecurityAreas_Cancel" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Cancel" />
                 </ribbon:RibbonGroup>
             </ribbon:RibbonTab>
 

@@ -31,6 +31,8 @@ namespace OpenLawOffice.WinClient.Controls
             get { return _detailControl; }
             set
             {
+                _detailControl = value;
+
                 if (value == null)
                 {
                     UIGrid.ColumnDefinitions.RemoveRange(1, 2);
@@ -43,12 +45,26 @@ namespace OpenLawOffice.WinClient.Controls
                     UIGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
                     UIGridSplitter.Visibility = System.Windows.Visibility.Visible;
                     UIRightPanel.Visibility = System.Windows.Visibility.Visible;
+                    UIRightPanel.Children.Add(_detailControl);
                 }
+
+                if (UIRightPanel.Children.Count < 1)
+                    UIRightPanel.Children.Add(_detailControl);
             }
         }
 
         public object MasterDataContext { get { return DataContext; } set { DataContext = value; } }
-        public object DetailDataContext { get; set; }
+        public object DetailDataContext 
+        {
+            get
+            {
+                return DetailControl.DataContext;
+            }
+            set
+            {
+                DetailControl.DataContext = value;
+            }
+        }
 
         public MasterDetailWindow()
         {

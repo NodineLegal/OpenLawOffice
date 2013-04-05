@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Threading;
 
 namespace OpenLawOffice.WinClient.ViewModels
 {
@@ -7,22 +8,36 @@ namespace OpenLawOffice.WinClient.ViewModels
     {
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
+        readonly Dispatcher _dispatcher;
         protected TModel _model;
+        public virtual bool IsHierarchical { get { return false; } }
 
-        public void AttachModel(TModel model)
+        protected ModelBase()
         {
-            _model = model;
+            _dispatcher = App.Current.Dispatcher;
         }
 
-        public void AttachModel(Common.Models.ModelBase model)
+        public IViewModel AttachModel(TModel model)
+        {
+            _model = model;
+            return this;
+        }
+
+        public IViewModel AttachModel(Common.Models.ModelBase model)
         {
             _model = (TModel)model;
+            return this;
         }
         
         protected void OnPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+
+        public virtual void Synchronize(Action a)
+        {
+            _dispatcher.BeginInvoke(a, System.Windows.Threading.DispatcherPriority.Normal);
         }
     }
 }

@@ -118,6 +118,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Commands\AdvancedAsyncCommand.cs" />
+    <Compile Include="Commands\AsyncCommand.cs" />
+    <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Consumers\ConsumerBase.cs" />
     <Compile Include="Consumers\ConsumerResult.cs" />
     <Compile Include="Consumers\InvalidServiceTargetException.cs" />
@@ -171,12 +174,8 @@
     <Compile Include="Views\Security\AreaDetail.xaml.cs">
       <DependentUpon>AreaDetail.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Contacts.cs" />
     <Compile Include="Windows\LoginWindow.xaml.cs">
       <DependentUpon>LoginWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\MasterDetailWindow.xaml.cs">
-      <DependentUpon>MasterDetailWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Matters.cs" />
     <Compile Include="WindowManager.cs" />
@@ -226,10 +225,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\LoginWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\MasterDetailWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
