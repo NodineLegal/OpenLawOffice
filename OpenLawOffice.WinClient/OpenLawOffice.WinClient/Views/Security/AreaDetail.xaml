@@ -44,17 +44,17 @@
                 <Label Content="Created:" Grid.Row="0" Grid.Column="0" />
                 <Label Name="UICreated" Content="{Binding Path=UtcCreated, Mode=OneWay}" Grid.Row="0" Grid.Column="1" />
                 <Label Content="By:" Grid.Row="0" Grid.Column="2" />
-                <Label Name="UICreatedBy" Content="{Binding Path=CreatedBy.DisplayText, Mode=OneWay}" Grid.Row="0" Grid.Column="3" />
+                <Label Name="UICreatedBy" Content="{Binding Path=CreatedBy.Username, Mode=OneWay}" Grid.Row="0" Grid.Column="3" />
 
                 <Label Content="Modified:" Grid.Row="1" Grid.Column="0" />
                 <Label Name="UIModified" Content="{Binding Path=UtcModified, Mode=OneWay}" Grid.Row="1" Grid.Column="1" />
                 <Label Content="By:" Grid.Row="1" Grid.Column="2" />
-                <Label Name="UIModifiedBy" Content="{Binding Path=ModifiedBy.DisplayText, Mode=OneWay}" Grid.Row="1" Grid.Column="3" />
+                <Label Name="UIModifiedBy" Content="{Binding Path=ModifiedBy.Username, Mode=OneWay}" Grid.Row="1" Grid.Column="3" />
 
                 <Label Content="Disabled:" Grid.Row="2" Grid.Column="0" />
                 <Label Name="UIDisabled" Content="{Binding Path=UtcDisabled, Mode=OneWay}" Grid.Row="2" Grid.Column="1" />
                 <Label Content="By:" Grid.Row="2" Grid.Column="2" />
-                <Label Name="UIDisabledBy" Content="{Binding Path=DisabledBy.DisplayText, Mode=OneWay}" Grid.Row="2" Grid.Column="3" />
+                <Label Name="UIDisabledBy" Content="{Binding Path=DisabledBy.Username, Mode=OneWay}" Grid.Row="2" Grid.Column="3" />
             </Grid>
         </GroupBox>
     </Grid>
