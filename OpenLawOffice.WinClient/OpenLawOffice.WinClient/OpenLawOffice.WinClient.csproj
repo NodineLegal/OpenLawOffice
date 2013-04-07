@@ -118,7 +118,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Commands\AdvancedAsyncCommand.cs" />
     <Compile Include="Commands\AsyncCommand.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Consumers\ConsumerBase.cs" />
@@ -133,9 +132,11 @@
     <Compile Include="Consumers\Security\Authentication.cs" />
     <Compile Include="Consumers\Security\SecuredResource.cs" />
     <Compile Include="Consumers\Security\SecuredResourceAcl.cs" />
+    <Compile Include="Consumers\Security\User.cs" />
     <Compile Include="ControllerManager.cs" />
     <Compile Include="Controllers\ControllerBase.cs" />
     <Compile Include="Controllers\HandleAttribute.cs" />
+    <Compile Include="Controllers\Security\AreaAcl.cs" />
     <Compile Include="Controllers\Security\Area.cs" />
     <Compile Include="Controls\ListGridView.xaml.cs">
       <DependentUpon>ListGridView.xaml</DependentUpon>
@@ -171,6 +172,9 @@
     <Compile Include="ViewModels\Security\SecuredResource.cs" />
     <Compile Include="ViewModels\Security\SecuredResourceAcl.cs" />
     <Compile Include="ViewModels\Security\User.cs" />
+    <Compile Include="Views\Security\AreaAclDetail.xaml.cs">
+      <DependentUpon>AreaAclDetail.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Security\AreaDetail.xaml.cs">
       <DependentUpon>AreaDetail.xaml</DependentUpon>
     </Compile>
@@ -220,6 +224,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\Security\AreaAclDetail.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Security\AreaDetail.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

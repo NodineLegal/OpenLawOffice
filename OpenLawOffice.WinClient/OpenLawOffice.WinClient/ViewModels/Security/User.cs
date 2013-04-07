@@ -6,60 +6,82 @@ namespace OpenLawOffice.WinClient.ViewModels.Security
     [Common.Models.MapMe]
     public class User : ModelWithDatesOnly<Common.Models.Security.User>
     {
-        private int? _id;
         public int? Id
         {
-            get { return _id; }
+            get
+            {
+                if (_model == null) return null;
+                return _model.Id;
+            }
             set
             {
-                _id = value;
+                if (_model == null) AttachModel(new Common.Models.Security.User());
+                _model.Id = value;
                 OnPropertyChanged("Id");
             }
         }
 
-        private string _username;
         public string Username
         {
-            get { return _username; }
+            get
+            {
+                if (_model == null) return null;
+                return _model.Username;
+            }
             set
             {
-                _username = value;
+                if (_model == null) AttachModel(new Common.Models.Security.User());
+                _model.Username = value;
                 OnPropertyChanged("Username");
             }
         }
 
-        private string _password;
         public string Password
         {
-            get { return _password; }
+            get
+            {
+                if (_model == null) return null;
+                return _model.Password;
+            }
             set
             {
-                _password = value;
+                if (_model == null) AttachModel(new Common.Models.Security.User());
+                _model.Password = value;
                 OnPropertyChanged("Password");
             }
         }
 
-        private Guid? _userAuthToken;
         public Guid? UserAuthToken
         {
-            get { return _userAuthToken; }
+            get
+            {
+                if (_model == null) return null;
+                return _model.UserAuthToken;
+            }
             set
             {
-                _userAuthToken = value;
+                if (_model == null) AttachModel(new Common.Models.Security.User());
+                _model.UserAuthToken = value;
                 OnPropertyChanged("UserAuthToken");
             }
         }
 
-        private DateTime? _userAuthTokenExpiry;
         public DateTime? UserAuthTokenExpiry
         {
-            get { return _userAuthTokenExpiry; }
+            get
+            {
+                if (_model == null) return null;
+                return _model.UserAuthTokenExpiry;
+            }
             set
             {
-                _userAuthTokenExpiry = value;
+                if (_model == null) AttachModel(new Common.Models.Security.User());
+                _model.UserAuthTokenExpiry = value;
                 OnPropertyChanged("UserAuthTokenExpiry");
             }
         }
+
+        public bool IsDummy { get; set; }
 
         public void BuildMappings()
         {
@@ -71,7 +93,8 @@ namespace OpenLawOffice.WinClient.ViewModels.Security
                 .ForMember(dst => dst.Username, opt => opt.MapFrom(src => src.Username))
                 .ForMember(dst => dst.Password, opt => opt.MapFrom(src => src.Password))
                 .ForMember(dst => dst.UserAuthToken, opt => opt.MapFrom(src => src.UserAuthToken))
-                .ForMember(dst => dst.UserAuthTokenExpiry, opt => opt.MapFrom(src => src.UserAuthTokenExpiry));
+                .ForMember(dst => dst.UserAuthTokenExpiry, opt => opt.MapFrom(src => src.UserAuthTokenExpiry))
+                .ForMember(dst => dst.IsDummy, opt => opt.UseValue(false));
 
             Mapper.CreateMap<User, Common.Models.Security.User>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))

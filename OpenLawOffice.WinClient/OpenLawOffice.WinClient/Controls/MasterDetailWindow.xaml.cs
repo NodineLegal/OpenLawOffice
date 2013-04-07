@@ -21,6 +21,7 @@ namespace OpenLawOffice.WinClient.Controls
         
         private UserControl _detailControl;
 
+        public bool IsSelected { get; set; }
         public bool CanHaveMultipleInstances { get { return false; } }
         public AvalonDock.Layout.LayoutDocument DockingWindow { get; set; }
         public string Title { get; set; }
@@ -48,8 +49,8 @@ namespace OpenLawOffice.WinClient.Controls
                     UIRightPanel.Children.Add(_detailControl);
                 }
 
-                if (UIRightPanel.Children.Count < 1)
-                    UIRightPanel.Children.Add(_detailControl);
+                //if (UIRightPanel.Children.Count < 1)
+                //    UIRightPanel.Children.Add(_detailControl);
             }
         }
 

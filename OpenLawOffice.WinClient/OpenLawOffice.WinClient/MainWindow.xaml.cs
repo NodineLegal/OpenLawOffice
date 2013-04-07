@@ -22,31 +22,35 @@ namespace OpenLawOffice.WinClient
             ControllerManager.Instance.ScanAssembly(typeof(MainWindow).Assembly);
 
             DockManager.DocumentClosed += delegate(object sender, AvalonDock.DocumentClosedEventArgs args)
+            {
+                Controls.IDockableWindow iwin = WindowManager.Instance.Lookup(args.Document);
+                if (iwin.OnDeactivated != null)
+                    iwin.OnDeactivated(iwin);
+
+                iwin.Close();
+                if (iwin.OnClose != null)
                 {
-                    Controls.IDockableWindow iwin = WindowManager.Instance.Lookup(args.Document);
-                    if (iwin.OnDeactivated != null)
-                        iwin.OnDeactivated(iwin);
+                    iwin.OnClose(iwin);
+                }
 
-                    iwin.Close();
-                    if (iwin.OnClose != null)
-                    {
-                        iwin.OnClose(iwin);
-                    }
+                WindowManager.Instance.UnregisterWindow(iwin);
 
-                    WindowManager.Instance.UnregisterWindow(iwin);
-
-                    iwin.Dispose();
-                    if (iwin.OnDispose != null) iwin.OnDispose(iwin);
-                };
-
+                iwin.Dispose();
+                if (iwin.OnDispose != null) iwin.OnDispose(iwin);
+            };
+             
             Globals.Instance.MainWindow.DisableUserControl();
             Windows.LoginWindow loginWindow = new Windows.LoginWindow();
             loginWindow.Load();
 
 
-            Home_Security_Areas.Command = new Commands.RelayCommand(x => 
+            Home_Security_Areas.Command = new Commands.AsyncCommand(x => 
             {
                 ControllerManager.Instance.LoadUI<Common.Models.Security.Area>();
+            });
+            Home_Security_AreaAcls.Command = new Commands.AsyncCommand(x =>
+            {
+                ControllerManager.Instance.LoadUI<Common.Models.Security.AreaAcl>();
             });
         }
 

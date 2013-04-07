@@ -3,7 +3,7 @@
 namespace OpenLawOffice.WinClient.ViewModels
 {
     public abstract class CoreModel<TModel> : ModelWithDatesOnly<TModel>
-        where TModel : Common.Models.Core
+        where TModel : Common.Models.Core, new()
     {
         private Security.User _createdByViewModel;
         public Security.User CreatedBy
@@ -78,6 +78,31 @@ namespace OpenLawOffice.WinClient.ViewModels
                 _disabledByViewModel.UtcDisabled = value.UtcDisabled;
                 OnPropertyChanged("DisabledBy");
             }
+        }
+
+        public CoreModel()
+        {
+        }
+
+        public override IViewModel AttachModel(Common.Models.ModelBase model)
+        {
+            if (!typeof(Common.Models.Core).IsAssignableFrom(model.GetType()))
+                throw new ArgumentException("Argument 'model' must inherit from Common.Models.Core");
+
+            _createdByViewModel = AutoMapper.Mapper.Map<Security.User>(((Common.Models.Core)model).CreatedBy);
+            _modifiedByViewModel = AutoMapper.Mapper.Map<Security.User>(((Common.Models.Core)model).ModifiedBy);
+            _disabledByViewModel = AutoMapper.Mapper.Map<Security.User>(((Common.Models.Core)model).DisabledBy);
+
+            return base.AttachModel(model);
+        }
+
+        public override IViewModel AttachModel(TModel model)
+        {
+            _createdByViewModel = AutoMapper.Mapper.Map<Security.User>(((Common.Models.Core)model).CreatedBy);
+            _modifiedByViewModel = AutoMapper.Mapper.Map<Security.User>(((Common.Models.Core)model).ModifiedBy);
+            _disabledByViewModel = AutoMapper.Mapper.Map<Security.User>(((Common.Models.Core)model).DisabledBy);
+
+            return base.AttachModel(model);
         }
     }
 }

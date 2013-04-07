@@ -17,13 +17,13 @@ namespace OpenLawOffice.WinClient.ViewModels
             _dispatcher = App.Current.Dispatcher;
         }
 
-        public IViewModel AttachModel(TModel model)
+        public virtual IViewModel AttachModel(TModel model)
         {
             _model = model;
             return this;
         }
 
-        public IViewModel AttachModel(Common.Models.ModelBase model)
+        public virtual IViewModel AttachModel(Common.Models.ModelBase model)
         {
             _model = (TModel)model;
             return this;

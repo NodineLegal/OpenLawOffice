@@ -17,6 +17,7 @@ namespace OpenLawOffice.WinClient.Windows
         public Action<Controls.IDockableWindow> OnClose { get; set; }
         public Action<Controls.IDockableWindow> OnDispose { get; set; }
 
+        public bool IsSelected { get; set; }
         public virtual bool CanHaveMultipleInstances { get { return false; } }
         public AvalonDock.Layout.LayoutDocument DockingWindow { get; set; }
         public virtual string Title { get { return "Login"; } }

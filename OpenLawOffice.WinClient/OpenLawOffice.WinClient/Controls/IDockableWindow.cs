@@ -12,6 +12,7 @@ namespace OpenLawOffice.WinClient.Controls
         Action<IDockableWindow> OnClose { get; set; }
         Action<IDockableWindow> OnDispose { get; set; }
 
+        bool IsSelected { get; set; }
         bool CanHaveMultipleInstances { get; }
         LayoutDocument DockingWindow { get; set; }
         string Title { get; }

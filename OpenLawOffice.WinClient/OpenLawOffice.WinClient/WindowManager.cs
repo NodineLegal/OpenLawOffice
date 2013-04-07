@@ -46,9 +46,9 @@ namespace OpenLawOffice.WinClient
             {
                 if (Windows.Find(delegate(Controls.IDockableWindow winToCompare)
                 {
-                    return window.GetType().FullName == winToCompare.GetType().FullName;
+                    return window.Title == winToCompare.Title;
                 }) != null)
-                    throw new Exception("Window already has an instantiated instance yet another instance is attempting to be registered.");
+                    throw new Exception("Window with same title already instantiated and registered.");
             }
 
             Windows.Add(window);
@@ -62,9 +62,11 @@ namespace OpenLawOffice.WinClient
 
             // Fire before attaching event so as not to trigger event
             window.DockingWindow.IsActive = true;
+            window.IsSelected = true;
 
             window.DockingWindow.IsActiveChanged += delegate(object sender, EventArgs e)
             {
+                window.IsSelected = window.DockingWindow.IsActive;
                 if (window.DockingWindow.IsActive)
                 {
                     //lock (WindowHistory)
@@ -85,6 +87,7 @@ namespace OpenLawOffice.WinClient
 
             window.DockingWindow.IsSelectedChanged += delegate(object sender, EventArgs e)
             {
+                window.IsSelected = window.DockingWindow.IsSelected;
                 if (window.DockingWindow.IsSelected)
                 {
                     lock (WindowHistory)

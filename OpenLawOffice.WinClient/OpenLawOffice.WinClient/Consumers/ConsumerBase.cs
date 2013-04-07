@@ -43,7 +43,7 @@ namespace OpenLawOffice.WinClient.Consumers
         {
             RestClient client = new RestClient(Globals.Instance.Settings.HostBaseUrl);
 
-            return client.ExecuteAsync<TResponse>(restSharpRequest, (response, handle) =>
+            return client.ExecuteAsync<Common.Rest.Responses.ResponseContainer<TResponse>>(restSharpRequest, (response, handle) =>
             {
                 if (callback != null)
                 {
@@ -52,7 +52,7 @@ namespace OpenLawOffice.WinClient.Consumers
                         {
                             //Sender = this,
                             Request = request,
-                            Response = response.Data,
+                            Response = response.Data.Data,
                             RestSharpResponse = response,
                             Handle = handle
                         });

@@ -41,8 +41,11 @@ namespace OpenLawOffice.WinClient
         {
             if (!_modelMapToController.ContainsKey(typeof(TModel)))
                 throw new ArgumentException("Type argument cannot be found in Model mappings.");
-
-            _modelMapToController[typeof(TModel)].LoadUI();
+            
+            App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+            {
+                _modelMapToController[typeof(TModel)].LoadUI();
+            }), System.Windows.Threading.DispatcherPriority.Normal);
         }
 
         public void GetData<TModel>(Action<object> onComplete, object filter)
