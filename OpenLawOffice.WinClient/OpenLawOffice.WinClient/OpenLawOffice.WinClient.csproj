@@ -178,6 +178,9 @@
     <Compile Include="Views\Security\AreaDetail.xaml.cs">
       <DependentUpon>AreaDetail.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Security\AreaEdit.xaml.cs">
+      <DependentUpon>AreaEdit.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\LoginWindow.xaml.cs">
       <DependentUpon>LoginWindow.xaml</DependentUpon>
     </Compile>
@@ -229,6 +232,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Security\AreaDetail.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Security\AreaEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

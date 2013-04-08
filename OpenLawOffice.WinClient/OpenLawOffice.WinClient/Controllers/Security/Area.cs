@@ -14,6 +14,9 @@ namespace OpenLawOffice.WinClient.Controllers.Security
         private MainWindow MainWindow = Globals.Instance.MainWindow;
         private Type _masterControlType = typeof(Controls.TreeGridView);
         private Type _detailControlType = typeof(Views.Security.AreaDetail);
+        private Type _editControlType = typeof(Views.Security.AreaEdit);
+        private Views.Security.AreaDetail _detailControl;
+        private Views.Security.AreaEdit _editControl;
         private Controls.MasterDetailWindow _window;
         private Consumers.Security.Area _consumer;
         private Common.Rest.Requests.Security.Area _lastRequest;
@@ -25,12 +28,6 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             set { _window.MasterControl = value; }
         }
 
-        private Views.Security.AreaDetail _detailControl
-        {
-            get { return (Views.Security.AreaDetail)_window.DetailControl; }
-            set { _window.DetailControl = value; }
-        }
-
         public override void LoadUI()
         {
             _window = new Controls.MasterDetailWindow() { Title = "Security Areas" };
@@ -39,8 +36,9 @@ namespace OpenLawOffice.WinClient.Controllers.Security
 
             // set controls
             _masterControl = (Controls.TreeGridView)_masterControlType.GetConstructor(new Type[] { }).Invoke(null);
-            _detailControl = null;
-
+            _editControl = (Views.Security.AreaEdit)_editControlType.GetConstructor(new Type[] { }).Invoke(null);
+            _detailControl = (Views.Security.AreaDetail)_detailControlType.GetConstructor(new Type[] { }).Invoke(null);
+            
             _masterControl
                 .AddResource(typeof(ViewModels.Security.Area), new System.Windows.HierarchicalDataTemplate()
                 {
@@ -100,7 +98,12 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             {
                 GetDetailData(() =>
                 {
-                    UpdateDetailUI((ViewModels.Security.Area)viewModel);
+                    App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                    {                    
+                        if (_window.DetailControl == null)
+                            _window.DetailControl = _detailControl;
+                        UpdateDetailUI((ViewModels.Security.Area)viewModel);
+                    }), System.Windows.Threading.DispatcherPriority.Normal);
                 }, (ViewModels.Security.Area)viewModel);
             };
 
@@ -120,7 +123,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
 
             MainWindow.SecurityAreas_Acls.Command = new Commands.AsyncCommand(x =>
             {
-                ControllerManager.Instance.LoadUI<Common.Models.Security.Area>();
+                ControllerManager.Instance.LoadUI<Common.Models.Security.AreaAcl>();
             }, x => _masterControl.GetSelectedItem() != null && _window.IsSelected);
 
             MainWindow.SecurityAreas_Create.Command = new Commands.AsyncCommand(x =>
@@ -132,9 +135,16 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                 App.Current.Dispatcher.BeginInvoke(new Action(delegate()
                 {
                     if (MainWindow.SecurityAreas_Edit.IsChecked.Value)
+                    {
                         _isEditing = true;
+                        _window.DetailControl = _editControl;
+                    }
                     else
+                    {
                         _isEditing = false;
+                        _window.DetailControl = _detailControl;
+                    }
+                    _window.UpdateDetailDataContext(_masterControl.GetSelectedItem());
                 }), System.Windows.Threading.DispatcherPriority.Normal);
             }, x => _masterControl.GetSelectedItem() != null && _window.IsSelected);
 
@@ -236,12 +246,27 @@ namespace OpenLawOffice.WinClient.Controllers.Security
 
         public void UpdateDetailUI(ViewModels.Security.Area viewModel)
         {
-            if (_detailControl == null)
+            if (_isEditing)
             {
-                App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                if (_editControl == null)
                 {
-                    _detailControl = (Views.Security.AreaDetail)_detailControlType.GetConstructor(new Type[] { }).Invoke(null);
-                }), System.Windows.Threading.DispatcherPriority.Normal);
+                    App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                    {
+                        _editControl = (Views.Security.AreaEdit)_editControlType.GetConstructor(new Type[] { }).Invoke(null);
+                        _window.DetailControl = _editControl;
+                    }), System.Windows.Threading.DispatcherPriority.Normal);
+                }
+            }
+            else
+            {
+                if (_detailControl == null)
+                {
+                    App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                    {
+                        _detailControl = (Views.Security.AreaDetail)_detailControlType.GetConstructor(new Type[] { }).Invoke(null);
+                        _window.DetailControl = _detailControl;
+                    }), System.Windows.Threading.DispatcherPriority.Normal);
+                }
             }
 
             viewModel.Synchronize(() =>

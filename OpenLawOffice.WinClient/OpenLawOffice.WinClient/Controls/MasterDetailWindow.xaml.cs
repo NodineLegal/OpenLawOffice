@@ -33,24 +33,30 @@ namespace OpenLawOffice.WinClient.Controls
             set
             {
                 _detailControl = value;
-
+                
                 if (value == null)
                 {
-                    UIGrid.ColumnDefinitions.RemoveRange(1, 2);
+                    if (UIGrid.ColumnDefinitions.Count > 1)
+                        UIGrid.ColumnDefinitions.RemoveRange(1, 2);
                     UIGridSplitter.Visibility = System.Windows.Visibility.Collapsed;
                     UIRightPanel.Visibility = System.Windows.Visibility.Collapsed;
                 }
-                else if (UIGrid.ColumnDefinitions.Count == 1)
+                else
                 {
-                    UIGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(5) });
-                    UIGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
-                    UIGridSplitter.Visibility = System.Windows.Visibility.Visible;
-                    UIRightPanel.Visibility = System.Windows.Visibility.Visible;
-                    UIRightPanel.Children.Add(_detailControl);
+                    if (UIGrid.ColumnDefinitions.Count == 1)
+                    {
+                        UIGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(5) });
+                        UIGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+                        UIGridSplitter.Visibility = System.Windows.Visibility.Visible;
+                        UIRightPanel.Visibility = System.Windows.Visibility.Visible;
+                        UIRightPanel.Children.Add(_detailControl);
+                    }
+                    else
+                    {
+                        UIRightPanel.Children.Clear();
+                        UIRightPanel.Children.Add(_detailControl);
+                    }
                 }
-
-                //if (UIRightPanel.Children.Count < 1)
-                //    UIRightPanel.Children.Add(_detailControl);
             }
         }
 

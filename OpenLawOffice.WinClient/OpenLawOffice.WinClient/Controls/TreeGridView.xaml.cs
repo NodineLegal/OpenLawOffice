@@ -78,6 +78,8 @@ namespace OpenLawOffice.WinClient.Controls
 
         private void UITree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
+            object selectedItem = GetSelectedItem();
+            if (selectedItem == null) return;
             if (OnSelectionChanged != null) OnSelectionChanged(this, GetSelectedItem());
         }
     }
