@@ -128,7 +128,8 @@ namespace OpenLawOffice.Server.Core.Security
                 return new AuthorizeResult()
                 {
                     HasError = false,
-                    IsAuthorized = true
+                    IsAuthorized = true,
+                    RequestingUser = Mapper.Map<Common.Models.Security.User>(dbUser)
                 };
 
             // Neither denied or allowed, deny = fail SECURE
@@ -247,7 +248,8 @@ namespace OpenLawOffice.Server.Core.Security
                 return new AuthorizeResult()
                 {
                     HasError = false,
-                    IsAuthorized = true
+                    IsAuthorized = true,
+                    RequestingUser = Mapper.Map<Common.Models.Security.User>(dbUser)
                 };
 
             // Neither denied or allowed, deny = fail SECURE

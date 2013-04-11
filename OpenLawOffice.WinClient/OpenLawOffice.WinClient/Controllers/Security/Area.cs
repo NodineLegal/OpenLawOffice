@@ -91,6 +91,8 @@ namespace OpenLawOffice.WinClient.Controllers.Security
 
             _window.OnClose += iwin =>
             {
+                _isEditing = false;
+                MainWindow.SecurityAreas_Edit.IsChecked = false;
                 MainWindow.SecurityAreaTab.Visibility = System.Windows.Visibility.Hidden;
             };
 
@@ -99,9 +101,12 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                 GetDetailData(() =>
                 {
                     App.Current.Dispatcher.BeginInvoke(new Action(delegate()
-                    {                    
-                        if (_window.DetailControl == null)
+                    {
+                        if (!_isEditing && _window.DetailControl == null)
                             _window.DetailControl = _detailControl;
+                        else if (_isEditing && _window.DetailControl == null)
+                            _window.DetailControl = _editControl;
+
                         UpdateDetailUI((ViewModels.Security.Area)viewModel);
                     }), System.Windows.Threading.DispatcherPriority.Normal);
                 }, (ViewModels.Security.Area)viewModel);
@@ -150,11 +155,48 @@ namespace OpenLawOffice.WinClient.Controllers.Security
 
             MainWindow.SecurityAreas_Save.Command = new Commands.AsyncCommand(x =>
             {
-            }, x => _isEditing);
+                App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                {
+                    ViewModels.Security.Area areaVM = (ViewModels.Security.Area)_window.DetailDataContext;
+                    Common.Models.Security.Area sysModel = areaVM.Model;
+                    Common.Rest.Requests.Security.Area requestModel = Mapper.Map<Common.Rest.Requests.Security.Area>(sysModel);
+                    requestModel.AuthToken = Globals.Instance.AuthToken;
+                    _consumer.Update(requestModel, result =>
+                    {
+                        if (result.RestSharpResponse.StatusCode != System.Net.HttpStatusCode.OK)
+                            throw new Exception("Need error handling!!!");
+
+                        sysModel = Mapper.Map<Common.Models.Security.Area>(result.Response);
+                        areaVM.Synchronize(() =>
+                        {
+                            areaVM = (ViewModels.Security.Area)new ViewModels.Security.Area().AttachModel(sysModel);
+                            _window.DetailControl = null;
+                            _masterControl.ClearSelectedItems();
+                        });
+                    });
+                }), System.Windows.Threading.DispatcherPriority.Normal);
+            }, x => _isEditing && _masterControl.GetSelectedItem() != null);
 
             MainWindow.SecurityAreas_Cancel.Command = new Commands.AsyncCommand(x =>
             {
-            }, x => _isEditing);
+                // Will need to reload the model from the server (easiest way)
+                // This needs to be improved - if we want to keep loading from the server instead of 
+                // doing a deep copy, then it needs to only load a single, not force the whole
+                // tree to reload.
+                App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                {
+                    _window.UpdateDetailDataContext(null);
+                    _window.DetailControl = null;
+                }), System.Windows.Threading.DispatcherPriority.Normal);
+
+                GetData<Common.Models.Security.Area>(data =>
+                {
+                    List<Common.Models.Security.Area> sysModelList = (List<Common.Models.Security.Area>)data;
+                    UpdateUI(null, sysModelList);
+                }, null);
+            }, x => _isEditing && _masterControl.GetSelectedItem() != null);
+
+            _window.DetailControl = null;
 
             // load window
             _window.Load();

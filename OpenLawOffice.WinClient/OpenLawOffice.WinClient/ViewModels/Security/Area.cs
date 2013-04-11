@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using DW.SharpTools;
 using System.Linq;
 
@@ -96,6 +97,7 @@ namespace OpenLawOffice.WinClient.ViewModels.Security
                 }
 
                 _children = value;
+                OnPropertyChanged("Children");
             }
         }
 
@@ -130,6 +132,25 @@ namespace OpenLawOffice.WinClient.ViewModels.Security
             };
         }
 
+        public override IViewModel AttachModel(Common.Models.ModelBase model)
+        {
+            if (!typeof(Common.Models.Security.Area).IsAssignableFrom(model.GetType()))
+                throw new ArgumentException("Argument 'model' must inherit from Common.Models.Security.Area");
+
+            if (((Common.Models.Security.Area)model).Parent != null)
+                _parentViewModel = (Area)new Area().AttachModel(((Common.Models.Security.Area)model).Parent);
+
+            return base.AttachModel(model);
+        }
+
+        public override IViewModel AttachModel(Common.Models.Security.Area model)
+        {
+            if (model.Parent != null)
+                _parentViewModel = (Area)new Area().AttachModel(((Common.Models.Security.Area)model).Parent);
+
+            return base.AttachModel(model);
+        }
+
         public void AddChild(Area child)
         {
             Children.Add(child);
@@ -142,22 +163,22 @@ namespace OpenLawOffice.WinClient.ViewModels.Security
 
         public void BuildMappings()
         {
-            Mapper.CreateMap<Common.Models.Security.Area, Area>()
-                .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
-                .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
-                .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
-                .ForMember(dst => dst.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy))
-                .ForMember(dst => dst.ModifiedBy, opt => opt.MapFrom(src => src.ModifiedBy))
-                .ForMember(dst => dst.DisabledBy, opt => opt.MapFrom(src => src.DisabledBy))
-                .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.Parent, opt => opt.ResolveUsing(sysModel =>
-                {
-                    if (sysModel == null) return null;
-                    return Mapper.Map<Area>(sysModel.Parent);
-                }))
-                .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Name))
-                .ForMember(dst => dst.Description, opt => opt.MapFrom(src => src.Description))
-                .ForMember(dst => dst.IsDummy, opt => opt.UseValue(false));
+            //Mapper.CreateMap<Common.Models.Security.Area, Area>()
+            //    .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
+            //    .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
+            //    .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
+            //    .ForMember(dst => dst.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy))
+            //    .ForMember(dst => dst.ModifiedBy, opt => opt.MapFrom(src => src.ModifiedBy))
+            //    .ForMember(dst => dst.DisabledBy, opt => opt.MapFrom(src => src.DisabledBy))
+            //    .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
+            //    .ForMember(dst => dst.Parent, opt => opt.ResolveUsing(sysModel =>
+            //    {
+            //        if (sysModel == null) return null;
+            //        return Mapper.Map<Area>(sysModel.Parent);
+            //    }))
+            //    .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Name))
+            //    .ForMember(dst => dst.Description, opt => opt.MapFrom(src => src.Description))
+            //    .ForMember(dst => dst.IsDummy, opt => opt.UseValue(false));
 
             Mapper.CreateMap<Area, Common.Models.Security.Area>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))

@@ -2,6 +2,7 @@
 using AutoMapper;
 using System.Data;
 using System.Collections.Generic;
+using System.Reflection;
 using ServiceStack.OrmLite;
 using ServiceStack.ServiceHost;
 using ServiceStack.DesignPatterns.Model;
@@ -210,8 +211,6 @@ namespace OpenLawOffice.Server.Core.Services
 
         public virtual object Put(TRequest request)
         {
-            TModel sysModel;
-            TDbo dbModel;
             Common.Rest.Responses.ResponseContainer<TResponse> response;
 
             if (!CanUpdate)
@@ -245,35 +244,87 @@ namespace OpenLawOffice.Server.Core.Services
             if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
                 return response;
 
-            sysModel = Mapper.Map<TModel>(request);
-            dbModel = Mapper.Map<TDbo>(sysModel);
+            /* To do an update we need to
+             * 1) Load the database model from the database using the Id of the request
+             * 2) Convert to system model 1
+             * 3) Load system model 2 from the request
+             * 4) If assignable from date base -> copy date base properties from system model 1 to system model 2
+             * 5) If assignable from core -> copy core properties from system model 1 to system model 2
+             *  5a) Overwrite core's modified properties (this can be simply done by ignoring on copy)
+             */
+            
+            object idValue = null;
+            TDbo dbModelCurrent;
+            TDbo dbModelNew;
+            TModel sysModel1;
+            TModel sysModel2;
+            
+            idValue = GetIdValue(request);
 
-            try
-            {
-                using (IDbConnection db = Database.Instance.OpenConnection())
-                {
-                    db.Update<TDbo>(dbModel);
-                }
-            }
-            catch (Exception e)
-            {
+            // Send an error if idValue is null
+            if (idValue == null)
                 return new Common.Rest.Responses.ResponseContainer<TResponse>()
                 {
-                    HttpStatusCode = System.Net.HttpStatusCode.InternalServerError,
+                    HttpStatusCode = System.Net.HttpStatusCode.BadRequest,
                     Error = new Common.Error()
                     {
-                        Message = "An error occurred while attempting to update the object in the database.",
-                        Exception = e
+                        Message = "The request must specify an Id."
                     }
                 };
-            }
 
-            sysModel = Mapper.Map<TModel>(dbModel);
+
+            using (IDbConnection db = Database.Instance.OpenConnection())
+            {
+                dbModelCurrent = db.GetByIdParam<TDbo>(idValue);
+                sysModel1 = Mapper.Map<TModel>(dbModelCurrent);
+                sysModel2 = Mapper.Map<TModel>(request);
+
+                if (typeof(Common.Models.ModelWithDatesOnly).IsAssignableFrom(typeof(TModel)))
+                {
+                    PropertyInfo utcCreated = typeof(TModel).GetProperty("UtcCreated");
+                    PropertyInfo utcModified = typeof(TModel).GetProperty("UtcModified");
+                    PropertyInfo utcDisabled = typeof(TModel).GetProperty("UtcDisabled");
+                    
+                    utcCreated.SetValue(sysModel2, utcCreated.GetValue(sysModel1, null), null);
+                    utcModified.SetValue(sysModel2, DateTime.Now, null);
+                    utcDisabled.SetValue(sysModel2, utcDisabled.GetValue(sysModel1, null), null);
+                }
+
+                if (typeof(Common.Models.ModelWithDatesOnly).IsAssignableFrom(typeof(TModel)))
+                {
+                    PropertyInfo createdBy = typeof(TModel).GetProperty("CreatedBy");
+                    PropertyInfo modifiedBy = typeof(TModel).GetProperty("ModifiedBy");
+                    PropertyInfo disabledBy = typeof(TModel).GetProperty("DisabledBy");
+                    
+                    createdBy.SetValue(sysModel2, createdBy.GetValue(sysModel1, null), null);
+                    modifiedBy.SetValue(sysModel2, request.Session.RequestingUser, null);
+                    disabledBy.SetValue(sysModel2, disabledBy.GetValue(sysModel1, null), null);
+                }
+
+                dbModelNew = Mapper.Map<TDbo>(sysModel2);
+
+                try
+                {
+                    db.Update<TDbo>(dbModelNew);
+                }
+                catch (Exception e)
+                {
+                    return new Common.Rest.Responses.ResponseContainer<TResponse>()
+                    {
+                        HttpStatusCode = System.Net.HttpStatusCode.InternalServerError,
+                        Error = new Common.Error()
+                        {
+                            Message = "An error occurred while attempting to update the object in the database.",
+                            Exception = e
+                        }
+                    };
+                }
+            }
 
             return new Common.Rest.Responses.ResponseContainer<TResponse>()
             {
                 HttpStatusCode = System.Net.HttpStatusCode.OK,
-                Data = Mapper.Map<TResponse>(sysModel)
+                Data = Mapper.Map<TResponse>(sysModel2)
             };
         }
 

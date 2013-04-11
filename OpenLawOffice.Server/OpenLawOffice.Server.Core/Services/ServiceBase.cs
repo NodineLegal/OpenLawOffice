@@ -65,6 +65,9 @@ namespace OpenLawOffice.Server.Core.Services
 
             session.RequestingUser = authResult.RequestingUser;
 
+            if (typeof(Rest.Requests.IHasSession).IsAssignableFrom(request.GetType()))
+                ((Rest.Requests.IHasSession)request).Session = session;
+
             if (authResult.HasError)
                 return new Common.Rest.Responses.ResponseContainer<TResponse>()
                 {

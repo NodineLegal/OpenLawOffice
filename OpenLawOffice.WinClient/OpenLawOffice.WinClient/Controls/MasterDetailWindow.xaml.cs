@@ -43,6 +43,7 @@ namespace OpenLawOffice.WinClient.Controls
                 }
                 else
                 {
+                    UIRightPanel.Children.Clear();
                     if (UIGrid.ColumnDefinitions.Count == 1)
                     {
                         UIGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(5) });
@@ -53,7 +54,6 @@ namespace OpenLawOffice.WinClient.Controls
                     }
                     else
                     {
-                        UIRightPanel.Children.Clear();
                         UIRightPanel.Children.Add(_detailControl);
                     }
                 }
@@ -65,10 +65,12 @@ namespace OpenLawOffice.WinClient.Controls
         {
             get
             {
+                if (DetailControl == null) return null;
                 return DetailControl.DataContext;
             }
             set
             {
+                if (DetailControl == null) return;
                 DetailControl.DataContext = value;
             }
         }

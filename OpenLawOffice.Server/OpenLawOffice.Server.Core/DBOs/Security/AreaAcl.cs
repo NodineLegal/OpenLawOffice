@@ -86,11 +86,15 @@ namespace OpenLawOffice.Server.Core.DBOs.Security
                 .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
                 .ForMember(dst => dst.CreatedByUserId, opt => opt.ResolveUsing(model =>
                 {
-                    return model.CreatedBy.Id;
+                    if (model.CreatedBy == null || !model.CreatedBy.Id.HasValue)
+                        return 0;
+                    return model.CreatedBy.Id.Value;
                 }))
                 .ForMember(dst => dst.ModifiedByUserId, opt => opt.ResolveUsing(model =>
                 {
-                    return model.ModifiedBy.Id;
+                    if (model.ModifiedBy == null || !model.ModifiedBy.Id.HasValue)
+                        return 0;
+                    return model.ModifiedBy.Id.Value;
                 }))
                 .ForMember(dst => dst.DisabledByUserId, opt => opt.ResolveUsing(model =>
                 {

@@ -11,6 +11,7 @@ namespace OpenLawOffice.WinClient.ViewModels
         readonly Dispatcher _dispatcher;
         protected TModel _model;
         public virtual bool IsHierarchical { get { return false; } }
+        public TModel Model { get { return _model; } }
 
         protected ModelBase()
         {

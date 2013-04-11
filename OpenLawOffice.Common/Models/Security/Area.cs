@@ -30,17 +30,31 @@ namespace OpenLawOffice.Common.Models.Security
                 .ForMember(dst => dst.DisabledBy, opt => opt.UseValue(null))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Parent, opt => opt.ResolveUsing(request =>
-                    {
-                        if (request.ParentId.HasValue)
-                            return new Area()
-                            {
-                                Id = request.ParentId.Value,
-                                IsStub = true
-                            };
-                        else
-                            return null;
-                    }))
+                {
+                    if (request.ParentId.HasValue)
+                        return new Area()
+                        {
+                            Id = request.ParentId.Value,
+                            IsStub = true
+                        };
+                    else
+                        return null;
+                }))
                 .ForMember(dst => dst.Children, opt => opt.Ignore())
+                .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dst => dst.Description, opt => opt.MapFrom(src => src.Description));
+
+            Mapper.CreateMap<Area, Rest.Requests.Security.Area>()
+                .ForMember(dst => dst.ShowAll, opt => opt.Ignore())
+                .ForMember(dst => dst.Received, opt => opt.Ignore())
+                .ForMember(dst => dst.AuthToken, opt => opt.Ignore())
+                .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dst => dst.ParentId, opt => opt.ResolveUsing(request =>
+                {
+                    if (request.Parent == null) return null;
+                    if (request.Parent.Id.HasValue) return request.Parent.Id.Value;
+                    return null;
+                }))
                 .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dst => dst.Description, opt => opt.MapFrom(src => src.Description));
 

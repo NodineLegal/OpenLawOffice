@@ -60,6 +60,14 @@ namespace OpenLawOffice.WinClient.Controls
             return UITree.SelectedItem;
         }
 
+        public void ClearSelectedItems()
+        {
+            foreach (var item in UITree.SelectedTreeViewItems)
+            {
+                item.IsSelected = false;
+            }
+        }
+
         private void TreeViewItemExpanded(object sender, RoutedEventArgs e)
         {
             DW.WPFToolkit.TreeListViewItem treeItem = (DW.WPFToolkit.TreeListViewItem)e.OriginalSource;
