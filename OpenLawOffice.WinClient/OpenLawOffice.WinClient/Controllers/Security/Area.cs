@@ -8,38 +8,26 @@ using System.Reflection;
 namespace OpenLawOffice.WinClient.Controllers.Security
 {
     [Handle(typeof(Common.Models.Security.Area))]
-    public class Area : ControllerBase
+    public class Area 
+        : MasterDetailController<Controls.TreeGridView, Views.Security.AreaDetail, 
+            Views.Security.AreaEdit, Views.Security.AreaCreate>
     {
-        private bool _isEditing;
-        private MainWindow MainWindow = Globals.Instance.MainWindow;
-        private Type _masterControlType = typeof(Controls.TreeGridView);
-        private Type _detailControlType = typeof(Views.Security.AreaDetail);
-        private Type _editControlType = typeof(Views.Security.AreaEdit);
-        private Views.Security.AreaDetail _detailControl;
-        private Views.Security.AreaEdit _editControl;
-        private Controls.MasterDetailWindow _window;
         private Consumers.Security.Area _consumer;
         private Common.Rest.Requests.Security.Area _lastRequest;
         private RestSharp.IRestResponse _lastRestSharpResponse;
 
-        private Controls.TreeGridView _masterControl
+        public Area()
+            : base("Security Areas", 
+            Globals.Instance.MainWindow.SecurityAreaTab,
+            Globals.Instance.MainWindow.SecurityAreas_Edit,
+            Globals.Instance.MainWindow.SecurityAreas_Create,
+            Globals.Instance.MainWindow.SecurityAreas_Save,
+            Globals.Instance.MainWindow.SecurityAreas_Cancel)
         {
-            get { return (Controls.TreeGridView)_window.MasterControl; }
-            set { _window.MasterControl = value; }
-        }
-
-        public override void LoadUI()
-        {
-            _window = new Controls.MasterDetailWindow() { Title = "Security Areas" };
             _consumer = new Consumers.Security.Area();
             _lastRequest = null;
 
-            // set controls
-            _masterControl = (Controls.TreeGridView)_masterControlType.GetConstructor(new Type[] { }).Invoke(null);
-            _editControl = (Views.Security.AreaEdit)_editControlType.GetConstructor(new Type[] { }).Invoke(null);
-            _detailControl = (Views.Security.AreaDetail)_detailControlType.GetConstructor(new Type[] { }).Invoke(null);
-            
-            _masterControl
+            MasterDetailWindow.MasterView
                 .AddResource(typeof(ViewModels.Security.Area), new System.Windows.HierarchicalDataTemplate()
                 {
                     DataType = typeof(ViewModels.Security.Area),
@@ -55,109 +43,52 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                     },
                     Width = 200
                 });
-            
-            // Show the security area tab
-            MainWindow.SecurityAreaTab.Visibility = System.Windows.Visibility.Visible;
-            MainWindow.SecurityAreaTab.IsSelected = true;
+        }
 
-            // wireup deselection of window
-            _window.OnDeselected += iwin =>
-            {
-            };
-
-            // wireup selection of window
-            _window.OnSelected += iwin =>
-            {
-                MainWindow.SecurityAreaTab.IsSelected = true;
-                MainWindow.SecurityAreas_Edit.IsEnabled = true;
-                MainWindow.SecurityAreas_Create.IsEnabled = true;
-                if (_masterControl.GetSelectedItem() != null)
-                { // If something is selected then
-                    MainWindow.SecurityAreas_Save.IsEnabled = true;
-                    MainWindow.SecurityAreas_Cancel.IsEnabled = true;
-                }
-                else
-                {
-                    MainWindow.SecurityAreas_Save.IsEnabled = false;
-                    MainWindow.SecurityAreas_Cancel.IsEnabled = false;
-                }                
-            };
-
-            _window.OnActivated += iwin =>
-            {
-                MainWindow.SecurityAreaTab.IsEnabled = true;
-                MainWindow.SecurityAreas_Group.IsEnabled = true;
-            };
-
-            _window.OnClose += iwin =>
-            {
-                _isEditing = false;
-                MainWindow.SecurityAreas_Edit.IsChecked = false;
-                MainWindow.SecurityAreaTab.Visibility = System.Windows.Visibility.Hidden;
-            };
-
-            _masterControl.OnSelectionChanged += (treeGridView, viewModel) =>
-            {
-                GetDetailData(() =>
-                {
-                    App.Current.Dispatcher.BeginInvoke(new Action(delegate()
-                    {
-                        if (!_isEditing && _window.DetailControl == null)
-                            _window.DetailControl = _detailControl;
-                        else if (_isEditing && _window.DetailControl == null)
-                            _window.DetailControl = _editControl;
-
-                        UpdateDetailUI((ViewModels.Security.Area)viewModel);
-                    }), System.Windows.Threading.DispatcherPriority.Normal);
-                }, (ViewModels.Security.Area)viewModel);
-            };
-
+        public override void LoadUI()
+        {
             // ribbon controls
-            MainWindow.SecurityAreas_List.Command = new Commands.AsyncCommand(x =>
+            MainWindow.SecurityAreas_List.Command = new Commands.DelegateCommand(x =>
             {
                 // Ignores selection
                 App.Current.Dispatcher.BeginInvoke(new Action(delegate()
                 {
                     GetData<Common.Models.Security.Area>(data =>
                     {
-                        List<Common.Models.Security.Area> sysModelList = (List<Common.Models.Security.Area>)data;
-                        UpdateUI(null, sysModelList);
+                        List<Common.Models.Security.Area> sysModelList = 
+                            (List<Common.Models.Security.Area>)data;
+                        UpdateUI(null, sysModelList, Controls.DisplayModeType.View);
                     }, new { Name = MainWindow.SecurityAreas_List_Name.Text.Trim() });
                 }), System.Windows.Threading.DispatcherPriority.Normal);
             });
 
-            MainWindow.SecurityAreas_Acls.Command = new Commands.AsyncCommand(x =>
+            MainWindow.SecurityAreas_Acls.Command = new Commands.DelegateCommand(x =>
             {
                 ControllerManager.Instance.LoadUI<Common.Models.Security.AreaAcl>();
-            }, x => _masterControl.GetSelectedItem() != null && _window.IsSelected);
+            }, x => MasterDetailWindow.RelationshipsEnabled);
+            MasterDetailWindow.RelationshipCommands.Add((Commands.DelegateCommand)MainWindow.SecurityAreas_Acls.Command);
 
-            MainWindow.SecurityAreas_Create.Command = new Commands.AsyncCommand(x =>
-            {
-            });
-
-            MainWindow.SecurityAreas_Edit.Command = new Commands.AsyncCommand(x =>
+            MainWindow.SecurityAreas_Create.Command = new Commands.DelegateCommand(x =>
             {
                 App.Current.Dispatcher.BeginInvoke(new Action(delegate()
                 {
-                    if (MainWindow.SecurityAreas_Edit.IsChecked.Value)
-                    {
-                        _isEditing = true;
-                        _window.DetailControl = _editControl;
-                    }
-                    else
-                    {
-                        _isEditing = false;
-                        _window.DetailControl = _detailControl;
-                    }
-                    _window.UpdateDetailDataContext(_masterControl.GetSelectedItem());
+                    MasterDetailWindow.GoIntoCreateMode(new ViewModels.Security.Area().AttachModel(new Common.Models.Security.Area()));
                 }), System.Windows.Threading.DispatcherPriority.Normal);
-            }, x => _masterControl.GetSelectedItem() != null && _window.IsSelected);
-
-            MainWindow.SecurityAreas_Save.Command = new Commands.AsyncCommand(x =>
+            }, x => MasterDetailWindow.CreateEnabled);
+            
+            MainWindow.SecurityAreas_Edit.Command = new Commands.DelegateCommand(x =>
             {
                 App.Current.Dispatcher.BeginInvoke(new Action(delegate()
                 {
-                    ViewModels.Security.Area areaVM = (ViewModels.Security.Area)_window.DetailDataContext;
+                    MasterDetailWindow.UpdateDetailAndEditDataContext(MasterDetailWindow.MasterView.SelectedItem);
+                }), System.Windows.Threading.DispatcherPriority.Normal);
+            }, x => MasterDetailWindow.EditEnabled);
+
+            MainWindow.SecurityAreas_Save.Command = new Commands.DelegateCommand(x =>
+            {
+                App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                {
+                    ViewModels.Security.Area areaVM = (ViewModels.Security.Area)MasterDetailWindow.DetailView.DataContext;
                     Common.Models.Security.Area sysModel = areaVM.Model;
                     Common.Rest.Requests.Security.Area requestModel = Mapper.Map<Common.Rest.Requests.Security.Area>(sysModel);
                     requestModel.AuthToken = Globals.Instance.AuthToken;
@@ -170,14 +101,15 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                         areaVM.Synchronize(() =>
                         {
                             areaVM = (ViewModels.Security.Area)new ViewModels.Security.Area().AttachModel(sysModel);
-                            _window.DetailControl = null;
-                            _masterControl.ClearSelectedItems();
+                            MasterDetailWindow.MasterView.ClearSelected();
+                            if (MasterDetailWindow.DisplayMode == Controls.DisplayModeType.Create)
+                                MasterDetailWindow.SetDisplayMode(Controls.DisplayModeType.View);
                         });
                     });
                 }), System.Windows.Threading.DispatcherPriority.Normal);
-            }, x => _isEditing && _masterControl.GetSelectedItem() != null);
+            }, x => MasterDetailWindow.SaveEnabled);
 
-            MainWindow.SecurityAreas_Cancel.Command = new Commands.AsyncCommand(x =>
+            MainWindow.SecurityAreas_Cancel.Command = new Commands.DelegateCommand(x =>
             {
                 // Will need to reload the model from the server (easiest way)
                 // This needs to be improved - if we want to keep loading from the server instead of 
@@ -185,28 +117,39 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                 // tree to reload.
                 App.Current.Dispatcher.BeginInvoke(new Action(delegate()
                 {
-                    _window.UpdateDetailDataContext(null);
-                    _window.DetailControl = null;
+                    MasterDetailWindow.MasterView.ClearSelected();
+                    MasterDetailWindow.Clear();
                 }), System.Windows.Threading.DispatcherPriority.Normal);
 
                 GetData<Common.Models.Security.Area>(data =>
                 {
                     List<Common.Models.Security.Area> sysModelList = (List<Common.Models.Security.Area>)data;
-                    UpdateUI(null, sysModelList);
+                    if (MasterDetailWindow.DisplayMode == Controls.DisplayModeType.Create)
+                        UpdateUI(null, sysModelList, Controls.DisplayModeType.View);
+                    else
+                        UpdateUI(null, sysModelList, null);
                 }, null);
-            }, x => _isEditing && _masterControl.GetSelectedItem() != null);
-
-            _window.DetailControl = null;
+            }, x => MasterDetailWindow.CancelEnabled);
 
             // load window
-            _window.Load();
+            MasterDetailWindow.Load();
+            if (!MasterDetailWindow.IsSelected)
+                MasterDetailWindow.SelectWindow();
             
             // Ignores selection
             GetData<Common.Models.Security.Area>(data => 
             {
                 List<Common.Models.Security.Area> sysModelList = (List<Common.Models.Security.Area>)data;
-                UpdateUI(null, sysModelList);
+                UpdateUI(null, sysModelList, Controls.DisplayModeType.View);
             }, null);
+        }
+
+        public override void GetDetailData(Action onComplete, ViewModels.IViewModel viewModel)
+        {
+            if (typeof(ViewModels.Security.Area).IsAssignableFrom(viewModel.GetType()))
+                GetDetailData(onComplete, (ViewModels.Security.Area)viewModel);
+            else
+                throw new ArgumentException("Argument viewModel of incorrect type.");
         }
 
         public void GetDetailData(Action onComplete, ViewModels.Security.Area viewModel)
@@ -286,37 +229,6 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                 });
         }
 
-        public void UpdateDetailUI(ViewModels.Security.Area viewModel)
-        {
-            if (_isEditing)
-            {
-                if (_editControl == null)
-                {
-                    App.Current.Dispatcher.BeginInvoke(new Action(delegate()
-                    {
-                        _editControl = (Views.Security.AreaEdit)_editControlType.GetConstructor(new Type[] { }).Invoke(null);
-                        _window.DetailControl = _editControl;
-                    }), System.Windows.Threading.DispatcherPriority.Normal);
-                }
-            }
-            else
-            {
-                if (_detailControl == null)
-                {
-                    App.Current.Dispatcher.BeginInvoke(new Action(delegate()
-                    {
-                        _detailControl = (Views.Security.AreaDetail)_detailControlType.GetConstructor(new Type[] { }).Invoke(null);
-                        _window.DetailControl = _detailControl;
-                    }), System.Windows.Threading.DispatcherPriority.Normal);
-                }
-            }
-
-            viewModel.Synchronize(() =>
-            {
-                _window.UpdateDetailDataContext(viewModel);
-            });
-        }
-
         public override void GetData<TModel>(Action<object> onComplete, object obj)
         {
             Common.Rest.Requests.Security.Area request;
@@ -345,30 +257,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                 }
             }
 
-            // Could use a UI progress overlay or something here
-
-            _consumer.GetList(request,
-            result =>
-            {
-                // Put the last request updating here, while it could go outside the callback,
-                // I am putting it in here to be certain we never have a race condition
-                _lastRequest = result.Request;
-                _lastRestSharpResponse = result.RestSharpResponse;
-
-                List<Common.Models.Security.Area> sysModelList = new List<Common.Models.Security.Area>();
-
-                if (result.RestSharpResponse.StatusCode != System.Net.HttpStatusCode.OK)
-                {
-                    throw new Exception("Need error handling!!!");
-                }
-
-                foreach (Common.Rest.Responses.Security.Area area in result.Response)
-                {
-                    sysModelList.Add(Mapper.Map<Common.Models.Security.Area>(area));
-                }
-
-                if (onComplete != null) onComplete(sysModelList);
-            });
+            GetData(onComplete, request);
         }
 
         public override void GetData(Action<object> onComplete, ViewModels.IViewModel filter = null)
@@ -387,7 +276,12 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                 if (areaVM != null && areaVM.Id.HasValue)
                     request.ParentId = areaVM.Id.Value;
             }
-            
+
+            GetData(onComplete, request);
+        }
+
+        private void GetData(Action<object> onComplete, Common.Rest.Requests.Security.Area request)
+        {
             // Could use a UI progress overlay or something here
 
             _consumer.GetList(request,
@@ -414,7 +308,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             });
         }
 
-        public override void UpdateUI(ViewModels.IViewModel viewModel, object data)
+        public override void UpdateUI(ViewModels.IViewModel viewModel, object data, Controls.DisplayModeType? displayMode)
         {
             if (!typeof(ViewModels.Security.Area).IsAssignableFrom(viewModel.GetType()))
                 throw new ArgumentException("Invalid ViewModel type.");
@@ -422,10 +316,11 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                 throw new ArgumentException("Invalid data type.");
 
             UpdateUI((ViewModels.Security.Area)viewModel,
-                (List<Common.Models.Security.Area>)data);
+                (List<Common.Models.Security.Area>)data, displayMode);
         }
 
-        public void UpdateUI(ViewModels.Security.Area viewModel, List<Common.Models.Security.Area> sysModelList)
+        public void UpdateUI(ViewModels.Security.Area viewModel, 
+            List<Common.Models.Security.Area> sysModelList, Controls.DisplayModeType? displayMode)
         {
             bool pushToDataContext = false;
             EnhancedObservableCollection<ViewModels.Security.Area> viewModels;
@@ -444,24 +339,32 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                 viewModels = new EnhancedObservableCollection<ViewModels.Security.Area>();
                 pushToDataContext = true;
             }
-
-            foreach (Common.Models.Security.Area sysModel in sysModelList)
+            
+            App.Current.Dispatcher.BeginInvoke(new Action(delegate()
             {
-                ViewModels.Security.Area childVM = new ViewModels.Security.Area();
-                childVM.AttachModel(sysModel);
-                App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                foreach (Common.Models.Security.Area sysModel in sysModelList)
                 {
+                    ViewModels.Security.Area childVM = new ViewModels.Security.Area();
+                    childVM.AttachModel(sysModel);
                     viewModels.Add(childVM);
                     childVM.AddChild(new ViewModels.Security.Area()
                     {
                         IsDummy = true
                     });
-                }), System.Windows.Threading.DispatcherPriority.Normal);
-            }
+                }
+            }), System.Windows.Threading.DispatcherPriority.Normal);
 
             if (pushToDataContext)
-                _window.UpdateMasterDataContext(viewModels);
+            {
+                App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                {
+                    MasterDetailWindow.Clear();
+                    MasterDetailWindow.UpdateMasterDataContext(viewModels);
+                    if (displayMode.HasValue)
+                        MasterDetailWindow.SetDisplayMode(displayMode.Value);
+                    MasterDetailWindow.UpdateCommandStates();
+                }), System.Windows.Threading.DispatcherPriority.Normal);
+            }
         }
-
     }
 }

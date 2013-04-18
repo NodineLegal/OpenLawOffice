@@ -39,6 +39,5 @@ namespace OpenLawOffice.WinClient.Commands
         {
             _execute(parameter);
         }
-
     }
 }

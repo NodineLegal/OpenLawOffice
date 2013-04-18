@@ -62,6 +62,7 @@ namespace OpenLawOffice.WinClient
 
             // Fire before attaching event so as not to trigger event
             window.DockingWindow.IsActive = true;
+            window.DockingWindow.IsSelected = true;
             window.IsSelected = true;
 
             window.DockingWindow.IsActiveChanged += delegate(object sender, EventArgs e)

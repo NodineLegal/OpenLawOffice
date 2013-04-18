@@ -7,13 +7,15 @@ namespace OpenLawOffice.WinClient.Controls
     /// <summary>
     /// Interaction logic for ListGridView.xaml
     /// </summary>
-    public partial class ListGridView : UserControl
+    public partial class ListGridView : UserControl, IMaster
     {
-        public Action<ListGridView, object> OnSelectionChanged { get; set; }
+        public Action<Controls.IMaster, object> OnSelectionChanged { get; set; }
         public Action<ListGridView> OnLoad { get; set; }
         public Action<ListGridView> OnBackClick { get; set; }
         public Action<ListGridView> OnNextClick { get; set; }
         
+        public object SelectedItem { get { return UIList.SelectedItem; } }
+
         public ListGridView()
         {
             InitializeComponent();
@@ -60,6 +62,11 @@ namespace OpenLawOffice.WinClient.Controls
         private void Next_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             if (OnNextClick != null) OnNextClick(this);
+        }
+
+        public void ClearSelected()
+        {
+            UIList.UnselectAll();
         }
     }
 }

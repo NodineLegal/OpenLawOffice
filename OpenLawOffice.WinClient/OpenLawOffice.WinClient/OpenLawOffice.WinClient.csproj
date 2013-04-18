@@ -119,6 +119,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Commands\AsyncCommand.cs" />
+    <Compile Include="Commands\DelegateCommand.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Consumers\ConsumerBase.cs" />
     <Compile Include="Consumers\ConsumerResult.cs" />
@@ -136,13 +137,19 @@
     <Compile Include="ControllerManager.cs" />
     <Compile Include="Controllers\ControllerBase.cs" />
     <Compile Include="Controllers\HandleAttribute.cs" />
+    <Compile Include="Controllers\MasterDetailController.cs" />
     <Compile Include="Controllers\Security\AreaAcl.cs" />
     <Compile Include="Controllers\Security\Area.cs" />
+    <Compile Include="Controls\DisplayModeType.cs" />
+    <Compile Include="Controls\IMaster.cs" />
     <Compile Include="Controls\ListGridView.xaml.cs">
       <DependentUpon>ListGridView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\MasterDetailWindow.xaml.cs">
       <DependentUpon>MasterDetailWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ParentSelector.xaml.cs">
+      <DependentUpon>ParentSelector.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Tagging\CategoryTag.xaml.cs">
       <DependentUpon>CategoryTag.xaml</DependentUpon>
@@ -153,6 +160,7 @@
     <Compile Include="Controls\TreeGridView.xaml.cs">
       <DependentUpon>TreeGridView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\TypedMasterDetailWindow.cs" />
     <Compile Include="Controls\WatermarkedRibbonTextBox.cs" />
     <Compile Include="DetailViews\Matters\Matter.xaml.cs">
       <DependentUpon>Matter.xaml</DependentUpon>
@@ -172,8 +180,17 @@
     <Compile Include="ViewModels\Security\SecuredResource.cs" />
     <Compile Include="ViewModels\Security\SecuredResourceAcl.cs" />
     <Compile Include="ViewModels\Security\User.cs" />
+    <Compile Include="Views\Security\AreaAclCreate.xaml.cs">
+      <DependentUpon>AreaAclCreate.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Security\AreaAclDetail.xaml.cs">
       <DependentUpon>AreaAclDetail.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Security\AreaAclEdit.xaml.cs">
+      <DependentUpon>AreaAclEdit.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Security\AreaCreate.xaml.cs">
+      <DependentUpon>AreaCreate.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Security\AreaDetail.xaml.cs">
       <DependentUpon>AreaDetail.xaml</DependentUpon>
@@ -192,6 +209,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\MasterDetailWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ParentSelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -227,7 +248,19 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\Security\AreaAclCreate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Security\AreaAclDetail.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Security\AreaAclEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Security\AreaCreate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

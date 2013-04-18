@@ -8,39 +8,35 @@ using System.Reflection;
 namespace OpenLawOffice.WinClient.Controllers.Security
 {
     [Handle(typeof(Common.Models.Security.AreaAcl))]
-    public class AreaAcl : ControllerBase
+    public class AreaAcl
+        : MasterDetailController<Controls.ListGridView, Views.Security.AreaAclDetail, 
+            Views.Security.AreaAclEdit, Views.Security.AreaAclCreate>
     {
-        private MainWindow MainWindow = Globals.Instance.MainWindow;
-        private Type _masterControlType = typeof(Controls.ListGridView);
-        private Type _detailControlType = typeof(Views.Security.AreaAclDetail);
-        private Controls.MasterDetailWindow _window;
         private Consumers.Security.AreaAcl _consumer;
         private Common.Rest.Requests.Security.AreaAcl _lastRequest;
         private RestSharp.IRestResponse _lastRestSharpResponse;
-
-        private Controls.ListGridView _masterControl
+        
+        public AreaAcl()
+            : base("Area ACLs", 
+            Globals.Instance.MainWindow.SecurityAreaAclTab,
+            Globals.Instance.MainWindow.SecurityAreaAcls_Edit,
+            Globals.Instance.MainWindow.SecurityAreaAcls_Create,
+            Globals.Instance.MainWindow.SecurityAreaAcls_Save,
+            Globals.Instance.MainWindow.SecurityAreaAcls_Cancel)
         {
-            get { return (Controls.ListGridView)_window.MasterControl; }
-            set { _window.MasterControl = value; }
-        }
-
-        private Views.Security.AreaAclDetail _detailControl
-        {
-            get { return (Views.Security.AreaAclDetail)_window.DetailControl; }
-            set { _window.DetailControl = value; }
-        }
-
-        public override void LoadUI()
-        {
-            _window = new Controls.MasterDetailWindow() { Title = "Area ACLs" };
             _consumer = new Consumers.Security.AreaAcl();
             _lastRequest = null;
 
-            // set controls
-            _masterControl = (Controls.ListGridView)_masterControlType.GetConstructor(new Type[] { }).Invoke(null);
-            _detailControl = (Views.Security.AreaAclDetail)_detailControlType.GetConstructor(new Type[] { }).Invoke(null);
-
-            _masterControl
+            MasterDetailWindow.MasterView
+                .AddColumn(new System.Windows.Controls.GridViewColumn()
+                {
+                    Header = "Area",
+                    DisplayMemberBinding = new System.Windows.Data.Binding("Area.Name")
+                    {
+                        Mode = System.Windows.Data.BindingMode.TwoWay
+                    },
+                    Width = 200
+                })
                 .AddColumn(new System.Windows.Controls.GridViewColumn()
                 {
                     Header = "User",
@@ -50,59 +46,44 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                     },
                     Width = 200
                 });
+        }
 
-            // Show the security area acl tab
-            MainWindow.SecurityAreaAclTab.Visibility = System.Windows.Visibility.Visible;
-            MainWindow.SecurityAreaAclTab.IsSelected = true;
-
-            // wireup deselection of window
-            _window.OnDeselected += iwin =>
-            {
-                MainWindow.SecurityAreaAcls_List.IsEnabled = true;
-                MainWindow.SecurityAreaAcls_Relationships.IsEnabled = false;
-                MainWindow.SecurityAreaAcls_Actions.IsEnabled = false;
-            };
-
-            // wireup selection of window
-            _window.OnSelected += iwin =>
-            {
-                MainWindow.SecurityAreaAclTab.IsSelected = true;
-                MainWindow.SecurityAreaAcls_List.IsEnabled = false;
-                MainWindow.SecurityAreaAcls_Edit.IsEnabled = true;
-                MainWindow.SecurityAreaAcls_Create.IsEnabled = true;
-                if (_masterControl.GetSelectedItem() != null)
-                { // If something is selected then
-                    MainWindow.SecurityAreaAcls_Save.IsEnabled = true;
-                    MainWindow.SecurityAreaAcls_Cancel.IsEnabled = true;
-                }
-                else
-                {
-                    MainWindow.SecurityAreaAcls_Save.IsEnabled = false;
-                    MainWindow.SecurityAreaAcls_Cancel.IsEnabled = false;
-                }
-            };
-
-            _window.OnActivated += iwin =>
-            {
-                MainWindow.SecurityAreaAclTab.IsEnabled = true;
-                MainWindow.SecurityAreaAcls_Group.IsEnabled = true;
-                MainWindow.SecurityAreaAcls_List.IsEnabled = true;
-            };
-
-            _window.OnClose += iwin =>
-            {
-                MainWindow.SecurityAreaAclTab.Visibility = System.Windows.Visibility.Hidden;
-            };
-
-            _masterControl.OnSelectionChanged += (treeGridView, viewModel) =>
-            {
-                _window.UpdateDetailDataContext(viewModel);
-            };
-
+        public override void LoadUI()
+        {
             // ribbon controls
+            MainWindow.SecurityAreaAcls_List.Command = new Commands.DelegateCommand(x =>
+            {
+                // Ignores selection
+                App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                {
+                    GetData<Common.Models.Security.AreaAcl>(data =>
+                    {
+                        List<Common.Models.Security.AreaAcl> sysModelList =
+                            (List<Common.Models.Security.AreaAcl>)data;
+                        UpdateUI(null, sysModelList, Controls.DisplayModeType.View);
+                    }, null);
+                }), System.Windows.Threading.DispatcherPriority.Normal);
+            });
+
+            MainWindow.SecurityAreaAcls_Create.Command = new Commands.DelegateCommand(x =>
+            {
+            }, x => MasterDetailWindow.CreateEnabled);
+
+            MainWindow.SecurityAreaAcls_Edit.Command = new Commands.DelegateCommand(x =>
+            {
+                App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                {
+                    MasterDetailWindow.UpdateDetailAndEditDataContext(MasterDetailWindow.MasterView.SelectedItem);
+                }), System.Windows.Threading.DispatcherPriority.Normal);
+            }, x => MasterDetailWindow.EditEnabled);
 
             // load window
-            _window.Load();
+            MasterDetailWindow.Load();
+        }
+
+        public override void GetDetailData(Action onComplete, ViewModels.IViewModel viewModel)
+        {
+            throw new NotImplementedException();
         }
 
         public override void GetData<TModel>(Action<object> onComplete, object obj)
@@ -115,7 +96,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             throw new NotImplementedException();
         }
 
-        public override void UpdateUI(ViewModels.IViewModel viewModel, object data)
+        public override void UpdateUI(ViewModels.IViewModel viewModel, object data, Controls.DisplayModeType? displayMode)
         {
             throw new NotImplementedException();
         }

@@ -44,11 +44,11 @@ namespace OpenLawOffice.WinClient
             loginWindow.Load();
 
 
-            Home_Security_Areas.Command = new Commands.AsyncCommand(x => 
+            Home_Security_Areas.Command = new Commands.DelegateCommand(x => 
             {
                 ControllerManager.Instance.LoadUI<Common.Models.Security.Area>();
             });
-            Home_Security_AreaAcls.Command = new Commands.AsyncCommand(x =>
+            Home_Security_AreaAcls.Command = new Commands.DelegateCommand(x =>
             {
                 ControllerManager.Instance.LoadUI<Common.Models.Security.AreaAcl>();
             });

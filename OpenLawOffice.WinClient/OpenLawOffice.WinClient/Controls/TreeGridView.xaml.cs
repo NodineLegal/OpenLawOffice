@@ -7,10 +7,12 @@ namespace OpenLawOffice.WinClient.Controls
     /// <summary>
     /// Interaction logic for TreeGridView.xaml
     /// </summary>
-    public partial class TreeGridView : UserControl
+    public partial class TreeGridView : UserControl, IMaster
     {
-        public Action<TreeGridView, object> OnSelectionChanged { get; set; }
+        public Action<Controls.IMaster, object> OnSelectionChanged { get; set; }
         public Action<TreeGridView> OnLoad { get; set; }
+
+        public object SelectedItem { get { return UITree.SelectedItem; } }
 
         public TreeGridView()
         {
@@ -60,9 +62,9 @@ namespace OpenLawOffice.WinClient.Controls
             return UITree.SelectedItem;
         }
 
-        public void ClearSelectedItems()
+        public void ClearSelected()
         {
-            foreach (var item in UITree.SelectedTreeViewItems)
+            foreach (TreeViewItem item in UITree.SelectedTreeViewItems)
             {
                 item.IsSelected = false;
             }
@@ -86,9 +88,7 @@ namespace OpenLawOffice.WinClient.Controls
 
         private void UITree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            object selectedItem = GetSelectedItem();
-            if (selectedItem == null) return;
-            if (OnSelectionChanged != null) OnSelectionChanged(this, GetSelectedItem());
+            if (OnSelectionChanged != null) OnSelectionChanged(this, SelectedItem);
         }
     }
 }
