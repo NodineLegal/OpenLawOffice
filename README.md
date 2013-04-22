@@ -18,4 +18,4 @@ It's the new Pro-Bono!  Legal services are expensive, no question.  One large fa
 Contributions and value added services.  For instance, who better to perform your site analysis, setup your servers and bring OpenLawOffice active in your environment than the people writing the program?  As we freely give our time and intellectual property to the development of OpenLawOffice, we simply ask that your installation and support issues get directed to us so we can keep the lights on for the project.
 
 ## Can We (I) Help?
-Absolutely!  There is much to be done.  If you would like to assist, simply contact Lucas Nodine [github](https://github.com/lucasnodine) or [linkedin](http://www.linkedin.com/profile/view?id=15557533)
+Absolutely!  There is much to be done.  If you would like to assist, simply contact Lucas Nodine [github](https://github.com/lucasnodine) or [linkedin](http://www.linkedin.com/profile/view?id=15557533) or if you prefer non-social media sites, please visit the [Nodine Legal](http://www.nodinelegal.com/) website for multiple direct contact methods.  Please only contact us if you are serious about contributing to the project.
