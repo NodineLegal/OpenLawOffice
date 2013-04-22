@@ -21,6 +21,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             Globals.Instance.MainWindow.SecurityAreaTab,
             Globals.Instance.MainWindow.SecurityAreas_Edit,
             Globals.Instance.MainWindow.SecurityAreas_Create,
+            Globals.Instance.MainWindow.SecurityAreas_Disable,
             Globals.Instance.MainWindow.SecurityAreas_Save,
             Globals.Instance.MainWindow.SecurityAreas_Cancel)
         {
@@ -72,7 +73,9 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             {
                 App.Current.Dispatcher.BeginInvoke(new Action(delegate()
                 {
-                    MasterDetailWindow.GoIntoCreateMode(new ViewModels.Security.Area().AttachModel(new Common.Models.Security.Area()));
+                    ViewModels.Security.Area areaVM = (ViewModels.Security.Area)new ViewModels.Security.Area().AttachModel(new Common.Models.Security.Area());
+                    MasterDetailWindow.GoIntoCreateMode(areaVM);
+
                 }), System.Windows.Threading.DispatcherPriority.Normal);
             }, x => MasterDetailWindow.CreateEnabled);
             
@@ -84,28 +87,85 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                 }), System.Windows.Threading.DispatcherPriority.Normal);
             }, x => MasterDetailWindow.EditEnabled);
 
-            MainWindow.SecurityAreas_Save.Command = new Commands.DelegateCommand(x =>
+            MainWindow.SecurityAreas_Disable.Command = new Commands.DelegateCommand(x =>
             {
-                App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                System.Windows.MessageBoxResult mbResult = System.Windows.MessageBox.Show(MainWindow,
+                    "Disabling the selected item will make it unusable and prevent it from showing up in searches.  Are you sure you wish to disable the selected item?",
+                    "Confirm",
+                    System.Windows.MessageBoxButton.YesNo,
+                    System.Windows.MessageBoxImage.Question,
+                    System.Windows.MessageBoxResult.No);
+                if (mbResult == System.Windows.MessageBoxResult.Yes)
                 {
-                    ViewModels.Security.Area areaVM = (ViewModels.Security.Area)MasterDetailWindow.DetailView.DataContext;
-                    Common.Models.Security.Area sysModel = areaVM.Model;
+                    ViewModels.Security.Area selectedItem = (ViewModels.Security.Area)MasterDetailWindow.MasterView.SelectedItem;
+                    Common.Models.Security.Area sysModel = selectedItem.Model;
                     Common.Rest.Requests.Security.Area requestModel = Mapper.Map<Common.Rest.Requests.Security.Area>(sysModel);
                     requestModel.AuthToken = Globals.Instance.AuthToken;
-                    _consumer.Update(requestModel, result =>
+                    _consumer.Disable(requestModel, result =>
                     {
                         if (result.RestSharpResponse.StatusCode != System.Net.HttpStatusCode.OK)
                             throw new Exception("Need error handling!!!");
 
-                        sysModel = Mapper.Map<Common.Models.Security.Area>(result.Response);
-                        areaVM.Synchronize(() =>
+                        selectedItem.Synchronize(() =>
                         {
-                            areaVM = (ViewModels.Security.Area)new ViewModels.Security.Area().AttachModel(sysModel);
-                            MasterDetailWindow.MasterView.ClearSelected();
-                            if (MasterDetailWindow.DisplayMode == Controls.DisplayModeType.Create)
-                                MasterDetailWindow.SetDisplayMode(Controls.DisplayModeType.View);
+                            if (selectedItem.Parent != null)
+                                selectedItem.Parent.RemoveChild(selectedItem);
+                            else
+                                ((List<ViewModels.Security.Area>)MasterDetailWindow.MasterDataContext).Remove(selectedItem);
                         });
                     });
+                }
+            }, x => MasterDetailWindow.DisableEnabled);
+
+            MainWindow.SecurityAreas_Save.Command = new Commands.DelegateCommand(x =>
+            {
+                App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                {
+                    if (MasterDetailWindow.DisplayMode == Controls.DisplayModeType.Edit)
+                    {
+                        ViewModels.Security.Area areaVM = (ViewModels.Security.Area)MasterDetailWindow.DetailView.DataContext;
+                        Common.Models.Security.Area sysModel = areaVM.Model;
+                        Common.Rest.Requests.Security.Area requestModel = Mapper.Map<Common.Rest.Requests.Security.Area>(sysModel);
+                        requestModel.AuthToken = Globals.Instance.AuthToken;
+                        _consumer.Update(requestModel, result =>
+                        {
+                            if (result.RestSharpResponse.StatusCode != System.Net.HttpStatusCode.OK)
+                                throw new Exception("Need error handling!!!");
+
+                            sysModel = Mapper.Map<Common.Models.Security.Area>(result.Response);
+                            areaVM.Synchronize(() =>
+                            {
+                                areaVM = (ViewModels.Security.Area)new ViewModels.Security.Area().AttachModel(sysModel);
+                                MasterDetailWindow.MasterView.ClearSelected();
+                                if (MasterDetailWindow.DisplayMode == Controls.DisplayModeType.Create)
+                                    MasterDetailWindow.SetDisplayMode(Controls.DisplayModeType.View);
+                            });
+                        });
+                    }
+                    else if (MasterDetailWindow.DisplayMode == Controls.DisplayModeType.Create)
+                    {
+                        ViewModels.Security.Area areaVM = (ViewModels.Security.Area)MasterDetailWindow.CreateView.DataContext;
+                        Common.Models.Security.Area sysModel = areaVM.Model;
+                        Common.Rest.Requests.Security.Area requestModel = Mapper.Map<Common.Rest.Requests.Security.Area>(sysModel);
+                        requestModel.AuthToken = Globals.Instance.AuthToken;
+                        _consumer.Create(requestModel, result =>
+                        {
+                            if (result.RestSharpResponse.StatusCode != System.Net.HttpStatusCode.OK)
+                                throw new Exception("Need error handling!!!");
+
+                            sysModel = Mapper.Map<Common.Models.Security.Area>(result.Response);
+                            areaVM.Synchronize(() =>
+                            {
+                                areaVM = (ViewModels.Security.Area)new ViewModels.Security.Area().AttachModel(sysModel);
+                                MasterDetailWindow.MasterView.ClearSelected();
+                                if (MasterDetailWindow.DisplayMode == Controls.DisplayModeType.Create)
+                                    MasterDetailWindow.SetDisplayMode(Controls.DisplayModeType.View);
+                            });
+                        });
+                    }
+                    else
+                        throw new Exception("Invalid UI state.");
+
                 }), System.Windows.Threading.DispatcherPriority.Normal);
             }, x => MasterDetailWindow.SaveEnabled);
 
@@ -324,47 +384,52 @@ namespace OpenLawOffice.WinClient.Controllers.Security
         {
             bool pushToDataContext = false;
             EnhancedObservableCollection<ViewModels.Security.Area> viewModels;
-
-            if (viewModel != null)
-            {
-                viewModels = viewModel.Children;
-
-                App.Current.Dispatcher.BeginInvoke(new Action(delegate()
-                {
-                    viewModels.Clear();
-                }), System.Windows.Threading.DispatcherPriority.Normal);
-            }
-            else
-            {
-                viewModels = new EnhancedObservableCollection<ViewModels.Security.Area>();
-                pushToDataContext = true;
-            }
-            
             App.Current.Dispatcher.BeginInvoke(new Action(delegate()
             {
+                if (viewModel != null)
+                {
+                    viewModels = viewModel.Children;
+                    viewModels.Clear();
+                }
+                else
+                {
+                    viewModels = new EnhancedObservableCollection<ViewModels.Security.Area>();
+                    pushToDataContext = true;
+                }
+            
                 foreach (Common.Models.Security.Area sysModel in sysModelList)
                 {
                     ViewModels.Security.Area childVM = new ViewModels.Security.Area();
                     childVM.AttachModel(sysModel);
-                    viewModels.Add(childVM);
+
+                    if (viewModel != null)
+                    {
+                        // Set child's parent
+                        childVM.Parent = viewModel;
+
+                        // Add parent's child
+                        viewModel.AddChild(childVM);
+                    }
+                    else
+                    {
+                        viewModels.Add(childVM);
+                    }
+
                     childVM.AddChild(new ViewModels.Security.Area()
                     {
                         IsDummy = true
                     });
                 }
-            }), System.Windows.Threading.DispatcherPriority.Normal);
 
-            if (pushToDataContext)
-            {
-                App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                if (pushToDataContext)
                 {
                     MasterDetailWindow.Clear();
                     MasterDetailWindow.UpdateMasterDataContext(viewModels);
                     if (displayMode.HasValue)
                         MasterDetailWindow.SetDisplayMode(displayMode.Value);
                     MasterDetailWindow.UpdateCommandStates();
-                }), System.Windows.Threading.DispatcherPriority.Normal);
-            }
+                }
+            }), System.Windows.Threading.DispatcherPriority.Normal);
         }
     }
 }

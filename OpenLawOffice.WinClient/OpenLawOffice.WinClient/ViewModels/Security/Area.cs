@@ -28,13 +28,23 @@ namespace OpenLawOffice.WinClient.ViewModels.Security
             get { return _parentViewModel; }
             set
             {
+                if (value == null)
+                {
+                    _parentViewModel = null;
+                    return;
+                }
+                
                 if (_parentViewModel == null)
                 {
+                    if (_model.Parent == null)
+                        _model.Parent = new Common.Models.Security.Area();
+
                     _parentViewModel = new Area();
                     _parentViewModel.AttachModel(_model.Parent);
                 }
 
                 _parentViewModel.Id = value.Id;
+                _parentViewModel.IsDummy = value.IsDummy;
                 _parentViewModel.Parent = value.Parent;
                 _parentViewModel.Name = value.Name;
                 _parentViewModel.Description = value.Description;
@@ -114,11 +124,15 @@ namespace OpenLawOffice.WinClient.ViewModels.Security
                         foreach (Area viewModel in e.NewItems)
                         {
                             if (!viewModel.IsDummy)
-                                _model.Children.Add(Mapper.Map<Common.Models.Security.Area>(viewModel));
+                            {
+                                // Should never map ViewModel to Model -> causes all kinds of hierarchical issues
+                                //_model.Children.Add(Mapper.Map<Common.Models.Security.Area>(viewModel));
+                                _model.AddChild(viewModel.Model);
+                            }
                         }
                         break;
                     case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
-                        foreach (Area viewModel in e.NewItems)
+                        foreach (Area viewModel in e.OldItems)
                         {
                             _model.Children.RemoveAll(x => x.Id == viewModel.Id);
                         }
@@ -153,6 +167,7 @@ namespace OpenLawOffice.WinClient.ViewModels.Security
 
         public void AddChild(Area child)
         {
+            child._parentViewModel = this;
             Children.Add(child);
         }
 

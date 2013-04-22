@@ -18,12 +18,6 @@ namespace OpenLawOffice.WinClient.Controls
         {
             InitializeComponent();
             UITree.AddHandler(TreeViewItem.ExpandedEvent, new RoutedEventHandler(TreeViewItemExpanded));
-            DataContextChanged += new DependencyPropertyChangedEventHandler(TreeGridView_DataContextChanged);
-        }
-
-        void TreeGridView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            string a = " ";
         }
 
         public TreeGridView SetExpanderColumnTemplate(string header, string textBindingPath, double width = Double.NaN)

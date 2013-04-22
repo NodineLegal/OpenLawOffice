@@ -14,6 +14,12 @@ namespace OpenLawOffice.WinClient.ViewModels
             }
             set
             {
+                if (value == null)
+                {
+                    _createdByViewModel = null;
+                    return;
+                }
+
                 if (_createdByViewModel == null)
                 {
                     _createdByViewModel = new Security.User();
@@ -38,6 +44,12 @@ namespace OpenLawOffice.WinClient.ViewModels
             get { return _modifiedByViewModel; }
             set
             {
+                if (value == null)
+                {
+                    _modifiedByViewModel = null;
+                    return;
+                }
+
                 if (_modifiedByViewModel == null)
                 {
                     _modifiedByViewModel = new Security.User();
@@ -62,6 +74,12 @@ namespace OpenLawOffice.WinClient.ViewModels
             get { return _disabledByViewModel; }
             set
             {
+                if (value == null)
+                {
+                    _disabledByViewModel = null;
+                    return;
+                }
+
                 if (_disabledByViewModel == null)
                 {
                     _disabledByViewModel = new Security.User();

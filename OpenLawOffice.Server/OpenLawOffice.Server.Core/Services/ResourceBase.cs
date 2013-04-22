@@ -154,6 +154,31 @@ namespace OpenLawOffice.Server.Core.Services
                 return response;
 
             sysModel = Mapper.Map<TModel>(request);
+
+
+
+            if (typeof(Common.Models.ModelWithDatesOnly).IsAssignableFrom(typeof(TModel)))
+            {
+                PropertyInfo utcCreated = typeof(TModel).GetProperty("UtcCreated");
+                PropertyInfo utcModified = typeof(TModel).GetProperty("UtcModified");
+                PropertyInfo utcDisabled = typeof(TModel).GetProperty("UtcDisabled");
+
+                utcCreated.SetValue(sysModel, DateTime.Now, null);
+                utcModified.SetValue(sysModel, DateTime.Now, null);
+                utcDisabled.SetValue(sysModel, null, null);
+            }
+
+            if (typeof(Common.Models.ModelWithDatesOnly).IsAssignableFrom(typeof(TModel)))
+            {
+                PropertyInfo createdBy = typeof(TModel).GetProperty("CreatedBy");
+                PropertyInfo modifiedBy = typeof(TModel).GetProperty("ModifiedBy");
+                PropertyInfo disabledBy = typeof(TModel).GetProperty("DisabledBy");
+
+                createdBy.SetValue(sysModel, request.Session.RequestingUser, null);
+                modifiedBy.SetValue(sysModel, request.Session.RequestingUser, null);
+                disabledBy.SetValue(sysModel, null, null);
+            }
+            
             dbModel = Mapper.Map<TDbo>(sysModel);
 
             try
@@ -367,31 +392,34 @@ namespace OpenLawOffice.Server.Core.Services
                 return response;
 
             sysModel = Mapper.Map<TModel>(request);
-            dbModel = Mapper.Map<TDbo>(sysModel);
+            //dbModel = Mapper.Map<TDbo>(sysModel);
             idValue = GetIdValue(request);
 
             try
             {
                 using (IDbConnection db = Database.Instance.OpenConnection())
                 {
-                    if (typeof(TDbo).IsAssignableFrom(typeof(DBOs.Core)))
+                    // Load
+                    dbModel = db.GetByIdParam<TDbo>(idValue);
+
+                    if (typeof(DBOs.Core).IsAssignableFrom(typeof(TDbo)))
                     {
                         DBOs.Core coreDbModel = (DBOs.Core)(DBOs.DboBase)dbModel;
                         coreDbModel.UtcDisabled = DateTime.Now;
                         coreDbModel.DisabledByUserId = request.Session.RequestingUser.Id.Value;
 
                         db.Update<TDbo>(
-                            set: "\"UtcDisabled\" = '{0}', \"DisabledByUserId\" = {1}"
+                            set: "\"UtcDisabled\" = {0}, \"DisabledByUserId\" = {1}"
                                 .Params(coreDbModel.UtcDisabled, coreDbModel.DisabledByUserId),
                             where: "\"Id\" = {0}".Params(idValue));
                     }
-                    else if (typeof(TDbo).IsAssignableFrom(typeof(DBOs.DboWithDatesOnly)))
+                    else if (typeof(DBOs.DboWithDatesOnly).IsAssignableFrom(typeof(TDbo)))
                     {
                         DBOs.DboWithDatesOnly datesDbModel = (DBOs.DboWithDatesOnly)(DBOs.DboBase)dbModel;
                         datesDbModel.UtcDisabled = DateTime.Now;
 
                         db.Update<TDbo>(
-                            set: "\"UtcDisabled\" = '{0}'"
+                            set: "\"UtcDisabled\" = {0}"
                                 .Params(datesDbModel.UtcDisabled),
                             where: "\"Id\" = {0}".Params(idValue));
                     }

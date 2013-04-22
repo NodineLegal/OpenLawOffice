@@ -14,10 +14,10 @@ namespace OpenLawOffice.WinClient.Controllers
         public Controls.TypedMasterDetailWindow<TMasterView, TDetailView, TEditView, TCreateView> MasterDetailWindow { get; set; }
 
         public MasterDetailController(string title, RibbonTab ribbonTab, RibbonToggleButton editButton,
-            RibbonButton createButton, RibbonButton saveButton, RibbonButton cancelButton)
+            RibbonButton createButton, RibbonButton disableButton, RibbonButton saveButton, RibbonButton cancelButton)
         {
             MasterDetailWindow = new Controls.TypedMasterDetailWindow<TMasterView, TDetailView, TEditView, TCreateView>
-                (title, ribbonTab, editButton, createButton, saveButton, cancelButton, this);
+                (title, ribbonTab, editButton, createButton, disableButton, saveButton, cancelButton, this);
         }
     }
 }

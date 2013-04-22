@@ -27,8 +27,9 @@ namespace OpenLawOffice.WinClient.Controls
         }
 
         public TypedMasterDetailWindow(string title, RibbonTab ribbonTab, RibbonToggleButton editButton,
-            RibbonButton createButton, RibbonButton saveButton, RibbonButton cancelButton, Controllers.ControllerBase controller)
-            : base(title, ribbonTab, editButton, createButton, saveButton, cancelButton, controller)
+            RibbonButton createButton, RibbonButton disableButton, RibbonButton saveButton, 
+            RibbonButton cancelButton, Controllers.ControllerBase controller)
+            : base(title, ribbonTab, editButton, createButton, disableButton, saveButton, cancelButton, controller)
         {
             Title = title;
 
@@ -124,14 +125,21 @@ namespace OpenLawOffice.WinClient.Controls
                 DetailControl = DetailView;
                 EditEnabled = true;
                 if (IsSelected)
+                {
+                    DisableEnabled = true;
                     RelationshipsEnabled = true;
+                }
                 else
+                {
+                    DisableEnabled = false;
                     RelationshipsEnabled = false;
+                }
             }
             else
             {
                 DetailControl = null;
                 EditEnabled = false;
+                DisableEnabled = false;
                 RelationshipsEnabled = false;
             }
         }

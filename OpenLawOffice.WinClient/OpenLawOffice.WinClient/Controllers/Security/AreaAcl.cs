@@ -21,6 +21,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             Globals.Instance.MainWindow.SecurityAreaAclTab,
             Globals.Instance.MainWindow.SecurityAreaAcls_Edit,
             Globals.Instance.MainWindow.SecurityAreaAcls_Create,
+            Globals.Instance.MainWindow.SecurityAreas_Disable,
             Globals.Instance.MainWindow.SecurityAreaAcls_Save,
             Globals.Instance.MainWindow.SecurityAreaAcls_Cancel)
         {

@@ -63,6 +63,18 @@ namespace OpenLawOffice.WinClient.Controls
             }
         }
 
+        private bool _disableEnabled;
+        public bool DisableEnabled
+        {
+            get { return _disableEnabled; }
+            set
+            {
+                _disableEnabled = value;
+                if (DisableButton.Command != null)
+                    ((Commands.DelegateCommand)DisableButton.Command).RaiseCanExecuteChanged();
+            }
+        }
+
         private bool _createEnabled;
         public bool CreateEnabled
         {
@@ -102,6 +114,7 @@ namespace OpenLawOffice.WinClient.Controls
         public RibbonTab RibbonTab { get; private set; }
         public RibbonToggleButton EditButton { get; private set; }
         public RibbonButton CreateButton { get; private set; }
+        public RibbonButton DisableButton { get; private set; }
         public RibbonButton SaveButton { get; private set; }
         public RibbonButton CancelButton { get; private set; }
                 
@@ -177,7 +190,8 @@ namespace OpenLawOffice.WinClient.Controls
         }
 
         public MasterDetailWindow(string title, RibbonTab ribbonTab, RibbonToggleButton editButton,
-            RibbonButton createButton, RibbonButton saveButton, RibbonButton cancelButton, Controllers.ControllerBase controller)
+            RibbonButton createButton, RibbonButton disableButton, RibbonButton saveButton, 
+            RibbonButton cancelButton, Controllers.ControllerBase controller)
         {
             InitializeComponent();
 
@@ -193,6 +207,7 @@ namespace OpenLawOffice.WinClient.Controls
             RibbonTab = ribbonTab;
             EditButton = editButton;
             CreateButton = createButton;
+            DisableButton = disableButton;
             SaveButton = saveButton;
             CancelButton = cancelButton;
             _controller = controller;
@@ -314,6 +329,7 @@ namespace OpenLawOffice.WinClient.Controls
         {
             CreateEnabled = true;
             EditEnabled = false;
+            DisableEnabled = false;
             if (IsSelected)
             {
                 SaveEnabled = true;
@@ -330,6 +346,7 @@ namespace OpenLawOffice.WinClient.Controls
         {
             CreateEnabled = false;
             EditEnabled = true;
+            DisableEnabled = false;
             if (!EditButton.IsChecked.HasValue || !EditButton.IsChecked.Value)
                 EditButton.IsChecked = true;
         }
