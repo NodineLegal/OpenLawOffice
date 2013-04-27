@@ -158,8 +158,27 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                             {
                                 areaVM = (ViewModels.Security.Area)new ViewModels.Security.Area().AttachModel(sysModel);
                                 MasterDetailWindow.MasterView.ClearSelected();
+
                                 if (MasterDetailWindow.DisplayMode == Controls.DisplayModeType.Create)
                                     MasterDetailWindow.SetDisplayMode(Controls.DisplayModeType.View);
+
+                                // setup dummy child
+                                areaVM.AddChild(
+                                    new ViewModels.Security.Area()
+                                    {
+                                        IsDummy = true
+                                    });
+
+                                // Lookup parent
+                                if (areaVM.Parent == null)
+                                {
+                                    ((EnhancedObservableCollection<ViewModels.Security.Area>)MasterDetailWindow.MasterDataContext).Add(areaVM);
+                                }
+                                else
+                                {
+                                    ViewModels.Security.Area parent = Find((EnhancedObservableCollection<ViewModels.Security.Area>)MasterDetailWindow.MasterDataContext, areaVM.Parent);
+                                    parent.AddChild(areaVM);
+                                }                                
                             });
                         });
                     }
@@ -202,6 +221,44 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                 List<Common.Models.Security.Area> sysModelList = (List<Common.Models.Security.Area>)data;
                 UpdateUI(null, sysModelList, Controls.DisplayModeType.View);
             }, null);
+        }
+
+        private ViewModels.Security.Area Find(List<ViewModels.Security.Area> list, ViewModels.Security.Area target)
+        {
+            ViewModels.Security.Area found = null;
+
+            if (!target.Id.HasValue || target.Id.Value < 1)
+                throw new ArgumentException("Target must have an Id with a positive value.");
+
+            foreach (ViewModels.Security.Area area in list)
+            {
+                if (area.Id == target.Id)
+                    return area;
+
+                found = Find(area.Children, target);
+                if (found != null) break;
+            }
+
+            return found;
+        }
+
+        private ViewModels.Security.Area Find(EnhancedObservableCollection<ViewModels.Security.Area> list, ViewModels.Security.Area target)
+        {
+            ViewModels.Security.Area found = null;
+
+            if (!target.Id.HasValue || target.Id.Value < 1)
+                throw new ArgumentException("Target must have an Id with a positive value.");
+
+            foreach (ViewModels.Security.Area area in list)
+            {
+                if (area.Id == target.Id)
+                    return area;
+
+                found = Find(area.Children, target);
+                if (found != null) break;
+            }
+
+            return found;
         }
 
         public override void GetDetailData(Action onComplete, ViewModels.IViewModel viewModel)

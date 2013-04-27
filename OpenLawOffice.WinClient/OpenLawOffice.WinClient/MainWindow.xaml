@@ -82,6 +82,8 @@
             <ribbon:RibbonTab x:Name="SecurityAreaAclTab" Header="Area ACLs" Visibility="Hidden">
                 <ribbon:RibbonGroup x:Name="SecurityAreaAcls_Group" Header="Area ACLs">
                     <ribbon:RibbonButton x:Name="SecurityAreaAcls_List" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="List" />
+                    <ribbon:RibbonComboBox x:Name="SecurityAreaAcls_List_Area" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Area:" />
+                    <ribbon:RibbonComboBox x:Name="securityAreaAcls_List_User" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="User:" />
                 </ribbon:RibbonGroup>
                 <ribbon:RibbonGroup x:Name="SecurityAreaAcls_Relationships" Header="Relationships">
                     
