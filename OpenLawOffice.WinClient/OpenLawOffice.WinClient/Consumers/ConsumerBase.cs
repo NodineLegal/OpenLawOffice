@@ -50,8 +50,8 @@ namespace OpenLawOffice.WinClient.Consumers
                     if (response.Data != null)
                         callback(new ConsumerResult<TRequest, TResponse>()
                         {
-                            //Sender = this,
                             Request = request,
+                            ResponseContainer = response.Data,
                             Response = response.Data.Data,
                             RestSharpResponse = response,
                             Handle = handle
@@ -59,9 +59,9 @@ namespace OpenLawOffice.WinClient.Consumers
                     else
                         callback(new ConsumerResult<TRequest, TResponse>()
                         {
-                            //Sender = this,
                             Request = request,
                             Response = null,
+                            ResponseContainer = response.Data,
                             RestSharpResponse = response,
                             Handle = handle
                         });
@@ -75,7 +75,7 @@ namespace OpenLawOffice.WinClient.Consumers
             return Execute(restRequest, request, callback);
         }
 
-        public virtual RestRequestAsyncHandle GetList(TRequest request, Action<ConsumerResult<TRequest, List<TResponse>>> callback)
+        public virtual RestRequestAsyncHandle GetList(TRequest request, Action<ListConsumerResult<TRequest, TResponse>> callback)
         {
             RestClient client = new RestClient(Globals.Instance.Settings.HostBaseUrl);
             RestRequest restRequest = RequestBuilder.Build(Resource, Method.GET, request);
@@ -85,19 +85,20 @@ namespace OpenLawOffice.WinClient.Consumers
                 if (callback != null)
                 {
                     if (response.Data != null)
-                        callback(new ConsumerResult<TRequest, List<TResponse>>()
+                        callback(new ListConsumerResult<TRequest, TResponse>()
                         {
                             //Sender = this,
                             Request = request,
+                            ListResponseContainer = response.Data,
                             Response = response.Data.Data,
                             RestSharpResponse = response,
                             Handle = handle
                         });
                     else
-                        callback(new ConsumerResult<TRequest, List<TResponse>>()
+                        callback(new ListConsumerResult<TRequest, TResponse>()
                         {
-                            //Sender = this,
                             Request = request,
+                            ListResponseContainer = response.Data,
                             Response = null,
                             RestSharpResponse = response,
                             Handle = handle

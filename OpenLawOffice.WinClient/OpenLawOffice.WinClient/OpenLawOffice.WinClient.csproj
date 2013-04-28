@@ -76,6 +76,9 @@
     <Reference Include="DW.WPFToolkit">
       <HintPath>Libs\DW.WPFToolkit.dll</HintPath>
     </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.2.0.1.2\lib\net40\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="RestSharp">
       <HintPath>..\packages\RestSharp.104.1\lib\net4-client\RestSharp.dll</HintPath>
     </Reference>
@@ -118,12 +121,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Commands\AsyncCommand.cs" />
     <Compile Include="Commands\DelegateCommand.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Consumers\ConsumerBase.cs" />
     <Compile Include="Consumers\ConsumerResult.cs" />
     <Compile Include="Consumers\InvalidServiceTargetException.cs" />
+    <Compile Include="Consumers\ListConsumerResult.cs" />
     <Compile Include="Consumers\Matters\Matter.cs" />
     <Compile Include="Consumers\Matters\MatterTag.cs" />
     <Compile Include="Consumers\Matters\MatterTagCategory.cs" />
@@ -168,6 +171,16 @@
     <Compile Include="DetailViews\Matters\MatterEdit.xaml.cs">
       <DependentUpon>MatterEdit.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ErrorHandling\ActionableErrorWindow.xaml.cs">
+      <DependentUpon>ActionableErrorWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ErrorHandling\ActionableError.cs" />
+    <Compile Include="ErrorHandling\ErrorBase.cs" />
+    <Compile Include="ErrorHandling\ErrorLevelNotSetException.cs" />
+    <Compile Include="ErrorHandling\ErrorManager.cs" />
+    <Compile Include="ErrorHandling\ErrorNotRegisteredException.cs" />
+    <Compile Include="ErrorHandling\LevelType.cs" />
+    <Compile Include="ErrorHandling\NotificationError.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="ViewModels\CoreModel.cs" />
     <Compile Include="ViewModels\IHierarchicalModel.cs" />
@@ -236,6 +249,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ErrorHandling\ActionableErrorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -296,6 +313,10 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.config" />
+    <None Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

@@ -1,4 +1,5 @@
 ﻿using System;
+using NLog;
 
 namespace OpenLawOffice.WinClient
 {

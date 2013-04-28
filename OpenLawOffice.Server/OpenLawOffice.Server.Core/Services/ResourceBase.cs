@@ -54,15 +54,26 @@ namespace OpenLawOffice.Server.Core.Services
             }
             catch (Exception e)
             {
-                return new Common.Rest.Responses.ResponseContainer<TResponse>()
-                {
-                    HttpStatusCode = System.Net.HttpStatusCode.InternalServerError,
-                    Error = new Common.Error()
+                if (idValue == null)
+                    return new Common.Rest.Responses.ListResponseContainer<TResponse>()
                     {
-                        Message = "An unexpected error occurred while attempting to authorize the request.",
-                        Exception = e
-                    }
-                };
+                        HttpStatusCode = System.Net.HttpStatusCode.InternalServerError,
+                        Error = new Common.Error()
+                        {
+                            Message = "An unexpected error occurred while attempting to authorize the request.",
+                            Exception = e
+                        }
+                    };
+                else
+                    return new Common.Rest.Responses.ResponseContainer<TResponse>()
+                    {
+                        HttpStatusCode = System.Net.HttpStatusCode.InternalServerError,
+                        Error = new Common.Error()
+                        {
+                            Message = "An unexpected error occurred while attempting to authorize the request.",
+                            Exception = e
+                        }
+                    };
             }
 
             if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
@@ -373,7 +384,7 @@ namespace OpenLawOffice.Server.Core.Services
 
             try
             {
-                response = Authorize(request, Common.Models.PermissionType.Modify);
+                response = Authorize(request, Common.Models.PermissionType.Disable);
             }
             catch (Exception e)
             {
