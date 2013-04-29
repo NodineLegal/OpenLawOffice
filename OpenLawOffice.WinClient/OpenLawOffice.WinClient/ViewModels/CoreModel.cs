@@ -107,19 +107,22 @@ namespace OpenLawOffice.WinClient.ViewModels
             if (!typeof(Common.Models.Core).IsAssignableFrom(model.GetType()))
                 throw new ArgumentException("Argument 'model' must inherit from Common.Models.Core");
 
-            _createdByViewModel = AutoMapper.Mapper.Map<Security.User>(((Common.Models.Core)model).CreatedBy);
-            _modifiedByViewModel = AutoMapper.Mapper.Map<Security.User>(((Common.Models.Core)model).ModifiedBy);
-            _disabledByViewModel = AutoMapper.Mapper.Map<Security.User>(((Common.Models.Core)model).DisabledBy);
-
+            Common.Models.Core coreModel = (Common.Models.Core)model;
+            _createdByViewModel = (ViewModels.Security.User)new Security.User().AttachModel(coreModel.CreatedBy);
+            _modifiedByViewModel = (ViewModels.Security.User)new Security.User().AttachModel(coreModel.ModifiedBy);
+            _disabledByViewModel = (ViewModels.Security.User)new Security.User().AttachModel(coreModel.DisabledBy);
+            
             return base.AttachModel(model);
         }
 
         public override IViewModel AttachModel(TModel model)
         {
-            _createdByViewModel = AutoMapper.Mapper.Map<Security.User>(((Common.Models.Core)model).CreatedBy);
-            _modifiedByViewModel = AutoMapper.Mapper.Map<Security.User>(((Common.Models.Core)model).ModifiedBy);
-            _disabledByViewModel = AutoMapper.Mapper.Map<Security.User>(((Common.Models.Core)model).DisabledBy);
-
+            Common.Models.Core coreModel = (Common.Models.Core)model;
+            
+            _createdByViewModel = (ViewModels.Security.User)new Security.User().AttachModel(coreModel.CreatedBy);
+            _modifiedByViewModel = (ViewModels.Security.User)new Security.User().AttachModel(coreModel.ModifiedBy);
+            _disabledByViewModel = (ViewModels.Security.User)new Security.User().AttachModel(coreModel.DisabledBy);
+            
             return base.AttachModel(model);
         }
     }

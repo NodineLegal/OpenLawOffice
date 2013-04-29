@@ -2,14 +2,21 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Threading.Tasks;
 
 namespace OpenLawOffice.WinClient.Views.Security
 {
     /// <summary>
     /// Interaction logic for AreaCreate.xaml
     /// </summary>
-    public partial class AreaCreate : UserControl
+    public partial class AreaCreate : UserControl, Controls.IDetail
     {
+        public bool IsBusy
+        {
+            get { return UIBusyIndicator.IsBusy; }
+            set { UIBusyIndicator.IsBusy = value; }
+        }
+
         private ViewModels.Security.Area _viewModel { get { return (ViewModels.Security.Area)DataContext; } }
 
         public AreaCreate()
@@ -20,11 +27,14 @@ namespace OpenLawOffice.WinClient.Views.Security
             {
                 DW.WPFToolkit.TreeListViewItem treeItem = (DW.WPFToolkit.TreeListViewItem)((RoutedEventArgs)args).OriginalSource;
                 ViewModels.Security.Area viewModel = (ViewModels.Security.Area)treeItem.DataContext;
-                
+
+                UIParentSelector.IsBusy = true;
+
                 ControllerManager.Instance.GetData<Common.Models.Security.Area>(matches =>
                 {
                     List<Common.Models.Security.Area> modelList = (List<Common.Models.Security.Area>)matches;
-                    viewModel.Synchronize(() =>
+                        
+                    App.Current.Dispatcher.Invoke(new Action(() =>
                     {
                         viewModel.Children.Clear();
                         foreach (Common.Models.Security.Area sysModel in modelList)
@@ -37,7 +47,9 @@ namespace OpenLawOffice.WinClient.Views.Security
                             });
                             viewModel.AddChild(childVM);
                         }
-                    });
+
+                        UIParentSelector.IsBusy = false;
+                    }));
                 }, new { ParentId = viewModel.Id });
             };
 
@@ -64,6 +76,8 @@ namespace OpenLawOffice.WinClient.Views.Security
             UIParentSelectorOverlay.Visibility = System.Windows.Visibility.Visible;
             UIGrid.IsEnabled = false;
 
+            UIParentSelector.IsBusy = true;
+
             ControllerManager.Instance.GetData<Common.Models.Security.Area>(matches =>
             {
                 List<Common.Models.Security.Area> modelList = (List<Common.Models.Security.Area>)matches;
@@ -79,10 +93,11 @@ namespace OpenLawOffice.WinClient.Views.Security
                     viewModelList.Add(childVM);
                 }
                 
-                App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                App.Current.Dispatcher.Invoke(new Action(() =>
                 {
                     UIParentSelector.DataContext = viewModelList;
-                }), System.Windows.Threading.DispatcherPriority.Normal);
+                    UIParentSelector.IsBusy = false;
+                }));
 
             }, null);
         }

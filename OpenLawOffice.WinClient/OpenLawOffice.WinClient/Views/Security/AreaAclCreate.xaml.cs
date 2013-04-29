@@ -17,8 +17,14 @@ namespace OpenLawOffice.WinClient.Views.Security
     /// <summary>
     /// Interaction logic for AreaAclCreate.xaml
     /// </summary>
-    public partial class AreaAclCreate : UserControl
+    public partial class AreaAclCreate : UserControl, Controls.IDetail
     {
+        public bool IsBusy
+        {
+            get { return UIBusyIndicator.IsBusy; }
+            set { UIBusyIndicator.IsBusy = value; }
+        }
+
         public AreaAclCreate()
         {
             InitializeComponent();

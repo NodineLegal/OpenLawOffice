@@ -5,29 +5,32 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OpenLawOffice.WinClient.Controls"
              xmlns:toolkit="clr-namespace:DW.WPFToolkit;assembly=DW.WPFToolkit"
+             xmlns:xctk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" Background="White" BorderBrush="Black" BorderThickness="1">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="25" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <toolkit:TreeListView Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Stretch" 
-                              HorizontalAlignment="Stretch" x:Name="UITree" ItemsSource="{Binding}">
-            <toolkit:TreeListView.View>
-                <GridView x:Name="UIGridView">
-                    <GridViewColumn x:Name="ExpanderColumn" />
-                </GridView>
-            </toolkit:TreeListView.View>
-        </toolkit:TreeListView>
-        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" 
-                    HorizontalAlignment="Center" Orientation="Horizontal">
-            <Button Name="UIClear" Content="Clear" Width="50" Margin="5,0,5,0" Click="UIClear_Click" />
-            <Button Name="UISelect" Content="Select" Width="50" Margin="5,0,5,0" Click="UISelect_Click" />
-        </StackPanel>
-    </Grid>
+    <xctk:BusyIndicator x:Name="UIBusyIndicator" IsBusy="False">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="25" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <toolkit:TreeListView Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Stretch" 
+                                  HorizontalAlignment="Stretch" x:Name="UITree" ItemsSource="{Binding}">
+                <toolkit:TreeListView.View>
+                    <GridView x:Name="UIGridView">
+                        <GridViewColumn x:Name="ExpanderColumn" />
+                    </GridView>
+                </toolkit:TreeListView.View>
+            </toolkit:TreeListView>
+            <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" 
+                        HorizontalAlignment="Center" Orientation="Horizontal">
+                <Button Name="UIClear" Content="Clear" Width="50" Margin="5,0,5,0" Click="UIClear_Click" />
+                <Button Name="UISelect" Content="Select" Width="50" Margin="5,0,5,0" Click="UISelect_Click" />
+            </StackPanel>
+        </Grid>
+    </xctk:BusyIndicator>
 </UserControl>

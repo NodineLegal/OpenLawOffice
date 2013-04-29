@@ -4,6 +4,7 @@ using AutoMapper;
 using System.Collections.Generic;
 using DW.SharpTools;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace OpenLawOffice.WinClient.Controllers.Security
 {
@@ -51,16 +52,26 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             // ribbon controls
             MainWindow.SecurityAreas_List.Command = new Commands.DelegateCommand(x =>
             {
-                // Ignores selection
-                App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                string nameFilter = null;
+
+                App.Current.Dispatcher.Invoke(new Action(() =>
                 {
-                    GetData<Common.Models.Security.Area>(data =>
+                    nameFilter = MainWindow.SecurityAreas_List_Name.Text.Trim();
+                }));
+
+                MasterDetailWindow.IsBusy = true;
+
+                GetData<Common.Models.Security.Area>(data =>
+                {
+                    List<Common.Models.Security.Area> sysModelList =
+                        (List<Common.Models.Security.Area>)data;
+
+                    App.Current.Dispatcher.Invoke(new Action(() =>
                     {
-                        List<Common.Models.Security.Area> sysModelList = 
-                            (List<Common.Models.Security.Area>)data;
                         UpdateUI(null, sysModelList, Controls.DisplayModeType.View);
-                    }, new { Name = MainWindow.SecurityAreas_List_Name.Text.Trim() });
-                }), System.Windows.Threading.DispatcherPriority.Normal);
+                        MasterDetailWindow.IsBusy = false;
+                    }), null);
+                }, new { Name = nameFilter });
             });
 
             MainWindow.SecurityAreas_Acls.Command = new Commands.DelegateCommand(x =>
@@ -71,20 +82,19 @@ namespace OpenLawOffice.WinClient.Controllers.Security
 
             MainWindow.SecurityAreas_Create.Command = new Commands.DelegateCommand(x =>
             {
-                App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                App.Current.Dispatcher.Invoke(new Action(() =>
                 {
                     ViewModels.Security.Area areaVM = (ViewModels.Security.Area)new ViewModels.Security.Area().AttachModel(new Common.Models.Security.Area());
                     MasterDetailWindow.GoIntoCreateMode(areaVM);
-
-                }), System.Windows.Threading.DispatcherPriority.Normal);
+                }));
             }, x => MasterDetailWindow.CreateEnabled);
             
             MainWindow.SecurityAreas_Edit.Command = new Commands.DelegateCommand(x =>
             {
-                App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                App.Current.Dispatcher.Invoke(new Action(() =>
                 {
                     MasterDetailWindow.UpdateDetailAndEditDataContext(MasterDetailWindow.MasterView.SelectedItem);
-                }), System.Windows.Threading.DispatcherPriority.Normal);
+                }));
             }, x => MasterDetailWindow.EditEnabled);
 
             MainWindow.SecurityAreas_Disable.Command = new Commands.DelegateCommand(x =>
@@ -103,20 +113,16 @@ namespace OpenLawOffice.WinClient.Controllers.Security
 
             MainWindow.SecurityAreas_Save.Command = new Commands.DelegateCommand(x =>
             {
-                App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                if (MasterDetailWindow.DisplayMode == Controls.DisplayModeType.Edit)
                 {
-                    if (MasterDetailWindow.DisplayMode == Controls.DisplayModeType.Edit)
-                    {
-                        UpdateArea((ViewModels.Security.Area)MasterDetailWindow.DetailView.DataContext);
-                    }
-                    else if (MasterDetailWindow.DisplayMode == Controls.DisplayModeType.Create)
-                    {
-                        CreateArea((ViewModels.Security.Area)MasterDetailWindow.CreateView.DataContext);
-                    }
-                    else
-                        throw new Exception("Invalid UI state.");
-
-                }), System.Windows.Threading.DispatcherPriority.Normal);
+                    UpdateArea((ViewModels.Security.Area)MasterDetailWindow.DetailView.DataContext);
+                }
+                else if (MasterDetailWindow.DisplayMode == Controls.DisplayModeType.Create)
+                {
+                    CreateArea((ViewModels.Security.Area)MasterDetailWindow.CreateView.DataContext);
+                }
+                else
+                    throw new Exception("Invalid UI state.");
             }, x => MasterDetailWindow.SaveEnabled);
 
             MainWindow.SecurityAreas_Cancel.Command = new Commands.DelegateCommand(x =>
@@ -125,11 +131,13 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                 // This needs to be improved - if we want to keep loading from the server instead of 
                 // doing a deep copy, then it needs to only load a single, not force the whole
                 // tree to reload.
-                App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                App.Current.Dispatcher.Invoke(new Action(() =>
                 {
                     MasterDetailWindow.MasterView.ClearSelected();
                     MasterDetailWindow.Clear();
-                }), System.Windows.Threading.DispatcherPriority.Normal);
+                }));
+
+                MasterDetailWindow.IsBusy = true;
 
                 GetData<Common.Models.Security.Area>(data =>
                 {
@@ -138,151 +146,200 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                         UpdateUI(null, sysModelList, Controls.DisplayModeType.View);
                     else
                         UpdateUI(null, sysModelList, null);
+
+                    App.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        MasterDetailWindow.IsBusy = false;
+                    }));
                 }, null);
             }, x => MasterDetailWindow.CancelEnabled);
+
+            MasterDetailWindow.MasterView.OnNodeExpanded += (sender, e) =>
+            {
+                DW.WPFToolkit.TreeListViewItem treeItem = (DW.WPFToolkit.TreeListViewItem)e.OriginalSource;
+                ViewModels.IViewModel vm = (ViewModels.IViewModel)treeItem.DataContext;
+
+                MasterDetailWindow.IsBusy = true;
+
+                GetData(data =>
+                {
+                    App.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        UpdateUI(vm, data);
+                        MasterDetailWindow.IsBusy = false;
+                    }));
+                }, vm);
+            };
 
             // load window
             MasterDetailWindow.Load();
             if (!MasterDetailWindow.IsSelected)
                 MasterDetailWindow.SelectWindow();
-            
+
+            MasterDetailWindow.IsBusy = true;
+
             // Ignores selection
-            GetData<Common.Models.Security.Area>(data => 
+            GetData<Common.Models.Security.Area>(data =>
             {
                 List<Common.Models.Security.Area> sysModelList = (List<Common.Models.Security.Area>)data;
                 UpdateUI(null, sysModelList, Controls.DisplayModeType.View);
+
+                App.Current.Dispatcher.Invoke(new Action(() => 
+                {
+                    MasterDetailWindow.IsBusy = false;
+                }), null);
             }, null);
         }
 
         private void UpdateArea(ViewModels.Security.Area viewModel)
         {
-            Common.Models.Security.Area sysModel = viewModel.Model;
-            Common.Rest.Requests.Security.Area requestModel = Mapper.Map<Common.Rest.Requests.Security.Area>(sysModel);
-            requestModel.AuthToken = Globals.Instance.AuthToken;
-            _consumer.Update(requestModel, result =>
+            MasterDetailWindow.IsBusy = true;
+
+            Task.Factory.StartNew(() =>
             {
-                if (!result.ResponseContainer.WasSuccessful)
+                Common.Models.Security.Area sysModel = viewModel.Model;
+                Common.Rest.Requests.Security.Area requestModel = Mapper.Map<Common.Rest.Requests.Security.Area>(sysModel);
+                requestModel.AuthToken = Globals.Instance.AuthToken;
+                _consumer.Update(requestModel, result =>
                 {
-                    ErrorHandling.ErrorManager.CreateAndThrow<ErrorHandling.ActionableError>(
-                        new ErrorHandling.ActionableError()
-                        {
-                            Level = ErrorHandling.LevelType.Error,
-                            Title = "Error",
-                            SimpleMessage = "Failed to save changes to the security area.  Would you like to retry?",
-                            Message = "Error: " + result.ResponseContainer.Error.Message,
-                            Exception = result.ResponseContainer.Error.Exception,
-                            Source = "OpenLawOffice.WinClient.Controllers.Security.Area.CreateArea()",
-                            Recover = (error, data, onFail) =>
-                            {
-                                CreateArea(viewModel);
-                            }
-                        });
-                }
-                else
-                {
-                    sysModel = Mapper.Map<Common.Models.Security.Area>(result.Response);
-                    viewModel.Synchronize(() =>
+                    if (!result.ResponseContainer.WasSuccessful)
                     {
-                        viewModel = (ViewModels.Security.Area)new ViewModels.Security.Area().AttachModel(sysModel);
-                        MasterDetailWindow.MasterView.ClearSelected();
-                        if (MasterDetailWindow.DisplayMode == Controls.DisplayModeType.Create)
-                            MasterDetailWindow.SetDisplayMode(Controls.DisplayModeType.View);
-                    });
-                }
+                        ErrorHandling.ErrorManager.CreateAndThrow<ErrorHandling.ActionableError>(
+                            new ErrorHandling.ActionableError()
+                            {
+                                Level = ErrorHandling.LevelType.Error,
+                                Title = "Error",
+                                SimpleMessage = "Failed to save changes to the security area.  Would you like to retry?",
+                                Message = "Error: " + result.ResponseContainer.Error.Message,
+                                Exception = result.ResponseContainer.Error.Exception,
+                                Source = "OpenLawOffice.WinClient.Controllers.Security.Area.CreateArea()",
+                                Recover = (error, data, onFail) =>
+                                {
+                                    CreateArea(viewModel);
+                                }
+                            });
+                    }
+                    else
+                    {
+                        sysModel = Mapper.Map<Common.Models.Security.Area>(result.Response);
+                        viewModel.Synchronize(() =>
+                        {
+                            viewModel = (ViewModels.Security.Area)new ViewModels.Security.Area().AttachModel(sysModel);
+                            MasterDetailWindow.MasterView.ClearSelected();
+                            if (MasterDetailWindow.DisplayMode == Controls.DisplayModeType.Create)
+                                MasterDetailWindow.SetDisplayMode(Controls.DisplayModeType.View);
+                            MasterDetailWindow.IsBusy = false;
+                        });
+                    }
+                });
             });
         }
 
         private void CreateArea(ViewModels.Security.Area viewModel)
         {
-            Common.Models.Security.Area sysModel = viewModel.Model;
-            Common.Rest.Requests.Security.Area requestModel = Mapper.Map<Common.Rest.Requests.Security.Area>(sysModel);
-            requestModel.AuthToken = Globals.Instance.AuthToken;
-            _consumer.Create(requestModel, result =>
+            MasterDetailWindow.IsBusy = true;
+
+            Task.Factory.StartNew(() =>
             {
-                if (!result.ResponseContainer.WasSuccessful)
+                Common.Models.Security.Area sysModel = viewModel.Model;
+                Common.Rest.Requests.Security.Area requestModel = Mapper.Map<Common.Rest.Requests.Security.Area>(sysModel);
+                requestModel.AuthToken = Globals.Instance.AuthToken;
+                _consumer.Create(requestModel, result =>
                 {
-                    ErrorHandling.ErrorManager.CreateAndThrow<ErrorHandling.ActionableError>(
-                        new ErrorHandling.ActionableError()
-                        {
-                            Level = ErrorHandling.LevelType.Error,
-                            Title = "Error",
-                            SimpleMessage = "Failed to create the security area.  Would you like to retry?",
-                            Message = "Error: " + result.ResponseContainer.Error.Message,
-                            Exception = result.ResponseContainer.Error.Exception,
-                            Source = "OpenLawOffice.WinClient.Controllers.Security.Area.CreateArea()",
-                            Recover = (error, data, onFail) =>
-                            {
-                                CreateArea(viewModel);
-                            }
-                        });
-                }
-                else
-                {
-                    sysModel = Mapper.Map<Common.Models.Security.Area>(result.Response);
-                    viewModel.Synchronize(() =>
+                    if (!result.ResponseContainer.WasSuccessful)
                     {
-                        viewModel = (ViewModels.Security.Area)new ViewModels.Security.Area().AttachModel(sysModel);
-                        MasterDetailWindow.MasterView.ClearSelected();
-
-                        if (MasterDetailWindow.DisplayMode == Controls.DisplayModeType.Create)
-                            MasterDetailWindow.SetDisplayMode(Controls.DisplayModeType.View);
-
-                        // setup dummy child
-                        viewModel.AddChild(
-                            new ViewModels.Security.Area()
+                        ErrorHandling.ErrorManager.CreateAndThrow<ErrorHandling.ActionableError>(
+                            new ErrorHandling.ActionableError()
                             {
-                                IsDummy = true
+                                Level = ErrorHandling.LevelType.Error,
+                                Title = "Error",
+                                SimpleMessage = "Failed to create the security area.  Would you like to retry?",
+                                Message = "Error: " + result.ResponseContainer.Error.Message,
+                                Exception = result.ResponseContainer.Error.Exception,
+                                Source = "OpenLawOffice.WinClient.Controllers.Security.Area.CreateArea()",
+                                Recover = (error, data, onFail) =>
+                                {
+                                    CreateArea(viewModel);
+                                }
                             });
+                    }
+                    else
+                    {
+                        sysModel = Mapper.Map<Common.Models.Security.Area>(result.Response);
+                        viewModel.Synchronize(() =>
+                        {
+                            viewModel = (ViewModels.Security.Area)new ViewModels.Security.Area().AttachModel(sysModel);
+                            MasterDetailWindow.MasterView.ClearSelected();
 
-                        // Lookup parent
-                        if (viewModel.Parent == null)
-                        {
-                            ((EnhancedObservableCollection<ViewModels.Security.Area>)MasterDetailWindow.MasterDataContext).Add(viewModel);
-                        }
-                        else
-                        {
-                            ViewModels.Security.Area parent = Find((EnhancedObservableCollection<ViewModels.Security.Area>)MasterDetailWindow.MasterDataContext, viewModel.Parent);
-                            parent.AddChild(viewModel);
-                        }
-                    });
-                }
+                            if (MasterDetailWindow.DisplayMode == Controls.DisplayModeType.Create)
+                                MasterDetailWindow.SetDisplayMode(Controls.DisplayModeType.View);
+
+                            // setup dummy child
+                            viewModel.AddChild(
+                                new ViewModels.Security.Area()
+                                {
+                                    IsDummy = true
+                                });
+
+                            // Lookup parent
+                            if (viewModel.Parent == null)
+                            {
+                                ((EnhancedObservableCollection<ViewModels.Security.Area>)MasterDetailWindow.MasterDataContext).Add(viewModel);
+                            }
+                            else
+                            {
+                                ViewModels.Security.Area parent = Find((EnhancedObservableCollection<ViewModels.Security.Area>)MasterDetailWindow.MasterDataContext, viewModel.Parent);
+                                parent.AddChild(viewModel);
+                            }
+
+                            MasterDetailWindow.IsBusy = false;
+                        });
+                    }
+                });
             });
         }
 
         private void DisableArea(ViewModels.Security.Area viewModel)
         {
-            Common.Models.Security.Area sysModel = viewModel.Model;
-            Common.Rest.Requests.Security.Area requestModel = Mapper.Map<Common.Rest.Requests.Security.Area>(sysModel);
-            requestModel.AuthToken = Globals.Instance.AuthToken;
-            _consumer.Disable(requestModel, result =>
+            MasterDetailWindow.IsBusy = true;
+
+            Task.Factory.StartNew(() =>
             {
-                if (!result.ResponseContainer.WasSuccessful)
+                Common.Models.Security.Area sysModel = viewModel.Model;
+                Common.Rest.Requests.Security.Area requestModel = Mapper.Map<Common.Rest.Requests.Security.Area>(sysModel);
+                requestModel.AuthToken = Globals.Instance.AuthToken;
+                _consumer.Disable(requestModel, result =>
                 {
-                    ErrorHandling.ErrorManager.CreateAndThrow<ErrorHandling.ActionableError>(
-                        new ErrorHandling.ActionableError()
-                        {
-                            Level = ErrorHandling.LevelType.Error,
-                            Title = "Error",
-                            SimpleMessage = "Failed to disable the security area.  Would you like to retry?",
-                            Message = "Error: " + result.ResponseContainer.Error.Message,
-                            Exception = result.ResponseContainer.Error.Exception,
-                            Source = "OpenLawOffice.WinClient.Controllers.Security.Area.DisableArea()",
-                            Recover = (error, data, onFail) =>
-                            {
-                                DisableArea(viewModel);
-                            }
-                        });
-                }
-                else
-                {
-                    viewModel.Synchronize(() =>
+                    if (!result.ResponseContainer.WasSuccessful)
                     {
-                        if (viewModel.Parent != null)
-                            viewModel.Parent.RemoveChild(viewModel);
-                        else
-                            ((List<ViewModels.Security.Area>)MasterDetailWindow.MasterDataContext).Remove(viewModel);
-                    });
-                }
+                        ErrorHandling.ErrorManager.CreateAndThrow<ErrorHandling.ActionableError>(
+                            new ErrorHandling.ActionableError()
+                            {
+                                Level = ErrorHandling.LevelType.Error,
+                                Title = "Error",
+                                SimpleMessage = "Failed to disable the security area.  Would you like to retry?",
+                                Message = "Error: " + result.ResponseContainer.Error.Message,
+                                Exception = result.ResponseContainer.Error.Exception,
+                                Source = "OpenLawOffice.WinClient.Controllers.Security.Area.DisableArea()",
+                                Recover = (error, data, onFail) =>
+                                {
+                                    DisableArea(viewModel);
+                                }
+                            });
+                    }
+                    else
+                    {
+                        viewModel.Synchronize(() =>
+                        {
+                            if (viewModel.Parent != null)
+                                viewModel.Parent.RemoveChild(viewModel);
+                            else
+                                ((List<ViewModels.Security.Area>)MasterDetailWindow.MasterDataContext).Remove(viewModel);
+
+                            MasterDetailWindow.IsBusy = false;
+                        });
+                    }
+                });
             });
         }
 
@@ -332,11 +389,51 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                 throw new ArgumentException("Argument viewModel of incorrect type.");
         }
 
+        public void GetDetailData(Action onComplete, ViewModels.Security.Area viewModel)
+        {
+            List<Task> tasks = new List<Task>();
+
+            MasterDetailWindow.DetailView.IsBusy = true;
+            MasterDetailWindow.EditView.IsBusy = true;
+
+            tasks.Add(Task.Factory.StartNew(() =>
+            {
+                PopulateCreatedByData(() =>
+                {
+                }, viewModel);
+            }));
+
+            tasks.Add(Task.Factory.StartNew(() =>
+            {
+                PopulateModifiedByData(() =>
+                {
+                }, viewModel);
+            }));
+
+            if (viewModel.DisabledBy == null || viewModel.DisabledBy.Id.HasValue)
+            {
+                tasks.Add(Task.Factory.StartNew(() =>
+                {
+                    PopulateDisabledByData(() =>
+                    {
+                    }, viewModel);
+                }));
+            }
+
+            Task.Factory.ContinueWhenAll(tasks.ToArray(), data =>
+            {
+                if (onComplete != null) onComplete();
+                App.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    MasterDetailWindow.DetailView.IsBusy = false;
+                    MasterDetailWindow.EditView.IsBusy = false;
+                }));
+            });
+        }
+
         private void PopulateCreatedByData(Action onComplete, ViewModels.Security.Area viewModel)
         {
-            Consumers.Security.User userConsumer = new Consumers.Security.User();
-
-            userConsumer.GetSingle(
+            new Consumers.Security.User().GetSingle(
                 new Common.Rest.Requests.Security.User()
                 {
                     AuthToken = Globals.Instance.AuthToken,
@@ -458,37 +555,6 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                 });
         }
 
-        public void GetDetailData(Action onComplete, ViewModels.Security.Area viewModel)
-        {
-            int outCount = 2;
-            Consumers.Security.User userConsumer = new Consumers.Security.User();
-
-            if (viewModel.DisabledBy == null || !viewModel.DisabledBy.Id.HasValue)
-            {
-                outCount++;
-                PopulateDisabledByData(() =>
-                {
-                    outCount--;
-                    if (outCount <= 0)
-                        if (onComplete != null) onComplete();
-                }, viewModel);
-            }
-
-            PopulateCreatedByData(() =>
-            {
-                outCount--;
-                if (outCount <= 0)
-                    if (onComplete != null) onComplete();
-            }, viewModel);
-
-            PopulateModifiedByData(() =>
-            {
-                outCount--;
-                if (outCount <= 0)
-                    if (onComplete != null) onComplete();
-            }, viewModel);
-        }
-
         public override void GetData<TModel>(Action<object> onComplete, object obj)
         {
             Common.Rest.Requests.Security.Area request;
@@ -542,52 +608,53 @@ namespace OpenLawOffice.WinClient.Controllers.Security
 
         private void GetData(Action<object> onComplete, Common.Rest.Requests.Security.Area request)
         {
-            // Could use a UI progress overlay or something here
-
-            _consumer.GetList(request,
-            result =>
+            Task.Factory.StartNew(() =>
             {
-                // Put the last request updating here, while it could go outside the callback,
-                // I am putting it in here to be certain we never have a race condition
-                _lastRequest = result.Request;
-                _lastRestSharpResponse = result.RestSharpResponse;
-
-                List<Common.Models.Security.Area> sysModelList = new List<Common.Models.Security.Area>();
-
-                if (!result.ListResponseContainer.WasSuccessful)
+                _consumer.GetList(request,
+                result =>
                 {
-                    ErrorHandling.ErrorManager.CreateAndThrow<ErrorHandling.ActionableError>(
-                        new ErrorHandling.ActionableError()
-                        {
-                            Level = ErrorHandling.LevelType.Error,
-                            Title = "Error",
-                            SimpleMessage = "Failed to retrieve the list of security areas.  Would you like to retry?",
-                            Message = "Error: " + result.ListResponseContainer.Error.Message,
-                            Exception = result.ListResponseContainer.Error.Exception,
-                            Source = "OpenLawOffice.WinClient.Controllers.Security.Area.GetData()",
-                            Recover = (error, data, onFail) =>
-                            {
-                                GetData(onComplete, request);
-                            },
-                            Fail = (error, data) =>
-                            {
-                                if (onComplete != null) onComplete(sysModelList);
-                            }
-                        });
-                }
-                else
-                {
-                    foreach (Common.Rest.Responses.Security.Area area in result.Response)
+                    // Put the last request updating here, while it could go outside the callback,
+                    // I am putting it in here to be certain we never have a race condition
+                    _lastRequest = result.Request;
+                    _lastRestSharpResponse = result.RestSharpResponse;
+
+                    List<Common.Models.Security.Area> sysModelList = new List<Common.Models.Security.Area>();
+
+                    if (!result.ListResponseContainer.WasSuccessful)
                     {
-                        sysModelList.Add(Mapper.Map<Common.Models.Security.Area>(area));
+                        ErrorHandling.ErrorManager.CreateAndThrow<ErrorHandling.ActionableError>(
+                            new ErrorHandling.ActionableError()
+                            {
+                                Level = ErrorHandling.LevelType.Error,
+                                Title = "Error",
+                                SimpleMessage = "Failed to retrieve the list of security areas.  Would you like to retry?",
+                                Message = "Error: " + result.ListResponseContainer.Error.Message,
+                                Exception = result.ListResponseContainer.Error.Exception,
+                                Source = "OpenLawOffice.WinClient.Controllers.Security.Area.GetData()",
+                                Recover = (error, data, onFail) =>
+                                {
+                                    GetData(onComplete, request);
+                                },
+                                Fail = (error, data) =>
+                                {
+                                    if (onComplete != null) onComplete(sysModelList);
+                                }
+                            });
                     }
+                    else
+                    {
+                        foreach (Common.Rest.Responses.Security.Area area in result.Response)
+                        {
+                            sysModelList.Add(Mapper.Map<Common.Models.Security.Area>(area));
+                        }
 
-                    if (onComplete != null) onComplete(sysModelList);
-                }
+                        if (onComplete != null) onComplete(sysModelList);
+                    }
+                });
             });
         }
 
-        public override void UpdateUI(ViewModels.IViewModel viewModel, object data, Controls.DisplayModeType? displayMode)
+        public override void UpdateUI(ViewModels.IViewModel viewModel, object data, Controls.DisplayModeType? displayMode = null)
         {
             if (!typeof(ViewModels.Security.Area).IsAssignableFrom(viewModel.GetType()))
                 throw new ArgumentException("Invalid ViewModel type.");
@@ -599,7 +666,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
         }
 
         public void UpdateUI(ViewModels.Security.Area viewModel, 
-            List<Common.Models.Security.Area> sysModelList, Controls.DisplayModeType? displayMode)
+            List<Common.Models.Security.Area> sysModelList, Controls.DisplayModeType? displayMode = null)
         {
             bool pushToDataContext = false;
             EnhancedObservableCollection<ViewModels.Security.Area> viewModels;

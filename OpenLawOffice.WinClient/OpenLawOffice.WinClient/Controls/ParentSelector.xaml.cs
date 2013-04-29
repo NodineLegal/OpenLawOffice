@@ -13,17 +13,17 @@ namespace OpenLawOffice.WinClient.Controls
         public event EventHandler<EventArgs> OnNodeExpanded;
 
         public object SelectedItem { get { return GetSelectedItem(); } }
+        public bool IsBusy 
+        { 
+            get { return UIBusyIndicator.IsBusy; } 
+            set { UIBusyIndicator.IsBusy = value; } 
+        }
 
         public ParentSelector()
         {
             InitializeComponent();
+            IsBusy = false;
             UITree.AddHandler(TreeViewItem.ExpandedEvent, new RoutedEventHandler(TreeViewItemExpanded));
-            UITree.DataContextChanged += new DependencyPropertyChangedEventHandler(UITree_DataContextChanged);
-        }
-
-        void UITree_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            string a = "";
         }
 
         private void UIClear_Click(object sender, RoutedEventArgs e)

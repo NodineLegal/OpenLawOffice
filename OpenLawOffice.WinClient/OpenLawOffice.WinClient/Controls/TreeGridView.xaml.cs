@@ -10,7 +10,7 @@ namespace OpenLawOffice.WinClient.Controls
     public partial class TreeGridView : UserControl, IMaster
     {
         public Action<Controls.IMaster, object> OnSelectionChanged { get; set; }
-        public Action<TreeGridView> OnLoad { get; set; }
+        public event RoutedEventHandler OnNodeExpanded;
 
         public object SelectedItem { get { return UITree.SelectedItem; } }
 
@@ -66,18 +66,7 @@ namespace OpenLawOffice.WinClient.Controls
 
         private void TreeViewItemExpanded(object sender, RoutedEventArgs e)
         {
-            DW.WPFToolkit.TreeListViewItem treeItem = (DW.WPFToolkit.TreeListViewItem)e.OriginalSource;
-            ViewModels.IViewModel vm = (ViewModels.IViewModel)treeItem.DataContext;
-
-            ControllerManager.Instance.GetData(data =>
-            {
-                vm.Synchronize(()=>
-                {
-                    ControllerManager.Instance.UpdateUI(vm, data);
-                });                
-            }, (ViewModels.IViewModel)treeItem.DataContext);
-
-            object o = treeItem.DataContext;
+            if (OnNodeExpanded != null) OnNodeExpanded(sender, e);
         }
 
         private void UITree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)

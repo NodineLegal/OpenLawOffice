@@ -29,6 +29,11 @@ namespace OpenLawOffice.WinClient.Controls
         public bool CanHaveMultipleInstances { get { return false; } }
         public AvalonDock.Layout.LayoutDocument DockingWindow { get; set; }
         public string Title { get; set; }
+        public bool IsBusy
+        {
+            get { return UIBusyIndicator.IsBusy; }
+            set { UIBusyIndicator.IsBusy = value; }
+        }
 
         protected DisplayModeType _displayMode;
         public virtual DisplayModeType DisplayMode { get { return _displayMode; } protected set { _displayMode = value; } }
@@ -194,6 +199,8 @@ namespace OpenLawOffice.WinClient.Controls
             RibbonButton cancelButton, Controllers.ControllerBase controller)
         {
             InitializeComponent();
+
+            IsBusy = false;
 
             RelationshipCommands = new List<Commands.DelegateCommand>();
 

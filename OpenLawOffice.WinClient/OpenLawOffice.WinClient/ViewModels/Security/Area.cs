@@ -153,7 +153,7 @@ namespace OpenLawOffice.WinClient.ViewModels.Security
 
             if (((Common.Models.Security.Area)model).Parent != null)
                 _parentViewModel = (Area)new Area().AttachModel(((Common.Models.Security.Area)model).Parent);
-
+            
             return base.AttachModel(model);
         }
 
@@ -161,7 +161,7 @@ namespace OpenLawOffice.WinClient.ViewModels.Security
         {
             if (model.Parent != null)
                 _parentViewModel = (Area)new Area().AttachModel(((Common.Models.Security.Area)model).Parent);
-
+            
             return base.AttachModel(model);
         }
 

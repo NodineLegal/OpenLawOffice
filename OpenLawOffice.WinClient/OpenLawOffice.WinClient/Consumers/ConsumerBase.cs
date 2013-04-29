@@ -39,7 +39,7 @@ namespace OpenLawOffice.WinClient.Consumers
             }
         }
 
-        private RestRequestAsyncHandle Execute(RestRequest restSharpRequest, TRequest request, Action<ConsumerResult<TRequest, TResponse>> callback)
+        private RestRequestAsyncHandle ExecuteAsync(RestRequest restSharpRequest, TRequest request, Action<ConsumerResult<TRequest, TResponse>> callback)
         {
             RestClient client = new RestClient(Globals.Instance.Settings.HostBaseUrl);
 
@@ -69,10 +69,41 @@ namespace OpenLawOffice.WinClient.Consumers
             });
         }
 
+        private ConsumerResult<TRequest, TResponse> Execute(RestRequest restSharpRequest, TRequest request)
+        {
+            RestClient client = new RestClient(Globals.Instance.Settings.HostBaseUrl);
+
+            IRestResponse<Common.Rest.Responses.ResponseContainer<TResponse>> result = 
+                client.Execute<Common.Rest.Responses.ResponseContainer<TResponse>>(restSharpRequest);
+
+            if (result.Data != null)
+                return new ConsumerResult<TRequest, TResponse>()
+                {
+                    Request = request,
+                    ResponseContainer = result.Data,
+                    Response = result.Data.Data,
+                    RestSharpResponse = result
+                };
+            else
+                return new ConsumerResult<TRequest, TResponse>()
+                {
+                    Request = request,
+                    Response = null,
+                    ResponseContainer = result.Data,
+                    RestSharpResponse = result
+                };
+        }
+
         public virtual RestRequestAsyncHandle GetSingle(TRequest request, Action<ConsumerResult<TRequest, TResponse>> callback)
         {
             RestRequest restRequest = RequestBuilder.Build(BuildFullResource(request), Method.GET, request);
-            return Execute(restRequest, request, callback);
+            return ExecuteAsync(restRequest, request, callback);
+        }
+
+        public virtual ConsumerResult<TRequest, TResponse> GetSingle(TRequest request)
+        {
+            RestRequest restRequest = RequestBuilder.Build(BuildFullResource(request), Method.GET, request);
+            return Execute(restRequest, request);
         }
 
         public virtual RestRequestAsyncHandle GetList(TRequest request, Action<ListConsumerResult<TRequest, TResponse>> callback)
@@ -110,19 +141,19 @@ namespace OpenLawOffice.WinClient.Consumers
         public virtual RestRequestAsyncHandle Create(TRequest request, Action<ConsumerResult<TRequest, TResponse>> callback)
         {
             RestRequest restRequest = RequestBuilder.Build(Resource, Method.POST, request);
-            return Execute(restRequest, request, callback);
+            return ExecuteAsync(restRequest, request, callback);
         }
 
         public virtual RestRequestAsyncHandle Update(TRequest request, Action<ConsumerResult<TRequest, TResponse>> callback)
         {
             RestRequest restRequest = RequestBuilder.Build(Resource, Method.PUT, request);
-            return Execute(restRequest, request, callback);
+            return ExecuteAsync(restRequest, request, callback);
         }
 
         public virtual RestRequestAsyncHandle Disable(TRequest request, Action<ConsumerResult<TRequest, TResponse>> callback)
         {
             RestRequest restRequest = RequestBuilder.Build(Resource, Method.DELETE, request);
-            return Execute(restRequest, request, callback);
+            return ExecuteAsync(restRequest, request, callback);
         }
     }
 }

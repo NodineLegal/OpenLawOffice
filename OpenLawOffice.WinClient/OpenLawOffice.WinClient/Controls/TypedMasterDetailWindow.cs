@@ -60,10 +60,15 @@ namespace OpenLawOffice.WinClient.Controls
 
         public void UpdateDetailAndEditDataContext(object obj)
         {
-            App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+            if (obj != null)
+            {
+                _controller.GetDetailData(() => { }, (ViewModels.IViewModel)obj);
+            }
+
+            App.Current.Dispatcher.Invoke(new Action(() =>
             {
                 DetailView.DataContext = EditView.DataContext = obj;
-            }), System.Windows.Threading.DispatcherPriority.Normal);
+            }));
         }
 
         public void GoIntoCreateMode(object obj)
