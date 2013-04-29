@@ -1,5 +1,7 @@
 # OpenLawOffice
 
+Status: Development
+
 ## What?
 OpenLawOffice is a web (HTTP) based client-server system for management of larm firm resource including matters, billing, tasking and documents.
 
