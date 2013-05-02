@@ -154,6 +154,11 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                 }, null);
             }, x => MasterDetailWindow.CancelEnabled);
 
+            MasterDetailWindow.MasterView.ParentChanged += viewModel =>
+            {
+                UpdateAreaFromParentChanged((ViewModels.Security.Area)viewModel);
+            };
+            
             MasterDetailWindow.MasterView.OnNodeExpanded += (sender, e) =>
             {
                 DW.WPFToolkit.TreeListViewItem treeItem = (DW.WPFToolkit.TreeListViewItem)e.OriginalSource;
@@ -191,6 +196,47 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             }, null);
         }
 
+        private void UpdateAreaFromParentChanged(ViewModels.Security.Area viewModel)
+        {
+            MasterDetailWindow.IsBusy = true;
+
+            Task.Factory.StartNew(() =>
+            {
+                Common.Models.Security.Area sysModel = viewModel.Model;
+                Common.Rest.Requests.Security.Area requestModel = Mapper.Map<Common.Rest.Requests.Security.Area>(sysModel);
+                requestModel.AuthToken = Globals.Instance.AuthToken;
+                _consumer.Update(requestModel, result =>
+                {
+                    if (!result.ResponseContainer.WasSuccessful)
+                    {
+                        ErrorHandling.ErrorManager.CreateAndThrow<ErrorHandling.ActionableError>(
+                            new ErrorHandling.ActionableError()
+                            {
+                                Level = ErrorHandling.LevelType.Error,
+                                Title = "Error",
+                                SimpleMessage = "Failed to save changes to the security area.  Would you like to retry?",
+                                Message = "Error: " + result.ResponseContainer.Error.Message,
+                                Exception = result.ResponseContainer.Error.Exception,
+                                Source = "OpenLawOffice.WinClient.Controllers.Security. Area.UpdateAreaFromParentChanged()",
+                                Recover = (error, data, onFail) =>
+                                {
+                                    UpdateAreaFromParentChanged(viewModel);
+                                }
+                            });
+                    }
+                    else
+                    {
+                        sysModel = Mapper.Map<Common.Models.Security.Area>(result.Response);
+                        viewModel.Synchronize(() =>
+                        {
+                            viewModel = (ViewModels.Security.Area)new ViewModels.Security.Area().AttachModel(sysModel);
+                            MasterDetailWindow.IsBusy = false;
+                        });
+                    }
+                });
+            });
+        }
+
         private void UpdateArea(ViewModels.Security.Area viewModel)
         {
             MasterDetailWindow.IsBusy = true;
@@ -212,10 +258,10 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                                 SimpleMessage = "Failed to save changes to the security area.  Would you like to retry?",
                                 Message = "Error: " + result.ResponseContainer.Error.Message,
                                 Exception = result.ResponseContainer.Error.Exception,
-                                Source = "OpenLawOffice.WinClient.Controllers.Security.Area.CreateArea()",
+                                Source = "OpenLawOffice.WinClient.Controllers.Security.Area.UpdateArea()",
                                 Recover = (error, data, onFail) =>
                                 {
-                                    CreateArea(viewModel);
+                                    UpdateArea(viewModel);
                                 }
                             });
                     }
@@ -670,7 +716,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
         {
             bool pushToDataContext = false;
             EnhancedObservableCollection<ViewModels.Security.Area> viewModels;
-            App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+            App.Current.Dispatcher.Invoke(new Action(() =>
             {
                 if (viewModel != null)
                 {
@@ -690,11 +736,13 @@ namespace OpenLawOffice.WinClient.Controllers.Security
 
                     if (viewModel != null)
                     {
+                        sysModel.Parent = viewModel.Model;
+
                         // Set child's parent
                         childVM.Parent = viewModel;
 
                         // Add parent's child
-                        viewModel.AddChild(childVM);
+                        viewModels.Add(childVM);
                     }
                     else
                     {
@@ -715,7 +763,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                         MasterDetailWindow.SetDisplayMode(displayMode.Value);
                     MasterDetailWindow.UpdateCommandStates();
                 }
-            }), System.Windows.Threading.DispatcherPriority.Normal);
+            }));
         }
     }
 }

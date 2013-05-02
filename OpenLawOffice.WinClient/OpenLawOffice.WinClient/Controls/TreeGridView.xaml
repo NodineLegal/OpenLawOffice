@@ -10,7 +10,10 @@
     <Grid>
         <toolkit:TreeListView Name="UITree" Grid.Row="0" VerticalAlignment="Stretch" 
                               HorizontalAlignment="Stretch" ItemsSource="{Binding}"
-                              SelectedItemChanged="UITree_SelectedItemChanged">
+                              SelectedItemChanged="UITree_SelectedItemChanged" AllowDrop="True"
+                              PreviewMouseLeftButtonDown="UITree_PreviewMouseLeftButtonDown"
+                              MouseMove="UITree_MouseMove" DragEnter="UITree_DragEnter"
+                              Drop="UITree_Drop">
             <toolkit:TreeListView.View>
                 <GridView x:Name="UIGridView">
                     <GridViewColumn x:Name="ExpanderColumn" />

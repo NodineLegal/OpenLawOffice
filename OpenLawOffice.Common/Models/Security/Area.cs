@@ -92,7 +92,8 @@ namespace OpenLawOffice.Common.Models.Security
 
         public void RemoveChild(Area model)
         {
-            Children.Remove(model);
+            Children.RemoveAll(x => x.Id == model.Id);
+            //Children.Remove(model);
         }
     }
 }
