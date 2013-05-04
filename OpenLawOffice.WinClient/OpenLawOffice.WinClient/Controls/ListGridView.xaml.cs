@@ -27,8 +27,8 @@ namespace OpenLawOffice.WinClient.Controls
         }
 
         public TViewModel GetSelectedItem<TViewModel, TModel>()
-            where TViewModel : ViewModels.ModelBase<TModel>
-            where TModel : Common.Models.ModelBase
+            where TViewModel : ViewModels.ViewModelBase<TModel>
+            where TModel : Common.Models.ModelBase, new()
         {
             return (TViewModel)GetSelectedItem();
         }

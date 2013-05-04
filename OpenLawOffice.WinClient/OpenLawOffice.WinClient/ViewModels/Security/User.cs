@@ -4,100 +4,105 @@ using AutoMapper;
 namespace OpenLawOffice.WinClient.ViewModels.Security
 {
     [Common.Models.MapMe]
-    public class User : ModelWithDatesOnly<Common.Models.Security.User>
+    public class User : ViewModelWithDatesOnly<Common.Models.Security.User>
     {
+        private int? _id;
         public int? Id
         {
             get
             {
-                if (_model == null) return null;
-                return _model.Id;
+                return _id;
             }
             set
             {
-                if (_model == null) AttachModel(new Common.Models.Security.User());
-                _model.Id = value;
+                _id = value;
                 OnPropertyChanged("Id");
             }
         }
 
+        private string _username;
         public string Username
         {
             get
             {
-                if (_model == null) return null;
-                return _model.Username;
+                return _username;
             }
             set
             {
-                if (_model == null) AttachModel(new Common.Models.Security.User());
-                _model.Username = value;
+                _username = value;
                 OnPropertyChanged("Username");
             }
         }
 
+        private string _password;
         public string Password
         {
             get
             {
-                if (_model == null) return null;
-                return _model.Password;
+                return _password;
             }
             set
             {
-                if (_model == null) AttachModel(new Common.Models.Security.User());
-                _model.Password = value;
+                _password = value;
                 OnPropertyChanged("Password");
             }
         }
 
+        private Guid? _userAuthToken;
         public Guid? UserAuthToken
         {
             get
             {
-                if (_model == null) return null;
-                return _model.UserAuthToken;
+                return _userAuthToken;
             }
             set
             {
-                if (_model == null) AttachModel(new Common.Models.Security.User());
-                _model.UserAuthToken = value;
+                _userAuthToken = value;
                 OnPropertyChanged("UserAuthToken");
             }
         }
 
+        private DateTime? _userAuthTokenExpiry;
         public DateTime? UserAuthTokenExpiry
         {
             get
             {
-                if (_model == null) return null;
-                return _model.UserAuthTokenExpiry;
+                return _userAuthTokenExpiry;
             }
             set
             {
-                if (_model == null) AttachModel(new Common.Models.Security.User());
-                _model.UserAuthTokenExpiry = value;
+                _userAuthTokenExpiry = value;
                 OnPropertyChanged("UserAuthTokenExpiry");
             }
         }
 
-        public bool IsDummy { get; set; }
-
-        public void BuildMappings()
+        public User()
         {
-            //Mapper.CreateMap<Common.Models.Security.User, User>()
-            //    .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
-            //    .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
-            //    .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
-            //    .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-            //    .ForMember(dst => dst.Username, opt => opt.MapFrom(src => src.Username))
-            //    .ForMember(dst => dst.Password, opt => opt.MapFrom(src => src.Password))
-            //    .ForMember(dst => dst.UserAuthToken, opt => opt.MapFrom(src => src.UserAuthToken))
-            //    .ForMember(dst => dst.UserAuthTokenExpiry, opt => opt.MapFrom(src => src.UserAuthTokenExpiry))
-            //    .ForMember(dst => dst.IsDummy, opt => opt.UseValue(false));
+        }
+
+        public User(Common.Models.Security.User model)
+            : base(model)
+        {
+        }
+
+        public static void BuildMappings()
+        {
+            Mapper.CreateMap<Common.Models.Security.User, User>()
+                .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
+                .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
+                .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
+                .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dst => dst.Username, opt => opt.MapFrom(src => src.Username))
+                .ForMember(dst => dst.Password, opt => opt.MapFrom(src => src.Password))
+                .ForMember(dst => dst.UserAuthToken, opt => opt.MapFrom(src => src.UserAuthToken))
+                .ForMember(dst => dst.UserAuthTokenExpiry, opt => opt.MapFrom(src => src.UserAuthTokenExpiry))
+                .ForMember(dst => dst.IsHierarchical, opt => opt.Ignore())
+                .ForMember(dst => dst.Model, opt => opt.Ignore())
+                .ForMember(dst => dst.State, opt => opt.UseValue<StateType>(StateType.Synchronized))
+                .ForMember(dst => dst.IsDummy, opt => opt.UseValue(false));
+            
 
             Mapper.CreateMap<User, Common.Models.Security.User>()
-                .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
                 .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
@@ -106,7 +111,8 @@ namespace OpenLawOffice.WinClient.ViewModels.Security
                 .ForMember(dst => dst.Password, opt => opt.MapFrom(src => src.Password))
                 .ForMember(dst => dst.PasswordSalt, opt => opt.Ignore())
                 .ForMember(dst => dst.UserAuthToken, opt => opt.MapFrom(src => src.UserAuthToken))
-                .ForMember(dst => dst.UserAuthTokenExpiry, opt => opt.MapFrom(src => src.UserAuthTokenExpiry));
+                .ForMember(dst => dst.UserAuthTokenExpiry, opt => opt.MapFrom(src => src.UserAuthTokenExpiry))
+                .ForMember(dst => dst.IsStub, opt => opt.UseValue(false));
         }
     }
 }
