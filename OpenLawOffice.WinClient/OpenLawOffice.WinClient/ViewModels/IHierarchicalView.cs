@@ -3,7 +3,7 @@ using DW.SharpTools;
 
 namespace OpenLawOffice.WinClient.ViewModels
 {
-    public interface IHierarchicalModel<T> : IViewModel
+    public interface IHierarchicalView<T> : IViewModel
     {
         bool IsDummy { get; set; }
         T Parent { get; set; }

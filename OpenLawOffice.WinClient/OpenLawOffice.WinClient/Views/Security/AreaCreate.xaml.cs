@@ -39,12 +39,8 @@ namespace OpenLawOffice.WinClient.Views.Security
                         viewModel.Children.Clear();
                         foreach (Common.Models.Security.Area sysModel in modelList)
                         {
-                            ViewModels.Security.Area childVM = new ViewModels.Security.Area();
-                            childVM.AttachModel(sysModel);
-                            childVM.AddChild(new ViewModels.Security.Area()
-                            {
-                                IsDummy = true
-                            });
+                            ViewModels.Security.Area childVM = ViewModels.Creator.Create<ViewModels.Security.Area>(sysModel);
+                            childVM.AddChild(ViewModels.Creator.CreateDummy<ViewModels.Security.Area>(new Common.Models.Security.Area()));
                             viewModel.AddChild(childVM);
                         }
 
@@ -84,12 +80,8 @@ namespace OpenLawOffice.WinClient.Views.Security
                 List<ViewModels.Security.Area> viewModelList = new List<ViewModels.Security.Area>();
                 foreach (Common.Models.Security.Area sysModel in modelList)
                 {
-                    ViewModels.Security.Area childVM = new ViewModels.Security.Area();
-                    childVM.AttachModel(sysModel);
-                    childVM.AddChild(new ViewModels.Security.Area()
-                    {
-                        IsDummy = true
-                    });
+                    ViewModels.Security.Area childVM = ViewModels.Creator.Create<ViewModels.Security.Area>(sysModel);
+                    childVM.AddChild(ViewModels.Creator.CreateDummy<ViewModels.Security.Area>(new Common.Models.Security.Area()));
                     viewModelList.Add(childVM);
                 }
                 

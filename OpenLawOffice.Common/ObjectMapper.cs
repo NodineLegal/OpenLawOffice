@@ -19,6 +19,7 @@ namespace OpenLawOffice.Common
 
         public static void MapType(Type type)
         {
+            MethodInfo mapMeMethod;
             Common.Models.MapMeAttribute mapMeAttribute;
             object[] attributes = type.GetCustomAttributes(typeof(Common.Models.MapMeAttribute), false);
 
@@ -32,17 +33,24 @@ namespace OpenLawOffice.Common
 
             ConstructorInfo ci = type.GetConstructor(new Type[] { });
 
-            if (ci == null) 
-                throw new TargetException("Must have a constructor with no parameters.");
+            if (ci == null)
+            {
+                mapMeMethod = type.GetMethod("BuildMappings", BindingFlags.Public | BindingFlags.Static);
+                if (mapMeMethod == null)
+                    throw new TargetException("Must have a constructor with no parameters or a static implementation of " + mapMeAttribute.MapMethodName + "().");
+
+                mapMeMethod.Invoke(null, null);
+            }
+            else
+            {
+                mapMeMethod = type.GetMethod(mapMeAttribute.MapMethodName);
+
+                if (mapMeMethod == null) 
+                    throw new TargetException("MapMe method could not be found.");
             
-            MethodInfo mapMeMethod = type.GetMethod(mapMeAttribute.MapMethodName);
-
-            if (mapMeMethod == null) 
-                throw new TargetException("MapMe method could not be found.");
-
-
-            object obj = ci.Invoke(null);
-            mapMeMethod.Invoke(obj, null);
+                object obj = ci.Invoke(null);
+                mapMeMethod.Invoke(obj, null);
+            }
         }
     }
 }

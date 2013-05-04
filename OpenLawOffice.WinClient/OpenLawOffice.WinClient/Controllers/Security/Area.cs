@@ -84,8 +84,8 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             {
                 App.Current.Dispatcher.Invoke(new Action(() =>
                 {
-                    ViewModels.Security.Area areaVM = (ViewModels.Security.Area)new ViewModels.Security.Area().AttachModel(new Common.Models.Security.Area());
-                    MasterDetailWindow.GoIntoCreateMode(areaVM);
+                    ViewModels.Security.Area viewModel = ViewModels.Creator.Create<ViewModels.Security.Area>(new Common.Models.Security.Area());
+                    MasterDetailWindow.GoIntoCreateMode(viewModel);
                 }));
             }, x => MasterDetailWindow.CreateEnabled);
             
@@ -202,6 +202,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
 
             Task.Factory.StartNew(() =>
             {
+                viewModel.UpdateModel();
                 Common.Models.Security.Area sysModel = viewModel.Model;
                 Common.Rest.Requests.Security.Area requestModel = Mapper.Map<Common.Rest.Requests.Security.Area>(sysModel);
                 requestModel.AuthToken = Globals.Instance.AuthToken;
@@ -227,11 +228,11 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                     else
                     {
                         sysModel = Mapper.Map<Common.Models.Security.Area>(result.Response);
-                        viewModel.Synchronize(() =>
+                        App.Current.Dispatcher.Invoke(new Action(() =>
                         {
-                            viewModel = (ViewModels.Security.Area)new ViewModels.Security.Area().AttachModel(sysModel);
+                            viewModel = ViewModels.Creator.Create<ViewModels.Security.Area>(sysModel);
                             MasterDetailWindow.IsBusy = false;
-                        });
+                        }));
                     }
                 });
             });
@@ -243,6 +244,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
 
             Task.Factory.StartNew(() =>
             {
+                viewModel.UpdateModel();
                 Common.Models.Security.Area sysModel = viewModel.Model;
                 Common.Rest.Requests.Security.Area requestModel = Mapper.Map<Common.Rest.Requests.Security.Area>(sysModel);
                 requestModel.AuthToken = Globals.Instance.AuthToken;
@@ -268,14 +270,14 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                     else
                     {
                         sysModel = Mapper.Map<Common.Models.Security.Area>(result.Response);
-                        viewModel.Synchronize(() =>
+                        App.Current.Dispatcher.Invoke(new Action(() =>
                         {
-                            viewModel = (ViewModels.Security.Area)new ViewModels.Security.Area().AttachModel(sysModel);
+                            viewModel = ViewModels.Creator.Create<ViewModels.Security.Area>(sysModel);
                             MasterDetailWindow.MasterView.ClearSelected();
                             if (MasterDetailWindow.DisplayMode == Controls.DisplayModeType.Create)
                                 MasterDetailWindow.SetDisplayMode(Controls.DisplayModeType.View);
                             MasterDetailWindow.IsBusy = false;
-                        });
+                        }));
                     }
                 });
             });
@@ -287,6 +289,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
 
             Task.Factory.StartNew(() =>
             {
+                viewModel.UpdateModel();
                 Common.Models.Security.Area sysModel = viewModel.Model;
                 Common.Rest.Requests.Security.Area requestModel = Mapper.Map<Common.Rest.Requests.Security.Area>(sysModel);
                 requestModel.AuthToken = Globals.Instance.AuthToken;
@@ -312,20 +315,16 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                     else
                     {
                         sysModel = Mapper.Map<Common.Models.Security.Area>(result.Response);
-                        viewModel.Synchronize(() =>
+                        App.Current.Dispatcher.Invoke(new Action(() =>
                         {
-                            viewModel = (ViewModels.Security.Area)new ViewModels.Security.Area().AttachModel(sysModel);
+                            viewModel = ViewModels.Creator.Create<ViewModels.Security.Area>(sysModel);
                             MasterDetailWindow.MasterView.ClearSelected();
 
                             if (MasterDetailWindow.DisplayMode == Controls.DisplayModeType.Create)
                                 MasterDetailWindow.SetDisplayMode(Controls.DisplayModeType.View);
 
                             // setup dummy child
-                            viewModel.AddChild(
-                                new ViewModels.Security.Area()
-                                {
-                                    IsDummy = true
-                                });
+                            viewModel.AddChild(ViewModels.Creator.CreateDummy<ViewModels.Security.Area>(new Common.Models.Security.Area()));
 
                             // Lookup parent
                             if (viewModel.Parent == null)
@@ -339,7 +338,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                             }
 
                             MasterDetailWindow.IsBusy = false;
-                        });
+                        }));
                     }
                 });
             });
@@ -351,6 +350,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
 
             Task.Factory.StartNew(() =>
             {
+                viewModel.UpdateModel();
                 Common.Models.Security.Area sysModel = viewModel.Model;
                 Common.Rest.Requests.Security.Area requestModel = Mapper.Map<Common.Rest.Requests.Security.Area>(sysModel);
                 requestModel.AuthToken = Globals.Instance.AuthToken;
@@ -375,7 +375,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                     }
                     else
                     {
-                        viewModel.Synchronize(() =>
+                        App.Current.Dispatcher.Invoke(new Action(() =>
                         {
                             if (viewModel.Parent != null)
                                 viewModel.Parent.RemoveChild(viewModel);
@@ -383,7 +383,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                                 ((List<ViewModels.Security.Area>)MasterDetailWindow.MasterDataContext).Remove(viewModel);
 
                             MasterDetailWindow.IsBusy = false;
-                        });
+                        }));
                     }
                 });
             });
@@ -392,7 +392,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
         private ViewModels.Security.Area Find(List<ViewModels.Security.Area> list, ViewModels.Security.Area target)
         {
             ViewModels.Security.Area found = null;
-
+            
             if (!target.Id.HasValue || target.Id.Value < 1)
                 throw new ArgumentException("Target must have an Id with a positive value.");
 
@@ -511,7 +511,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                     else
                     {
                         Common.Models.Security.User sysUser = Mapper.Map<Common.Models.Security.User>(result.Response);
-                        viewModel.CreatedBy = (ViewModels.Security.User)new ViewModels.Security.User().AttachModel(sysUser);
+                        viewModel.CreatedBy = ViewModels.Creator.Create<ViewModels.Security.User>(sysUser);
                         onComplete();
                     }
                 });
@@ -553,7 +553,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                     else
                     {
                         Common.Models.Security.User sysUser = Mapper.Map<Common.Models.Security.User>(result.Response);
-                        viewModel.ModifiedBy = (ViewModels.Security.User)new ViewModels.Security.User().AttachModel(sysUser);
+                        viewModel.ModifiedBy = ViewModels.Creator.Create<ViewModels.Security.User>(sysUser);
                         onComplete();
                     }
                 });
@@ -595,7 +595,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                     else
                     {
                         Common.Models.Security.User sysUser = Mapper.Map<Common.Models.Security.User>(result.Response);
-                        viewModel.DisabledBy = (ViewModels.Security.User)new ViewModels.Security.User().AttachModel(sysUser);
+                        viewModel.DisabledBy = ViewModels.Creator.Create<ViewModels.Security.User>(sysUser);
                         onComplete();
                     }
                 });
@@ -731,11 +731,11 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             
                 foreach (Common.Models.Security.Area sysModel in sysModelList)
                 {
-                    ViewModels.Security.Area childVM = new ViewModels.Security.Area();
-                    childVM.AttachModel(sysModel);
+                    ViewModels.Security.Area childVM = ViewModels.Creator.Create<ViewModels.Security.Area>(sysModel);
 
                     if (viewModel != null)
                     {
+                        viewModel.UpdateModel();
                         sysModel.Parent = viewModel.Model;
 
                         // Set child's parent
@@ -749,10 +749,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                         viewModels.Add(childVM);
                     }
 
-                    childVM.AddChild(new ViewModels.Security.Area()
-                    {
-                        IsDummy = true
-                    });
+                    childVM.AddChild(ViewModels.Creator.CreateDummy<ViewModels.Security.Area>(new Common.Models.Security.Area()));
                 }
 
                 if (pushToDataContext)
