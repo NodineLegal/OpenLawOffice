@@ -139,6 +139,7 @@
     <Compile Include="Consumers\Security\User.cs" />
     <Compile Include="ControllerManager.cs" />
     <Compile Include="Controllers\ControllerBase.cs" />
+    <Compile Include="Controllers\MasterDetailControllerCore.cs" />
     <Compile Include="Controllers\HandleAttribute.cs" />
     <Compile Include="Controllers\MasterDetailController.cs" />
     <Compile Include="Controllers\Security\AreaAcl.cs" />

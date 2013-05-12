@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace OpenLawOffice.WinClient
 {
@@ -42,31 +43,64 @@ namespace OpenLawOffice.WinClient
             if (!_modelMapToController.ContainsKey(typeof(TModel)))
                 throw new ArgumentException("Type argument cannot be found in Model mappings.");
             
-            App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+            App.Current.Dispatcher.Invoke(new Action(() =>
             {
                 _modelMapToController[typeof(TModel)].LoadUI();
-            }), System.Windows.Threading.DispatcherPriority.Normal);
+            }));
         }
 
-        public void GetData<TModel>(Action<object> onComplete, object filter)
+        public void LoadItems<TModel>(ViewModels.IViewModel filter, ICollection<ViewModels.IViewModel> collection, Action<ICollection<ViewModels.IViewModel>> onComplete)
             where TModel : Common.Models.ModelBase
         {
-            _modelMapToController[typeof(TModel)].GetData<TModel>(onComplete, filter);
+            _modelMapToController[typeof(TModel)].LoadItems(filter, collection, onComplete);
         }
 
-        public void GetData(Action<object> onComplete, ViewModels.IViewModel obj)
+        public void LoadItems(ViewModels.IViewModel filter, ICollection<ViewModels.IViewModel> collection, Action<ICollection<ViewModels.IViewModel>> onComplete)
         {
-            System.Reflection.FieldInfo fi = obj.GetType().GetField("_model", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-
-            if (fi == null)
-                throw new ArgumentException("Object does not have a _model field.");
-
-            Common.Models.ModelBase model = (Common.Models.ModelBase)fi.GetValue(obj);
-
-            _modelMapToController[model.GetType()].GetData(onComplete, obj);
+            _modelMapToController[LookupModelType(filter)].LoadItems(filter, collection, onComplete);
         }
 
-        public void UpdateUI(ViewModels.IViewModel viewModel, object data)
+        public void LoadDetails<TModel>(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel> onComplete)
+        {
+            _modelMapToController[typeof(TModel)].LoadDetails(viewModel, onComplete);
+        }
+
+        public void LoadDetails(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel> onComplete)
+        {
+            _modelMapToController[LookupModelType(viewModel)].LoadDetails(viewModel, onComplete);
+        }
+
+        public void UpdateItem<TModel>(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel> onComplete)
+        {
+            _modelMapToController[typeof(TModel)].UpdateItem(viewModel, onComplete);
+        }
+
+        public void UpdateItem(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel> onComplete)
+        {
+            _modelMapToController[LookupModelType(viewModel)].UpdateItem(viewModel, onComplete);
+        }
+
+        public void CreateItem<TModel>(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel> onComplete)
+        {
+            _modelMapToController[typeof(TModel)].CreateItem(viewModel, onComplete);
+        }
+
+        public void CreateItem(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel> onComplete)
+        {
+            _modelMapToController[LookupModelType(viewModel)].CreateItem(viewModel, onComplete);
+        }
+
+        public void DisableItem<TModel>(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel> onComplete)
+        {
+            _modelMapToController[typeof(TModel)].DisableItem(viewModel, onComplete);
+        }
+
+        public void DisableItem(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel> onComplete)
+        {
+            _modelMapToController[LookupModelType(viewModel)].DisableItem(viewModel, onComplete);
+        }
+
+        private Type LookupModelType(ViewModels.IViewModel viewModel)
         {
             System.Reflection.FieldInfo fi = viewModel.GetType().GetField("_model", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
@@ -75,7 +109,7 @@ namespace OpenLawOffice.WinClient
 
             Common.Models.ModelBase model = (Common.Models.ModelBase)fi.GetValue(viewModel);
 
-            _modelMapToController[model.GetType()].UpdateUI(viewModel, data);
+            return model.GetType();
         }
     }
 }

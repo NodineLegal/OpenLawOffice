@@ -1,5 +1,6 @@
 ﻿using System;
 using DW.SharpTools;
+using System.Collections.ObjectModel;
 
 namespace OpenLawOffice.WinClient.ViewModels
 {
@@ -7,7 +8,7 @@ namespace OpenLawOffice.WinClient.ViewModels
     {
         bool IsDummy { get; set; }
         T Parent { get; set; }
-        EnhancedObservableCollection<T> Children { get; set; }
+        ObservableCollection<T> Children { get; set; }
 
         void AddChild(T child);
         void RemoveChild(T child);

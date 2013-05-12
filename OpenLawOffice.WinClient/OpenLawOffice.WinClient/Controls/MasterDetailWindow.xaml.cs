@@ -195,7 +195,7 @@ namespace OpenLawOffice.WinClient.Controls
         }
 
         public MasterDetailWindow(string title, RibbonTab ribbonTab, RibbonToggleButton editButton,
-            RibbonButton createButton, RibbonButton disableButton, RibbonButton saveButton, 
+            RibbonButton createButton, RibbonButton disableButton, RibbonButton saveButton,
             RibbonButton cancelButton, Controllers.ControllerBase controller)
         {
             InitializeComponent();

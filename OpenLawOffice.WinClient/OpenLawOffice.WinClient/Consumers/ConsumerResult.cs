@@ -14,4 +14,13 @@ namespace OpenLawOffice.WinClient.Consumers
         public IRestResponse RestSharpResponse { get; set; }
         public RestRequestAsyncHandle Handle { get; set; }
     }
+
+    //public class ConsumerResult
+    //{
+    //    public Common.Rest.Requests.RequestBase Request { get; set; }
+    //    public Common.Rest.Responses.ResponseBase Response { get; set; }
+    //    public ResponseContainer ResponseContainer { get; set; }
+    //    public IRestResponse RestSharpResponse { get; set; }
+    //    public RestRequestAsyncHandle Handle { get; set; }
+    //}
 }

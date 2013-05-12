@@ -110,7 +110,6 @@
     <Compile Include="Rest\Responses\ResponseBase.cs" />
     <Compile Include="Rest\Responses\ResponseBaseWithDatesOnly.cs" />
     <Compile Include="Rest\Responses\ResponseContainer.cs" />
-    <Compile Include="Rest\Responses\ResponseContainerBase.cs" />
     <Compile Include="Rest\Responses\Security\Area.cs" />
     <Compile Include="Rest\Responses\Security\AreaAcl.cs" />
     <Compile Include="Rest\Responses\Security\Authentication.cs" />

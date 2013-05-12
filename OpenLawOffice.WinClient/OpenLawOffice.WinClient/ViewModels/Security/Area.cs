@@ -2,6 +2,7 @@
 using AutoMapper;
 using DW.SharpTools;
 using System.Linq;
+using System.Collections.ObjectModel;
 
 namespace OpenLawOffice.WinClient.ViewModels.Security
 {
@@ -63,8 +64,8 @@ namespace OpenLawOffice.WinClient.ViewModels.Security
             }
         }
 
-        private EnhancedObservableCollection<Area> _children;
-        public EnhancedObservableCollection<Area> Children
+        private ObservableCollection<Area> _children;
+        public ObservableCollection<Area> Children
         {
             get 
             {                 
@@ -94,6 +95,7 @@ namespace OpenLawOffice.WinClient.ViewModels.Security
 
         public void RemoveChild(Area child)
         {
+            int i = Children.IndexOf(child);
             Children.Remove(child);
             child.Parent = null;
         }

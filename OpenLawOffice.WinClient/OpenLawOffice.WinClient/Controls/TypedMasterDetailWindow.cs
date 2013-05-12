@@ -27,7 +27,7 @@ namespace OpenLawOffice.WinClient.Controls
         }
 
         public TypedMasterDetailWindow(string title, RibbonTab ribbonTab, RibbonToggleButton editButton,
-            RibbonButton createButton, RibbonButton disableButton, RibbonButton saveButton, 
+            RibbonButton createButton, RibbonButton disableButton, RibbonButton saveButton,
             RibbonButton cancelButton, Controllers.ControllerBase controller)
             : base(title, ribbonTab, editButton, createButton, disableButton, saveButton, cancelButton, controller)
         {
@@ -62,7 +62,9 @@ namespace OpenLawOffice.WinClient.Controls
         {
             if (obj != null)
             {
-                _controller.GetDetailData(() => { }, (ViewModels.IViewModel)obj);
+                _controller.LoadDetails((ViewModels.IViewModel)obj, viewModel =>
+                {
+                });
             }
 
             App.Current.Dispatcher.Invoke(new Action(() =>

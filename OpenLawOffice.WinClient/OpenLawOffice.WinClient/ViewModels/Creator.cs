@@ -1,4 +1,6 @@
-﻿namespace OpenLawOffice.WinClient.ViewModels
+﻿using System;
+
+namespace OpenLawOffice.WinClient.ViewModels
 {
     public static class Creator
     {
@@ -6,6 +8,16 @@
             where TViewModel : ViewModelBase
         {
             return ViewModelBase.Create<TViewModel>(model);
+        }
+
+        public static IViewModel Create(Common.Models.ModelBase model, Type viewModelType)
+        {
+            return ViewModelBase.Create(model, viewModelType);
+        }
+
+        public static IViewModel Create(Type viewModelType)
+        {
+            return ViewModelBase.Create(viewModelType);
         }
 
         public static TViewModel CreateDummy<TViewModel>(Common.Models.ModelBase model)

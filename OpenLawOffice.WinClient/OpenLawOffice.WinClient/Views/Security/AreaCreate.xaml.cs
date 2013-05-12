@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace OpenLawOffice.WinClient.Views.Security
 {
@@ -27,26 +28,27 @@ namespace OpenLawOffice.WinClient.Views.Security
             {
                 DW.WPFToolkit.TreeListViewItem treeItem = (DW.WPFToolkit.TreeListViewItem)((RoutedEventArgs)args).OriginalSource;
                 ViewModels.Security.Area viewModel = (ViewModels.Security.Area)treeItem.DataContext;
+                ICollection<ViewModels.IViewModel> collection = viewModel.Children.Cast<ViewModels.IViewModel>().ToList();
+                ViewModels.Security.Area filter = ViewModels.Creator.Create<ViewModels.Security.Area>(
+                    new Common.Models.Security.Area()
+                    {
+                        Parent = new Common.Models.Security.Area()
+                        {
+                            Id = viewModel.Id
+                        }
+                    });
 
                 UIParentSelector.IsBusy = true;
 
-                ControllerManager.Instance.GetData<Common.Models.Security.Area>(matches =>
+                ControllerManager.Instance.LoadItems(filter, collection, results =>
                 {
-                    List<Common.Models.Security.Area> modelList = (List<Common.Models.Security.Area>)matches;
-                        
-                    App.Current.Dispatcher.Invoke(new Action(() =>
+                    viewModel.Children.Clear();
+                    foreach (ViewModels.Security.Area viewModelToAdd in results)
                     {
-                        viewModel.Children.Clear();
-                        foreach (Common.Models.Security.Area sysModel in modelList)
-                        {
-                            ViewModels.Security.Area childVM = ViewModels.Creator.Create<ViewModels.Security.Area>(sysModel);
-                            childVM.AddChild(ViewModels.Creator.CreateDummy<ViewModels.Security.Area>(new Common.Models.Security.Area()));
-                            viewModel.AddChild(childVM);
-                        }
-
-                        UIParentSelector.IsBusy = false;
-                    }));
-                }, new { ParentId = viewModel.Id });
+                        viewModel.AddChild(viewModelToAdd);
+                    }
+                    UIParentSelector.IsBusy = false;
+                });
             };
 
             UIParentSelector.OnSelect += (sender, args) =>
@@ -74,24 +76,18 @@ namespace OpenLawOffice.WinClient.Views.Security
 
             UIParentSelector.IsBusy = true;
 
-            ControllerManager.Instance.GetData<Common.Models.Security.Area>(matches =>
+            ControllerManager.Instance.LoadItems<Common.Models.Security.Area>(
+                ViewModels.Creator.Create<ViewModels.Security.Area>(new Common.Models.Security.Area()), 
+                (ICollection<ViewModels.IViewModel>)new List<ViewModels.Security.Area>().Cast<ViewModels.IViewModel>().ToList(), 
+                viewModels =>
             {
-                List<Common.Models.Security.Area> modelList = (List<Common.Models.Security.Area>)matches;
-                List<ViewModels.Security.Area> viewModelList = new List<ViewModels.Security.Area>();
-                foreach (Common.Models.Security.Area sysModel in modelList)
-                {
-                    ViewModels.Security.Area childVM = ViewModels.Creator.Create<ViewModels.Security.Area>(sysModel);
-                    childVM.AddChild(ViewModels.Creator.CreateDummy<ViewModels.Security.Area>(new Common.Models.Security.Area()));
-                    viewModelList.Add(childVM);
-                }
-                
+                List<ViewModels.Security.Area> results = viewModels.Cast<ViewModels.Security.Area>().ToList();
                 App.Current.Dispatcher.Invoke(new Action(() =>
                 {
-                    UIParentSelector.DataContext = viewModelList;
+                    UIParentSelector.DataContext = results;
                     UIParentSelector.IsBusy = false;
                 }));
-
-            }, null);
+            });
         }
     }
 }
