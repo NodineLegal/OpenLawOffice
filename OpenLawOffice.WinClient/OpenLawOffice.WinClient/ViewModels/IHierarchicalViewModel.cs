@@ -4,9 +4,9 @@ using System.Collections.ObjectModel;
 
 namespace OpenLawOffice.WinClient.ViewModels
 {
-    public interface IHierarchicalView<T> : IViewModel
+    public interface IHierarchicalViewModel<T> : IViewModel
+        where T : IViewModel
     {
-        bool IsDummy { get; set; }
         T Parent { get; set; }
         ObservableCollection<T> Children { get; set; }
 

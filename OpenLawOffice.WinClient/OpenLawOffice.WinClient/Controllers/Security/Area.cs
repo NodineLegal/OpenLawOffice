@@ -25,8 +25,6 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             get { return (Consumers.Security.Area)_consumer; }
             set { _consumer = value; }
         }
-        private Common.Rest.Requests.Security.Area _lastRequest;
-        private RestSharp.IRestResponse _lastRestSharpResponse;
 
         public Area()
             : base("Security Areas", 
@@ -38,7 +36,6 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             Globals.Instance.MainWindow.SecurityAreas_Cancel)
         {
             _consumer = new Consumers.Security.Area();
-            _lastRequest = null;
 
             MasterDetailWindow.MasterView
                 .AddResource(typeof(ViewModels.Security.Area), new System.Windows.HierarchicalDataTemplate()
@@ -164,7 +161,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             {
                 UpdateItem((ViewModels.Security.Area)viewModel, null);
             };
-            
+
             MasterDetailWindow.MasterView.OnNodeExpanded += (sender, e) =>
             {
                 DW.WPFToolkit.TreeListViewItem treeItem = (DW.WPFToolkit.TreeListViewItem)e.OriginalSource;
@@ -214,9 +211,8 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                     ((ViewModels.Security.Area)filter).Parent.Id.HasValue && 
                     ((ViewModels.Security.Area)filter).Parent.Id.Value > 0)
                 {
-                    ObservableCollection<ViewModels.IViewModel> a = (ObservableCollection<ViewModels.IViewModel>)MasterDetailWindow.MasterDataContext;
-                    var b = a.Cast<ViewModels.Security.Area>();
-                    ObservableCollection<ViewModels.Security.Area> castCollection = new ObservableCollection<ViewModels.Security.Area>(b);
+                    ObservableCollection<ViewModels.Security.Area> castCollection =
+                        CastObservableCollection<ViewModels.Security.Area>(MasterDetailWindow.MasterDataContext);
                     
                     ViewModels.Security.Area parentViewModel =
                         Find(castCollection, ((ViewModels.Security.Area)filter).Parent);
@@ -256,9 +252,10 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                 if (castedResult.Parent != null)
                 {
                     // Updates remove hierarchical information except for parent id, so we need to track it down
-                    ObservableCollection<ViewModels.IViewModel> a = (ObservableCollection<ViewModels.IViewModel>)MasterDetailWindow.MasterDataContext;
-                    var b = a.Cast<ViewModels.Security.Area>();
-                    ObservableCollection<ViewModels.Security.Area> castCollection = new ObservableCollection<ViewModels.Security.Area>(b);
+
+                    ObservableCollection<ViewModels.Security.Area> castCollection =
+                        CastObservableCollection<ViewModels.Security.Area>(MasterDetailWindow.MasterDataContext);
+                    
                     ViewModels.Security.Area dummyParent = ViewModels.Creator.Create<ViewModels.Security.Area>(new Common.Models.Security.Area());
                     dummyParent.Id = castedResult.Parent.Id;
 
@@ -292,9 +289,9 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                 else
                 {
                     // Found - push to parent's children
-                    ObservableCollection<ViewModels.IViewModel> a = (ObservableCollection<ViewModels.IViewModel>)MasterDetailWindow.MasterDataContext;
-                    var b = a.Cast<ViewModels.Security.Area>();
-                    ObservableCollection<ViewModels.Security.Area> castCollection = new ObservableCollection<ViewModels.Security.Area>(b);
+                    ObservableCollection<ViewModels.Security.Area> castCollection =
+                        CastObservableCollection<ViewModels.Security.Area>(MasterDetailWindow.MasterDataContext);
+
                     ViewModels.Security.Area parent = Find(castCollection, castedResult.Parent);
                     parent.AddChild(castedResult);
                 }
@@ -313,9 +310,9 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                 if (castedResult.Parent != null)
                 {
                     // Updates remove hierarchical information except for parent id, so we need to track it down
-                    ObservableCollection<ViewModels.IViewModel> a = (ObservableCollection<ViewModels.IViewModel>)MasterDetailWindow.MasterDataContext;
-                    var b = a.Cast<ViewModels.Security.Area>();
-                    ObservableCollection<ViewModels.Security.Area> castCollection = new ObservableCollection<ViewModels.Security.Area>(b);
+                    ObservableCollection<ViewModels.Security.Area> castCollection =
+                        CastObservableCollection<ViewModels.Security.Area>(MasterDetailWindow.MasterDataContext);
+                    
                     ViewModels.Security.Area dummyParent = ViewModels.Creator.Create<ViewModels.Security.Area>(new Common.Models.Security.Area());
                     dummyParent.Id = castedResult.Parent.Id;
 
@@ -386,49 +383,5 @@ namespace OpenLawOffice.WinClient.Controllers.Security
 
             return found;
         }
-        
-        //private void UpdateAreaFromParentChanged(ViewModels.Security.Area viewModel)
-        //{
-        //    UpdateItem(viewModel, result =>
-        //    {
-        //    });
-
-        //    Task.Factory.StartNew(() =>
-        //    {
-        //        viewModel.UpdateModel();
-        //        Common.Models.Security.Area sysModel = viewModel.Model;
-        //        Common.Rest.Requests.Security.Area requestModel = Mapper.Map<Common.Rest.Requests.Security.Area>(sysModel);
-        //        requestModel.AuthToken = Globals.Instance.AuthToken;
-        //        _consumer.Update(requestModel, result =>
-        //        {
-        //            if (!result.ResponseContainer.WasSuccessful)
-        //            {
-        //                ErrorHandling.ErrorManager.CreateAndThrow<ErrorHandling.ActionableError>(
-        //                    new ErrorHandling.ActionableError()
-        //                    {
-        //                        Level = ErrorHandling.LevelType.Error,
-        //                        Title = "Error",
-        //                        SimpleMessage = "Failed to save changes to the security area.  Would you like to retry?",
-        //                        Message = "Error: " + result.ResponseContainer.Error.Message,
-        //                        Exception = result.ResponseContainer.Error.Exception,
-        //                        Source = "OpenLawOffice.WinClient.Controllers.Security.Area.UpdateAreaFromParentChanged()",
-        //                        Recover = (error, data, onFail) =>
-        //                        {
-        //                            UpdateAreaFromParentChanged(viewModel);
-        //                        }
-        //                    });
-        //            }
-        //            else
-        //            {
-        //                sysModel = Mapper.Map<Common.Models.Security.Area>(result.Response);
-        //                App.Current.Dispatcher.Invoke(new Action(() =>
-        //                {
-        //                    viewModel = ViewModels.Creator.Create<ViewModels.Security.Area>(sysModel);
-        //                    MasterDetailWindow.IsBusy = false;
-        //                }));
-        //            }
-        //        });
-        //    });
-        //}
     }
 }

@@ -146,6 +146,7 @@
     <Compile Include="Controllers\Security\Area.cs" />
     <Compile Include="Controls\DisplayModeType.cs" />
     <Compile Include="Controls\IDetail.cs" />
+    <Compile Include="Controls\IHierarchicalMaster.cs" />
     <Compile Include="Controls\IMaster.cs" />
     <Compile Include="Controls\ListGridView.xaml.cs">
       <DependentUpon>ListGridView.xaml</DependentUpon>
@@ -187,7 +188,7 @@
     <Compile Include="ViewModels\Creator.cs" />
     <Compile Include="ViewModels\UnboundModelException.cs" />
     <Compile Include="ViewModels\ViewModelCore.cs" />
-    <Compile Include="ViewModels\IHierarchicalView.cs" />
+    <Compile Include="ViewModels\IHierarchicalViewModel.cs" />
     <Compile Include="ViewModels\IViewModel.cs" />
     <Compile Include="ViewModels\StateType.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />

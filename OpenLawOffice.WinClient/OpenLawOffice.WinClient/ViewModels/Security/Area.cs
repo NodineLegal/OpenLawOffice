@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 namespace OpenLawOffice.WinClient.ViewModels.Security
 {
     [Common.Models.MapMe]
-    public class Area : ViewModelCore<Common.Models.Security.Area>, IHierarchicalView<Area>
+    public class Area : ViewModelCore<Common.Models.Security.Area>, IHierarchicalViewModel<Area>
     {
         public override bool IsHierarchical { get { return true; } }
 

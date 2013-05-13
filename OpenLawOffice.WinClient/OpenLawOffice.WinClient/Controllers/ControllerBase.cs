@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using AutoMapper;
 using System.Reflection;
+using System.Linq;
 
 namespace OpenLawOffice.WinClient.Controllers
 {
@@ -300,6 +301,36 @@ namespace OpenLawOffice.WinClient.Controllers
             }
 
             return request;
+        }
+
+        protected static ObservableCollection<TTo> CastObservableCollection<TTo>(object from)
+            where TTo : ViewModels.IViewModel
+        {
+            if (!IsAssignableToGenericType(from.GetType(), typeof(ObservableCollection<>)))
+                throw new ArgumentException("From must be of type ObservableCollection<>");
+
+            ObservableCollection<ViewModels.IViewModel> a = (ObservableCollection<ViewModels.IViewModel>)from;
+            IEnumerable<TTo> b = a.Cast<TTo>();
+            return new ObservableCollection<TTo>(b);
+        }
+
+        protected static bool IsAssignableToGenericType(Type givenType, Type genericType)
+        {
+            var interfaceTypes = givenType.GetInterfaces();
+
+            foreach (var it in interfaceTypes)
+            {
+                if (it.IsGenericType && it.GetGenericTypeDefinition() == genericType)
+                    return true;
+            }
+
+            if (givenType.IsGenericType && givenType.GetGenericTypeDefinition() == genericType)
+                return true;
+
+            Type baseType = givenType.BaseType;
+            if (baseType == null) return false;
+
+            return IsAssignableToGenericType(baseType, genericType);
         }
     }
 }
