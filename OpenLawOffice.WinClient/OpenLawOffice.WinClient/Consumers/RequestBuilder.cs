@@ -21,6 +21,9 @@ namespace OpenLawOffice.WinClient.Consumers
             RestRequest restSharpRequest = new RestRequest(resource, method);
             PropertyInfo[] requestProperties = request.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
+            if (!request.AuthToken.HasValue)
+                request.AuthToken = Globals.Instance.AuthToken;
+
             foreach (PropertyInfo property in requestProperties)
             {
                 object value = property.GetValue(request, null);

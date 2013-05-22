@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Windows.Controls;
 using Microsoft.Windows.Controls.Ribbon;
 
@@ -52,13 +52,13 @@ namespace OpenLawOffice.WinClient.Controls
             MasterView.OnSelectionChanged += (sender, item) =>
             {
                 UpdateCommandStates();
-                UpdateDetailAndEditDataContext(item);
+                UpdateDetailViewDataContext(item);
             };
 
             UpdateCommandStates();
         }
 
-        public void UpdateDetailAndEditDataContext(object obj)
+        public void UpdateDetailViewDataContext(object obj)
         {
             if (obj != null)
             {
@@ -69,7 +69,9 @@ namespace OpenLawOffice.WinClient.Controls
 
             App.Current.Dispatcher.Invoke(new Action(() =>
             {
-                DetailView.DataContext = EditView.DataContext = obj;
+                DetailView.DataContext = obj;
+                EditView.DataContext = obj;
+                _relations.InitializeAllWith(obj);
             }));
         }
 
@@ -82,8 +84,18 @@ namespace OpenLawOffice.WinClient.Controls
         public override void Clear()
         {
             CreateView.DataContext = null;
-            UpdateDetailAndEditDataContext(null);
+            UpdateDetailViewDataContext(null);
             base.Clear();
+        }
+
+        public void HideRelationView()
+        {
+            if (DisplayMode == DisplayModeType.Edit)
+                DetailControl = EditView;
+            else if (DisplayMode == DisplayModeType.View)
+                DetailControl = DetailView;
+            else
+                throw new InvalidOperationException("Invalid DisplayMode.");
         }
 
         protected override void SetCreateModeCommands()

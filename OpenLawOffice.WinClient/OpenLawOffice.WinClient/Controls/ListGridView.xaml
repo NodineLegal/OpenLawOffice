@@ -10,13 +10,13 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="25" />
         </Grid.RowDefinitions>
-        <ListView Grid.Row="0" HorizontalAlignment="Stretch" Name="UIList" VerticalAlignment="Stretch" SelectionChanged="UIList_SelectionChanged" ItemsSource="{Binding}">
+        <ListView Grid.Row="0" Grid.RowSpan="2" HorizontalAlignment="Stretch" Name="UIList" VerticalAlignment="Stretch" SelectionChanged="UIList_SelectionChanged" ItemsSource="{Binding}">
             <ListView.View>
                 <GridView x:Name="UIGrid">
                 </GridView>
             </ListView.View>
         </ListView>
-        <Grid Grid.Row="1">
+        <!--<Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="30" />
@@ -26,6 +26,6 @@
             </Grid.ColumnDefinitions>
             <Button Grid.Column="1" Content="&lt;" x:Name="Back" Click="Back_Click" />
             <Button Grid.Column="3" Content="&gt;" x:Name="Next" Click="Next_Click" />
-        </Grid>
+        </Grid>-->
     </Grid>
 </UserControl>

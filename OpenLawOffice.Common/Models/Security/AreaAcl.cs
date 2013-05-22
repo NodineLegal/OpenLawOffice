@@ -53,6 +53,15 @@ namespace OpenLawOffice.Common.Models.Security
                 .ForMember(dst => dst.AllowFlags, opt => opt.MapFrom(src => src.AllowFlags))
                 .ForMember(dst => dst.DenyFlags, opt => opt.MapFrom(src => src.DenyFlags));
 
+            Mapper.CreateMap<AreaAcl, Rest.Requests.Security.AreaAcl>()
+                .ForMember(dst => dst.Received, opt => opt.Ignore())
+                .ForMember(dst => dst.AuthToken, opt => opt.Ignore())
+                .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dst => dst.SecurityAreaId, opt => opt.MapFrom(src => src.Area.Id))
+                .ForMember(dst => dst.UserId, opt => opt.MapFrom(src => src.User.Id))
+                .ForMember(dst => dst.AllowFlags, opt => opt.MapFrom(src => src.AllowFlags))
+                .ForMember(dst => dst.DenyFlags, opt => opt.MapFrom(src => src.DenyFlags));
+
             Mapper.CreateMap<AreaAcl, Rest.Responses.Security.AreaAcl>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))

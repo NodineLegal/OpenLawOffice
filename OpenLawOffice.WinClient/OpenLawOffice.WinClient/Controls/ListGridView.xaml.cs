@@ -11,8 +11,8 @@ namespace OpenLawOffice.WinClient.Controls
     {
         public Action<Controls.IMaster, object> OnSelectionChanged { get; set; }
         public Action<ListGridView> OnLoad { get; set; }
-        public Action<ListGridView> OnBackClick { get; set; }
-        public Action<ListGridView> OnNextClick { get; set; }
+        //public Action<ListGridView> OnBackClick { get; set; }
+        //public Action<ListGridView> OnNextClick { get; set; }
         
         public object SelectedItem { get { return UIList.SelectedItem; } }
 
@@ -54,15 +54,15 @@ namespace OpenLawOffice.WinClient.Controls
             if (OnSelectionChanged != null) OnSelectionChanged(this, GetSelectedItem());
         }
 
-        private void Back_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            if (OnBackClick != null) OnBackClick(this);
-        }
+        //private void Back_Click(object sender, System.Windows.RoutedEventArgs e)
+        //{
+        //    if (OnBackClick != null) OnBackClick(this);
+        //}
 
-        private void Next_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            if (OnNextClick != null) OnNextClick(this);
-        }
+        //private void Next_Click(object sender, System.Windows.RoutedEventArgs e)
+        //{
+        //    if (OnNextClick != null) OnNextClick(this);
+        //}
 
         public void ClearSelected()
         {

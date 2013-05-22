@@ -2,6 +2,7 @@
 
 namespace OpenLawOffice.WinClient.ViewModels.Security
 {
+    [Common.Models.MapMe]
     public class AreaAcl : ViewModelCore<Common.Models.Security.AreaAcl>
     {
         private int? _id;

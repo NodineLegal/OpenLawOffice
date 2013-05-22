@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="OpenLawOffice.WinClient.Controls.CoreDetailsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="300" MinHeight="100" Height="100">
+    <GroupBox Header="Core Details">
+        <Grid VerticalAlignment="Top" Height="75" Width="Auto" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25" />
+                <RowDefinition Height="25" />
+                <RowDefinition Height="25" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="75" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="75" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="Created:" Grid.Row="0" Grid.Column="0" 
+                            HorizontalAlignment="Left" VerticalAlignment="Center"
+                            Margin="5" />
+            <TextBlock Name="UICreated" Text="{Binding Path=UtcCreated, Mode=OneWay}" 
+                        Grid.Row="0" Grid.Column="1" 
+                            HorizontalAlignment="Left" VerticalAlignment="Center"
+                            Margin="5" />
+            <TextBlock Text="By:" Grid.Row="0" Grid.Column="2" 
+                            HorizontalAlignment="Left" VerticalAlignment="Center"
+                            Margin="5"/>
+            <TextBlock Name="UICreatedBy" Text="{Binding Path=CreatedBy.Username, Mode=OneWay}" 
+                    Grid.Row="0" Grid.Column="3" 
+                            HorizontalAlignment="Left" VerticalAlignment="Center"
+                            Margin="5" />
+
+            <TextBlock Text="Modified:" Grid.Row="1" Grid.Column="0" 
+                            HorizontalAlignment="Left" VerticalAlignment="Center"
+                            Margin="5" />
+            <TextBlock Name="UIModified" Text="{Binding Path=UtcModified, Mode=OneWay}" 
+                        Grid.Row="1" Grid.Column="1" 
+                            HorizontalAlignment="Left" VerticalAlignment="Center"
+                            Margin="5" />
+            <TextBlock Text="By:" Grid.Row="1" Grid.Column="2" 
+                            HorizontalAlignment="Left" VerticalAlignment="Center"
+                            Margin="5" />
+            <TextBlock Name="UIModifiedBy" Text="{Binding Path=ModifiedBy.Username, Mode=OneWay}" 
+                        Grid.Row="1" Grid.Column="3" 
+                            HorizontalAlignment="Left" VerticalAlignment="Center"
+                            Margin="5" />
+
+            <TextBlock Text="Disabled:" Grid.Row="2" Grid.Column="0" 
+                            HorizontalAlignment="Left" VerticalAlignment="Center"
+                            Margin="5" />
+            <TextBlock Name="UIDisabled" Text="{Binding Path=UtcDisabled, Mode=OneWay}" 
+                        Grid.Row="2" Grid.Column="1" 
+                            HorizontalAlignment="Left" VerticalAlignment="Center"
+                            Margin="5" />
+            <TextBlock Text="By:" Grid.Row="2" Grid.Column="2" 
+                            HorizontalAlignment="Left" VerticalAlignment="Center"
+                            Margin="5" />
+            <TextBlock Name="UIDisabledBy" Text="{Binding Path=DisabledBy.Username, Mode=OneWay}" 
+                        Grid.Row="2" Grid.Column="3" 
+                            HorizontalAlignment="Left" VerticalAlignment="Center"
+                            Margin="5" />
+        </Grid>
+    </GroupBox>
+</UserControl>

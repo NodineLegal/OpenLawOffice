@@ -19,10 +19,12 @@ namespace OpenLawOffice.WinClient.Controllers.Security
         public override Type ViewModelType { get { return typeof(ViewModels.Security.AreaAcl); } }
         public override Type ModelType { get { return typeof(Common.Models.Security.AreaAcl); } }
 
-        private new Consumers.Security.AreaAcl _consumer;
-        private Common.Rest.Requests.Security.AreaAcl _lastRequest;
-        private RestSharp.IRestResponse _lastRestSharpResponse;
-        
+        protected Consumers.Security.Area _typedConsumer
+        {
+            get { return (Consumers.Security.Area)_consumer; }
+            set { _consumer = value; }
+        }
+
         public AreaAcl()
             : base("Area ACLs", 
             Globals.Instance.MainWindow.SecurityAreaAclTab,
@@ -33,7 +35,6 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             Globals.Instance.MainWindow.SecurityAreaAcls_Cancel)
         {
             _consumer = new Consumers.Security.AreaAcl();
-            _lastRequest = null;
 
             MasterDetailWindow.MasterView
                 .AddColumn(new System.Windows.Controls.GridViewColumn()
@@ -53,156 +54,218 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                         Mode = System.Windows.Data.BindingMode.TwoWay
                     },
                     Width = 200
+                })
+                .AddColumn(new System.Windows.Controls.GridViewColumn()
+                {
+                    Header = "Allow Flags",
+                    DisplayMemberBinding = new System.Windows.Data.Binding("AllowFlags")
+                    {
+                        Mode = System.Windows.Data.BindingMode.TwoWay
+                    },
+                    Width = 200
+                })
+                .AddColumn(new System.Windows.Controls.GridViewColumn()
+                {
+                    Header = "Deny Flags",
+                    DisplayMemberBinding = new System.Windows.Data.Binding("DenyFlags")
+                    {
+                        Mode = System.Windows.Data.BindingMode.TwoWay
+                    },
+                    Width = 200
                 });
+        }
+
+        private ViewModels.Security.AreaAcl BuildFilter()
+        {
+            ViewModels.Security.AreaAcl filter = ViewModels.Creator.Create<ViewModels.Security.AreaAcl>(
+                new Common.Models.Security.AreaAcl());
+
+            App.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                ViewModels.Security.User userFilter = null;
+                ViewModels.Security.Area areaFilter = null;
+
+                if (MainWindow.SecurityAreaAcls_List_User.SelectionBoxItem.GetType() == typeof(ViewModels.Security.User))
+                    userFilter = (ViewModels.Security.User)MainWindow.SecurityAreaAcls_List_User.SelectionBoxItem;
+                if (MainWindow.SecurityAreaAcls_List_Area.SelectionBoxItem.GetType() == typeof(ViewModels.Security.Area))
+                    areaFilter = (ViewModels.Security.Area)MainWindow.SecurityAreaAcls_List_Area.SelectionBoxItem;
+
+                if (userFilter != null || areaFilter != null)
+                {
+                    if (userFilter != null)
+                        filter.User = userFilter;
+                    if (areaFilter != null)
+                        filter.Area = areaFilter;
+                }
+            }));
+
+            return filter;
+        }
+
+        public Task LoadFilterOptions()
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                Task getAreasTask, getUsersTask;
+
+                Consumers.ListConsumerResult<Common.Rest.Responses.Security.Area> areaOptions = null;
+                Consumers.ListConsumerResult<Common.Rest.Responses.Security.User> userOptions = null;
+
+                Consumers.Security.Area areaConsumer = new Consumers.Security.Area();
+                Consumers.Security.User userConsumer = new Consumers.Security.User();
+
+                getAreasTask = Task.Factory.StartNew(() =>
+                {
+                    areaOptions = areaConsumer.GetList<Common.Rest.Requests.Security.Area,
+                        Common.Rest.Responses.Security.Area>(
+                        new Common.Rest.Requests.Security.Area() 
+                        {
+                            AuthToken = Globals.Instance.AuthToken,
+                            ShowAll = true 
+                        });
+                });
+
+                getUsersTask = Task.Factory.StartNew(() =>
+                {
+                    userOptions = userConsumer.GetList<Common.Rest.Requests.Security.User,
+                        Common.Rest.Responses.Security.User>(
+                        new Common.Rest.Requests.Security.User()
+                        {
+                            AuthToken = Globals.Instance.AuthToken
+                        });
+                });
+
+                Task.WaitAll(new Task[] { getAreasTask, getUsersTask });
+
+                App.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    MainWindow.SecurityAreaAcls_List_Area.ItemsSource = areaOptions.Response;
+                    MainWindow.SecurityAreaAcls_List_Area.DisplayMemberPath = "Name";
+
+                    MainWindow.SecurityAreaAcls_List_User.ItemsSource = userOptions.Response;
+                    MainWindow.SecurityAreaAcls_List_User.DisplayMemberPath = "Username";
+                }));
+            });
         }
 
         public override void LoadUI()
         {
-            ViewModels.Security.User userFilter = null;
-            ViewModels.Security.Area areaFilter = null;
-            Common.Rest.Requests.Security.AreaAcl filter = null;
+            ObservableCollection<ViewModels.IViewModel> viewModelCollection = null;
 
-            //// ribbon controls
-            //MainWindow.SecurityAreaAcls_List.Command = new Commands.DelegateCommand(x =>
-            //{
-            //    App.Current.Dispatcher.Invoke(new Action(() =>
-            //    {
-            //        userFilter = (ViewModels.Security.User)MainWindow.SecurityAreaAcls_List_User.SelectionBoxItem;
-            //        areaFilter = (ViewModels.Security.Area)MainWindow.SecurityAreaAcls_List_Area.SelectionBoxItem;
+            // ribbon controls
+            MainWindow.SecurityAreaAcls_List.Command = new Commands.DelegateCommand(x =>
+            {
+                viewModelCollection = new ObservableCollection<ViewModels.IViewModel>();
 
-            //        if (userFilter != null || areaFilter != null)
-            //        {
-            //            filter = new Common.Rest.Requests.Security.AreaAcl();
-            //            if (userFilter != null)
-            //                filter.UserId = userFilter.Id;
-            //            if (areaFilter != null)
-            //                filter.SecurityAreaId = areaFilter.Id;
-            //        }
-            //    }));
+                LoadItems(BuildFilter(), viewModelCollection, results =>
+                {
+                    MasterDetailWindow.MasterDataContext = results;
+                });
+            });
 
-            //    MasterDetailWindow.IsBusy = true;
+            MainWindow.SecurityAreaAcls_Create.Command = new Commands.DelegateCommand(x =>
+            {
+                App.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    ViewModels.Security.AreaAcl viewModel = ViewModels.Creator.Create<ViewModels.Security.AreaAcl>(new Common.Models.Security.AreaAcl());
+                    MasterDetailWindow.GoIntoCreateMode(viewModel);
+                }));
+            }, x => MasterDetailWindow.CreateEnabled);
 
-            //    GetData<Common.Models.Security.AreaAcl>(data =>
-            //    {
-            //        List<Common.Models.Security.AreaAcl> sysModelList =
-            //            (List<Common.Models.Security.AreaAcl>)data;
+            MainWindow.SecurityAreaAcls_Edit.Command = new Commands.DelegateCommand(x =>
+            {
+                App.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    MasterDetailWindow.UpdateDetailViewDataContext(MasterDetailWindow.MasterView.SelectedItem);
+                }));
+            }, x => MasterDetailWindow.EditEnabled);
 
-            //        App.Current.Dispatcher.Invoke(new Action(() =>
-            //        {
-            //            UpdateUI(null, sysModelList, Controls.DisplayModeType.View);
-            //            MasterDetailWindow.IsBusy = false;
-            //        }), null);
-            //    }, filter);
-            //});
+            MainWindow.SecurityAreaAcls_Save.Command = new Commands.DelegateCommand(x =>
+            {
+                if (MasterDetailWindow.DisplayMode == Controls.DisplayModeType.Edit)
+                {
+                    UpdateItem((ViewModels.Security.AreaAcl)MasterDetailWindow.DetailView.DataContext, null);
+                }
+                else if (MasterDetailWindow.DisplayMode == Controls.DisplayModeType.Create)
+                {
+                    CreateItem((ViewModels.Security.AreaAcl)MasterDetailWindow.CreateView.DataContext, null);
+                }
+                else
+                    throw new Exception("Invalid UI state.");
+            }, x => MasterDetailWindow.SaveEnabled);
 
-            //MainWindow.SecurityAreaAcls_Create.Command = new Commands.DelegateCommand(x =>
-            //{
-            //    App.Current.Dispatcher.Invoke(new Action(() =>
-            //    {
-            //        ViewModels.Security.AreaAcl viewModel = ViewModels.Creator.Create<ViewModels.Security.AreaAcl>(new Common.Models.Security.AreaAcl());
-            //        MasterDetailWindow.GoIntoCreateMode(viewModel);
-            //    }));
-            //}, x => MasterDetailWindow.CreateEnabled);
+            MainWindow.SecurityAreaAcls_Cancel.Command = new Commands.DelegateCommand(x =>
+            {
+                // Will need to reload the model from the server (easiest way)
+                // This needs to be improved - if we want to keep loading from the server instead of 
+                // doing a deep copy, then it needs to only load a single, not force the whole
+                // tree to reload.
+                App.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    MasterDetailWindow.MasterView.ClearSelected();
+                    MasterDetailWindow.Clear();
+                }));
 
-            //MainWindow.SecurityAreaAcls_Edit.Command = new Commands.DelegateCommand(x =>
-            //{
-            //    App.Current.Dispatcher.BeginInvoke(new Action(delegate()
-            //    {
-            //        MasterDetailWindow.UpdateDetailAndEditDataContext(MasterDetailWindow.MasterView.SelectedItem);
-            //    }), System.Windows.Threading.DispatcherPriority.Normal);
-            //}, x => MasterDetailWindow.EditEnabled);
-            
-            //MainWindow.SecurityAreas_Disable.Command = new Commands.DelegateCommand(x =>
-            //{
-            //    System.Windows.MessageBoxResult mbResult = System.Windows.MessageBox.Show(MainWindow,
-            //        "Disabling the selected item will make it unusable and prevent it from showing up in searches.  Are you sure you wish to disable the selected item?",
-            //        "Confirm",
-            //        System.Windows.MessageBoxButton.YesNo,
-            //        System.Windows.MessageBoxImage.Question,
-            //        System.Windows.MessageBoxResult.No);
-            //    if (mbResult == System.Windows.MessageBoxResult.Yes)
-            //    {
-            //        DisableItem((ViewModels.Security.AreaAcl)MasterDetailWindow.MasterView.SelectedItem);
-            //    }
-            //}, x => MasterDetailWindow.DisableEnabled);
+                viewModelCollection = new ObservableCollection<ViewModels.IViewModel>();
 
-            //MainWindow.SecurityAreas_Save.Command = new Commands.DelegateCommand(x =>
-            //{
-            //    if (MasterDetailWindow.DisplayMode == Controls.DisplayModeType.Edit)
-            //    {
-            //        UpdateItem((ViewModels.Security.AreaAcl)MasterDetailWindow.DetailView.DataContext);
-            //    }
-            //    else if (MasterDetailWindow.DisplayMode == Controls.DisplayModeType.Create)
-            //    {
-            //        CreateItem((ViewModels.Security.AreaAcl)MasterDetailWindow.CreateView.DataContext);
-            //    }
-            //    else
-            //        throw new Exception("Invalid UI state.");
-            //}, x => MasterDetailWindow.SaveEnabled);
+                LoadItems(BuildFilter(), viewModelCollection, results =>
+                {
+                    MasterDetailWindow.MasterDataContext = results;
+                    if (MasterDetailWindow.DisplayMode == Controls.DisplayModeType.Create)
+                        MasterDetailWindow.SetDisplayMode(Controls.DisplayModeType.View);
+                });
+            }, x => MasterDetailWindow.CancelEnabled);
 
-            //MainWindow.SecurityAreas_Cancel.Command = new Commands.DelegateCommand(x =>
-            //{
-            //    // Will need to reload the model from the server (easiest way)
-            //    // This needs to be improved - if we want to keep loading from the server instead of 
-            //    // doing a deep copy, then it needs to only load a single, not force the whole
-            //    // tree to reload.
-            //    App.Current.Dispatcher.Invoke(new Action(() =>
-            //    {
-            //        MasterDetailWindow.MasterView.ClearSelected();
-            //        MasterDetailWindow.Clear();
-            //    }));
+            _consumer = new Consumers.Security.AreaAcl();
 
-            //    MasterDetailWindow.IsBusy = true;
+            // Load filter options
+            LoadFilterOptions().ContinueWith(task =>
+            {
+                // load window
+                App.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    MasterDetailWindow.Load();
+                    if (!MasterDetailWindow.IsSelected)
+                        MasterDetailWindow.SelectWindow();
 
-            //    GetData<Common.Models.Security.AreaAcl>(data =>
-            //    {
-            //        List<Common.Models.Security.AreaAcl> sysModelList = (List<Common.Models.Security.AreaAcl>)data;
-            //        if (MasterDetailWindow.DisplayMode == Controls.DisplayModeType.Create)
-            //            UpdateUI(null, sysModelList, Controls.DisplayModeType.View);
-            //        else
-            //            UpdateUI(null, sysModelList, null);
+                    viewModelCollection = new ObservableCollection<ViewModels.IViewModel>();
 
-            //        App.Current.Dispatcher.Invoke(new Action(() =>
-            //        {
-            //            MasterDetailWindow.IsBusy = false;
-            //        }));
-            //    }, null);
-            //}, x => MasterDetailWindow.CancelEnabled);
+                    LoadItems(BuildFilter(), viewModelCollection, results =>
+                    {
+                        MasterDetailWindow.MasterDataContext = results;
 
-            //// load window
-            //MasterDetailWindow.Load();
-            //if (!MasterDetailWindow.IsSelected)
-            //    MasterDetailWindow.SelectWindow();
+                        foreach (ViewModels.Security.AreaAcl viewModel in results)
+                        {
+                            LoadAreaAndUser(viewModel);
+                        }
+                    });
+                }));
 
-            //MasterDetailWindow.IsBusy = true;
+            });
+        }
 
-            //// update filter
-            //App.Current.Dispatcher.Invoke(new Action(() =>
-            //{
-            //    userFilter = (ViewModels.Security.User)MainWindow.SecurityAreaAcls_List_User.SelectionBoxItem;
-            //    areaFilter = (ViewModels.Security.Area)MainWindow.SecurityAreaAcls_List_Area.SelectionBoxItem;
+        public void LoadAreaAndUser(ViewModels.Security.AreaAcl viewModel)
+        {
+            Consumers.ConsumerResult<Common.Rest.Requests.Security.Area, Common.Rest.Responses.Security.Area> areaResult = null;
+            Consumers.ConsumerResult<Common.Rest.Requests.Security.User, Common.Rest.Responses.Security.User> userResult = null;
 
-            //    if (userFilter != null || areaFilter != null)
-            //    {
-            //        filter = new Common.Rest.Requests.Security.AreaAcl();
-            //        if (userFilter != null)
-            //            filter.UserId = userFilter.Id;
-            //        if (areaFilter != null)
-            //            filter.SecurityAreaId = areaFilter.Id;
-            //    }
-            //}));
+            Consumers.Security.Area areaConsumer = new Consumers.Security.Area();
+            Consumers.Security.User userConsumer = new Consumers.Security.User();
 
-            //// Ignores selection
-            //GetData<Common.Models.Security.AreaAcl>(data =>
-            //{
-            //    List<Common.Models.Security.AreaAcl> sysModelList = (List<Common.Models.Security.AreaAcl>)data;
-            //    UpdateUI(null, sysModelList, Controls.DisplayModeType.View);
+            Common.Rest.Requests.Security.Area areaRequest = Mapper.Map<Common.Rest.Requests.Security.Area>(
+                new Common.Models.Security.Area() { Id = viewModel.Area.Id });
 
-            //    App.Current.Dispatcher.Invoke(new Action(() =>
-            //    {
-            //        MasterDetailWindow.IsBusy = false;
-            //    }));
-            //}, filter);
+            Common.Rest.Requests.Security.User userRequest = Mapper.Map<Common.Rest.Requests.Security.User>(
+                new Common.Models.Security.User() { Id = viewModel.User.Id });
+
+            areaResult = areaConsumer.GetSingle(areaRequest);
+            userResult = userConsumer.GetSingle(userRequest);
+
+            Common.Models.Security.Area areaModel = Mapper.Map<Common.Models.Security.Area>(areaResult.Response);
+            Common.Models.Security.User userModel = Mapper.Map<Common.Models.Security.User>(userResult.Response);
+
+            viewModel.Area = ViewModels.Creator.Create<ViewModels.Security.Area>(areaModel);
+            viewModel.User = ViewModels.Creator.Create<ViewModels.Security.User>(userModel);
         }
 
         public override Task LoadDetails(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel> onComplete)
@@ -239,81 +302,18 @@ namespace OpenLawOffice.WinClient.Controllers.Security
 
         public override Task ListItems(Common.Rest.Requests.RequestBase request, Action<List<ViewModels.IViewModel>> onComplete)
         {
-            return ListItems<Common.Rest.Requests.Security.Area, Common.Rest.Responses.Security.AreaAcl>
-                ((Common.Rest.Requests.Security.Area)request, onComplete);
+            return ListItems<Common.Rest.Requests.Security.AreaAcl, Common.Rest.Responses.Security.AreaAcl>
+                ((Common.Rest.Requests.Security.AreaAcl)request, onComplete);
         }
 
-
-        //public override void GetData<TModel>(Action<object> onComplete, object obj)
+        // RestSharp bug?  The only reason this override exists is because RestSharp
+        // will not parse from json int to enum
+        //public override Task ListItems<TRequest, TResponse>(TRequest request, Action<List<ViewModels.IViewModel>> onComplete)
         //{
-        //    Common.Rest.Requests.Security.AreaAcl request;
-        //    Type requestType = typeof(Common.Rest.Requests.Security.AreaAcl);
-        //    Dictionary<string, PropertyInfo> requestPropertyDict = new Dictionary<string, PropertyInfo>();
-
-        //    request = new Common.Rest.Requests.Security.AreaAcl()
+        //    return Task.Factory.StartNew(() =>
         //    {
-        //        AuthToken = Globals.Instance.AuthToken
-        //    };
-
-        //    if (obj != null)
-        //    {
-        //        foreach (PropertyInfo prop in requestType.GetProperties(BindingFlags.Instance | BindingFlags.Public))
+        //        _consumer.GetList<TRequest, TResponse>(request, result =>
         //        {
-        //            requestPropertyDict.Add(prop.Name, prop);
-        //        }
-
-        //        foreach (PropertyInfo prop in obj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public))
-        //        {
-        //            if (!requestPropertyDict.ContainsKey(prop.Name))
-        //                throw new ArgumentException("Property named '" + prop.Name + "' does not exist in the request object.");
-
-        //            // Sets the value of the argument "obj.[property name]" as the value of "request.[property name]"
-        //            requestPropertyDict[prop.Name].SetValue(request, prop.GetValue(obj, null), null);
-        //        }
-        //    }
-
-        //    GetData(onComplete, request);
-        //}
-
-        //public override void GetData(Action<object> onComplete, ViewModels.IViewModel filter = null)
-        //{
-        //    ViewModels.Security.AreaAcl viewModel = null;
-        //    Common.Rest.Requests.Security.AreaAcl request;
-
-        //    request = new Common.Rest.Requests.Security.AreaAcl()
-        //    {
-        //        AuthToken = Globals.Instance.AuthToken
-        //    };
-
-        //    if (filter != null && filter.GetType() == typeof(ViewModels.Security.AreaAcl))
-        //    {
-        //        viewModel = (ViewModels.Security.AreaAcl)filter;
-        //        if (viewModel != null)
-        //        {
-        //            if (viewModel.Area != null && viewModel.Area.Id.HasValue)
-        //                request.SecurityAreaId = viewModel.Area.Id;
-        //            if (viewModel.User != null && viewModel.User.Id.HasValue)
-        //                request.UserId = viewModel.User.Id;
-        //        }
-        //    }
-
-        //    GetData(onComplete, request);
-        //}
-
-        //private void GetData(Action<object> onComplete, Common.Rest.Requests.Security.AreaAcl request)
-        //{
-        //    Task.Factory.StartNew(() =>
-        //    {
-        //        _consumer.GetList(request,
-        //        result =>
-        //        {
-        //            // Put the last request updating here, while it could go outside the callback,
-        //            // I am putting it in here to be certain we never have a race condition
-        //            _lastRequest = result.Request;
-        //            _lastRestSharpResponse = result.RestSharpResponse;
-
-        //            List<Common.Models.Security.AreaAcl> sysModelList = new List<Common.Models.Security.AreaAcl>();
-
         //            if (!result.ListResponseContainer.WasSuccessful)
         //            {
         //                ErrorHandling.ErrorManager.CreateAndThrow<ErrorHandling.ActionableError>(
@@ -321,62 +321,49 @@ namespace OpenLawOffice.WinClient.Controllers.Security
         //                    {
         //                        Level = ErrorHandling.LevelType.Error,
         //                        Title = "Error",
-        //                        SimpleMessage = "Failed to retrieve the list of security areas.  Would you like to retry?",
+        //                        SimpleMessage = "Fetching data failed.  Would you like to retry?",
         //                        Message = "Error: " + result.ListResponseContainer.Error.Message,
         //                        Exception = result.ListResponseContainer.Error.Exception,
-        //                        Source = "OpenLawOffice.WinClient.Controllers.Security.AreaAcl.GetData()",
+        //                        Source = this.GetType().FullName + "ListItems(Common.Rest.Requests.RequestBase, Action<List<ViewModels.IViewModel>>)",
         //                        Recover = (error, data, onFail) =>
         //                        {
-        //                            GetData(onComplete, request);
-        //                        },
-        //                        Fail = (error, data) =>
-        //                        {
-        //                            if (onComplete != null) onComplete(sysModelList);
+        //                            ListItems(request, onComplete);
         //                        }
         //                    });
         //            }
         //            else
         //            {
-        //                foreach (Common.Rest.Responses.Security.AreaAcl area in result.Response)
+        //                // When we get here, we need to drill down into the json and pull out the enum flags for
+        //                // AllowFlags and DenyFlags.  We should probably just grab the RestSharp 
+        //                // code and fix the issue before going anywhere with this, as this type of
+        //                // activity adds needless overhead.
+        //                App.Current.Dispatcher.Invoke(new Action(() =>
         //                {
-        //                    sysModelList.Add(Mapper.Map<Common.Models.Security.AreaAcl>(area));
-        //                }
+        //                    Common.Models.ModelBase sysModel;
+        //                    ViewModels.IViewModel viewModel;
+        //                    List<ViewModels.IViewModel> viewModels = new List<ViewModels.IViewModel>();
 
-        //                if (onComplete != null) onComplete(sysModelList);
+        //                    // Ask ServiceStack to fix
+        //                    Common.Rest.Responses.ListResponseContainer<TResponse> deserializationOverrideResult =
+        //                        ServiceStack.Text.JsonSerializer.DeserializeFromString<Common.Rest.Responses.ListResponseContainer<TResponse>>(result.RestSharpResponse.Content);
+
+        //                    // override JsonSharp's deserialized object with 
+        //                    // ServiceStack's object
+        //                    result.ListResponseContainer = deserializationOverrideResult;
+                            
+        //                    foreach (Common.Rest.Responses.ResponseBase response in result.ListResponseContainer.Data)
+        //                    {
+        //                        sysModel = (Common.Models.ModelBase)Mapper.Map(response, response.GetType(), ModelType);
+        //                        viewModel = ViewModels.Creator.Create(sysModel, ViewModelType);
+        //                        viewModels.Add(viewModel);
+        //                    }
+
+        //                    if (onComplete != null)
+        //                        onComplete(viewModels);
+        //                }));
         //            }
         //        });
         //    });
-        //}
-
-        //public override void UpdateUI(ViewModels.IViewModel viewModel, object data, Controls.DisplayModeType? displayMode)
-        //{
-        //    if (!typeof(ViewModels.Security.AreaAcl).IsAssignableFrom(viewModel.GetType()))
-        //        throw new ArgumentException("Invalid ViewModel type.");
-        //    if (!typeof(List<Common.Models.Security.AreaAcl>).IsAssignableFrom(data.GetType()))
-        //        throw new ArgumentException("Invalid data type.");
-
-        //    UpdateUI((ViewModels.Security.AreaAcl)viewModel,
-        //        (List<Common.Models.Security.AreaAcl>)data, displayMode);
-        //}
-
-        //public void UpdateUI(ViewModels.Security.AreaAcl viewModel,
-        //    List<Common.Models.Security.AreaAcl> sysModelList, Controls.DisplayModeType? displayMode = null)
-        //{
-        //    EnhancedObservableCollection<ViewModels.Security.AreaAcl> viewModels = new EnhancedObservableCollection<ViewModels.Security.AreaAcl>();
-        //    App.Current.Dispatcher.Invoke(new Action(() =>
-        //    {
-        //        foreach (Common.Models.Security.AreaAcl sysModel in sysModelList)
-        //        {
-        //            ViewModels.Security.AreaAcl childVM = ViewModels.Creator.Create<ViewModels.Security.AreaAcl>(sysModel);
-        //            viewModels.Add(childVM);
-        //        }
-
-        //        MasterDetailWindow.Clear();
-        //        MasterDetailWindow.UpdateMasterDataContext(viewModels);
-        //        if (displayMode.HasValue)
-        //            MasterDetailWindow.SetDisplayMode(displayMode.Value);
-        //        MasterDetailWindow.UpdateCommandStates();
-        //    }));
         //}
     }
 }

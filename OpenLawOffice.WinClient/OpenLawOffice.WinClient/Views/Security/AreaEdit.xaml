@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:xctk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+             xmlns:local="clr-namespace:OpenLawOffice.WinClient.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" Background="White">
     <xctk:BusyIndicator x:Name="UIBusyIndicator" IsBusy="False">
@@ -37,36 +38,7 @@
             <TextBlock Name="UIChildren" Text="[See Tree]" Grid.Row="3" Grid.Column="4" VerticalAlignment="Center"
                    ToolTip="Drag items in the left window to change their relationships." />
 
-            <GroupBox Header="Core Details" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4">
-                <Grid VerticalAlignment="Top" Height="Auto" Width="Auto" >
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="75" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="75" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-                    <Label Content="Created:" Grid.Row="0" Grid.Column="0" />
-                    <Label Name="UICreated" Content="{Binding Path=UtcCreated, Mode=OneWay}" Grid.Row="0" Grid.Column="1" />
-                    <Label Content="By:" Grid.Row="0" Grid.Column="2" />
-                    <Label Name="UICreatedBy" Content="{Binding Path=CreatedBy.Username, Mode=OneWay}" Grid.Row="0" Grid.Column="3" />
-
-                    <Label Content="Modified:" Grid.Row="1" Grid.Column="0" />
-                    <Label Name="UIModified" Content="{Binding Path=UtcModified, Mode=OneWay}" Grid.Row="1" Grid.Column="1" />
-                    <Label Content="By:" Grid.Row="1" Grid.Column="2" />
-                    <Label Name="UIModifiedBy" Content="{Binding Path=ModifiedBy.Username, Mode=OneWay}" Grid.Row="1" Grid.Column="3" />
-
-                    <Label Content="Disabled:" Grid.Row="2" Grid.Column="0" />
-                    <Label Name="UIDisabled" Content="{Binding Path=UtcDisabled, Mode=OneWay}" Grid.Row="2" Grid.Column="1" />
-                    <Label Content="By:" Grid.Row="2" Grid.Column="2" />
-                    <Label Name="UIDisabledBy" Content="{Binding Path=DisabledBy.Username, Mode=OneWay}" Grid.Row="2" Grid.Column="3" />
-                </Grid>
-            </GroupBox>
+            <local:CoreDetailsView DataContext="{Binding}" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" />
         </Grid>
     </xctk:BusyIndicator>
 </UserControl>

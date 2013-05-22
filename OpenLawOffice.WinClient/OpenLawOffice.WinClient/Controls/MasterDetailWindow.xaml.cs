@@ -24,6 +24,7 @@ namespace OpenLawOffice.WinClient.Controls
 
         protected Controllers.ControllerBase _controller;
         private UserControl _detailControl;
+        protected RelationCollection _relations;
 
         public bool IsSelected { get; set; }
         public bool CanHaveMultipleInstances { get { return false; } }
@@ -200,6 +201,7 @@ namespace OpenLawOffice.WinClient.Controls
         {
             InitializeComponent();
 
+            _relations = new RelationCollection();
             IsBusy = false;
 
             RelationshipCommands = new List<Commands.DelegateCommand>();
@@ -363,6 +365,20 @@ namespace OpenLawOffice.WinClient.Controls
             SaveEnabled = false;
             CancelEnabled = false;
             CreateEnabled = true;
+        }
+
+        public void ShowRelationView<TModel>()
+            where TModel : Common.Models.ModelBase
+        {
+            DetailControl = _relations[typeof(TModel)];
+            ((Views.IRelationView)DetailControl).Load();
+        }
+
+        public MasterDetailWindow AddRelationView<TModel>(UserControl uc)
+            where TModel : Common.Models.ModelBase
+        {
+            _relations.Add(typeof(TModel), uc);
+            return this;
         }
     }
 }

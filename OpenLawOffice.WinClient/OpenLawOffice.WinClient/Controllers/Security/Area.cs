@@ -53,6 +53,22 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                     },
                     Width = 200
                 });
+
+
+            Views.Security.AreaAclRelation areaAclRelation = new Views.Security.AreaAclRelation();
+            areaAclRelation.OnClose += iwin =>
+            {
+                MasterDetailWindow.HideRelationView();
+            };
+            areaAclRelation.OnEdit += iwin =>
+            {
+                System.Windows.MessageBox.Show("Feature not yet supported.");
+            };
+            areaAclRelation.OnView += iwin =>
+            {
+                System.Windows.MessageBox.Show("Feature not yet supported.");
+            };
+            MasterDetailWindow.AddRelationView<Common.Models.Security.AreaAcl>(areaAclRelation);
         }
 
         private ViewModels.Security.Area BuildFilter()
@@ -86,7 +102,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
 
             MainWindow.SecurityAreas_Acls.Command = new Commands.DelegateCommand(x =>
             {
-                ControllerManager.Instance.LoadUI<Common.Models.Security.AreaAcl>();
+                MasterDetailWindow.ShowRelationView<Common.Models.Security.AreaAcl>();
             }, x => MasterDetailWindow.RelationshipsEnabled);
             MasterDetailWindow.RelationshipCommands.Add((Commands.DelegateCommand)MainWindow.SecurityAreas_Acls.Command);
 
@@ -103,7 +119,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             {
                 App.Current.Dispatcher.Invoke(new Action(() =>
                 {
-                    MasterDetailWindow.UpdateDetailAndEditDataContext(MasterDetailWindow.MasterView.SelectedItem);
+                    MasterDetailWindow.UpdateDetailViewDataContext(MasterDetailWindow.MasterView.SelectedItem);
                 }));
             }, x => MasterDetailWindow.EditEnabled);
 

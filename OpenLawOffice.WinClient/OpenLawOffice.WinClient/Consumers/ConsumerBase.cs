@@ -14,131 +14,41 @@ namespace OpenLawOffice.WinClient.Consumers
         protected RestRequestAsyncHandle ExecuteAsync(RestRequest restSharpRequest, TRequest request, Action<ConsumerResult<TRequest, TResponse>> callback)
         {
             return ExecuteAsync<TRequest, TResponse>(restSharpRequest, request, callback);
-            //RestClient client = new RestClient(Globals.Instance.Settings.HostBaseUrl);
-
-            //return client.ExecuteAsync<Common.Rest.Responses.ResponseContainer<TResponse>>(restSharpRequest, (response, handle) =>
-            //{
-            //    if (callback != null)
-            //    {
-            //        if (response.Data != null)
-            //            callback(new ConsumerResult<TRequest, TResponse>()
-            //            {
-            //                Request = request,
-            //                ResponseContainer = response.Data,
-            //                Response = response.Data.Data,
-            //                RestSharpResponse = response,
-            //                Handle = handle
-            //            });
-            //        else
-            //            callback(new ConsumerResult<TRequest, TResponse>()
-            //            {
-            //                Request = request,
-            //                Response = null,
-            //                ResponseContainer = response.Data,
-            //                RestSharpResponse = response,
-            //                Handle = handle
-            //            });
-            //    }
-            //});
         }
 
         protected ConsumerResult<TRequest, TResponse> Execute(RestRequest restSharpRequest, TRequest request)
         {
             return Execute<TRequest, TResponse>(restSharpRequest, request);
-            //RestClient client = new RestClient(Globals.Instance.Settings.HostBaseUrl);
-
-            //IRestResponse<Common.Rest.Responses.ResponseContainer<TResponse>> result = 
-            //    client.Execute<Common.Rest.Responses.ResponseContainer<TResponse>>(restSharpRequest);
-
-            //if (result.Data != null)
-            //    return new ConsumerResult<TRequest, TResponse>()
-            //    {
-            //        Request = request,
-            //        ResponseContainer = result.Data,
-            //        Response = result.Data.Data,
-            //        RestSharpResponse = result
-            //    };
-            //else
-            //    return new ConsumerResult<TRequest, TResponse>()
-            //    {
-            //        Request = request,
-            //        Response = null,
-            //        ResponseContainer = result.Data,
-            //        RestSharpResponse = result
-            //    };
         }
 
         public virtual RestRequestAsyncHandle GetSingle(TRequest request, Action<ConsumerResult<TRequest, TResponse>> callback)
         {
             return GetSingle<TRequest, TResponse>(request, callback);
-            //RestRequest restRequest = RequestBuilder.Build(BuildFullResource(request), Method.GET, request);
-            //return ExecuteAsync(restRequest, request, callback);
         }
 
         public virtual ConsumerResult<TRequest, TResponse> GetSingle(TRequest request)
         {
             return GetSingle<TRequest, TResponse>(request);
-            //RestRequest restRequest = RequestBuilder.Build(BuildFullResource(request), Method.GET, request);
-            //return Execute(restRequest, request);
         }
-
-        //public override RestRequestAsyncHandle GetList(Common.Rest.Requests.RequestBase request, Action<ListConsumerResult<TRequest, TResponse>> callback)
-        //{
-        //    return GetList((TRequest)request, callback);
-        //}
 
         public virtual RestRequestAsyncHandle GetList(TRequest request, Action<ListConsumerResult<TRequest, TResponse>> callback)
         {
             return GetList<TRequest, TResponse>(request, callback);
-            //RestClient client = new RestClient(Globals.Instance.Settings.HostBaseUrl);
-            //RestRequest restRequest = RequestBuilder.Build(Resource, Method.GET, request);
-
-            //return client.ExecuteAsync<Common.Rest.Responses.ListResponseContainer<TResponse>>(restRequest, (response, handle) =>
-            //{
-            //    if (callback != null)
-            //    {
-            //        if (response.Data != null)
-            //            callback(new ListConsumerResult<TRequest, TResponse>()
-            //            {
-            //                //Sender = this,
-            //                Request = request,
-            //                ListResponseContainer = response.Data,
-            //                Response = response.Data.Data,
-            //                RestSharpResponse = response,
-            //                Handle = handle
-            //            });
-            //        else
-            //            callback(new ListConsumerResult<TRequest, TResponse>()
-            //            {
-            //                Request = request,
-            //                ListResponseContainer = response.Data,
-            //                Response = null,
-            //                RestSharpResponse = response,
-            //                Handle = handle
-            //            });
-            //    }
-            //});
         }
 
         public virtual RestRequestAsyncHandle Create(TRequest request, Action<ConsumerResult<TRequest, TResponse>> callback)
         {
             return Create<TRequest, TResponse>(request, callback);
-            //RestRequest restRequest = RequestBuilder.Build(Resource, Method.POST, request);
-            //return ExecuteAsync(restRequest, request, callback);
         }
 
         public virtual RestRequestAsyncHandle Update(TRequest request, Action<ConsumerResult<TRequest, TResponse>> callback)
         {
             return Update<TRequest, TResponse>(request, callback);
-            //RestRequest restRequest = RequestBuilder.Build(Resource, Method.PUT, request);
-            //return ExecuteAsync(restRequest, request, callback);
         }
 
         public virtual RestRequestAsyncHandle Disable(TRequest request, Action<ConsumerResult<TRequest, TResponse>> callback)
         {
             return Disable<TRequest, TResponse>(request, callback);
-            //RestRequest restRequest = RequestBuilder.Build(Resource, Method.DELETE, request);
-            //return ExecuteAsync(restRequest, request, callback);
         }
     }
 
@@ -175,7 +85,7 @@ namespace OpenLawOffice.WinClient.Consumers
             }
         }
 
-        protected RestRequestAsyncHandle ExecuteAsync<TRequest, TResponse>(RestRequest restSharpRequest,
+        protected virtual RestRequestAsyncHandle ExecuteAsync<TRequest, TResponse>(RestRequest restSharpRequest,
             TRequest request, 
             Action<ConsumerResult<TRequest, TResponse>> callback)
             where TRequest : Common.Rest.Requests.RequestBase
@@ -210,7 +120,7 @@ namespace OpenLawOffice.WinClient.Consumers
             });
         }
 
-        protected ConsumerResult<TRequest, TResponse> Execute<TRequest, TResponse>(
+        protected virtual ConsumerResult<TRequest, TResponse> Execute<TRequest, TResponse>(
             RestRequest restSharpRequest, TRequest request)
             where TRequest : Common.Rest.Requests.RequestBase
             where TResponse : Common.Rest.Responses.ResponseBase
@@ -255,7 +165,7 @@ namespace OpenLawOffice.WinClient.Consumers
             return Execute<TRequest, TResponse>(restRequest, request);
         }
 
-        public virtual RestRequestAsyncHandle GetList<TRequest, TResponse>(TRequest request, 
+        public virtual RestRequestAsyncHandle GetList<TRequest, TResponse>(TRequest request,
             Action<ListConsumerResult<TRequest, TResponse>> callback)
             where TRequest : Common.Rest.Requests.RequestBase
             where TResponse : ResponseBase
@@ -263,7 +173,8 @@ namespace OpenLawOffice.WinClient.Consumers
             RestClient client = new RestClient(Globals.Instance.Settings.HostBaseUrl);
             RestRequest restRequest = RequestBuilder.Build(Resource, Method.GET, request);
 
-            return client.ExecuteAsync<Common.Rest.Responses.ListResponseContainer<TResponse>>(restRequest, (response, handle) =>
+            return client.ExecuteAsync<Common.Rest.Responses.ListResponseContainer<TResponse>>
+                (restRequest, (response, handle) =>
             {
                 if (callback != null)
                 {
@@ -288,6 +199,37 @@ namespace OpenLawOffice.WinClient.Consumers
                         });
                 }
             });
+        }
+
+        public virtual ListConsumerResult<TRequest, TResponse> GetList<TRequest, TResponse>(TRequest request)
+            where TRequest : Common.Rest.Requests.RequestBase
+            where TResponse : ResponseBase
+        {
+            IRestResponse<ListResponseContainer<TResponse>> response = null;
+            RestClient client = new RestClient(Globals.Instance.Settings.HostBaseUrl);
+            RestRequest restRequest = RequestBuilder.Build(Resource, Method.GET, request);
+
+            response = client.Execute<Common.Rest.Responses.ListResponseContainer<TResponse>>(restRequest);
+                        
+            if (response.Data != null)
+                return new ListConsumerResult<TRequest, TResponse>()
+                {
+                    //Sender = this,
+                    Request = request,
+                    ListResponseContainer = response.Data,
+                    Response = response.Data.Data,
+                    RestSharpResponse = response,
+                    Handle = null
+                };
+            else
+                return new ListConsumerResult<TRequest, TResponse>()
+                {
+                    Request = request,
+                    ListResponseContainer = response.Data,
+                    Response = null,
+                    RestSharpResponse = response,
+                    Handle = null
+                };
         }
 
         public virtual RestRequestAsyncHandle Create<TRequest, TResponse>(TRequest request,

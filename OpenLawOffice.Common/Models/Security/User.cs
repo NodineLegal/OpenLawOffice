@@ -32,6 +32,15 @@ namespace OpenLawOffice.Common.Models.Security
                 .ForMember(dst => dst.UserAuthToken, opt => opt.MapFrom(src => src.UserAuthToken))
                 .ForMember(dst => dst.UserAuthTokenExpiry, opt => opt.MapFrom(src => src.UserAuthTokenExpiry));
 
+            Mapper.CreateMap<User, Rest.Requests.Security.User>()
+                .ForMember(dst => dst.Received, opt => opt.Ignore())
+                .ForMember(dst => dst.AuthToken, opt => opt.Ignore())
+                .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dst => dst.Username, opt => opt.MapFrom(src => src.Username))
+                .ForMember(dst => dst.Password, opt => opt.MapFrom(src => src.Password))
+                .ForMember(dst => dst.UserAuthToken, opt => opt.MapFrom(src => src.UserAuthToken))
+                .ForMember(dst => dst.UserAuthTokenExpiry, opt => opt.MapFrom(src => src.UserAuthTokenExpiry));
+
             Mapper.CreateMap<User, Rest.Responses.Security.User>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))

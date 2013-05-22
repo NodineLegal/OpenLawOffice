@@ -144,9 +144,11 @@
     <Compile Include="Controllers\MasterDetailController.cs" />
     <Compile Include="Controllers\Security\AreaAcl.cs" />
     <Compile Include="Controllers\Security\Area.cs" />
+    <Compile Include="Controls\CoreDetailsView.xaml.cs">
+      <DependentUpon>CoreDetailsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\DisplayModeType.cs" />
     <Compile Include="Controls\IDetail.cs" />
-    <Compile Include="Controls\IHierarchicalMaster.cs" />
     <Compile Include="Controls\IMaster.cs" />
     <Compile Include="Controls\ListGridView.xaml.cs">
       <DependentUpon>ListGridView.xaml</DependentUpon>
@@ -157,6 +159,11 @@
     <Compile Include="Controls\ParentSelector.xaml.cs">
       <DependentUpon>ParentSelector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PermissionSelector.xaml.cs">
+      <DependentUpon>PermissionSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PermissionValueConverter.cs" />
+    <Compile Include="Controls\RelationCollection.cs" />
     <Compile Include="Controls\Tagging\CategoryTag.xaml.cs">
       <DependentUpon>CategoryTag.xaml</DependentUpon>
     </Compile>
@@ -199,6 +206,7 @@
     <Compile Include="ViewModels\Security\SecuredResource.cs" />
     <Compile Include="ViewModels\Security\SecuredResourceAcl.cs" />
     <Compile Include="ViewModels\Security\User.cs" />
+    <Compile Include="Views\IRelationView.cs" />
     <Compile Include="Views\Security\AreaAclCreate.xaml.cs">
       <DependentUpon>AreaAclCreate.xaml</DependentUpon>
     </Compile>
@@ -207,6 +215,9 @@
     </Compile>
     <Compile Include="Views\Security\AreaAclEdit.xaml.cs">
       <DependentUpon>AreaAclEdit.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Security\AreaAclRelation.xaml.cs">
+      <DependentUpon>AreaAclRelation.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Security\AreaCreate.xaml.cs">
       <DependentUpon>AreaCreate.xaml</DependentUpon>
@@ -223,6 +234,10 @@
     <Compile Include="Windows\Matters.cs" />
     <Compile Include="WindowManager.cs" />
     <Compile Include="Controls\IDockableWindow.cs" />
+    <Page Include="Controls\CoreDetailsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\ListGridView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -232,6 +247,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\ParentSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\PermissionSelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -280,6 +299,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Security\AreaAclEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Security\AreaAclRelation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
