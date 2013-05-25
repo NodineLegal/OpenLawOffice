@@ -5,6 +5,7 @@ using DW.WPFToolkit;
 using DW.SharpTools;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace OpenLawOffice.WinClient.Controls
 {
@@ -15,10 +16,16 @@ namespace OpenLawOffice.WinClient.Controls
     {
         public Action<Controls.IMaster, object> OnSelectionChanged { get; set; }
         public Action<ViewModels.IViewModel> ParentChanged { get; set; }
+        public Func<ViewModels.IViewModel, ViewModels.IViewModel> GetItemDetails { get; set; }
+        public Func<ViewModels.IViewModel, List<ViewModels.IViewModel>> GetItemChildren { get; set; }
         public event RoutedEventHandler OnNodeExpanded;
 
         private Point _startPoint;
-        public object SelectedItem { get { return UITree.SelectedItem; } }
+        public object SelectedItem 
+        { 
+            get { return UITree.SelectedItem; }
+            set { SelectItem(value); }
+        }
 
         public TreeGridView()
         {
@@ -73,6 +80,84 @@ namespace OpenLawOffice.WinClient.Controls
         private void TreeViewItemExpanded(object sender, RoutedEventArgs e)
         {
             if (OnNodeExpanded != null) OnNodeExpanded(sender, e);
+        }
+
+        public void SelectItem(object obj)
+        {
+            // Visually selecting an item on a just in time loaded tree will be a bit more complicated
+            // than the ListGridView.
+
+            /* To visually select an item, we need to start with the destination and back track through parents, 
+             * expanding them as necessary.  This becomes increasingly networkin intensive as we progress
+             * through the levels, thus, fewer levels is better for selection.
+             * 
+             * Implementation:
+             * 1) Cast ViewModel from object passed through the obj argument
+             * 2) Download the ViewModel
+             * 3) Get ViewModel's Parent - only will have an id
+             * 4) Download ViewModel's Parent - gets all info
+             * 5) Download a list of all children of ViewModel's Parent
+             * 6) Append children of ViewModel's Parent to the same
+             * Assign ViewModel := ViewModel's Parent and cycle steps 3-6
+             * 7) Download all root elements
+             * 8) Set the UI's DataContext to the list (which will obviously need to be an ObservableCollection, not actually a list)
+             * 9) Visually select the argument ViewModel
+             *  a) If the "Select" event is not fired when the programmatic ui selection is made, it will 
+             *      need to be programmatically fired.
+             */
+
+            // Test to make sure obj implements IViewModel
+            if (!typeof(ViewModels.IViewModel).IsAssignableFrom(obj.GetType()))
+                throw new ArgumentException("Argument must implement ViewModels.IViewModel.");
+
+            // 1) Cast ViewModel from object passed through the obj argument
+            ViewModels.IViewModel viewModel = (ViewModels.IViewModel)obj;
+
+            while (true)
+            {
+                // 2) Download the ViewModel
+                viewModel = GetItemDetails(viewModel);
+
+                // 3) Get ViewModel's Parent - only will have an id
+                PropertyInfo parentProperty = viewModel.GetType().GetProperty("Parent");
+                ViewModels.IViewModel parentViewModel = (ViewModels.IViewModel)parentProperty.GetValue(viewModel, null);
+
+                // 4) Download ViewModel's Parent - gets all info
+                parentViewModel = GetItemDetails(parentViewModel);
+
+                // 5) Download a list of all children of ViewModel's Parent
+                List<ViewModels.IViewModel> parentsChildren = GetItemChildren(parentViewModel);
+
+                // 6) Append children of ViewModel's Parent to the same
+                ObservableCollection<ViewModels.IViewModel> observableParentsChildren =
+                    new ObservableCollection<ViewModels.IViewModel>(parentsChildren);
+                PropertyInfo parentChildrenProperty = parentViewModel.GetType().GetProperty("Children");
+                parentChildrenProperty.SetValue(parentViewModel, observableParentsChildren, null);
+
+                if (parentViewModel == null)
+                    break;
+
+                // Assign ViewModel := ViewModel's Parent and cycle steps 3-6
+                viewModel = parentViewModel;
+            }
+
+            // 7) Download all root elements
+            ObservableCollection<ViewModels.IViewModel> rootCollection = 
+                new ObservableCollection<ViewModels.IViewModel>(GetItemChildren(null));
+
+            for (int i=0; i<rootCollection.Count; i++)
+            {
+                if (rootCollection[i] == viewModel)
+                    rootCollection[i] = viewModel;
+            }
+
+            // 8) Set the UI's DataContext to the list (which will obviously need to be an ObservableCollection, not actually a list)
+            UITree.DataContext = rootCollection;
+
+            //TreeViewItem tvi = new TreeViewItem();
+
+            //tvi.IsSelected
+            
         }
 
         private void UITree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)

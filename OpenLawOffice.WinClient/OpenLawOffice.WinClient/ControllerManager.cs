@@ -37,7 +37,7 @@ namespace OpenLawOffice.WinClient
             }
         }
 
-        public void LoadUI<TModel>()
+        public void LoadUI<TModel>(ViewModels.IViewModel selected)
             where TModel : Common.Models.ModelBase
         {
             if (!_modelMapToController.ContainsKey(typeof(TModel)))
@@ -45,8 +45,14 @@ namespace OpenLawOffice.WinClient
             
             App.Current.Dispatcher.Invoke(new Action(() =>
             {
-                _modelMapToController[typeof(TModel)].LoadUI();
+                _modelMapToController[typeof(TModel)].LoadUI(selected);
             }));
+        }
+
+        public void LoadUI<TModel>()
+            where TModel : Common.Models.ModelBase
+        {
+            LoadUI<TModel>(null);
         }
 
         public void LoadItems<TModel>(ViewModels.IViewModel filter, ICollection<ViewModels.IViewModel> collection, Action<ICollection<ViewModels.IViewModel>> onComplete)
@@ -98,6 +104,30 @@ namespace OpenLawOffice.WinClient
         public void DisableItem(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel> onComplete)
         {
             _modelMapToController[LookupModelType(viewModel)].DisableItem(viewModel, onComplete);
+        }
+
+        public void SelectItem<TModel>(ViewModels.IViewModel viewModel)
+            where TModel : Common.Models.ModelBase
+        {
+            if (!_modelMapToController.ContainsKey(typeof(TModel)))
+                throw new ArgumentException("Type argument cannot be found in Model mappings.");
+
+            App.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                _modelMapToController[typeof(TModel)].SelectItem(viewModel);
+            }));
+        }
+
+        public void SetDisplayMode<TModel>(Controls.DisplayModeType mode)
+            where TModel : Common.Models.ModelBase
+        {
+            if (!_modelMapToController.ContainsKey(typeof(TModel)))
+                throw new ArgumentException("Type argument cannot be found in Model mappings.");
+
+            App.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                _modelMapToController[typeof(TModel)].SetDisplayMode(mode);
+            }));
         }
 
         private Type LookupModelType(ViewModels.IViewModel viewModel)

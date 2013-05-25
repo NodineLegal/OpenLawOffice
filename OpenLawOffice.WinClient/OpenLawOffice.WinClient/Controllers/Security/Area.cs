@@ -36,6 +36,11 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             Globals.Instance.MainWindow.SecurityAreas_Cancel)
         {
             _consumer = new Consumers.Security.Area();
+            
+            Func<ViewModels.IViewModel, ViewModels.IViewModel> getItemsDetailFunction = filter =>
+            {
+                return null;
+            };
 
             MasterDetailWindow.MasterView
                 .AddResource(typeof(ViewModels.Security.Area), new System.Windows.HierarchicalDataTemplate()
@@ -54,6 +59,51 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                     Width = 200
                 });
 
+            MasterDetailWindow.MasterView.GetItemDetails = new Func<ViewModels.IViewModel, ViewModels.IViewModel>(filter =>
+            {
+                ViewModels.Security.Area castFilter = (ViewModels.Security.Area)filter;
+                ViewModels.Security.Area finalResult = null;
+
+                Task t = ListItems(
+                    new ViewModels.Security.Area()
+                    {
+                        Id = castFilter.Id
+                    },
+                    results =>
+                    {
+                        finalResult = results.Cast<ViewModels.Security.Area>()
+                            .First<ViewModels.Security.Area>();
+                    });
+
+                // this makes the task synchronous, this can probably be improved...
+                t.Wait();
+
+                return finalResult;
+            });
+
+            MasterDetailWindow.MasterView.GetItemChildren = new Func<ViewModels.IViewModel, List<ViewModels.IViewModel>>(filter =>
+            {
+                ViewModels.Security.Area castFilter = (ViewModels.Security.Area)filter;
+                List<ViewModels.IViewModel> finalResult = null;
+
+                Task t = ListItems(
+                    new ViewModels.Security.Area()
+                    {
+                        Parent = new ViewModels.Security.Area()
+                        {
+                            Id = castFilter.Id
+                        }
+                    },
+                    results =>
+                    {
+                        finalResult = results;
+                    });
+
+                // this makes the task synchronous, this can probably be improved...
+                t.Wait();
+
+                return finalResult;
+            });
 
             Views.Security.AreaAclRelation areaAclRelation = new Views.Security.AreaAclRelation();
             areaAclRelation.OnClose += iwin =>
@@ -62,11 +112,15 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             };
             areaAclRelation.OnEdit += iwin =>
             {
-                System.Windows.MessageBox.Show("Feature not yet supported.");
+                ViewModels.Security.AreaAcl itemToView = (ViewModels.Security.AreaAcl)areaAclRelation.GetSelectedItem();
+                ControllerManager.Instance.LoadUI<Common.Models.Security.AreaAcl>(itemToView);
+                ControllerManager.Instance.SetDisplayMode<Common.Models.Security.AreaAcl>(Controls.DisplayModeType.Edit);
             };
             areaAclRelation.OnView += iwin =>
             {
-                System.Windows.MessageBox.Show("Feature not yet supported.");
+                ViewModels.Security.AreaAcl itemToView = (ViewModels.Security.AreaAcl)areaAclRelation.GetSelectedItem();
+                ControllerManager.Instance.LoadUI<Common.Models.Security.AreaAcl>(itemToView);
+                ControllerManager.Instance.SetDisplayMode<Common.Models.Security.AreaAcl>(Controls.DisplayModeType.View);
             };
             MasterDetailWindow.AddRelationView<Common.Models.Security.AreaAcl>(areaAclRelation);
         }
@@ -85,7 +139,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             return filter;
         }
 
-        public override void LoadUI()
+        public override void LoadUI(ViewModels.IViewModel selected)
         {
             ObservableCollection<ViewModels.IViewModel> viewModelCollection = null;
 
@@ -213,7 +267,13 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             LoadItems(BuildFilter(), viewModelCollection, results =>
             {
                 MasterDetailWindow.MasterDataContext = results;
+                if (selected != null) SelectItem(selected);
             });
+        }
+
+        public override void LoadUI()
+        {
+            LoadUI(null);
         }
 
         public override Task LoadItems(ViewModels.IViewModel filter, ICollection<ViewModels.IViewModel> collection, Action<ICollection<ViewModels.IViewModel>> onComplete)
@@ -361,7 +421,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                     onComplete(viewModels);
             });
         }
-        
+                
         private ViewModels.Security.Area Find(List<ViewModels.Security.Area> list, ViewModels.Security.Area target)
         {
             ViewModels.Security.Area found = null;

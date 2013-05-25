@@ -19,6 +19,7 @@ namespace OpenLawOffice.WinClient.Controllers
         protected Consumers.ConsumerBase _consumer;
         public MainWindow MainWindow = Globals.Instance.MainWindow;
 
+        public abstract void LoadUI(ViewModels.IViewModel selected);
         public abstract void LoadUI();
 
         public abstract Task LoadDetails(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel> onComplete);
@@ -270,6 +271,9 @@ namespace OpenLawOffice.WinClient.Controllers
             Common.Rest.Requests.RequestBase request = BuildRequestFromAnonymousObject(filter);
             return ListItems(request, onComplete);
         }
+
+        public abstract void SelectItem(ViewModels.IViewModel viewModel);
+        public abstract void SetDisplayMode(Controls.DisplayModeType mode);
 
         protected virtual Common.Rest.Requests.RequestBase BuildRequestFromAnonymousObject(object obj)
         {

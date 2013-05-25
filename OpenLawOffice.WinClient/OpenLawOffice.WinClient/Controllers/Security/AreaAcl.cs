@@ -150,6 +150,11 @@ namespace OpenLawOffice.WinClient.Controllers.Security
 
         public override void LoadUI()
         {
+            LoadUI(null);
+        }
+
+        public override void LoadUI(ViewModels.IViewModel selected)
+        {
             ObservableCollection<ViewModels.IViewModel> viewModelCollection = null;
 
             // ribbon controls
@@ -238,6 +243,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                         {
                             LoadAreaAndUser(viewModel);
                         }
+                        if (selected != null) SelectItem(selected);
                     });
                 }));
 
@@ -305,65 +311,5 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             return ListItems<Common.Rest.Requests.Security.AreaAcl, Common.Rest.Responses.Security.AreaAcl>
                 ((Common.Rest.Requests.Security.AreaAcl)request, onComplete);
         }
-
-        // RestSharp bug?  The only reason this override exists is because RestSharp
-        // will not parse from json int to enum
-        //public override Task ListItems<TRequest, TResponse>(TRequest request, Action<List<ViewModels.IViewModel>> onComplete)
-        //{
-        //    return Task.Factory.StartNew(() =>
-        //    {
-        //        _consumer.GetList<TRequest, TResponse>(request, result =>
-        //        {
-        //            if (!result.ListResponseContainer.WasSuccessful)
-        //            {
-        //                ErrorHandling.ErrorManager.CreateAndThrow<ErrorHandling.ActionableError>(
-        //                    new ErrorHandling.ActionableError()
-        //                    {
-        //                        Level = ErrorHandling.LevelType.Error,
-        //                        Title = "Error",
-        //                        SimpleMessage = "Fetching data failed.  Would you like to retry?",
-        //                        Message = "Error: " + result.ListResponseContainer.Error.Message,
-        //                        Exception = result.ListResponseContainer.Error.Exception,
-        //                        Source = this.GetType().FullName + "ListItems(Common.Rest.Requests.RequestBase, Action<List<ViewModels.IViewModel>>)",
-        //                        Recover = (error, data, onFail) =>
-        //                        {
-        //                            ListItems(request, onComplete);
-        //                        }
-        //                    });
-        //            }
-        //            else
-        //            {
-        //                // When we get here, we need to drill down into the json and pull out the enum flags for
-        //                // AllowFlags and DenyFlags.  We should probably just grab the RestSharp 
-        //                // code and fix the issue before going anywhere with this, as this type of
-        //                // activity adds needless overhead.
-        //                App.Current.Dispatcher.Invoke(new Action(() =>
-        //                {
-        //                    Common.Models.ModelBase sysModel;
-        //                    ViewModels.IViewModel viewModel;
-        //                    List<ViewModels.IViewModel> viewModels = new List<ViewModels.IViewModel>();
-
-        //                    // Ask ServiceStack to fix
-        //                    Common.Rest.Responses.ListResponseContainer<TResponse> deserializationOverrideResult =
-        //                        ServiceStack.Text.JsonSerializer.DeserializeFromString<Common.Rest.Responses.ListResponseContainer<TResponse>>(result.RestSharpResponse.Content);
-
-        //                    // override JsonSharp's deserialized object with 
-        //                    // ServiceStack's object
-        //                    result.ListResponseContainer = deserializationOverrideResult;
-                            
-        //                    foreach (Common.Rest.Responses.ResponseBase response in result.ListResponseContainer.Data)
-        //                    {
-        //                        sysModel = (Common.Models.ModelBase)Mapper.Map(response, response.GetType(), ModelType);
-        //                        viewModel = ViewModels.Creator.Create(sysModel, ViewModelType);
-        //                        viewModels.Add(viewModel);
-        //                    }
-
-        //                    if (onComplete != null)
-        //                        onComplete(viewModels);
-        //                }));
-        //            }
-        //        });
-        //    });
-        //}
     }
 }

@@ -22,6 +22,9 @@ namespace OpenLawOffice.WinClient.Controls
         public Action<IDockableWindow> OnRefresh { get; set; }
         public Action<IDockableWindow> OnRequestDetailDataContextUpdate { get; set; }
 
+        public Func<ViewModels.IViewModel, ViewModels.IViewModel> GetItemDetails { get; set; }
+        public Func<ViewModels.IViewModel, List<ViewModels.IViewModel>> GetItemChildren { get; set; }
+
         protected Controllers.ControllerBase _controller;
         private UserControl _detailControl;
         protected RelationCollection _relations;
@@ -138,6 +141,8 @@ namespace OpenLawOffice.WinClient.Controls
             {
                 UILeftPanel.Children.Clear();
                 UILeftPanel.Children.Add(value);
+                ((IMaster)value).GetItemDetails = GetItemDetails;
+                ((IMaster)value).GetItemChildren = GetItemChildren;
             }
         }
 

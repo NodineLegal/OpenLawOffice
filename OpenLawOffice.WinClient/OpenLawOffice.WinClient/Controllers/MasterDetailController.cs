@@ -79,5 +79,15 @@ namespace OpenLawOffice.WinClient.Controllers
                 MasterDetailWindow.IsBusy = false;
             });
         }
+
+        public override void SelectItem(ViewModels.IViewModel viewModel)
+        {
+            MasterDetailWindow.MasterView.SelectItem(viewModel);
+        }
+
+        public override void SetDisplayMode(Controls.DisplayModeType mode)
+        {
+            MasterDetailWindow.SetDisplayMode(mode);
+        }
     }
 }
