@@ -33,10 +33,16 @@
             <Label Name="UIUser" Content="{Binding Path=User.Username, Mode=OneWay}" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" />
 
             <Label Content="Allowed:" Grid.Row="3" Grid.Column="0" />
-            <local:PermissionSelector x:Name="UIAllowFlags" DataContext="{Binding Path=AllowFlags, Mode=TwoWay}" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" />
+            <local:PermissionSelector x:Name="UIAllowFlags" 
+                                      DataContext="{Binding Path=AllowFlags, Mode=TwoWay}" 
+                                      Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3"
+                                      IsEnabled="False" />
 
             <Label Content="Denied:" Grid.Row="4" Grid.Column="0" />
-            <local:PermissionSelector x:Name="UIDenyFlags" DataContext="{Binding Path=DenyFlags, Mode=TwoWay}" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" />
+            <local:PermissionSelector x:Name="UIDenyFlags" 
+                                      DataContext="{Binding Path=DenyFlags, Mode=TwoWay}" 
+                                      Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3"
+                                      IsEnabled="False" />
             
             <local:CoreDetailsView DataContext="{Binding}" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="4" />
         </Grid>

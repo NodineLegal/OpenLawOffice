@@ -18,13 +18,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
         public override Type ResponseType { get { return typeof(Common.Rest.Responses.Security.AreaAcl); } }
         public override Type ViewModelType { get { return typeof(ViewModels.Security.AreaAcl); } }
         public override Type ModelType { get { return typeof(Common.Models.Security.AreaAcl); } }
-
-        protected Consumers.Security.Area _typedConsumer
-        {
-            get { return (Consumers.Security.Area)_consumer; }
-            set { _consumer = value; }
-        }
-
+        
         public AreaAcl()
             : base("Area ACLs", 
             Globals.Instance.MainWindow.SecurityAreaAclTab,
@@ -73,6 +67,8 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                     },
                     Width = 200
                 });
+
+
         }
 
         private ViewModels.Security.AreaAcl BuildFilter()

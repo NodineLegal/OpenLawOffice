@@ -19,13 +19,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
         public override Type ResponseType { get { return typeof(Common.Rest.Responses.Security.Area); } }
         public override Type ViewModelType { get { return typeof(ViewModels.Security.Area); } }
         public override Type ModelType { get { return typeof(Common.Models.Security.Area); } }
-
-        protected Consumers.Security.Area _typedConsumer
-        {
-            get { return (Consumers.Security.Area)_consumer; }
-            set { _consumer = value; }
-        }
-
+        
         public Area()
             : base("Security Areas", 
             Globals.Instance.MainWindow.SecurityAreaTab,
@@ -36,11 +30,6 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             Globals.Instance.MainWindow.SecurityAreas_Cancel)
         {
             _consumer = new Consumers.Security.Area();
-            
-            Func<ViewModels.IViewModel, ViewModels.IViewModel> getItemsDetailFunction = filter =>
-            {
-                return null;
-            };
 
             MasterDetailWindow.MasterView
                 .AddResource(typeof(ViewModels.Security.Area), new System.Windows.HierarchicalDataTemplate()
