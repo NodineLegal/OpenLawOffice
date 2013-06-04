@@ -1,11 +1,16 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace OpenLawOffice.WinClient.Views.Security
 {
     /// <summary>
-    /// Interaction logic for AreaEdit.xaml
+    /// Interaction logic for UserCreate.xaml
     /// </summary>
-    public partial class AreaEdit : UserControl, Controls.IDetail
+    public partial class UserCreate : UserControl, Controls.IDetail
     {
         public bool IsBusy
         {
@@ -13,7 +18,7 @@ namespace OpenLawOffice.WinClient.Views.Security
             set { UIBusyIndicator.IsBusy = value; }
         }
 
-        public AreaEdit()
+        public UserCreate()
         {
             InitializeComponent();
         }

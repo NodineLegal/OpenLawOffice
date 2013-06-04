@@ -3,9 +3,9 @@
 namespace OpenLawOffice.WinClient.Views.Security
 {
     /// <summary>
-    /// Interaction logic for AreaEdit.xaml
+    /// Interaction logic for UserDetail.xaml
     /// </summary>
-    public partial class AreaEdit : UserControl, Controls.IDetail
+    public partial class UserDetail : UserControl, Controls.IDetail
     {
         public bool IsBusy
         {
@@ -13,7 +13,7 @@ namespace OpenLawOffice.WinClient.Views.Security
             set { UIBusyIndicator.IsBusy = value; }
         }
 
-        public AreaEdit()
+        public UserDetail()
         {
             InitializeComponent();
         }

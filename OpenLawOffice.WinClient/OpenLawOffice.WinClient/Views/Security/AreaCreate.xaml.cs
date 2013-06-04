@@ -24,7 +24,7 @@ namespace OpenLawOffice.WinClient.Views.Security
         {
             InitializeComponent();
 
-            UIParentSelector.OnNodeExpanded += (sender, args) =>
+            UIHierarchicalSelector.OnNodeExpanded += (sender, args) =>
             {
                 DW.WPFToolkit.TreeListViewItem treeItem = (DW.WPFToolkit.TreeListViewItem)((RoutedEventArgs)args).OriginalSource;
                 ViewModels.Security.Area viewModel = (ViewModels.Security.Area)treeItem.DataContext;
@@ -38,7 +38,7 @@ namespace OpenLawOffice.WinClient.Views.Security
                         }
                     });
 
-                UIParentSelector.IsBusy = true;
+                UIHierarchicalSelector.IsBusy = true;
 
                 ControllerManager.Instance.LoadItems(filter, collection, results =>
                 {
@@ -47,19 +47,19 @@ namespace OpenLawOffice.WinClient.Views.Security
                     {
                         viewModel.AddChild(viewModelToAdd);
                     }
-                    UIParentSelector.IsBusy = false;
+                    UIHierarchicalSelector.IsBusy = false;
                 });
             };
 
-            UIParentSelector.OnSelect += (sender, args) =>
+            UIHierarchicalSelector.OnSelect += (sender, args) =>
             {
-                _viewModel.Parent = (ViewModels.Security.Area)UIParentSelector.SelectedItem;
+                _viewModel.Parent = (ViewModels.Security.Area)UIHierarchicalSelector.SelectedItem;
                 UIGrid.IsEnabled = true;
                 UIGrid.Visibility = System.Windows.Visibility.Visible;
-                UIParentSelectorOverlay.Visibility = System.Windows.Visibility.Collapsed;
+                UIHierarchicalSelectorOverlay.Visibility = System.Windows.Visibility.Collapsed;
             };
 
-            UIParentSelector
+            UIHierarchicalSelector
                 .AddResource(typeof(ViewModels.Security.Area), new System.Windows.HierarchicalDataTemplate()
                 {
                     DataType = typeof(ViewModels.Security.Area),
@@ -71,10 +71,10 @@ namespace OpenLawOffice.WinClient.Views.Security
         private void UIParent_Click(object sender, RoutedEventArgs e)
         {
             UIGrid.Visibility = System.Windows.Visibility.Hidden;
-            UIParentSelectorOverlay.Visibility = System.Windows.Visibility.Visible;
+            UIHierarchicalSelectorOverlay.Visibility = System.Windows.Visibility.Visible;
             UIGrid.IsEnabled = false;
 
-            UIParentSelector.IsBusy = true;
+            UIHierarchicalSelector.IsBusy = true;
 
             ControllerManager.Instance.LoadItems<Common.Models.Security.Area>(
                 ViewModels.Creator.Create<ViewModels.Security.Area>(new Common.Models.Security.Area()), 
@@ -84,8 +84,8 @@ namespace OpenLawOffice.WinClient.Views.Security
                 List<ViewModels.Security.Area> results = viewModels.Cast<ViewModels.Security.Area>().ToList();
                 App.Current.Dispatcher.Invoke(new Action(() =>
                 {
-                    UIParentSelector.DataContext = results;
-                    UIParentSelector.IsBusy = false;
+                    UIHierarchicalSelector.DataContext = results;
+                    UIHierarchicalSelector.IsBusy = false;
                 }));
             });
         }

@@ -144,6 +144,7 @@
     <Compile Include="Controllers\MasterDetailController.cs" />
     <Compile Include="Controllers\Security\AreaAcl.cs" />
     <Compile Include="Controllers\Security\Area.cs" />
+    <Compile Include="Controllers\Security\User.cs" />
     <Compile Include="Controls\CoreDetailsView.xaml.cs">
       <DependentUpon>CoreDetailsView.xaml</DependentUpon>
     </Compile>
@@ -153,11 +154,14 @@
     <Compile Include="Controls\ListGridView.xaml.cs">
       <DependentUpon>ListGridView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ListSelector.xaml.cs">
+      <DependentUpon>ListSelector.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\MasterDetailWindow.xaml.cs">
       <DependentUpon>MasterDetailWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ParentSelector.xaml.cs">
-      <DependentUpon>ParentSelector.xaml</DependentUpon>
+    <Compile Include="Controls\HierarchicalSelector.xaml.cs">
+      <DependentUpon>HierarchicalSelector.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\PermissionSelector.xaml.cs">
       <DependentUpon>PermissionSelector.xaml</DependentUpon>
@@ -228,6 +232,15 @@
     <Compile Include="Views\Security\AreaEdit.xaml.cs">
       <DependentUpon>AreaEdit.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Security\UserCreate.xaml.cs">
+      <DependentUpon>UserCreate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Security\UserDetail.xaml.cs">
+      <DependentUpon>UserDetail.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Security\UserEdit.xaml.cs">
+      <DependentUpon>UserEdit.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\LoginWindow.xaml.cs">
       <DependentUpon>LoginWindow.xaml</DependentUpon>
     </Compile>
@@ -242,11 +255,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\ListSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\MasterDetailWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\ParentSelector.xaml">
+    <Page Include="Controls\HierarchicalSelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -315,6 +332,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Security\AreaEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Security\UserCreate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Security\UserDetail.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Security\UserEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -30,7 +30,8 @@
                 <Label Content="Create Security Area" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" FontSize="16" Margin="0 10 0 0" />
 
                 <Label Content="Name:" Grid.Row="1" Grid.Column="0" />
-                <TextBox Name="UIName" Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" />
+                <TextBox Name="UIName" Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                         Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" />
 
                 <Label Content="Description:" Grid.Row="2" Grid.Column="0" />
                 <TextBox Name="UIDescription" Text="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" />
@@ -40,10 +41,10 @@
                        Grid.Row="3" Grid.Column="1" Height="25" Width="300" HorizontalAlignment="Left"
                        Grid.ColumnSpan="3" Click="UIParent_Click" />
             </Grid>
-            <Border x:Name="UIParentSelectorOverlay" BorderBrush="Black" BorderThickness="1" 
+            <Border x:Name="UIHierarchicalSelectorOverlay" BorderBrush="Black" BorderThickness="1" 
                 Background="#80000000" Visibility="Collapsed" HorizontalAlignment="Stretch" 
                 VerticalAlignment="Stretch" Grid.Row="0">
-                <local:ParentSelector x:Name="UIParentSelector" HorizontalAlignment="Center" 
+                <local:HierarchicalSelector x:Name="UIHierarchicalSelector" HorizontalAlignment="Center" 
                                   VerticalAlignment="Center" Height="300" Width="300" />
             </Border>
         </Grid>

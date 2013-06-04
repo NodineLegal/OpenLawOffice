@@ -78,6 +78,23 @@
                     <ribbon:RibbonButton x:Name="SecurityAreas_Cancel" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Cancel" />
                 </ribbon:RibbonGroup>
             </ribbon:RibbonTab>
+            
+            <ribbon:RibbonTab x:Name="SecurityUserTab" Header="Users" Visibility="Hidden">
+                <ribbon:RibbonGroup x:Name="SecurityUsers_Group" Header="Users">
+                    <ribbon:RibbonButton x:Name="SecurityUsers_List" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="List" />
+                    <ctrls:WatermarkedRibbonTextBox x:Name="SecurityUsers_List_Name" x:FieldModifier="public" Watermark="Name Filter" TextBoxWidth="150" />
+                </ribbon:RibbonGroup>
+                <ribbon:RibbonGroup x:Name="SecurityUsers_Relationships" Header="Relationships">
+                    <ribbon:RibbonButton x:Name="SecurityUsers_Acls" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="ACLs" />
+                </ribbon:RibbonGroup>
+                <ribbon:RibbonGroup x:Name="SecurityUsers_Actions" Header="Actions">
+                    <ribbon:RibbonButton x:Name="SecurityUsers_Create" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Create" />
+                    <ribbon:RibbonToggleButton x:Name="SecurityUsers_Edit" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Edit" />
+                    <ribbon:RibbonButton x:Name="SecurityUsers_Disable" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Disable" />
+                    <ribbon:RibbonButton x:Name="SecurityUsers_Save" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Save" />
+                    <ribbon:RibbonButton x:Name="SecurityUsers_Cancel" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Cancel" />
+                </ribbon:RibbonGroup>
+            </ribbon:RibbonTab>
 
             <ribbon:RibbonTab x:Name="SecurityAreaAclTab" Header="Area ACLs" Visibility="Hidden">
                 <ribbon:RibbonGroup x:Name="SecurityAreaAcls_Group" Header="Area ACLs">

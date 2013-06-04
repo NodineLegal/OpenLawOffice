@@ -5,9 +5,9 @@ using System.Windows.Controls;
 namespace OpenLawOffice.WinClient.Controls
 {
     /// <summary>
-    /// Interaction logic for ParentSelector.xaml
+    /// Interaction logic for HierarchicalSelector.xaml
     /// </summary>
-    public partial class ParentSelector : UserControl
+    public partial class HierarchicalSelector : UserControl
     {
         public event EventHandler<EventArgs> OnSelect;
         public event EventHandler<EventArgs> OnNodeExpanded;
@@ -19,7 +19,7 @@ namespace OpenLawOffice.WinClient.Controls
             set { UIBusyIndicator.IsBusy = value; } 
         }
 
-        public ParentSelector()
+        public HierarchicalSelector()
         {
             InitializeComponent();
             IsBusy = false;
@@ -36,7 +36,7 @@ namespace OpenLawOffice.WinClient.Controls
             if (OnSelect != null) OnSelect(sender, e);
         }
 
-        public ParentSelector SetExpanderColumnTemplate(string header, string textBindingPath, double width = Double.NaN)
+        public HierarchicalSelector SetExpanderColumnTemplate(string header, string textBindingPath, double width = Double.NaN)
         {
             string xaml = string.Format(@"<DataTemplate 
                     xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
@@ -55,13 +55,13 @@ namespace OpenLawOffice.WinClient.Controls
             return this;
         }
 
-        public ParentSelector AddColumn(GridViewColumn column)
+        public HierarchicalSelector AddColumn(GridViewColumn column)
         {
             UIGridView.Columns.Add(column);
             return this;
         }
 
-        public ParentSelector AddResource(Type dataType, object resource)
+        public HierarchicalSelector AddResource(Type dataType, object resource)
         {
             UITree.Resources.Add(new DataTemplateKey(dataType), resource);
             return this;

@@ -244,8 +244,6 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                 });
             };
 
-            _consumer = new Consumers.Security.Area();
-
             // load window
             MasterDetailWindow.Load();
             if (!MasterDetailWindow.IsSelected)
@@ -267,6 +265,10 @@ namespace OpenLawOffice.WinClient.Controllers.Security
 
         public override Task LoadItems(ViewModels.IViewModel filter, ICollection<ViewModels.IViewModel> collection, Action<ICollection<ViewModels.IViewModel>> onComplete)
         {
+            IEnumerable<ViewModels.Security.Area> ienum = collection.Cast<ViewModels.Security.Area>().ToList();
+            ObservableCollection<ViewModels.Security.Area> castCollection =
+                new ObservableCollection<ViewModels.Security.Area>(ienum);
+
             return base.LoadItems(filter, collection, results =>
             {
                 // We know that filter will either have the Id of the parent or be null meaning it is a base object
@@ -276,8 +278,9 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                     ((ViewModels.Security.Area)filter).Parent.Id.HasValue && 
                     ((ViewModels.Security.Area)filter).Parent.Id.Value > 0)
                 {
-                    ObservableCollection<ViewModels.Security.Area> castCollection =
-                        CastObservableCollection<ViewModels.Security.Area>(MasterDetailWindow.MasterDataContext);
+                    //ObservableCollection<ViewModels.Security.Area> castCollection =
+                    //    CastObservableCollection<ViewModels.Security.Area>(origCollection);
+                    //MasterDetailWindow.MasterDataContext);
                     
                     ViewModels.Security.Area parentViewModel =
                         Find(castCollection, ((ViewModels.Security.Area)filter).Parent);
