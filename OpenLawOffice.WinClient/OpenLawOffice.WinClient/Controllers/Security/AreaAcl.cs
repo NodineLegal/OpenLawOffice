@@ -160,6 +160,9 @@ namespace OpenLawOffice.WinClient.Controllers.Security
 
                 LoadItems(BuildFilter(), viewModelCollection, results =>
                 {
+                    foreach (ViewModels.Security.AreaAcl result in results)
+                        LoadAreaAndUser(result);
+                
                     MasterDetailWindow.MasterDataContext = results;
                 });
             });
@@ -295,7 +298,14 @@ namespace OpenLawOffice.WinClient.Controllers.Security
         public override Task CreateItem(Common.Rest.Requests.RequestBase request, Action<ViewModels.IViewModel> onComplete)
         {
             return CreateItem<Common.Rest.Requests.Security.AreaAcl, Common.Rest.Responses.Security.AreaAcl>
-                ((Common.Rest.Requests.Security.AreaAcl)request, onComplete);
+                ((Common.Rest.Requests.Security.AreaAcl)request, result =>
+            {
+                ViewModels.Security.AreaAcl castedResult = (ViewModels.Security.AreaAcl)result;                
+                ICollection<ViewModels.IViewModel> collection = (ICollection<ViewModels.IViewModel>)MasterDetailWindow.MasterDataContext;
+                LoadAreaAndUser(castedResult);
+                collection.Add(castedResult);
+                if (onComplete != null) onComplete(castedResult);
+            });
         }
 
         public override Task DisableItem(Common.Rest.Requests.RequestBase request, Action<ViewModels.IViewModel> onComplete)
