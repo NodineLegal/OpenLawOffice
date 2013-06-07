@@ -37,6 +37,16 @@ namespace OpenLawOffice.WinClient.Controllers
             });
         }
 
+        public abstract Task UpdateItem(Common.Rest.Requests.RequestBase request, Action<ViewModels.IViewModel> onComplete);
+
+        public virtual Task UpdateItem(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel> onComplete)
+        {
+            viewModel.UpdateModel();
+            Common.Models.ModelBase sysModel = viewModel.GetModel();
+            Common.Rest.Requests.RequestBase request = (Common.Rest.Requests.RequestBase)Mapper.Map(sysModel, sysModel.GetType(), RequestType);
+            request.AuthToken = Globals.Instance.AuthToken;
+            return UpdateItem(request, onComplete);
+        }
         public virtual Task UpdateItem<TRequest, TResponse>(TRequest request, Action<ViewModels.IViewModel> onComplete)
             where TRequest : Common.Rest.Requests.RequestBase
             where TResponse : Common.Rest.Responses.ResponseBase
@@ -77,16 +87,6 @@ namespace OpenLawOffice.WinClient.Controllers
             });
         }
 
-        public abstract Task UpdateItem(Common.Rest.Requests.RequestBase request, Action<ViewModels.IViewModel> onComplete);
-
-        public virtual Task UpdateItem(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel> onComplete)
-        {
-            viewModel.UpdateModel();
-            Common.Models.ModelBase sysModel = viewModel.GetModel();
-            Common.Rest.Requests.RequestBase request = (Common.Rest.Requests.RequestBase)Mapper.Map(sysModel, sysModel.GetType(), RequestType);
-            request.AuthToken = Globals.Instance.AuthToken;
-            return UpdateItem(request, onComplete);
-        }
 
         public virtual Task UpdateItem(object filter, Action<ViewModels.IViewModel> onComplete)
         {

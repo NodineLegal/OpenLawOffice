@@ -169,6 +169,8 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                 App.Current.Dispatcher.Invoke(new Action(() =>
                 {
                     ViewModels.Security.AreaAcl viewModel = ViewModels.Creator.Create<ViewModels.Security.AreaAcl>(new Common.Models.Security.AreaAcl());
+                    viewModel.AllowFlags = Common.Models.PermissionType.None;
+                    viewModel.DenyFlags = Common.Models.PermissionType.None;
                     MasterDetailWindow.GoIntoCreateMode(viewModel);
                 }));
             }, x => MasterDetailWindow.CreateEnabled);

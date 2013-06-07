@@ -6,7 +6,8 @@
              xmlns:local="clr-namespace:OpenLawOffice.WinClient.Controls"
              xmlns:models="clr-namespace:OpenLawOffice.Common.Models;assembly=OpenLawOffice.Common"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300"
+             DataContextChanged="UserControl_DataContextChanged">
     <UserControl.Resources>
         <local:PermissionValueConverter x:Key="FlagsConverter" />
     </UserControl.Resources>
@@ -29,28 +30,33 @@
         <CheckBox Name="UIRead" Content="Read" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" 
                   HorizontalAlignment="Center" 
                   IsChecked="{Binding Path=.,Converter={StaticResource FlagsConverter},
-                    ConverterParameter={x:Static models:PermissionType.Read},Mode=TwoWay}" />
+                    ConverterParameter={x:Static models:PermissionType.Read},Mode=TwoWay, 
+                    UpdateSourceTrigger=PropertyChanged}" Checked="UIRead_Checked" Unchecked="UIRead_Unchecked" />
         <CheckBox Name="UICreate" Content="Create" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" 
                   HorizontalAlignment="Center" 
                   IsChecked="{Binding Path=.,Converter={StaticResource FlagsConverter},
-                    ConverterParameter={x:Static models:PermissionType.Create},Mode=TwoWay}" />
+                    ConverterParameter={x:Static models:PermissionType.Create},Mode=TwoWay, 
+                    UpdateSourceTrigger=PropertyChanged}" Checked="UICreate_Checked" Unchecked="UICreate_Unchecked" />
         <CheckBox Name="UIDisable" Content="Disable" Grid.Column="2" Grid.Row="1" VerticalAlignment="Center" 
                   HorizontalAlignment="Center" 
                   IsChecked="{Binding Path=.,Converter={StaticResource FlagsConverter},
-                    ConverterParameter={x:Static models:PermissionType.Disable},Mode=TwoWay}" />
-
+                    ConverterParameter={x:Static models:PermissionType.Disable},Mode=TwoWay, 
+                    UpdateSourceTrigger=PropertyChanged}" Checked="UIDisable_Checked" Unchecked="UIDisable_Unchecked" />
         <CheckBox Name="UIList" Content="List" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" 
                   HorizontalAlignment="Center" 
                   IsChecked="{Binding Path=.,Converter={StaticResource FlagsConverter},
-                    ConverterParameter={x:Static models:PermissionType.List},Mode=TwoWay}" />
+                    ConverterParameter={x:Static models:PermissionType.List},Mode=TwoWay, 
+                    UpdateSourceTrigger=PropertyChanged}" Checked="UIList_Checked" Unchecked="UIList_Unchecked" />
         <CheckBox Name="UIModify" Content="Modify" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" 
                   HorizontalAlignment="Center" 
                   IsChecked="{Binding Path=.,Converter={StaticResource FlagsConverter},
-                    ConverterParameter={x:Static models:PermissionType.Modify},Mode=TwoWay}" />
+                    ConverterParameter={x:Static models:PermissionType.Modify},Mode=TwoWay, 
+                    UpdateSourceTrigger=PropertyChanged}" Checked="UIModify_Checked" Unchecked="UIModify_Unchecked" />
         <CheckBox Name="UIDelete" Content="Delete" Grid.Column="2" Grid.Row="2" VerticalAlignment="Center" 
                   HorizontalAlignment="Center" 
                   IsChecked="{Binding Path=.,Converter={StaticResource FlagsConverter},
-                    ConverterParameter={x:Static models:PermissionType.Delete},Mode=TwoWay}" />
+                    ConverterParameter={x:Static models:PermissionType.Delete},Mode=TwoWay, 
+                    UpdateSourceTrigger=PropertyChanged}" Checked="UIDelete_Checked" Unchecked="UIDelete_Unchecked" />
         
     </Grid>
 </UserControl>

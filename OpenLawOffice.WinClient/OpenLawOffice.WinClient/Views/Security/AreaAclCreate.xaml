@@ -4,11 +4,73 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:xctk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+             xmlns:local="clr-namespace:OpenLawOffice.WinClient.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" Background="White">
     <xctk:BusyIndicator x:Name="UIBusyIndicator" IsBusy="False">
-        <Grid>
 
+        <Grid x:Name="UITopGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid VerticalAlignment="Top" Height="Auto" Width="Auto" Name="UIGrid">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="100" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="75" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="75" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Label Content="Create Security Area ACL" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" FontSize="16" Margin="0 10 0 0" />
+
+                <Label Content="Area:" Grid.Row="1" Grid.Column="0" />
+                <Button x:Name="UIArea" Content="{Binding Path=Area.Name, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                        Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Width="300" Height="25"
+                        HorizontalAlignment="Left" VerticalAlignment="Center" Click="UIArea_Click"/>
+
+                <Label Content="User:" Grid.Row="2" Grid.Column="0" />
+                <Button x:Name="UIUser" Content="{Binding Path=User.Username, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                        Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Width="300" Height="25"
+                        HorizontalAlignment="Left" VerticalAlignment="Center" Click="UIUser_Click"/>
+
+                <Label Content="Allowed:" Grid.Row="3" Grid.Column="0" />
+                <local:PermissionSelector x:Name="UIAllowFlags" 
+                                          DataContext="{Binding Path=AllowFlags, Mode=TwoWay}" 
+                                          Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" />
+
+                <Label Content="Denied:" Grid.Row="4" Grid.Column="0" />
+                <local:PermissionSelector x:Name="UIDenyFlags" 
+                                          DataContext="{Binding Path=DenyFlags, Mode=TwoWay}" 
+                                          Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" />
+
+                <local:CoreDetailsView DataContext="{Binding}" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="4" />
+            </Grid>
+
+            <Border x:Name="UIAreaSelectorOverlay" BorderBrush="Black" BorderThickness="1" 
+                    Background="#80000000" Visibility="Collapsed" HorizontalAlignment="Stretch" 
+                    VerticalAlignment="Stretch" Grid.Row="0">
+                <local:HierarchicalSelector x:Name="UIAreaSelector" HorizontalAlignment="Center" 
+                                      VerticalAlignment="Center" Height="300" Width="300" />
+            </Border>
+
+            <Border x:Name="UIUserSelectorOverlay" BorderBrush="Black" BorderThickness="1" 
+                    Background="#80000000" Visibility="Collapsed" HorizontalAlignment="Stretch" 
+                    VerticalAlignment="Stretch" Grid.Row="0">
+                <local:ListSelector x:Name="UIUserSelector" HorizontalAlignment="Center" 
+                                      VerticalAlignment="Center" Height="300" Width="300" />
+            </Border>
         </Grid>
     </xctk:BusyIndicator>
 </UserControl>
