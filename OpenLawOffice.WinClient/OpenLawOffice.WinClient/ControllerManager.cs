@@ -55,53 +55,53 @@ namespace OpenLawOffice.WinClient
             LoadUI<TModel>(null);
         }
 
-        public void LoadItems<TModel>(ViewModels.IViewModel filter, ICollection<ViewModels.IViewModel> collection, Action<ICollection<ViewModels.IViewModel>> onComplete)
+        public void LoadItems<TModel>(ViewModels.IViewModel filter, ICollection<ViewModels.IViewModel> collection, Action<ICollection<ViewModels.IViewModel>, ErrorHandling.ActionableError> onComplete)
             where TModel : Common.Models.ModelBase
         {
             _modelMapToController[typeof(TModel)].LoadItems(filter, collection, onComplete);
         }
 
-        public void LoadItems(ViewModels.IViewModel filter, ICollection<ViewModels.IViewModel> collection, Action<ICollection<ViewModels.IViewModel>> onComplete)
+        public void LoadItems(ViewModels.IViewModel filter, ICollection<ViewModels.IViewModel> collection, Action<ICollection<ViewModels.IViewModel>, ErrorHandling.ActionableError> onComplete)
         {
             _modelMapToController[LookupModelType(filter)].LoadItems(filter, collection, onComplete);
         }
 
-        public void LoadDetails<TModel>(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel> onComplete)
+        public void LoadDetails<TModel>(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
         {
             _modelMapToController[typeof(TModel)].LoadDetails(viewModel, onComplete);
         }
 
-        public void LoadDetails(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel> onComplete)
+        public void LoadDetails(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
         {
             _modelMapToController[LookupModelType(viewModel)].LoadDetails(viewModel, onComplete);
         }
 
-        public void UpdateItem<TModel>(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel> onComplete)
+        public void UpdateItem<TModel>(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
         {
             _modelMapToController[typeof(TModel)].UpdateItem(viewModel, onComplete);
         }
 
-        public void UpdateItem(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel> onComplete)
+        public void UpdateItem(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
         {
             _modelMapToController[LookupModelType(viewModel)].UpdateItem(viewModel, onComplete);
         }
 
-        public void CreateItem<TModel>(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel> onComplete)
+        public void CreateItem<TModel>(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
         {
             _modelMapToController[typeof(TModel)].CreateItem(viewModel, onComplete);
         }
 
-        public void CreateItem(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel> onComplete)
+        public void CreateItem(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
         {
             _modelMapToController[LookupModelType(viewModel)].CreateItem(viewModel, onComplete);
         }
 
-        public void DisableItem<TModel>(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel> onComplete)
+        public void DisableItem<TModel>(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
         {
             _modelMapToController[typeof(TModel)].DisableItem(viewModel, onComplete);
         }
 
-        public void DisableItem(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel> onComplete)
+        public void DisableItem(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
         {
             _modelMapToController[LookupModelType(viewModel)].DisableItem(viewModel, onComplete);
         }

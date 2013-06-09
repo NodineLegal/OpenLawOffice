@@ -158,7 +158,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             {
                 viewModelCollection = new ObservableCollection<ViewModels.IViewModel>();
 
-                LoadItems(BuildFilter(), viewModelCollection, results =>
+                LoadItems(BuildFilter(), viewModelCollection, (results, error) =>
                 {
                     foreach (ViewModels.Security.AreaAcl result in results)
                         LoadAreaAndUser(result);
@@ -214,7 +214,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
 
                 viewModelCollection = new ObservableCollection<ViewModels.IViewModel>();
 
-                LoadItems(BuildFilter(), viewModelCollection, results =>
+                LoadItems(BuildFilter(), viewModelCollection, (results, error) =>
                 {
                     MasterDetailWindow.MasterDataContext = results;
                     if (MasterDetailWindow.DisplayMode == Controls.DisplayModeType.Create)
@@ -236,7 +236,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
 
                     viewModelCollection = new ObservableCollection<ViewModels.IViewModel>();
 
-                    LoadItems(BuildFilter(), viewModelCollection, results =>
+                    LoadItems(BuildFilter(), viewModelCollection, (results, error) =>
                     {
                         MasterDetailWindow.MasterDataContext = results;
 
@@ -275,7 +275,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             viewModel.User = ViewModels.Creator.Create<ViewModels.Security.User>(userModel);
         }
 
-        public override Task LoadDetails(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel> onComplete)
+        public override Task LoadDetails(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
         {
             ViewModels.Security.AreaAcl castViewModel = (ViewModels.Security.AreaAcl)viewModel;
 
@@ -289,32 +289,34 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             });
         }
 
-        public override Task UpdateItem(Common.Rest.Requests.RequestBase request, Action<ViewModels.IViewModel> onComplete)
+        public override Task UpdateItem(Common.Rest.Requests.RequestBase request, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
         {
             return UpdateItem<Common.Rest.Requests.Security.AreaAcl, Common.Rest.Responses.Security.AreaAcl>
                 ((Common.Rest.Requests.Security.AreaAcl)request, onComplete);
         }
 
-        public override Task CreateItem(Common.Rest.Requests.RequestBase request, Action<ViewModels.IViewModel> onComplete)
+        public override Task CreateItem(Common.Rest.Requests.RequestBase request, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
         {
             return CreateItem<Common.Rest.Requests.Security.AreaAcl, Common.Rest.Responses.Security.AreaAcl>
-                ((Common.Rest.Requests.Security.AreaAcl)request, result =>
+                ((Common.Rest.Requests.Security.AreaAcl)request, (result, error) =>
             {
+                if (error != null) return;
                 ViewModels.Security.AreaAcl castedResult = (ViewModels.Security.AreaAcl)result;                
                 ICollection<ViewModels.IViewModel> collection = (ICollection<ViewModels.IViewModel>)MasterDetailWindow.MasterDataContext;
                 LoadAreaAndUser(castedResult);
                 collection.Add(castedResult);
-                if (onComplete != null) onComplete(castedResult);
+                if (onComplete != null) 
+                    onComplete(castedResult, error);
             });
         }
 
-        public override Task DisableItem(Common.Rest.Requests.RequestBase request, Action<ViewModels.IViewModel> onComplete)
+        public override Task DisableItem(Common.Rest.Requests.RequestBase request, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
         {
             return DisableItem<Common.Rest.Requests.Security.AreaAcl, Common.Rest.Responses.Security.AreaAcl>
                 ((Common.Rest.Requests.Security.AreaAcl)request, onComplete);
         }
 
-        public override Task ListItems(Common.Rest.Requests.RequestBase request, Action<List<ViewModels.IViewModel>> onComplete)
+        public override Task ListItems(Common.Rest.Requests.RequestBase request, Action<List<ViewModels.IViewModel>, ErrorHandling.ActionableError> onComplete)
         {
             return ListItems<Common.Rest.Requests.Security.AreaAcl, Common.Rest.Responses.Security.AreaAcl>
                 ((Common.Rest.Requests.Security.AreaAcl)request, onComplete);

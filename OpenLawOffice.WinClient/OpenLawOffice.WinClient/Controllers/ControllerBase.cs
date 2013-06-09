@@ -22,24 +22,25 @@ namespace OpenLawOffice.WinClient.Controllers
         public abstract void LoadUI(ViewModels.IViewModel selected);
         public abstract void LoadUI();
 
-        public abstract Task LoadDetails(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel> onComplete);
-        
-        public virtual Task LoadItems(ViewModels.IViewModel filter, ICollection<ViewModels.IViewModel> collection, Action<ICollection<ViewModels.IViewModel>> onComplete)
+        public abstract Task LoadDetails(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete);
+
+        public virtual Task LoadItems(ViewModels.IViewModel filter, ICollection<ViewModels.IViewModel> collection, Action<ICollection<ViewModels.IViewModel>, ErrorHandling.ActionableError> onComplete)
         {
-            return ListItems(filter, results =>
+            return ListItems(filter, (results, error) =>
             {
                 collection.Clear();
                 foreach (ViewModels.IViewModel viewModel in results)
                 {
                     collection.Add(viewModel);
                 }
-                if (onComplete != null) onComplete(collection);
+                if (onComplete != null)
+                    onComplete(collection, error);
             });
         }
 
-        public abstract Task UpdateItem(Common.Rest.Requests.RequestBase request, Action<ViewModels.IViewModel> onComplete);
+        public abstract Task UpdateItem(Common.Rest.Requests.RequestBase request, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete);
 
-        public virtual Task UpdateItem(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel> onComplete)
+        public virtual Task UpdateItem(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
         {
             viewModel.UpdateModel();
             Common.Models.ModelBase sysModel = viewModel.GetModel();
@@ -47,7 +48,8 @@ namespace OpenLawOffice.WinClient.Controllers
             request.AuthToken = Globals.Instance.AuthToken;
             return UpdateItem(request, onComplete);
         }
-        public virtual Task UpdateItem<TRequest, TResponse>(TRequest request, Action<ViewModels.IViewModel> onComplete)
+
+        public virtual Task UpdateItem<TRequest, TResponse>(TRequest request, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
             where TRequest : Common.Rest.Requests.RequestBase
             where TResponse : Common.Rest.Responses.ResponseBase
         {
@@ -71,6 +73,14 @@ namespace OpenLawOffice.WinClient.Controllers
                                 Recover = (error, data, onFail) =>
                                 {
                                     UpdateItem(request, onComplete);
+                                },
+                                Fail = (error, data) =>
+                                {
+                                    App.Current.Dispatcher.Invoke(new Action(() =>
+                                    {
+                                        if (onComplete != null)
+                                            onComplete(null, error);
+                                    }));
                                 }
                             });
                     }
@@ -80,7 +90,8 @@ namespace OpenLawOffice.WinClient.Controllers
                         App.Current.Dispatcher.Invoke(new Action(() =>
                         {
                             viewModel = ViewModels.Creator.Create(sysModel, ViewModelType);
-                            if (onComplete != null) onComplete(viewModel);
+                            if (onComplete != null) 
+                                onComplete(viewModel, null);
                         }));
                     }
                 });
@@ -88,13 +99,13 @@ namespace OpenLawOffice.WinClient.Controllers
         }
 
 
-        public virtual Task UpdateItem(object filter, Action<ViewModels.IViewModel> onComplete)
+        public virtual Task UpdateItem(object filter, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
         {
             Common.Rest.Requests.RequestBase request = BuildRequestFromAnonymousObject(filter);
             return UpdateItem(request, onComplete);
         }
 
-        public virtual Task CreateItem<TRequest, TResponse>(TRequest request, Action<ViewModels.IViewModel> onComplete)
+        public virtual Task CreateItem<TRequest, TResponse>(TRequest request, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
             where TRequest : Common.Rest.Requests.RequestBase
             where TResponse : Common.Rest.Responses.ResponseBase
         {
@@ -118,6 +129,14 @@ namespace OpenLawOffice.WinClient.Controllers
                                 Recover = (error, data, onFail) =>
                                 {
                                     CreateItem(request, onComplete);
+                                },
+                                Fail = (error, data) =>
+                                {
+                                    App.Current.Dispatcher.Invoke(new Action(() =>
+                                    {
+                                        if (onComplete != null) 
+                                            onComplete(null, error);
+                                    }));
                                 }
                             });
                     }
@@ -127,16 +146,17 @@ namespace OpenLawOffice.WinClient.Controllers
                         App.Current.Dispatcher.Invoke(new Action(() =>
                         {
                             viewModel = ViewModels.Creator.Create(sysModel, ViewModelType);
-                            if (onComplete != null) onComplete(viewModel);
+                            if (onComplete != null) 
+                                onComplete(viewModel, null);
                         }));
                     }
                 });
             });
         }
 
-        public abstract Task CreateItem(Common.Rest.Requests.RequestBase request, Action<ViewModels.IViewModel> onComplete);
-        
-        public virtual Task CreateItem(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel> onComplete)
+        public abstract Task CreateItem(Common.Rest.Requests.RequestBase request, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete);
+
+        public virtual Task CreateItem(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
         {
             viewModel.UpdateModel();
             Common.Models.ModelBase sysModel = viewModel.GetModel();
@@ -145,13 +165,13 @@ namespace OpenLawOffice.WinClient.Controllers
             return CreateItem(request, onComplete);
         }
 
-        public virtual Task CreateItem(object filter, Action<ViewModels.IViewModel> onComplete)
+        public virtual Task CreateItem(object filter, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
         {
             Common.Rest.Requests.RequestBase request = BuildRequestFromAnonymousObject(filter);
             return CreateItem(request, onComplete);
         }
 
-        public virtual Task DisableItem<TRequest, TResponse>(TRequest request, Action<ViewModels.IViewModel> onComplete)
+        public virtual Task DisableItem<TRequest, TResponse>(TRequest request, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
             where TRequest : Common.Rest.Requests.RequestBase
             where TResponse : Common.Rest.Responses.ResponseBase
         {
@@ -175,6 +195,14 @@ namespace OpenLawOffice.WinClient.Controllers
                                 Recover = (error, data, onFail) =>
                                 {
                                     DisableItem(request, onComplete);
+                                },
+                                Fail = (error, data) =>
+                                {
+                                    App.Current.Dispatcher.Invoke(new Action(() =>
+                                    {
+                                        if (onComplete != null)
+                                            onComplete(null, error);
+                                    }));
                                 }
                             });
                     }
@@ -184,16 +212,17 @@ namespace OpenLawOffice.WinClient.Controllers
                         App.Current.Dispatcher.Invoke(new Action(() =>
                         {
                             viewModel = ViewModels.Creator.Create(sysModel, ViewModelType);
-                            if (onComplete != null) onComplete(viewModel);
+                            if (onComplete != null) 
+                                onComplete(viewModel, null);
                         }));
                     }
                 });
             });
         }
 
-        public abstract Task DisableItem(Common.Rest.Requests.RequestBase request, Action<ViewModels.IViewModel> onComplete);
+        public abstract Task DisableItem(Common.Rest.Requests.RequestBase request, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete);
 
-        public virtual Task DisableItem(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel> onComplete)
+        public virtual Task DisableItem(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
         {
             viewModel.UpdateModel();
             Common.Models.ModelBase sysModel = viewModel.GetModel();
@@ -202,15 +231,15 @@ namespace OpenLawOffice.WinClient.Controllers
             return DisableItem(request, onComplete);
         }
 
-        public virtual Task DisableItem(object filter, Action<ViewModels.IViewModel> onComplete)
+        public virtual Task DisableItem(object filter, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
         {
             Common.Rest.Requests.RequestBase request = BuildRequestFromAnonymousObject(filter);
             return DisableItem(request, onComplete);
         }
 
-        public abstract Task ListItems(Common.Rest.Requests.RequestBase request, Action<List<ViewModels.IViewModel>> onComplete);
+        public abstract Task ListItems(Common.Rest.Requests.RequestBase request, Action<List<ViewModels.IViewModel>, ErrorHandling.ActionableError> onComplete);
 
-        public virtual Task ListItems<TRequest, TResponse>(TRequest request, Action<List<ViewModels.IViewModel>> onComplete)
+        public virtual Task ListItems<TRequest, TResponse>(TRequest request, Action<List<ViewModels.IViewModel>, ErrorHandling.ActionableError> onComplete)
             where TRequest : Common.Rest.Requests.RequestBase
             where TResponse : Common.Rest.Responses.ResponseBase
         {
@@ -232,6 +261,14 @@ namespace OpenLawOffice.WinClient.Controllers
                                 Recover = (error, data, onFail) =>
                                 {
                                     ListItems(request, onComplete);
+                                },
+                                Fail = (error, data) =>
+                                {
+                                    App.Current.Dispatcher.Invoke(new Action(() =>
+                                    {
+                                        if (onComplete != null)
+                                            onComplete(null, error);
+                                    }));
                                 }
                             });
                     }
@@ -250,14 +287,14 @@ namespace OpenLawOffice.WinClient.Controllers
                             }
 
                             if (onComplete != null) 
-                                onComplete(viewModels);
+                                onComplete(viewModels, null);
                         }));
                     }
                 });
             });
         }
 
-        public virtual Task ListItems(ViewModels.IViewModel filter, Action<List<ViewModels.IViewModel>> onComplete)
+        public virtual Task ListItems(ViewModels.IViewModel filter, Action<List<ViewModels.IViewModel>, ErrorHandling.ActionableError> onComplete)
         {
             filter.UpdateModel();
             Common.Models.ModelBase sysModel = filter.GetModel();
@@ -265,8 +302,8 @@ namespace OpenLawOffice.WinClient.Controllers
             request.AuthToken = Globals.Instance.AuthToken;
             return ListItems(request, onComplete);
         }
-        
-        public virtual Task ListItems(object filter, Action<List<ViewModels.IViewModel>> onComplete)
+
+        public virtual Task ListItems(object filter, Action<List<ViewModels.IViewModel>, ErrorHandling.ActionableError> onComplete)
         {
             Common.Rest.Requests.RequestBase request = BuildRequestFromAnonymousObject(filter);
             return ListItems(request, onComplete);

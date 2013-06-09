@@ -40,7 +40,7 @@ namespace OpenLawOffice.WinClient.Views.Security
 
                 UIHierarchicalSelector.IsBusy = true;
 
-                ControllerManager.Instance.LoadItems(filter, collection, results =>
+                ControllerManager.Instance.LoadItems(filter, collection, (results, error) =>
                 {
                     viewModel.Children.Clear();
                     foreach (ViewModels.Security.Area viewModelToAdd in results)
@@ -79,7 +79,7 @@ namespace OpenLawOffice.WinClient.Views.Security
             ControllerManager.Instance.LoadItems<Common.Models.Security.Area>(
                 ViewModels.Creator.Create<ViewModels.Security.Area>(new Common.Models.Security.Area()), 
                 (ICollection<ViewModels.IViewModel>)new List<ViewModels.Security.Area>().Cast<ViewModels.IViewModel>().ToList(), 
-                viewModels =>
+                (viewModels, error) =>
             {
                 List<ViewModels.Security.Area> results = viewModels.Cast<ViewModels.Security.Area>().ToList();
                 App.Current.Dispatcher.Invoke(new Action(() =>

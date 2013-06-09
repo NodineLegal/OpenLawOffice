@@ -39,7 +39,7 @@ namespace OpenLawOffice.WinClient.Views.Security
 
                 UIAreaSelector.IsBusy = true;
 
-                ControllerManager.Instance.LoadItems<Common.Models.Security.Area>(filter, collection, results =>
+                ControllerManager.Instance.LoadItems<Common.Models.Security.Area>(filter, collection, (results, error) =>
                 {
                     viewModel.Children.Clear();
                     foreach (ViewModels.Security.Area viewModelToAdd in results)
@@ -96,7 +96,7 @@ namespace OpenLawOffice.WinClient.Views.Security
             ControllerManager.Instance.LoadItems<Common.Models.Security.Area>(
                 ViewModels.Creator.Create<ViewModels.Security.Area>(new Common.Models.Security.Area()),
                 (ICollection<ViewModels.IViewModel>)new List<ViewModels.Security.Area>().Cast<ViewModels.IViewModel>().ToList(),
-                viewModels =>
+                (viewModels, error) =>
                 {
                     List<ViewModels.Security.Area> results = viewModels.Cast<ViewModels.Security.Area>().ToList();
                     App.Current.Dispatcher.Invoke(new Action(() =>
@@ -118,7 +118,7 @@ namespace OpenLawOffice.WinClient.Views.Security
             ControllerManager.Instance.LoadItems<Common.Models.Security.User>(
                 ViewModels.Creator.Create<ViewModels.Security.User>(new Common.Models.Security.User()),
                 (ICollection<ViewModels.IViewModel>)new List<ViewModels.Security.User>().Cast<ViewModels.IViewModel>().ToList(),
-                viewModels =>
+                (viewModels, error) =>
                 {
                     List<ViewModels.Security.User> results = viewModels.Cast<ViewModels.Security.User>().ToList();
                     App.Current.Dispatcher.Invoke(new Action(() =>

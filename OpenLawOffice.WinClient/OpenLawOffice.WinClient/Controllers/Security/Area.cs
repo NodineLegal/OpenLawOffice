@@ -58,7 +58,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                     {
                         Id = castFilter.Id
                     },
-                    results =>
+                    (results, error) =>
                     {
                         finalResult = results.Cast<ViewModels.Security.Area>()
                             .First<ViewModels.Security.Area>();
@@ -83,7 +83,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                             Id = castFilter.Id
                         }
                     },
-                    results =>
+                    (results, error) =>
                     {
                         finalResult = results;
                     });
@@ -136,8 +136,8 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             MainWindow.SecurityAreas_List.Command = new Commands.DelegateCommand(x =>
             {
                 viewModelCollection = new ObservableCollection<ViewModels.IViewModel>();
-                
-                LoadItems(BuildFilter(), viewModelCollection, results =>
+
+                LoadItems(BuildFilter(), viewModelCollection, (results, error) =>
                 {
                     MasterDetailWindow.MasterDataContext = results;
                 });
@@ -207,8 +207,8 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                 }));
 
                 viewModelCollection = new ObservableCollection<ViewModels.IViewModel>();
-                
-                LoadItems(BuildFilter(), viewModelCollection, results =>
+
+                LoadItems(BuildFilter(), viewModelCollection, (results, error) =>
                 {
                     MasterDetailWindow.MasterDataContext = results;
                     if (MasterDetailWindow.DisplayMode == Controls.DisplayModeType.Create)
@@ -234,7 +234,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                             Id = viewModel.Id
                         }
                     });
-                LoadItems(filter, collection, results =>
+                LoadItems(filter, collection, (results, error) =>
                 {
                     viewModel.Children.Clear();
                     foreach (ViewModels.Security.Area viewModelToAdd in results)
@@ -251,7 +251,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
 
             viewModelCollection = new ObservableCollection<ViewModels.IViewModel>();
 
-            LoadItems(BuildFilter(), viewModelCollection, results =>
+            LoadItems(BuildFilter(), viewModelCollection, (results, error) =>
             {
                 MasterDetailWindow.MasterDataContext = results;
                 if (selected != null) SelectItem(selected);
@@ -263,13 +263,13 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             LoadUI(null);
         }
 
-        public override Task LoadItems(ViewModels.IViewModel filter, ICollection<ViewModels.IViewModel> collection, Action<ICollection<ViewModels.IViewModel>> onComplete)
+        public override Task LoadItems(ViewModels.IViewModel filter, ICollection<ViewModels.IViewModel> collection, Action<ICollection<ViewModels.IViewModel>, ErrorHandling.ActionableError> onComplete)
         {
             IEnumerable<ViewModels.Security.Area> ienum = collection.Cast<ViewModels.Security.Area>().ToList();
             ObservableCollection<ViewModels.Security.Area> castCollection =
                 new ObservableCollection<ViewModels.Security.Area>(ienum);
 
-            return base.LoadItems(filter, collection, results =>
+            return base.LoadItems(filter, collection, (results, error) =>
             {
                 // We know that filter will either have the Id of the parent or be null meaning it is a base object
                 // Thus, we can use that to apply the parent
@@ -292,11 +292,11 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                 }
 
                 if (onComplete != null)
-                    onComplete(results);
+                    onComplete(results, error);
             });
         }
 
-        public override Task LoadDetails(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel> onComplete)
+        public override Task LoadDetails(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
         {
             ViewModels.Security.Area castViewModel = (ViewModels.Security.Area)viewModel;
 
@@ -310,10 +310,10 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             });
         }
 
-        public override Task UpdateItem(Common.Rest.Requests.RequestBase request, Action<ViewModels.IViewModel> onComplete)
+        public override Task UpdateItem(Common.Rest.Requests.RequestBase request, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
         {
             return UpdateItem<Common.Rest.Requests.Security.Area, Common.Rest.Responses.Security.Area>
-                ((Common.Rest.Requests.Security.Area)request, result =>
+                ((Common.Rest.Requests.Security.Area)request, (result, error) =>
             {
                 ViewModels.Security.Area castedResult = (ViewModels.Security.Area)result;
 
@@ -333,14 +333,14 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                     castedResult.Parent = parentViewModel;
                 }
 
-                if (onComplete != null) onComplete(castedResult);
+                if (onComplete != null) onComplete(castedResult, error);
             });
         }
 
-        public override Task CreateItem(Common.Rest.Requests.RequestBase request, Action<ViewModels.IViewModel> onComplete)
+        public override Task CreateItem(Common.Rest.Requests.RequestBase request, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
         {
             return CreateItem<Common.Rest.Requests.Security.Area, Common.Rest.Responses.Security.Area>
-                ((Common.Rest.Requests.Security.Area)request, result =>
+                ((Common.Rest.Requests.Security.Area)request, (result, error) =>
             { 
                 ViewModels.Security.Area castedResult = (ViewModels.Security.Area)result;
                 
@@ -364,14 +364,14 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                     parent.AddChild(castedResult);
                 }
 
-                if (onComplete != null) onComplete(castedResult);
+                if (onComplete != null) onComplete(castedResult, error);
             });
         }
-        
-        public override Task DisableItem(Common.Rest.Requests.RequestBase request, Action<ViewModels.IViewModel> onComplete)
+
+        public override Task DisableItem(Common.Rest.Requests.RequestBase request, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
         {
             return base.DisableItem<Common.Rest.Requests.Security.Area, Common.Rest.Responses.Security.Area>
-                ((Common.Rest.Requests.Security.Area)request, result =>
+                ((Common.Rest.Requests.Security.Area)request, (result, error) =>
             { 
                 ViewModels.Security.Area castedResult = (ViewModels.Security.Area)result;
 
@@ -396,21 +396,22 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                     ((ObservableCollection<ViewModels.IViewModel>)MasterDetailWindow.MasterDataContext).Remove(castedResult);
                 }
 
-                if (onComplete != null) onComplete(castedResult);
+                if (onComplete != null) 
+                    onComplete(castedResult, error);
             });
         }
 
-        public override Task ListItems(Common.Rest.Requests.RequestBase request, Action<List<ViewModels.IViewModel>> onComplete)
+        public override Task ListItems(Common.Rest.Requests.RequestBase request, Action<List<ViewModels.IViewModel>, ErrorHandling.ActionableError> onComplete)
         {
             return ListItems<Common.Rest.Requests.Security.Area, Common.Rest.Responses.Security.Area>
-                ((Common.Rest.Requests.Security.Area)request, viewModels =>
+                ((Common.Rest.Requests.Security.Area)request, (viewModels, errors) =>
             {
                 foreach (ViewModels.Security.Area viewModel in viewModels)
                 {
                     viewModel.AddChild(ViewModels.Creator.CreateDummy<ViewModels.Security.Area>(new Common.Models.Security.Area()));
                 }
                 if (onComplete != null)
-                    onComplete(viewModels);
+                    onComplete(viewModels, errors);
             });
         }
                 

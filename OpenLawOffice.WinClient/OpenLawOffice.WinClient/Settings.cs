@@ -6,7 +6,7 @@
 
         public Settings()
         {
-            HostBaseUrl = "http://localhost:18869/";
+            HostBaseUrl = "http://localhost:12320/";
         }
     }
 }

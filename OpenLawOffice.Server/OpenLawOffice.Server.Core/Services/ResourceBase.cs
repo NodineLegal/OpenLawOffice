@@ -166,8 +166,6 @@ namespace OpenLawOffice.Server.Core.Services
 
             sysModel = Mapper.Map<TModel>(request);
 
-
-
             if (typeof(Common.Models.ModelWithDatesOnly).IsAssignableFrom(typeof(TModel)))
             {
                 PropertyInfo utcCreated = typeof(TModel).GetProperty("UtcCreated");

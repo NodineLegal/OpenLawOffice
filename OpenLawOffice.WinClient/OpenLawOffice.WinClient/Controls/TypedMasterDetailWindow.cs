@@ -62,7 +62,7 @@ namespace OpenLawOffice.WinClient.Controls
         {
             if (obj != null)
             {
-                _controller.LoadDetails((ViewModels.IViewModel)obj, viewModel =>
+                _controller.LoadDetails((ViewModels.IViewModel)obj, (viewModel, error) =>
                 {
                 });
             }

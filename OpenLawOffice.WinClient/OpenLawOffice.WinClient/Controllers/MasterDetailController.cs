@@ -23,13 +23,14 @@ namespace OpenLawOffice.WinClient.Controllers
                 (title, ribbonTab, editButton, createButton, disableButton, saveButton, cancelButton, this);
         }
 
-        public override Task UpdateItem<TRequest, TResponse>(TRequest request, Action<ViewModels.IViewModel> onComplete)
+        public override Task UpdateItem<TRequest, TResponse>(TRequest request, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
         {
             MasterDetailWindow.IsBusy = true;
 
-            return base.UpdateItem<TRequest, TResponse>(request, result =>
+            return base.UpdateItem<TRequest, TResponse>(request, (result, error) =>
             {
-                if (onComplete != null) onComplete(result);
+                if (onComplete != null)
+                    onComplete(result, error);
 
                 MasterDetailWindow.MasterView.ClearSelected();
 
@@ -40,13 +41,14 @@ namespace OpenLawOffice.WinClient.Controllers
             });
         }
 
-        public override Task CreateItem<TRequest, TResponse>(TRequest request, Action<ViewModels.IViewModel> onComplete)
+        public override Task CreateItem<TRequest, TResponse>(TRequest request, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
         {
             MasterDetailWindow.IsBusy = true;
 
-            return base.CreateItem<TRequest, TResponse>(request, viewModel =>
+            return base.CreateItem<TRequest, TResponse>(request, (viewModels, error) =>
             {
-                if (onComplete != null) onComplete(viewModel);
+                if (onComplete != null)
+                    onComplete(viewModels, error);
 
                 MasterDetailWindow.MasterView.ClearSelected();
 
@@ -57,25 +59,26 @@ namespace OpenLawOffice.WinClient.Controllers
             });
         }
 
-        public override Task DisableItem<TRequest, TResponse>(TRequest request, Action<ViewModels.IViewModel> onComplete)
+        public override Task DisableItem<TRequest, TResponse>(TRequest request, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
         {
             MasterDetailWindow.IsBusy = true;
 
-            return base.DisableItem<TRequest, TResponse>(request, result =>
-            {
-                if (onComplete != null) onComplete(result);
-                MasterDetailWindow.IsBusy = false;
-            });
-        }
-
-        public override Task ListItems<TRequest, TResponse>(TRequest request, Action<List<ViewModels.IViewModel>> onComplete)
-        {
-            MasterDetailWindow.IsBusy = true;
-
-            return base.ListItems<TRequest, TResponse>(request, viewModels =>
+            return base.DisableItem<TRequest, TResponse>(request, (result, error) =>
             {
                 if (onComplete != null) 
-                    onComplete(viewModels);
+                    onComplete(result, error);
+                MasterDetailWindow.IsBusy = false;
+            });
+        }
+
+        public override Task ListItems<TRequest, TResponse>(TRequest request, Action<List<ViewModels.IViewModel>, ErrorHandling.ActionableError> onComplete)
+        {
+            MasterDetailWindow.IsBusy = true;
+
+            return base.ListItems<TRequest, TResponse>(request, (viewModels, error) =>
+            {
+                if (onComplete != null) 
+                    onComplete(viewModels, error);
                 MasterDetailWindow.IsBusy = false;
             });
         }
