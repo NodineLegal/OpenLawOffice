@@ -100,11 +100,13 @@
                 <ribbon:RibbonGroup x:Name="SecurityAreaAcls_Group" Header="Area ACLs">
                     <ribbon:RibbonButton x:Name="SecurityAreaAcls_List" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="List" />
                     <StackPanel Orientation="Horizontal">
-                        <ribbon:RibbonComboBox x:Name="SecurityAreaAcls_List_Area" x:FieldModifier="public" Label="Area:" SelectionBoxWidth="200" />
+                        <TextBlock Text="Area:" Width="35" />
+                        <ComboBox x:Name="SecurityAreaAcls_List_Area" x:FieldModifier="public" Width="200" Background="White" BorderBrush="Black" BorderThickness="1" />
                         <ribbon:RibbonButton x:Name="SecurityAreaAcls_ClearArea" x:FieldModifier="public" SmallImageSource="Images\SmallIcon.png" Label="Clear" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <ribbon:RibbonComboBox x:Name="SecurityAreaAcls_List_User" x:FieldModifier="public" Label="User:" SelectionBoxWidth="200" />
+                        <TextBlock Text="User:" Width="35" />
+                        <ComboBox x:Name="SecurityAreaAcls_List_User" x:FieldModifier="public" Width="200" Background="White" BorderBrush="Black" BorderThickness="1" />
                         <ribbon:RibbonButton x:Name="SecurityAreaAcls_ClearUser" x:FieldModifier="public" SmallImageSource="Images\SmallIcon.png" Label="Clear" />
                     </StackPanel>
                 </ribbon:RibbonGroup>

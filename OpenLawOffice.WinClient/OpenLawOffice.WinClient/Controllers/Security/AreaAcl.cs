@@ -67,8 +67,6 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                     },
                     Width = 200
                 });
-
-
         }
 
         private ViewModels.Security.AreaAcl BuildFilter()
@@ -81,10 +79,10 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                 ViewModels.Security.User userFilter = null;
                 ViewModels.Security.Area areaFilter = null;
 
-                if (MainWindow.SecurityAreaAcls_List_User.SelectionBoxItem.GetType() == typeof(ViewModels.Security.User))
-                    userFilter = (ViewModels.Security.User)MainWindow.SecurityAreaAcls_List_User.SelectionBoxItem;
-                if (MainWindow.SecurityAreaAcls_List_Area.SelectionBoxItem.GetType() == typeof(ViewModels.Security.Area))
-                    areaFilter = (ViewModels.Security.Area)MainWindow.SecurityAreaAcls_List_Area.SelectionBoxItem;
+                if (MainWindow.SecurityAreaAcls_List_User.SelectedItem != null)
+                    userFilter = (ViewModels.Security.User)MainWindow.SecurityAreaAcls_List_User.SelectedItem;
+                if (MainWindow.SecurityAreaAcls_List_Area.SelectedItem != null)
+                    areaFilter = (ViewModels.Security.Area)MainWindow.SecurityAreaAcls_List_Area.SelectedItem;
 
                 if (userFilter != null || areaFilter != null)
                 {
@@ -133,12 +131,29 @@ namespace OpenLawOffice.WinClient.Controllers.Security
 
                 Task.WaitAll(new Task[] { getAreasTask, getUsersTask });
 
+                List<ViewModels.Security.Area> areaList = new List<ViewModels.Security.Area>();
+                List<ViewModels.Security.User> userList = new List<ViewModels.Security.User>();
+
+                foreach (Common.Rest.Responses.Security.Area areaResponse in areaOptions.Response)
+                {
+                    Common.Models.Security.Area sysArea = Mapper.Map<Common.Models.Security.Area>(areaResponse);
+                    ViewModels.Security.Area vmArea = ViewModels.Creator.Create<ViewModels.Security.Area>(sysArea);
+                    areaList.Add(vmArea);
+                }
+
+                foreach (Common.Rest.Responses.Security.User userResponse in userOptions.Response)
+                {
+                    Common.Models.Security.User sysUser = Mapper.Map<Common.Models.Security.User>(userResponse);
+                    ViewModels.Security.User vmUser = ViewModels.Creator.Create<ViewModels.Security.User>(sysUser);
+                    userList.Add(vmUser);
+                }
+
                 App.Current.Dispatcher.Invoke(new Action(() =>
                 {
-                    MainWindow.SecurityAreaAcls_List_Area.ItemsSource = areaOptions.Response;
+                    MainWindow.SecurityAreaAcls_List_Area.ItemsSource = areaList;
                     MainWindow.SecurityAreaAcls_List_Area.DisplayMemberPath = "Name";
 
-                    MainWindow.SecurityAreaAcls_List_User.ItemsSource = userOptions.Response;
+                    MainWindow.SecurityAreaAcls_List_User.ItemsSource = userList;
                     MainWindow.SecurityAreaAcls_List_User.DisplayMemberPath = "Username";
                 }));
             });
@@ -152,6 +167,16 @@ namespace OpenLawOffice.WinClient.Controllers.Security
         public override void LoadUI(ViewModels.IViewModel selected)
         {
             ObservableCollection<ViewModels.IViewModel> viewModelCollection = null;
+
+            MainWindow.SecurityAreaAcls_ClearArea.Click += (sender, e) =>
+            {
+                MainWindow.SecurityAreaAcls_List_Area.SelectedIndex = -1;
+            };
+
+            MainWindow.SecurityAreaAcls_ClearUser.Click += (sender, e) =>
+            {
+                MainWindow.SecurityAreaAcls_List_User.SelectedIndex = -1;
+            };
 
             // ribbon controls
             MainWindow.SecurityAreaAcls_List.Command = new Commands.DelegateCommand(x =>
