@@ -15,7 +15,7 @@ namespace OpenLawOffice.Server.Core.Services.Security
             string filterClause = "";
 
             if (!string.IsNullOrEmpty(request.Username))
-                filterClause += " LOWER(\"Username\") like LOWER('%@Username%') AND";
+                filterClause += " LOWER(\"Username\") like '%' || LOWER(@Username) || '%' AND";
 
             filterClause += " \"UtcDisabled\" is null";
 
