@@ -8,8 +8,33 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" Background="White">
     <xctk:BusyIndicator x:Name="UIBusyIndicator" IsBusy="False">
-        <Grid>
+        <Grid VerticalAlignment="Top" Height="Auto" Width="Auto">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="100" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="80" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="75" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            
+            <Label Content="User Details" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" FontSize="16" Margin="0 10 0 0" />
 
+            <Label Content="Username:" Grid.Row="1" Grid.Column="0" />
+            <Label Name="UIUsername" Content="{Binding Path=Username, Mode=TwoWay}" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" />
+
+            <Label Content="Auth Token:" Grid.Row="2" Grid.Column="0" />
+            <Label Name="UIUserAuthToken" Content="{Binding Path=UserAuthToken, Mode=TwoWay}" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" />
+
+            <Label Content="Token Expiry:" Grid.Row="3" Grid.Column="0" />
+            <Label Name="UIUserAuthTokenExpiry" Content="{Binding Path=UserAuthTokenExpiry, Mode=TwoWay}" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" />
+
+            <local:CoreDetailsView DataContext="{Binding}" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" />
         </Grid>
     </xctk:BusyIndicator>
 </UserControl>

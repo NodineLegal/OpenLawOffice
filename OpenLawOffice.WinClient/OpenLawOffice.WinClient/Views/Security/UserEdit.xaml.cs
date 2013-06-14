@@ -17,5 +17,11 @@ namespace OpenLawOffice.WinClient.Views.Security
         {
             InitializeComponent();
         }
+
+        private void UIPassword_PasswordChanged(object sender, System.Windows.RoutedEventArgs e)
+        {
+            ViewModels.Security.User user = (ViewModels.Security.User)DataContext;
+            user.Password = UIPassword.Password;
+        }
     }
 }

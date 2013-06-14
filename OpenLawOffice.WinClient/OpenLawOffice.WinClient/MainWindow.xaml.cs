@@ -52,6 +52,10 @@ namespace OpenLawOffice.WinClient
             {
                 ControllerManager.Instance.LoadUI<Common.Models.Security.AreaAcl>();
             });
+            Home_Security_Users.Command = new Commands.DelegateCommand(x =>
+            {
+                ControllerManager.Instance.LoadUI<Common.Models.Security.User>();
+            });
         }
 
         public void DisableUserControl()

@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -175,12 +175,20 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             MasterDetailWindow.DetailView.IsBusy = true;
             MasterDetailWindow.EditView.IsBusy = true;
 
-            return new Task(() =>
+            return Task.Factory.StartNew(() =>
             {
-                MasterDetailWindow.DetailView.IsBusy = false;
-                MasterDetailWindow.EditView.IsBusy = false;
+                App.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    MasterDetailWindow.DetailView.IsBusy = false;
+                    MasterDetailWindow.EditView.IsBusy = false;
+                }));
             });
         }
+
+        //public override Task UpdateItem<TRequest, TResponse>(TRequest request, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
+        //{
+        //    return base.UpdateItem<TRequest, TResponse>(request, onComplete);
+        //}
 
         public override Task UpdateItem(Common.Rest.Requests.RequestBase request, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
         {

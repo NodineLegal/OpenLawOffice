@@ -30,7 +30,7 @@
             <Label Content="Description:" Grid.Row="2" Grid.Column="0" />
             <Label Name="UIDescription" Content="{Binding Path=Description, Mode=TwoWay}" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" />
 
-            <local:CoreDetailsView DataContext="{Binding}" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" />
+            <local:CoreDetailsView DataContext="{Binding}" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" />
         </Grid>
     </xctk:BusyIndicator>
 </UserControl>
