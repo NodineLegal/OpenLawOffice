@@ -8,7 +8,7 @@
         public Settings()
         {
             //AddinDirectory = @"F:\OpenLawOffice\OpenLawOffice.Server\build\Addins";
-            PostgresConnectionString = "server=localhost;Port=5432;Database=openlawoffice_1;User Id=postgres;Password=775j79d;";
+            PostgresConnectionString = "server=192.168.10.40;Port=5432;Database=openlawoffice;User Id=postgres;Password=postgres;";
         }
     }
 }

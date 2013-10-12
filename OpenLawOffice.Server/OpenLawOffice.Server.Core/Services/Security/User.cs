@@ -15,11 +15,11 @@ namespace OpenLawOffice.Server.Core.Services.Security
             string filterClause = "";
 
             if (!string.IsNullOrEmpty(request.Username))
-                filterClause += " LOWER(\"Username\") like '%' || LOWER(@Username) || '%' AND";
+                filterClause += " LOWER(\"username\") like '%' || LOWER(@Username) || '%' AND";
 
-            filterClause += " \"UtcDisabled\" is null";
+            filterClause += " \"utc_disabled\" is null";
 
-            return db.Query<DBOs.Security.User>("SELECT * FROM \"User\" WHERE" + filterClause,
+            return db.Query<DBOs.Security.User>("SELECT * FROM \"user\" WHERE" + filterClause,
                 new { Username = request.Username });
         }
 

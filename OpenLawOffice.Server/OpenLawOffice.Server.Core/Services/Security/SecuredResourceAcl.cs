@@ -16,18 +16,18 @@ namespace OpenLawOffice.Server.Core.Services.Security
 
             if (request.SecuredResourceId.HasValue && request.SecuredResourceId.Value != Guid.Empty)
             {
-                filterClause += " \"SecuredResourceId\"=@SecuredResource AND";
+                filterClause += " \"secured_resource_id\"=@SecuredResource AND";
                 resid = request.SecuredResourceId.Value;
             }
             if (request.UserId.HasValue)
             {
-                filterClause += " \"UserId\"=@User AND";
+                filterClause += " \"user_id\"=@User AND";
                 userid = request.UserId.Value;
             }
 
-            filterClause += " \"UtcDisabled\" is null";
+            filterClause += " \"utc_disabled\" is null";
 
-            return db.Query<DBOs.Security.SecuredResourceAcl>("SELECT * FROM \"SecuredResourceAcl\" WHERE" + filterClause,
+            return db.Query<DBOs.Security.SecuredResourceAcl>("SELECT * FROM \"secured_resource_acl\" WHERE" + filterClause,
                 new { Area = resid, User = userid });
         }
     }

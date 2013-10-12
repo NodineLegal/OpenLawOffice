@@ -15,23 +15,23 @@ namespace OpenLawOffice.Server.Core.Services.Security
             int parentid = 0;
 
             if (!string.IsNullOrEmpty(request.Name))
-                filterClause += " LOWER(\"Name\") like '%' || LOWER(@Name) || '%' AND";
+                filterClause += " LOWER(\"name\") like '%' || LOWER(@Name) || '%' AND";
 
             if (!request.ShowAll.HasValue || !request.ShowAll.Value)
             { 
                 // honor parent
                 if (request.ParentId.HasValue && request.ParentId.Value > 0)
                 {
-                    filterClause += " \"ParentId\"=@ParentId AND";
+                    filterClause += " \"parent_id\"=@ParentId AND";
                     parentid = request.ParentId.Value;
                 }
                 else
-                    filterClause += " \"ParentId\" is null AND";
+                    filterClause += " \"parent_id\" is null AND";
             }
 
-            filterClause += " \"UtcDisabled\" is null";
+            filterClause += " \"utc_disabled\" is null";
 
-            return db.Query<DBOs.Security.Area>("SELECT * FROM \"Area\" WHERE" + filterClause,
+            return db.Query<DBOs.Security.Area>("SELECT * FROM \"area\" WHERE" + filterClause,
                 new { Name = request.Name, ParentId = parentid });
         }
     }

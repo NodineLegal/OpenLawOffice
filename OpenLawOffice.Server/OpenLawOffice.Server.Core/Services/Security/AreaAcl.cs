@@ -17,18 +17,18 @@ namespace OpenLawOffice.Server.Core.Services.Security
 
             if (request.SecurityAreaId.HasValue && request.SecurityAreaId.Value > 0)
             {
-                filterClause += " \"SecurityAreaId\"=@Area AND";
+                filterClause += " \"security_area_id\"=@Area AND";
                 areaid = request.SecurityAreaId.Value;
             }
             if (request.UserId.HasValue)
             {
-                filterClause += " \"UserId\"=@User AND";
+                filterClause += " \"user_id\"=@User AND";
                 userid = request.UserId.Value;
             }
 
-            filterClause += " \"UtcDisabled\" is null";
+            filterClause += " \"utc_disabled\" is null";
 
-            return db.Query<DBOs.Security.AreaAcl>("SELECT * FROM \"AreaAcl\" WHERE" + filterClause,
+            return db.Query<DBOs.Security.AreaAcl>("SELECT * FROM \"area_acl\" WHERE" + filterClause,
                 new { Area = areaid, User = userid });
         }
 
@@ -83,8 +83,8 @@ namespace OpenLawOffice.Server.Core.Services.Security
             {
                 using (IDbConnection db = Database.Instance.OpenConnection())
                 {
-                    List<DBOs.Security.AreaAcl> existingAreaAclList = 
-                        db.Query<DBOs.Security.AreaAcl>("SELECT * FROM \"AreaAcl\" WHERE \"SecurityAreaId\"=@Area AND \"UserId\"=@User",
+                    List<DBOs.Security.AreaAcl> existingAreaAclList =
+                        db.Query<DBOs.Security.AreaAcl>("SELECT * FROM \"area_acl\" WHERE \"security_area_id\"=@Area AND \"user_id\"=@User",
                         new { Area = sysModel.Area.Id.Value, User = sysModel.User.Id.Value });
                     
 

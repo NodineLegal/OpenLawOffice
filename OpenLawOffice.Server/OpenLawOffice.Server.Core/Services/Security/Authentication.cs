@@ -116,8 +116,8 @@ namespace OpenLawOffice.Server.Core.Services.Security
                 using (IDbConnection db = Database.Instance.OpenConnection())
                 {
                     db.Update<DBOs.Security.User>(
-                        set: "\"UserAuthToken\" = {0}, \"UserAuthTokenExpiry\" = {1}".Params(dbUser.UserAuthToken.Value, dbUser.UserAuthTokenExpiry.Value),
-                        where: "\"Id\" = {0}".Params(dbUser.Id));
+                        set: "\"user_auth_token\" = {0}, \"user_auth_token_expiry\" = {1}".Params(dbUser.UserAuthToken.Value, dbUser.UserAuthTokenExpiry.Value),
+                        where: "\"id\" = {0}".Params(dbUser.Id));
                 }
             }
             catch (Exception e)
