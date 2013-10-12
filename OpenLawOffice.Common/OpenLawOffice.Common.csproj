@@ -47,13 +47,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoMapper">
-      <HintPath>..\OpenLawOffice.Server\packages\AutoMapper.2.2.1\lib\net40\AutoMapper.dll</HintPath>
+      <HintPath>..\OpenLawOffice.Server\packages\AutoMapper.3.0.0\lib\net40\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper.Net4">
+      <HintPath>..\OpenLawOffice.Server\packages\AutoMapper.3.0.0\lib\net40\AutoMapper.Net4.dll</HintPath>
     </Reference>
     <Reference Include="ServiceStack.Common">
-      <HintPath>..\OpenLawOffice.Server\OpenLawOffice.Server.Core\libs\ServiceStack.Common.dll</HintPath>
+      <HintPath>..\OpenLawOffice.Server\packages\ServiceStack.Common.3.9.66\lib\net35\ServiceStack.Common.dll</HintPath>
     </Reference>
     <Reference Include="ServiceStack.Interfaces">
-      <HintPath>..\OpenLawOffice.Server\OpenLawOffice.Server.Core\libs\ServiceStack.Interfaces.dll</HintPath>
+      <HintPath>..\OpenLawOffice.Server\packages\ServiceStack.Common.3.9.66\lib\net35\ServiceStack.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Text">
+      <HintPath>..\OpenLawOffice.Server\packages\ServiceStack.Text.3.9.66\lib\net35\ServiceStack.Text.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
