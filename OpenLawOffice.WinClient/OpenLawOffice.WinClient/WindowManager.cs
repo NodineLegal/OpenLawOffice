@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using AvalonDock.Layout;
+using Xceed.Wpf.AvalonDock.Layout;
 
 namespace OpenLawOffice.WinClient
 {
@@ -29,7 +29,7 @@ namespace OpenLawOffice.WinClient
             WindowHistory = new LinkedList<Controls.IDockableWindow>();
         }
 
-        public Controls.IDockableWindow Lookup(AvalonDock.Layout.LayoutDocument document)
+        public Controls.IDockableWindow Lookup(Xceed.Wpf.AvalonDock.Layout.LayoutDocument document)
         {
             for (int i = 0; i < Windows.Count; i++)
             {

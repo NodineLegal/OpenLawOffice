@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 using Microsoft.Windows.Controls.Ribbon;
-using AvalonDock.Layout;
+using Xceed.Wpf.AvalonDock.Layout;
 using System.Windows.Input;
 
 namespace OpenLawOffice.WinClient
@@ -21,7 +21,7 @@ namespace OpenLawOffice.WinClient
             Common.ObjectMapper.MapAssembly(typeof(MainWindow).Assembly);
             ControllerManager.Instance.ScanAssembly(typeof(MainWindow).Assembly);
 
-            DockManager.DocumentClosed += delegate(object sender, AvalonDock.DocumentClosedEventArgs args)
+            DockManager.DocumentClosed += delegate(object sender, Xceed.Wpf.AvalonDock.DocumentClosedEventArgs args)
             {
                 Controls.IDockableWindow iwin = WindowManager.Instance.Lookup(args.Document);
                 if (iwin.OnDeactivated != null)

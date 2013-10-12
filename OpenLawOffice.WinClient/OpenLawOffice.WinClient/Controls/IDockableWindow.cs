@@ -1,5 +1,5 @@
 ﻿using System;
-using AvalonDock.Layout;
+using Xceed.Wpf.AvalonDock.Layout;
 
 namespace OpenLawOffice.WinClient.Controls
 {

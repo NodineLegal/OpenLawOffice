@@ -31,7 +31,7 @@ namespace OpenLawOffice.WinClient.Controls
 
         public bool IsSelected { get; set; }
         public bool CanHaveMultipleInstances { get { return false; } }
-        public AvalonDock.Layout.LayoutDocument DockingWindow { get; set; }
+        public Xceed.Wpf.AvalonDock.Layout.LayoutDocument DockingWindow { get; set; }
         public string Title { get; set; }
         public bool IsBusy
         {
@@ -211,7 +211,7 @@ namespace OpenLawOffice.WinClient.Controls
 
             RelationshipCommands = new List<Commands.DelegateCommand>();
 
-            DockingWindow = new AvalonDock.Layout.LayoutDocument();
+            DockingWindow = new Xceed.Wpf.AvalonDock.Layout.LayoutDocument();
 
             DataContextChanged += (sender, args) =>
                 {

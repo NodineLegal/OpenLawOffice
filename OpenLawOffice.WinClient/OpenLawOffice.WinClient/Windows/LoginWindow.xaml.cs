@@ -19,13 +19,13 @@ namespace OpenLawOffice.WinClient.Windows
 
         public bool IsSelected { get; set; }
         public virtual bool CanHaveMultipleInstances { get { return false; } }
-        public AvalonDock.Layout.LayoutDocument DockingWindow { get; set; }
+        public Xceed.Wpf.AvalonDock.Layout.LayoutDocument DockingWindow { get; set; }
         public virtual string Title { get { return "Login"; } }
 
         public LoginWindow()
         {
             InitializeComponent();
-            DockingWindow = new AvalonDock.Layout.LayoutDocument();
+            DockingWindow = new Xceed.Wpf.AvalonDock.Layout.LayoutDocument();
             DockingWindow.CanClose = false;
         }
 
