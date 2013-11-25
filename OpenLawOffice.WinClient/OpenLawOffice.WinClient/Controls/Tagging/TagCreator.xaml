@@ -1,0 +1,63 @@
+﻿<UserControl x:Class="OpenLawOffice.WinClient.Controls.Tagging.TagCreator"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" Visibility="Hidden">
+    <Border x:Name="UIAddTagOverlay" Grid.Column="0" Grid.Row="0"
+                        BorderBrush="Black" BorderThickness="1" 
+                        Background="#80000000" HorizontalAlignment="Stretch" 
+                        VerticalAlignment="Stretch">
+        <Grid Height="25" Width="Auto" MaxHeight="25">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="45" />
+                <ColumnDefinition Width="45" />
+            </Grid.ColumnDefinitions>
+            <Border CornerRadius="5,0,0,5" BorderBrush="DarkGray" BorderThickness="1" Grid.Column="0" Height="Auto" Width="Auto">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="AliceBlue" Offset="0" />
+                        <GradientStop Color="#000000FF" Offset="1" />
+                    </LinearGradientBrush>
+                </Border.Background>
+                <ComboBox Name="CategorySelector"                              
+                              Padding="3 1 3 1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
+                              Height="Auto" Width="Auto" />
+            </Border>
+            <Border CornerRadius="0,0,0,0" BorderBrush="DarkGray" BorderThickness="1" Grid.Column="1" Height="Auto" Width="Auto">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="AliceBlue" Offset="0" />
+                        <GradientStop Color="#00000000" Offset="1" />
+                    </LinearGradientBrush>
+                </Border.Background>
+                <TextBox Name="TagText" 
+                                 Padding="3 1 3 1" MinWidth="100" VerticalAlignment="Stretch" 
+                                 HorizontalAlignment="Stretch" />
+            </Border>
+            <Button Name="Save" Content="Save" Foreground="#555555" FontWeight="UltraBold" Grid.Column="2"
+                            VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
+                            Click="Save_Click">
+                <Button.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="AliceBlue" Offset="0" />
+                        <GradientStop Color="#0000FF00" Offset="1" />
+                    </LinearGradientBrush>
+                </Button.Background>
+            </Button>
+            <Button Name="Cancel" Content="Cancel" Foreground="#555555" FontWeight="UltraBold" Grid.Column="3"
+                            VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
+                            Click="Cancel_Click">
+                <Button.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="AliceBlue" Offset="0" />
+                        <GradientStop Color="#00FF0000" Offset="1" />
+                    </LinearGradientBrush>
+                </Button.Background>
+            </Button>
+        </Grid>
+    </Border>
+</UserControl>

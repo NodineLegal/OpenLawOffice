@@ -6,7 +6,10 @@ namespace OpenLawOffice.WinClient
 {
     public class ControllerManager : Common.Singleton<ControllerManager>
     {
+        // Common.Model.X, Controller
         private Dictionary<Type, Controllers.ControllerBase> _modelMapToController;
+
+        // Controller, Controller
         private Dictionary<Type, Controllers.ControllerBase> _controllers;
 
         public ControllerManager()
@@ -35,6 +38,12 @@ namespace OpenLawOffice.WinClient
 
                 _modelMapToController.Add(att.ModelType, _controllers[type]);
             }
+        }
+
+        public T GetController<T>()
+            where T : Controllers.ControllerBase
+        {
+            return (T)_controllers[typeof(T)];
         }
 
         public void LoadUI<TModel>(ViewModels.IViewModel selected)

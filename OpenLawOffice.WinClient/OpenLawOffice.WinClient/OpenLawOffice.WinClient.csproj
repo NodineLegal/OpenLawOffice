@@ -144,7 +144,6 @@
     <Compile Include="Consumers\ListConsumerResult.cs" />
     <Compile Include="Consumers\Matters\Matter.cs" />
     <Compile Include="Consumers\Matters\MatterTag.cs" />
-    <Compile Include="Consumers\Matters\MatterTagCategory.cs" />
     <Compile Include="Consumers\RequestBuilder.cs" />
     <Compile Include="Consumers\Security\Area.cs" />
     <Compile Include="Consumers\Security\AreaAcl.cs" />
@@ -152,11 +151,14 @@
     <Compile Include="Consumers\Security\SecuredResource.cs" />
     <Compile Include="Consumers\Security\SecuredResourceAcl.cs" />
     <Compile Include="Consumers\Security\User.cs" />
+    <Compile Include="Consumers\Tagging\TagCategory.cs" />
     <Compile Include="ControllerManager.cs" />
     <Compile Include="Controllers\ControllerBase.cs" />
     <Compile Include="Controllers\MasterDetailControllerCore.cs" />
     <Compile Include="Controllers\HandleAttribute.cs" />
     <Compile Include="Controllers\MasterDetailController.cs" />
+    <Compile Include="Controllers\Matters\Matter.cs" />
+    <Compile Include="Controllers\Matters\MatterTag.cs" />
     <Compile Include="Controllers\Security\AreaAcl.cs" />
     <Compile Include="Controllers\Security\Area.cs" />
     <Compile Include="Controllers\Security\User.cs" />
@@ -178,6 +180,9 @@
     <Compile Include="Controls\HierarchicalSelector.xaml.cs">
       <DependentUpon>HierarchicalSelector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\NullView.xaml.cs">
+      <DependentUpon>NullView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\PermissionSelector.xaml.cs">
       <DependentUpon>PermissionSelector.xaml</DependentUpon>
     </Compile>
@@ -188,6 +193,9 @@
     </Compile>
     <Compile Include="Controls\Tagging\TagBox.xaml.cs">
       <DependentUpon>TagBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Tagging\TagCreator.xaml.cs">
+      <DependentUpon>TagCreator.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\TreeGridView.xaml.cs">
       <DependentUpon>TreeGridView.xaml</DependentUpon>
@@ -212,6 +220,11 @@
     <Compile Include="ErrorHandling\NotificationError.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="ViewModels\Creator.cs" />
+    <Compile Include="ViewModels\Matters\Matter.cs" />
+    <Compile Include="ViewModels\Matters\MatterTag.cs" />
+    <Compile Include="ViewModels\Matters\ResponsibleUser.cs" />
+    <Compile Include="ViewModels\Tagging\TagBase.cs" />
+    <Compile Include="ViewModels\Tagging\TagCategory.cs" />
     <Compile Include="ViewModels\UnboundModelException.cs" />
     <Compile Include="ViewModels\ViewModelCore.cs" />
     <Compile Include="ViewModels\IHierarchicalViewModel.cs" />
@@ -226,6 +239,18 @@
     <Compile Include="ViewModels\Security\SecuredResourceAcl.cs" />
     <Compile Include="ViewModels\Security\User.cs" />
     <Compile Include="Views\IRelationView.cs" />
+    <Compile Include="Views\Matters\MatterCreate.xaml.cs">
+      <DependentUpon>MatterCreate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Matters\MatterDetail.xaml.cs">
+      <DependentUpon>MatterDetail.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Matters\MatterEdit.xaml.cs">
+      <DependentUpon>MatterEdit.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NullView.xaml.cs">
+      <DependentUpon>NullView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Security\AreaAclCreate.xaml.cs">
       <DependentUpon>AreaAclCreate.xaml</DependentUpon>
     </Compile>
@@ -282,6 +307,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\NullView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\PermissionSelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -291,6 +320,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Tagging\TagBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Tagging\TagCreator.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -322,6 +355,22 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\Matters\MatterCreate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Matters\MatterDetail.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Matters\MatterEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\NullView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Security\AreaAclCreate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

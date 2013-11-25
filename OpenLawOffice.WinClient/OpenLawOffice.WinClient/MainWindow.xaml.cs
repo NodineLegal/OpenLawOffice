@@ -56,6 +56,10 @@ namespace OpenLawOffice.WinClient
             {
                 ControllerManager.Instance.LoadUI<Common.Models.Security.User>();
             });
+            Home_Matters.Command = new Commands.DelegateCommand(x =>
+            {
+                ControllerManager.Instance.LoadUI<Common.Models.Matters.Matter>();
+            });
         }
 
         public void DisableUserControl()
@@ -71,123 +75,6 @@ namespace OpenLawOffice.WinClient
         public void AddDocumentWindow(Controls.IDockableWindow doc)
         {
             LayoutPanel.Children.Add(doc.DockingWindow);
-        }
-
-        public void EnableMatterRelationshipControls()
-        {
-            Matters_Contacts.IsEnabled = Matters_Tasks.IsEnabled = Matters_Documents.IsEnabled = 
-                Matters_Notes.IsEnabled = true;
-        }
-
-        public void DisableMatterRelationshipControls()
-        {
-            Matters_Contacts.IsEnabled = Matters_Tasks.IsEnabled = Matters_Documents.IsEnabled =
-                Matters_Notes.IsEnabled = false;
-        }
-
-        private void Home_Matters_Click(object sender, RoutedEventArgs e)
-        {
-            //if (_mattersListWindow == null)
-            //{
-            //    _mattersListWindow = new Windows.Matters();
-
-            //    _mattersListWindow.OnActivated += iwin =>
-            //        {
-            //            MattersTab.Visibility = System.Windows.Visibility.Visible;
-            //            MattersTab.IsSelected = true;
-            //        };
-            //    _mattersListWindow.OnDeactivated += iwin =>
-            //        {
-            //            MattersTab.Visibility = System.Windows.Visibility.Hidden;
-            //        };
-            //    _mattersListWindow.OnDispose += iwin =>
-            //        {
-            //            _mattersListWindow = null;
-            //        };
-            //    _mattersListWindow.Load();
-            //}
-            //else
-            //{
-            //    _mattersListWindow.Activate();
-            //}
-        }
-
-        private void Home_Contacts_Click(object sender, RoutedEventArgs e)
-        {
-            //if (_contactsListWindow == null)
-            //{
-            //    _contactsListWindow = new Windows.Contacts();
-            //    _contactsListWindow.OnActivated += iwin =>
-            //    {
-            //        ContactsTab.Visibility = System.Windows.Visibility.Visible;
-            //        ContactsTab.IsSelected = true;
-            //    };
-            //    _contactsListWindow.OnDeactivated += iwin =>
-            //    {
-            //        ContactsTab.Visibility = System.Windows.Visibility.Hidden;
-            //    };
-            //    _contactsListWindow.OnDispose += iwin =>
-            //    {
-            //        _contactsListWindow = null;
-            //    };
-            //    _contactsListWindow.Load();
-            //}
-            //else
-            //{
-            //    _contactsListWindow.Activate();
-            //}
-        }
-                
-        private void Matters_List_Title_UserDataChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-        {
-            //if (_mattersListWindow != null)
-            //    _mattersListWindow.UpdateList();
-        }
-
-        private void Matters_List_Tags_UserDataChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-        {
-            //if (_mattersListWindow != null)
-            //    _mattersListWindow.UpdateList();
-        }
-
-        private void Matters_Contacts_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Matters_Tasks_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Matters_Documents_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Matters_Notes_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Matters_Save_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Matters_Cancel_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Matters_List_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Matters_Edit_Click(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }

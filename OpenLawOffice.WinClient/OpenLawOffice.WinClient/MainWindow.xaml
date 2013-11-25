@@ -28,8 +28,8 @@
             
             <ribbon:RibbonTab x:Name="HomeTab" Header="Home">
                 <ribbon:RibbonGroup Header="Areas">
-                    <ribbon:RibbonButton x:Name="Home_Matters" LargeImageSource="Images\LargeIcon.png" Label="Matters" Click="Home_Matters_Click" />
-                    <ribbon:RibbonButton x:Name="Home_Contacts" LargeImageSource="Images\LargeIcon.png" Label="Contacts" Click="Home_Contacts_Click" />
+                    <ribbon:RibbonButton x:Name="Home_Matters" LargeImageSource="Images\LargeIcon.png" Label="Matters" />
+                    <ribbon:RibbonButton x:Name="Home_Contacts" LargeImageSource="Images\LargeIcon.png" Label="Contacts" />
                     <ribbon:RibbonMenuButton x:Name="Home_Security" LargeImageSource="Images\LargeIcon.png" Label="Security">
                         <ribbon:RibbonMenuItem x:Name="Home_Security_Users" ImageSource="Images\SmallIcon.png" Header="Users" />
                         <ribbon:RibbonMenuItem x:Name="Home_Security_Areas" ImageSource="Images\SmallIcon.png" Header="Areas" />
@@ -43,20 +43,23 @@
 
             <ribbon:RibbonTab x:Name="MattersTab" Header="Matters" Visibility="Hidden">
                 <ribbon:RibbonGroup x:Name="Matters_Group" Header="Matters">
-                    <ribbon:RibbonButton x:Name="Matters_List" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="List" IsEnabled="False" Click="Matters_List_Click" />
-                    <ctrls:WatermarkedRibbonTextBox x:Name="Matters_List_Title" x:FieldModifier="public" Watermark="Title Filter" TextBoxWidth="150" UserDataChanged="Matters_List_Title_UserDataChanged" />
-                    <ctrls:WatermarkedRibbonTextBox x:Name="Matters_List_Tags" x:FieldModifier="public" Watermark="Tag Filter" TextBoxWidth="150" UserDataChanged="Matters_List_Tags_UserDataChanged" />
+                    <ribbon:RibbonButton x:Name="Matters_List" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="List" />
+                    <ctrls:WatermarkedRibbonTextBox x:Name="Matters_List_Title" x:FieldModifier="public" Watermark="Title Filter" TextBoxWidth="150" />
+                    <ctrls:WatermarkedRibbonTextBox x:Name="Matters_List_Tags" x:FieldModifier="public" Watermark="Tag Filter" TextBoxWidth="150" />
                 </ribbon:RibbonGroup>
                 <ribbon:RibbonGroup x:Name="Matters_Relationships" Header="Relationships">
-                    <ribbon:RibbonButton x:Name="Matters_Contacts" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Contacts" IsEnabled="False" Click="Matters_Contacts_Click" />
-                    <ribbon:RibbonButton x:Name="Matters_Tasks" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Tasks" IsEnabled="False" Click="Matters_Tasks_Click" />
-                    <ribbon:RibbonButton x:Name="Matters_Documents" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Documents" IsEnabled="False" Click="Matters_Documents_Click" />
-                    <ribbon:RibbonButton x:Name="Matters_Notes" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Notes" IsEnabled="False" Click="Matters_Notes_Click" />
+                    <ribbon:RibbonButton x:Name="Matters_Acls" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="ACLs" />
+                    <ribbon:RibbonButton x:Name="Matters_Contacts" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Contacts" />
+                    <ribbon:RibbonButton x:Name="Matters_Tasks" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Tasks" />
+                    <ribbon:RibbonButton x:Name="Matters_Documents" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Documents" />
+                    <ribbon:RibbonButton x:Name="Matters_Notes" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Notes" />
                 </ribbon:RibbonGroup>
                 <ribbon:RibbonGroup x:Name="Matters_Actions" Header="Actions">
-                    <ribbon:RibbonToggleButton x:Name="Matters_Edit" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Edit" IsEnabled="True" Click="Matters_Edit_Click" />
-                    <ribbon:RibbonButton x:Name="Matters_Save" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Save" IsEnabled="False" />
-                    <ribbon:RibbonButton x:Name="Matters_Cancel" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Cancel" IsEnabled="False" Click="Matters_Cancel_Click" />
+                    <ribbon:RibbonButton x:Name="Matters_Create" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Create" />
+                    <ribbon:RibbonToggleButton x:Name="Matters_Edit" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Edit" />
+                    <ribbon:RibbonButton x:Name="Matters_Disable" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Disable" />
+                    <ribbon:RibbonButton x:Name="Matters_Save" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Save" />
+                    <ribbon:RibbonButton x:Name="Matters_Cancel" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Cancel" />
                 </ribbon:RibbonGroup>
             </ribbon:RibbonTab>
 

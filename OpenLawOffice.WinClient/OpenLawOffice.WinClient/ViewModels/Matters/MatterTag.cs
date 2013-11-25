@@ -1,34 +1,33 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 
-namespace OpenLawOffice.WinClient.ViewModels.Security
+namespace OpenLawOffice.WinClient.ViewModels.Matters
 {
     [Common.Models.MapMe]
-    public class SecuredResource : ViewModelCore<Common.Models.Security.SecuredResource>
+    public class MatterTag : Tagging.TagBase<Common.Models.Matters.MatterTag>
     {
-        private Guid? _id;
-        public Guid? Id
+        private Matter _matter;
+        public Matter Matter
         {
-            get { return _id; }
+            get { return _matter; }
             set
             {
-                _id = value;
-                OnPropertyChanged("Id");
+                _matter = value;
+                OnPropertyChanged("Matter");
             }
         }
-
-        public SecuredResource()
+        
+        public MatterTag()
         {
         }
 
-        public SecuredResource(Common.Models.Security.SecuredResource model)
+        public MatterTag(Common.Models.Matters.MatterTag model)
             : base(model)
         {
         }
-
+        
         public static void BuildMappings()
         {
-            Mapper.CreateMap<Common.Models.Security.SecuredResource, SecuredResource>()
+            Mapper.CreateMap<Common.Models.Matters.MatterTag, MatterTag>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
                 .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
@@ -36,12 +35,14 @@ namespace OpenLawOffice.WinClient.ViewModels.Security
                 .ForMember(dst => dst.ModifiedBy, opt => opt.MapFrom(src => src.ModifiedBy))
                 .ForMember(dst => dst.DisabledBy, opt => opt.MapFrom(src => src.DisabledBy))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.IsHierarchical, opt => opt.Ignore())
+                .ForMember(dst => dst.TagCategory, opt => opt.MapFrom(src => src.TagCategory))
+                .ForMember(dst => dst.Tag, opt => opt.MapFrom(src => src.Tag))
+                .ForMember(dst => dst.Matter, opt => opt.MapFrom(src => src.Matter))
                 .ForMember(dst => dst.Model, opt => opt.Ignore())
                 .ForMember(dst => dst.State, opt => opt.UseValue<StateType>(StateType.Synchronized))
                 .ForMember(dst => dst.IsDummy, opt => opt.UseValue(false));
 
-            Mapper.CreateMap<SecuredResource, Common.Models.Security.SecuredResource>()
+            Mapper.CreateMap<MatterTag, Common.Models.Matters.MatterTag>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
                 .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
@@ -49,6 +50,9 @@ namespace OpenLawOffice.WinClient.ViewModels.Security
                 .ForMember(dst => dst.ModifiedBy, opt => opt.MapFrom(src => src.ModifiedBy))
                 .ForMember(dst => dst.DisabledBy, opt => opt.MapFrom(src => src.DisabledBy))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dst => dst.TagCategory, opt => opt.MapFrom(src => src.TagCategory))
+                .ForMember(dst => dst.Tag, opt => opt.MapFrom(src => src.Tag))
+                .ForMember(dst => dst.Matter, opt => opt.MapFrom(src => src.Matter))
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false));
         }
     }

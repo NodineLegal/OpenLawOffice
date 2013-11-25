@@ -1,5 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Collections.ObjectModel;
+using System;
+using System.Windows.Data;
 
 namespace OpenLawOffice.WinClient.Controls.Tagging
 {
@@ -49,13 +52,22 @@ namespace OpenLawOffice.WinClient.Controls.Tagging
             }
         }
 
+        public string PreviousText { get; set; }
+        public string Text { get { return UITagText.Text; } }
+
+        public ObservableCollection<ViewModels.Tagging.TagCategory> TagCategories { get; set; }
+
         public CategoryTag()
         {
+            TagCategories = new ObservableCollection<ViewModels.Tagging.TagCategory>();
+            
             InitializeComponent();
         }
 
         private void UIViewContainer_Click(object sender, RoutedEventArgs e)
         {
+            PreviousText = UITagText.Text.Trim();
+            PopulateCategories();
             DisplayMode = DisplayModeType.Edit;
             UITagText.Focus();
         }
@@ -74,8 +86,47 @@ namespace OpenLawOffice.WinClient.Controls.Tagging
             }
             else if (e.Key == System.Windows.Input.Key.Return)
             {
+                System.Reflection.PropertyInfo tagCatProp = DataContext.GetType().GetProperty("TagCategory");
+                tagCatProp.SetValue(DataContext, UICategorySelector.SelectedItem, null);
+                DisplayMode = DisplayModeType.View;
                 if (OnSave != null) OnSave(this);
             }
+        }
+
+        private void PopulateCategories()
+        {
+            Controllers.Matters.Matter matterController = ControllerManager.Instance.GetController<Controllers.Matters.Matter>();
+
+            if (TagCategories == null) TagCategories = new ObservableCollection<ViewModels.Tagging.TagCategory>();
+            TagCategories.Clear();
+
+            matterController.GetTagCategories(list =>
+            {
+                App.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    list.ForEach(cat =>
+                    {
+                        TagCategories.Add(cat);
+                    });
+
+                    Binding bind = new Binding();
+                    bind.Source = TagCategories;
+                    UICategorySelector.SetBinding(ComboBox.ItemsSourceProperty, bind);
+
+                    //UICategorySelector.ItemsSource = TagCategories;
+                    UICategorySelector.SelectedValuePath = "Id";
+                    UICategorySelector.DisplayMemberPath = "Name";
+
+
+
+                    System.Reflection.PropertyInfo tagCatProp = DataContext.GetType().GetProperty("TagCategory");
+                    ViewModels.Tagging.TagCategory tagCat = (ViewModels.Tagging.TagCategory)tagCatProp.GetValue(DataContext, null);
+
+                    UICategorySelector.SelectedValue = tagCat;
+                    if (tagCat != null)
+                        UICategorySelector.Text = tagCat.Name;
+                }));
+            });
         }
     }
 }

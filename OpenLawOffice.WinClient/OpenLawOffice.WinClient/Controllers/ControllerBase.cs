@@ -29,9 +29,12 @@ namespace OpenLawOffice.WinClient.Controllers
             return ListItems(filter, (results, error) =>
             {
                 collection.Clear();
-                foreach (ViewModels.IViewModel viewModel in results)
+                if (results != null)
                 {
-                    collection.Add(viewModel);
+                    foreach (ViewModels.IViewModel viewModel in results)
+                    {
+                        collection.Add(viewModel);
+                    }
                 }
                 if (onComplete != null)
                     onComplete(collection, error);

@@ -67,6 +67,11 @@ namespace OpenLawOffice.WinClient.Controls
             set
             {
                 _editEnabled = value;
+                if (EditButton == null)
+                {
+                    _editEnabled = false;
+                    return;
+                }
                 if (EditButton.Command != null)
                     ((Commands.DelegateCommand)EditButton.Command).RaiseCanExecuteChanged();
             }
@@ -79,6 +84,11 @@ namespace OpenLawOffice.WinClient.Controls
             set
             {
                 _disableEnabled = value;
+                if (DisableButton == null)
+                {
+                    _disableEnabled = false;
+                    return;
+                }
                 if (DisableButton.Command != null)
                     ((Commands.DelegateCommand)DisableButton.Command).RaiseCanExecuteChanged();
             }
@@ -91,6 +101,11 @@ namespace OpenLawOffice.WinClient.Controls
             set
             {
                 _createEnabled = value;
+                if (CreateButton == null)
+                {
+                    _createEnabled = false;
+                    return;
+                }
                 if (CreateButton.Command != null)
                     ((Commands.DelegateCommand)CreateButton.Command).RaiseCanExecuteChanged();
             }
@@ -103,6 +118,11 @@ namespace OpenLawOffice.WinClient.Controls
             set
             {
                 _saveEnabled = value;
+                if (SaveButton == null)
+                {
+                    _saveEnabled = false;
+                    return;
+                }
                 if (SaveButton.Command != null)
                     ((Commands.DelegateCommand)SaveButton.Command).RaiseCanExecuteChanged();
             }
@@ -115,6 +135,11 @@ namespace OpenLawOffice.WinClient.Controls
             set
             {
                 _cancelEnabled = value;
+                if (CancelButton == null)
+                {
+                    _cancelEnabled = false;
+                    return;
+                }
                 if (CancelButton.Command != null)
                     ((Commands.DelegateCommand)CancelButton.Command).RaiseCanExecuteChanged();
             }
@@ -257,17 +282,20 @@ namespace OpenLawOffice.WinClient.Controls
                 UpdateCommandStates();
             };
 
-            EditButton.Checked += (sender, e) =>
+            if (EditButton != null)
             {
-                if (DisplayMode != DisplayModeType.Edit)
-                    DisplayMode = DisplayModeType.Edit;
-            };
+                EditButton.Checked += (sender, e) =>
+                {
+                    if (DisplayMode != DisplayModeType.Edit)
+                        DisplayMode = DisplayModeType.Edit;
+                };
 
-            EditButton.Unchecked += (sender, e) =>
-            {
-                if (DisplayMode == DisplayModeType.Edit)
-                    DisplayMode = DisplayModeType.View;
-            };
+                EditButton.Unchecked += (sender, e) =>
+                {
+                    if (DisplayMode == DisplayModeType.Edit)
+                        DisplayMode = DisplayModeType.View;
+                };
+            }
         }
 
         public void Load()
