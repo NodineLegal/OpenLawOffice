@@ -2,11 +2,8 @@
 
 namespace OpenLawOffice.Common.Rest.Requests.Matters
 {
-    public class MatterTag : RequestBase, IHasGuidId
+    public class MatterTag : Tagging.TagBase
     {
-        public Guid? Id { get; set; }
-        public long? MatterId { get; set; }
-        public int? MatterTagCategoryId { get; set; }
-        public string Tag { get; set; }
+        public Guid? MatterId { get; set; }
     }
 }

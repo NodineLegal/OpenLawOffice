@@ -1,10 +1,13 @@
-﻿namespace OpenLawOffice.Common.Rest.Requests.Matters
+﻿using System;
+
+namespace OpenLawOffice.Common.Rest.Requests.Matters
 {
-    public class Matter : RequestBase, IHasLongId
+    public class Matter : RequestBase, IHasGuidId
     {
-        public long? Id { get; set; }
+        public Guid? Id { get; set; }
         public string Title { get; set; }
-        public string Description { get; set; }
+        public string Synopsis { get; set; }
+
         public string TagQuery { get; set; }
     }
 }

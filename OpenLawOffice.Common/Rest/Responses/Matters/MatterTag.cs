@@ -2,11 +2,8 @@
 
 namespace OpenLawOffice.Common.Rest.Responses.Matters
 {
-    public class MatterTag : Core
+    public class MatterTag : Tagging.TagBase
     {
-        public Guid Id { get; set; }
-        public long MatterId { get; set; }
-        public int? MatterTagCategoryId { get; set; }
-        public string Tag { get; set; }
+        public Matter Matter { get; set; }
     }
 }

@@ -81,6 +81,9 @@
     <Compile Include="Models\IHasLongId.cs" />
     <Compile Include="Models\IHierarchicalModel.cs" />
     <Compile Include="Models\MapMeAttribute.cs" />
+    <Compile Include="Models\Matters\Matter.cs" />
+    <Compile Include="Models\Matters\MatterTag.cs" />
+    <Compile Include="Models\Matters\ResponsibleUser.cs" />
     <Compile Include="Models\ModelBase.cs" />
     <Compile Include="Models\ModelWithDatesOnly.cs" />
     <Compile Include="Models\PermissionType.cs" />
@@ -91,6 +94,8 @@
     <Compile Include="Models\Security\SecuredResource.cs" />
     <Compile Include="Models\Security\SecuredResourceAcl.cs" />
     <Compile Include="Models\Security\User.cs" />
+    <Compile Include="Models\Tagging\TagBase.cs" />
+    <Compile Include="Models\Tagging\TagCategory.cs" />
     <Compile Include="ObjectMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rest\Requests\IHasGuidId.cs" />
@@ -99,7 +104,7 @@
     <Compile Include="Rest\Requests\IHasLongId.cs" />
     <Compile Include="Rest\Requests\Matters\Matter.cs" />
     <Compile Include="Rest\Requests\Matters\MatterTag.cs" />
-    <Compile Include="Rest\Requests\Matters\MatterTagCategory.cs" />
+    <Compile Include="Rest\Requests\Matters\ResponsibleUser.cs" />
     <Compile Include="Rest\Requests\RequestBase.cs" />
     <Compile Include="Rest\Requests\Security\Area.cs" />
     <Compile Include="Rest\Requests\Security\AreaAcl.cs" />
@@ -108,11 +113,13 @@
     <Compile Include="Rest\Requests\Security\SecuredResourceAcl.cs" />
     <Compile Include="Rest\Requests\Security\User.cs" />
     <Compile Include="Rest\Requests\SortDirectionType.cs" />
+    <Compile Include="Rest\Requests\Tagging\TagBase.cs" />
+    <Compile Include="Rest\Requests\Tagging\TagCategory.cs" />
     <Compile Include="Rest\Responses\Core.cs" />
     <Compile Include="Rest\Responses\ListResponseContainer.cs" />
     <Compile Include="Rest\Responses\Matters\Matter.cs" />
     <Compile Include="Rest\Responses\Matters\MatterTag.cs" />
-    <Compile Include="Rest\Responses\Matters\MatterTagCategory.cs" />
+    <Compile Include="Rest\Responses\Matters\ResponsibleUser.cs" />
     <Compile Include="Rest\Responses\ResponseBase.cs" />
     <Compile Include="Rest\Responses\ResponseBaseWithDatesOnly.cs" />
     <Compile Include="Rest\Responses\ResponseContainer.cs" />
@@ -122,6 +129,8 @@
     <Compile Include="Rest\Responses\Security\SecuredResource.cs" />
     <Compile Include="Rest\Responses\Security\SecuredResourceAcl.cs" />
     <Compile Include="Rest\Responses\Security\User.cs" />
+    <Compile Include="Rest\Responses\Tagging\TagBase.cs" />
+    <Compile Include="Rest\Responses\Tagging\TagCategory.cs" />
     <Compile Include="Singleton.cs" />
     <Compile Include="Statistics.cs" />
   </ItemGroup>
@@ -153,6 +162,7 @@
   <ItemGroup>
     <Resource Include="LICENSE.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
