@@ -418,9 +418,9 @@ namespace OpenLawOffice.Server.Core.Services
                         coreDbModel.DisabledByUserId = request.Session.RequestingUser.Id.Value;
 
                         db.Update<TDbo>(
-                            set: "\"UtcDisabled\" = {0}, \"DisabledByUserId\" = {1}"
+                            set: "\"utc_disabled\" = {0}, \"disabled_by_user_id\" = {1}"
                                 .Params(coreDbModel.UtcDisabled, coreDbModel.DisabledByUserId),
-                            where: "\"Id\" = {0}".Params(idValue));
+                            where: "\"id\" = {0}".Params(idValue));
                     }
                     else if (typeof(DBOs.DboWithDatesOnly).IsAssignableFrom(typeof(TDbo)))
                     {
@@ -428,9 +428,9 @@ namespace OpenLawOffice.Server.Core.Services
                         datesDbModel.UtcDisabled = DateTime.Now;
 
                         db.Update<TDbo>(
-                            set: "\"UtcDisabled\" = {0}"
+                            set: "\"utc_disabled\" = {0}"
                                 .Params(datesDbModel.UtcDisabled),
-                            where: "\"Id\" = {0}".Params(idValue));
+                            where: "\"id\" = {0}".Params(idValue));
                     }
                     else
                         throw new InvalidObjectException("To disable, the DBO class must inherit from DboWithDatesOnly as it needs at least the UtcDisabled property.");

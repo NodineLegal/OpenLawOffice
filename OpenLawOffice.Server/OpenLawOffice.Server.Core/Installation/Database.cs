@@ -15,6 +15,9 @@ namespace OpenLawOffice.Server.Core.Installation
                 conn.CreateTableIfNotExists<DBOs.Security.AreaAcl>();
                 conn.CreateTableIfNotExists<DBOs.Security.SecuredResource>();
                 conn.CreateTableIfNotExists<DBOs.Security.SecuredResourceAcl>();
+                conn.CreateTableIfNotExists<DBOs.Tagging.TagCategory>();
+                conn.CreateTableIfNotExists<DBOs.Matters.Matter>();
+                conn.CreateTableIfNotExists<DBOs.Matters.MatterTag>();
 
                 DBOs.Security.User dbUser = conn.QuerySingle<DBOs.Security.User>(new { Username = "TestUser" });
                 // == "a" on before client hash
@@ -137,11 +140,79 @@ namespace OpenLawOffice.Server.Core.Installation
                     dbAreaSecuredResourceAcl.Id = (int)conn.GetLastInsertId();
                 }
 
+                DBOs.Security.Area dbAreaMatters = conn.QuerySingle<DBOs.Security.Area>(new { Name = "Matters" });
+                if (dbAreaMatters == null)
+                {
+                    dbAreaMatters = new DBOs.Security.Area()
+                    {
+                        ParentId = dbSecurity.Id,
+                        Name = "Matters",
+                        Description = "Matters",
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.Area>(dbAreaMatters);
+                    dbAreaMatters.Id = (int)conn.GetLastInsertId();
+                }
+
+                DBOs.Security.Area dbAreaTaggingTagCategory = conn.QuerySingle<DBOs.Security.Area>(new { Name = "Tagging.TagCategory" });
+                if (dbAreaTaggingTagCategory == null)
+                {
+                    dbAreaTaggingTagCategory = new DBOs.Security.Area()
+                    {
+                        ParentId = dbSecurity.Id,
+                        Name = "Tagging.TagCategory",
+                        Description = "Categories for tags",
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.Area>(dbAreaTaggingTagCategory);
+                    dbAreaTaggingTagCategory.Id = (int)conn.GetLastInsertId();
+                }
+
+                DBOs.Security.Area dbAreaMattersMatter = conn.QuerySingle<DBOs.Security.Area>(new { Name = "Matters.Matter" });
+                if (dbAreaMattersMatter == null)
+                {
+                    dbAreaMattersMatter = new DBOs.Security.Area()
+                    {
+                        ParentId = dbSecurity.Id,
+                        Name = "Matters.Matter",
+                        Description = "System matters",
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.Area>(dbAreaMattersMatter);
+                    dbAreaMattersMatter.Id = (int)conn.GetLastInsertId();
+                }
+
+                DBOs.Security.Area dbAreaMattersTag = conn.QuerySingle<DBOs.Security.Area>(new { Name = "Matters.MatterTag" });
+                if (dbAreaMattersTag == null)
+                {
+                    dbAreaMattersTag = new DBOs.Security.Area()
+                    {
+                        ParentId = dbSecurity.Id,
+                        Name = "Matters.MatterTag",
+                        Description = "Tags for matters",
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.Area>(dbAreaMattersTag);
+                    dbAreaMattersTag.Id = (int)conn.GetLastInsertId();
+                }
+
                 #endregion
 
                 #region Area Acls
 
-                DBOs.Security.AreaAcl dbAAclSecurity = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaSecuredResourceAcl.Id, UserId = dbUser.Id });
+                DBOs.Security.AreaAcl dbAAclSecurity = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbSecurity.Id, UserId = dbUser.Id });
                 if (dbAAclSecurity == null)
                 {
                     dbAAclSecurity = new DBOs.Security.AreaAcl()
@@ -159,7 +230,7 @@ namespace OpenLawOffice.Server.Core.Installation
                     dbAAclSecurity.Id = (int)conn.GetLastInsertId();
                 }
 
-                DBOs.Security.AreaAcl dbAAclUser = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaSecuredResourceAcl.Id, UserId = dbUser.Id });
+                DBOs.Security.AreaAcl dbAAclUser = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaUser.Id, UserId = dbUser.Id });
                 if (dbAAclUser == null)
                 {
                     dbAAclUser = new DBOs.Security.AreaAcl()
@@ -177,7 +248,7 @@ namespace OpenLawOffice.Server.Core.Installation
                     dbAAclUser.Id = (int)conn.GetLastInsertId();
                 }
 
-                DBOs.Security.AreaAcl dbAAclArea = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaSecuredResourceAcl.Id, UserId = dbUser.Id });
+                DBOs.Security.AreaAcl dbAAclArea = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaArea.Id, UserId = dbUser.Id });
                 if (dbAAclArea == null)
                 {
                     dbAAclArea = new DBOs.Security.AreaAcl()
@@ -195,7 +266,7 @@ namespace OpenLawOffice.Server.Core.Installation
                     dbAAclArea.Id = (int)conn.GetLastInsertId();
                 }
 
-                DBOs.Security.AreaAcl dbAAclAreaAcl = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaSecuredResourceAcl.Id, UserId = dbUser.Id });
+                DBOs.Security.AreaAcl dbAAclAreaAcl = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaAreaAcl.Id, UserId = dbUser.Id });
                 if (dbAAclAreaAcl == null)
                 {
                     dbAAclAreaAcl = new DBOs.Security.AreaAcl()
@@ -213,7 +284,7 @@ namespace OpenLawOffice.Server.Core.Installation
                     dbAAclAreaAcl.Id = (int)conn.GetLastInsertId();
                 }
 
-                DBOs.Security.AreaAcl dbAAclSecuredResource = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaSecuredResourceAcl.Id, UserId = dbUser.Id });
+                DBOs.Security.AreaAcl dbAAclSecuredResource = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaSecuredResource.Id, UserId = dbUser.Id });
                 if (dbAAclSecuredResource == null)
                 {
                     dbAAclSecuredResource = new DBOs.Security.AreaAcl()
@@ -248,6 +319,168 @@ namespace OpenLawOffice.Server.Core.Installation
                     conn.Insert<DBOs.Security.AreaAcl>(dbAAclSecuredResourceAcl);
                     dbAAclSecuredResourceAcl.Id = (int)conn.GetLastInsertId();
                 }
+
+                // Matters
+                DBOs.Security.AreaAcl dbAAclMatters = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaMatters.Id, UserId = dbUser.Id });
+                if (dbAAclMatters == null)
+                {
+                    dbAAclMatters = new DBOs.Security.AreaAcl()
+                    {
+                        SecurityAreaId = dbAreaMatters.Id,
+                        UserId = dbUser.Id,
+                        AllowFlags = (int)(Common.Models.PermissionType.AllAdmin | Common.Models.PermissionType.AllWrite | Common.Models.PermissionType.AllRead),
+                        DenyFlags = 0,
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.AreaAcl>(dbAAclMatters);
+                    dbAAclMatters.Id = (int)conn.GetLastInsertId();
+                }
+
+                // Tagging.TagCategory
+                DBOs.Security.AreaAcl dbAAclTaggingTagCategory = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaTaggingTagCategory.Id, UserId = dbUser.Id });
+                if (dbAAclTaggingTagCategory == null)
+                {
+                    dbAAclTaggingTagCategory = new DBOs.Security.AreaAcl()
+                    {
+                        SecurityAreaId = dbAreaTaggingTagCategory.Id,
+                        UserId = dbUser.Id,
+                        AllowFlags = (int)(Common.Models.PermissionType.AllAdmin | Common.Models.PermissionType.AllWrite | Common.Models.PermissionType.AllRead),
+                        DenyFlags = 0,
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.AreaAcl>(dbAAclTaggingTagCategory);
+                    dbAAclTaggingTagCategory.Id = (int)conn.GetLastInsertId();
+                }
+
+                // Matters.Matter
+                DBOs.Security.AreaAcl dbAAclMattersMatter = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaMattersMatter.Id, UserId = dbUser.Id });
+                if (dbAAclMattersMatter == null)
+                {
+                    dbAAclMattersMatter = new DBOs.Security.AreaAcl()
+                    {
+                        SecurityAreaId = dbAreaMattersMatter.Id,
+                        UserId = dbUser.Id,
+                        AllowFlags = (int)(Common.Models.PermissionType.AllAdmin | Common.Models.PermissionType.AllWrite | Common.Models.PermissionType.AllRead),
+                        DenyFlags = 0,
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.AreaAcl>(dbAAclMattersMatter);
+                    dbAAclMattersMatter.Id = (int)conn.GetLastInsertId();
+                }
+
+                // Matters.MatterTag
+                DBOs.Security.AreaAcl dbAAclMattersMatterTag = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaMattersTag.Id, UserId = dbUser.Id });
+                if (dbAAclMattersMatterTag == null)
+                {
+                    dbAAclMattersMatterTag = new DBOs.Security.AreaAcl()
+                    {
+                        SecurityAreaId = dbAreaMattersTag.Id,
+                        UserId = dbUser.Id,
+                        AllowFlags = (int)(Common.Models.PermissionType.AllAdmin | Common.Models.PermissionType.AllWrite | Common.Models.PermissionType.AllRead),
+                        DenyFlags = 0,
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.AreaAcl>(dbAAclMattersMatterTag);
+                    dbAAclMattersMatterTag.Id = (int)conn.GetLastInsertId();
+                }
+
+                #endregion
+
+                #region Matters
+                
+                DBOs.Tagging.TagCategory dbTagCategory1 = conn.QuerySingle<DBOs.Tagging.TagCategory>(new { Name = "Status" });
+                if (dbTagCategory1 == null)
+                {
+                    dbTagCategory1 = new DBOs.Tagging.TagCategory()
+                    {
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now,
+                        Name = "Status"
+                    };
+                    conn.Insert<DBOs.Tagging.TagCategory>(dbTagCategory1);
+                    dbTagCategory1.Id = (int)conn.GetLastInsertId();
+                }
+
+                DBOs.Tagging.TagCategory tagCategory2 = conn.QuerySingle<DBOs.Tagging.TagCategory>(new { Name = "Jurisdiction" });
+                if (tagCategory2 == null)
+                {
+                    tagCategory2 = new DBOs.Tagging.TagCategory()
+                    {
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now, 
+                        Name = "Jurisdiction"
+                    };
+                    conn.Insert<DBOs.Tagging.TagCategory>(tagCategory2);
+                    tagCategory2.Id = (int)conn.GetLastInsertId();
+                }
+
+                DBOs.Matters.Matter matter1 = conn.QuerySingle<DBOs.Matters.Matter>(new { Title = "Test Matter 1" });
+                if (matter1 == null)
+                {
+                    matter1 = new DBOs.Matters.Matter()
+                    {
+                        Id = Guid.NewGuid(),
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now,
+                        Title = "Test Matter 1",
+                        Synopsis = "This is the synopsis for test matter 1"
+                    };
+                    conn.Insert<DBOs.Matters.Matter>(matter1);
+                }
+
+                DBOs.Matters.MatterTag matterTag1 = conn.QuerySingle<DBOs.Matters.MatterTag>(new { Tag = "Active" });
+                if (matterTag1 == null)
+                {
+                    matterTag1 = new DBOs.Matters.MatterTag()
+                    {
+                        Id = Guid.NewGuid(),
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now,
+                        MatterId = matter1.Id,
+                        TagCategoryId = 1,
+                        Tag = "Active"
+                    };
+                    conn.Insert<DBOs.Matters.MatterTag>(matterTag1);
+                }
+
+                DBOs.Matters.MatterTag matterTag2 = conn.QuerySingle<DBOs.Matters.MatterTag>(new { Tag = "Labette County, KS" });
+                if (matterTag2 == null)
+                {
+                    matterTag2 = new DBOs.Matters.MatterTag()
+                    {
+                        Id = Guid.NewGuid(),
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now,
+                        MatterId = matter1.Id,
+                        TagCategoryId = 2,
+                        Tag = "Labette County, KS"
+                    };
+                    conn.Insert<DBOs.Matters.MatterTag>(matterTag2);
+                }
+
+
 
                 #endregion
             }

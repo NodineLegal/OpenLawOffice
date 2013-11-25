@@ -98,6 +98,14 @@ namespace OpenLawOffice.Server.Core.Security
             // Load the Area Acl system model
             sysAreaAcl = Mapper.Map<Common.Models.Security.AreaAcl>(dbAreaAcl);
 
+            if (sysAreaAcl == null)
+                return new AuthorizeResult()
+                {
+                    HasError = false,
+                    IsAuthorized = false,
+                    ErrorMessage = "Permission not given."
+                };
+
             // Ensure flags have values - security precautions
             if (!sysAreaAcl.DenyFlags.HasValue)
                 return new AuthorizeResult()
