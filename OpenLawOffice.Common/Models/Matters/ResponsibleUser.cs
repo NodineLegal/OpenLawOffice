@@ -58,7 +58,7 @@ namespace OpenLawOffice.Common.Models.Matters
                 .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
                 .ForMember(dst => dst.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy))
                 .ForMember(dst => dst.ModifiedBy, opt => opt.MapFrom(src => src.ModifiedBy))
-                .ForMember(dst => dst.DisabledBy, opt => opt.MapFrom(src => src.UtcDisabled))
+                .ForMember(dst => dst.DisabledBy, opt => opt.MapFrom(src => src.DisabledBy))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Matter, opt => opt.MapFrom(src => src.Matter))
                 .ForMember(dst => dst.User, opt => opt.MapFrom(src => src.User));
@@ -70,7 +70,7 @@ namespace OpenLawOffice.Common.Models.Matters
                 .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
                 .ForMember(dst => dst.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy))
                 .ForMember(dst => dst.ModifiedBy, opt => opt.MapFrom(src => src.ModifiedBy))
-                .ForMember(dst => dst.DisabledBy, opt => opt.MapFrom(src => src.UtcDisabled))
+                .ForMember(dst => dst.DisabledBy, opt => opt.MapFrom(src => src.DisabledBy))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Matter, opt => opt.MapFrom(src => src.Matter))
                 .ForMember(dst => dst.User, opt => opt.MapFrom(src => src.User));
