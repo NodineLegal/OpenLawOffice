@@ -19,6 +19,8 @@ namespace OpenLawOffice.WinClient.Controls
         public Action<IDockableWindow> OnClose { get; set; }
         public Action<IDockableWindow> OnDispose { get; set; }
 
+        //protected Action<IDockableWindow, DisplayModeType> OnSetDisplayMode { get; set; }
+
         public Action<IDockableWindow> OnRefresh { get; set; }
         public Action<IDockableWindow> OnRequestDetailDataContextUpdate { get; set; }
 
@@ -331,7 +333,12 @@ namespace OpenLawOffice.WinClient.Controls
             DockingWindow.IsSelected = true;
         }
 
-        public void SetDisplayMode(DisplayModeType displayMode)
+        public virtual void GoIntoCreateMode(object obj)
+        {
+            SetDisplayMode(DisplayModeType.Create);
+        }
+
+        public virtual void SetDisplayMode(DisplayModeType displayMode)
         {
             DisplayMode = displayMode;
         }

@@ -38,6 +38,7 @@
                     <TextBox Name="UISynopsis" Text="{Binding Path=Synopsis, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" />
 
                     <Label Content="Tags:" Grid.Row="3" Grid.Column="0" />
+                    <Label Content="Tags may be managed after the matter is created." Grid.Row="3" Grid.Column="0" />
                 </Grid>
             </Grid>
         </xctk:BusyIndicator>

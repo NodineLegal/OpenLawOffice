@@ -29,6 +29,7 @@
                         HorizontalAlignment="Center" Orientation="Horizontal">
                 <Button Name="UIClear" Content="Clear" Width="50" Margin="5,0,5,0" Click="UIClear_Click" />
                 <Button Name="UISelect" Content="Select" Width="50" Margin="5,0,5,0" Click="UISelect_Click" />
+                <Button Name="UICancel" Content="Cancel" Width="50" Margin="5,0,5,0" Click="UICancel_Click" />
             </StackPanel>
         </Grid>
     </xctk:BusyIndicator>

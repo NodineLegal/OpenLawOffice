@@ -46,7 +46,7 @@ namespace OpenLawOffice.WinClient
             return (T)_controllers[typeof(T)];
         }
 
-        public void LoadUI<TModel>(ViewModels.IViewModel selected)
+        public void LoadUI<TModel>(ViewModels.IViewModel selected, Action callback = null)
             where TModel : Common.Models.ModelBase
         {
             if (!_modelMapToController.ContainsKey(typeof(TModel)))
@@ -54,14 +54,14 @@ namespace OpenLawOffice.WinClient
             
             App.Current.Dispatcher.Invoke(new Action(() =>
             {
-                _modelMapToController[typeof(TModel)].LoadUI(selected);
+                _modelMapToController[typeof(TModel)].LoadUI(selected, callback);
             }));
         }
 
-        public void LoadUI<TModel>()
+        public void LoadUI<TModel>(Action callback = null)
             where TModel : Common.Models.ModelBase
         {
-            LoadUI<TModel>(null);
+            LoadUI<TModel>(null, callback);
         }
 
         public void LoadItems<TModel>(ViewModels.IViewModel filter, ICollection<ViewModels.IViewModel> collection, Action<ICollection<ViewModels.IViewModel>, ErrorHandling.ActionableError> onComplete)
@@ -136,6 +136,18 @@ namespace OpenLawOffice.WinClient
             App.Current.Dispatcher.Invoke(new Action(() =>
             {
                 _modelMapToController[typeof(TModel)].SetDisplayMode(mode);
+            }));
+        }
+
+        public void GoIntoCreateMode<TModel>(object obj)
+            where TModel : Common.Models.ModelBase
+        {
+            if (!_modelMapToController.ContainsKey(typeof(TModel)))
+                throw new ArgumentException("Type argument cannot be found in Model mappings.");
+
+            App.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                _modelMapToController[typeof(TModel)].GoIntoCreateMode(obj);
             }));
         }
 

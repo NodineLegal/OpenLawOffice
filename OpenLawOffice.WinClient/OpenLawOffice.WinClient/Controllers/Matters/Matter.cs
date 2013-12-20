@@ -48,6 +48,40 @@ namespace OpenLawOffice.WinClient.Controllers.Matters
                 },
                 Width = 300
             });
+
+            Views.Matters.ResponsibleUserRelation respUserRelation = new Views.Matters.ResponsibleUserRelation();
+            respUserRelation.OnClose += iwin =>
+            {
+                MasterDetailWindow.HideRelationView();
+            };
+            respUserRelation.OnEdit += iwin =>
+            {
+                ViewModels.Matters.ResponsibleUser itemToView = (ViewModels.Matters.ResponsibleUser)respUserRelation.GetSelectedItem();
+                ControllerManager.Instance.LoadUI<Common.Models.Matters.ResponsibleUser>(itemToView, () =>
+                {
+                    ControllerManager.Instance.SetDisplayMode<Common.Models.Matters.ResponsibleUser>(Controls.DisplayModeType.Edit);
+                });                
+            };
+            respUserRelation.OnView += iwin =>
+            {
+                ViewModels.Matters.ResponsibleUser itemToView = (ViewModels.Matters.ResponsibleUser)respUserRelation.GetSelectedItem();
+                ControllerManager.Instance.LoadUI<Common.Models.Matters.ResponsibleUser>(itemToView);
+                ControllerManager.Instance.SetDisplayMode<Common.Models.Matters.ResponsibleUser>(Controls.DisplayModeType.View);
+            };
+            respUserRelation.OnAdd += iwin =>
+            {
+                ViewModels.Matters.Matter matter = iwin.ViewModel;
+                ViewModels.Matters.ResponsibleUser itemToView = ViewModels.Creator.Create<ViewModels.Matters.ResponsibleUser>(
+                    new Common.Models.Matters.ResponsibleUser()
+                    {
+                        Matter = matter.Model
+                    });
+                ControllerManager.Instance.LoadUI<Common.Models.Matters.ResponsibleUser>(itemToView, () =>
+                {
+                    ControllerManager.Instance.GoIntoCreateMode<Common.Models.Matters.ResponsibleUser>(itemToView);
+                });
+            };
+            MasterDetailWindow.AddRelationView<Common.Models.Matters.Matter>(respUserRelation);
         }
 
         private ViewModels.Matters.Matter BuildFilter()
@@ -64,7 +98,7 @@ namespace OpenLawOffice.WinClient.Controllers.Matters
             return filter;
         }
 
-        public override void LoadUI(ViewModels.IViewModel selected)
+        public override void LoadUI(ViewModels.IViewModel selected, Action callback = null)
         {
             ObservableCollection<ViewModels.IViewModel> viewModelCollection = null;
 
@@ -78,6 +112,12 @@ namespace OpenLawOffice.WinClient.Controllers.Matters
                     MasterDetailWindow.MasterDataContext = results;
                 });
             });
+
+            MainWindow.Matters_ResponsibleUsers.Command = new Commands.DelegateCommand(x =>
+            {
+                MasterDetailWindow.ShowRelationView<Common.Models.Matters.Matter>();
+            }, x => MasterDetailWindow.RelationshipsEnabled);
+            MasterDetailWindow.RelationshipCommands.Add((Commands.DelegateCommand)MainWindow.Matters_ResponsibleUsers.Command);
 
             MainWindow.Matters_Acls.Command = new Commands.DelegateCommand(x =>
             {
@@ -191,6 +231,7 @@ namespace OpenLawOffice.WinClient.Controllers.Matters
             {
                 MasterDetailWindow.MasterDataContext = results;
                 if (selected != null) SelectItem(selected);
+                if (callback != null) callback();
             });
 
             MasterDetailWindow.EditView.TagBox.OnCancel += (tagbox, tagcat) =>
@@ -241,11 +282,6 @@ namespace OpenLawOffice.WinClient.Controllers.Matters
                     RefreshTags(matter);
                 });
             };
-        }
-
-        public override void LoadUI()
-        {
-            LoadUI(null);
         }
 
         public override Task LoadItems(ViewModels.IViewModel filter, ICollection<ViewModels.IViewModel> collection, Action<ICollection<ViewModels.IViewModel>, ErrorHandling.ActionableError> onComplete)
@@ -380,73 +416,85 @@ namespace OpenLawOffice.WinClient.Controllers.Matters
         {
             return Task.Factory.StartNew(new Action(() =>
             {
-            Consumers.Matters.MatterTag tagConsumer = new Consumers.Matters.MatterTag();
-            Common.Rest.Requests.Matters.MatterTag tagRequest = new Common.Rest.Requests.Matters.MatterTag()
-            {
-                AuthToken = Globals.Instance.AuthToken,
-                MatterId = viewModel.Id
-            };
-
-            tagConsumer.GetList<Common.Rest.Requests.Matters.MatterTag, Common.Rest.Responses.Matters.MatterTag>
-                (tagRequest,
-                result =>
+                Consumers.Matters.MatterTag tagConsumer = new Consumers.Matters.MatterTag();
+                Common.Rest.Requests.Matters.MatterTag tagRequest = new Common.Rest.Requests.Matters.MatterTag()
                 {
-                    if (!result.ListResponseContainer.WasSuccessful)
-                    {
-                        ErrorHandling.ErrorManager.CreateAndThrow<ErrorHandling.ActionableError>(
-                            new ErrorHandling.ActionableError()
-                            {
-                                Level = ErrorHandling.LevelType.Error,
-                                Title = "Error",
-                                SimpleMessage = "Fetching data failed.  Would you like to retry?",
-                                Message = "Error: " + result.ListResponseContainer.Error.Message,
-                                Exception = result.ListResponseContainer.Error.Exception,
-                                Source = this.GetType().FullName + "LoadTags(ViewModels.Matters.Matter, Action<ViewModels.Matters.Matter>)",
-                                Recover = (error, data, onFail) =>
-                                {
-                                    LoadTags(viewModel, onComplete);
-                                }
-                            });
-                    }
-                    else
-                    {
-                        List<Task> catFetchTasks = new List<Task>();
+                    AuthToken = Globals.Instance.AuthToken,
+                    MatterId = viewModel.Id
+                };
 
-                        List<ViewModels.Matters.MatterTag> tagVMs = new List<ViewModels.Matters.MatterTag>();
-                        
-                        //ViewModels.Matters.MatterTag
-                        result.ListResponseContainer.Data
-                            .ForEach(tag =>
-                            {
-                                ViewModels.Matters.MatterTag tagVM = 
-                                    ViewModels.Creator.Create<ViewModels.Matters.MatterTag>(Mapper.Map<Common.Models.Matters.MatterTag>(tag));
-                                tagVMs.Add(tagVM);
-                                if (tagVM.TagCategory != null)
-                                {
-                                    catFetchTasks.Add(LoadTagCategory(tagVM.TagCategory,
-                                        loadCatResult =>
-                                        {
-                                            tagVM.TagCategory = loadCatResult;
-                                        }));
-                                }
-                            });
-
-                        Task.Factory.ContinueWhenAll(catFetchTasks.ToArray(), data =>
+                tagConsumer.GetList<Common.Rest.Requests.Matters.MatterTag, Common.Rest.Responses.Matters.MatterTag>
+                    (tagRequest,
+                    result =>
+                    {
+                        if (!result.ListResponseContainer.WasSuccessful)
                         {
-                            App.Current.Dispatcher.Invoke(new Action(() =>
-                            {
-                                viewModel.Tags.Clear();
-
-                                tagVMs.ForEach(tag =>
+                            ErrorHandling.ErrorManager.CreateAndThrow<ErrorHandling.ActionableError>(
+                                new ErrorHandling.ActionableError()
                                 {
-                                    viewModel.Tags.Add(tag);
+                                    Level = ErrorHandling.LevelType.Error,
+                                    Title = "Error",
+                                    SimpleMessage = "Fetching data failed.  Would you like to retry?",
+                                    Message = "Error: " + result.ListResponseContainer.Error.Message,
+                                    Exception = result.ListResponseContainer.Error.Exception,
+                                    Source = this.GetType().FullName + "LoadTags(ViewModels.Matters.Matter, Action<ViewModels.Matters.Matter>)",
+                                    Recover = (error, data, onFail) =>
+                                    {
+                                        LoadTags(viewModel, onComplete);
+                                    }
+                                });
+                        }
+                        else
+                        {
+                            List<Task> catFetchTasks = new List<Task>();
+
+                            List<ViewModels.Matters.MatterTag> tagVMs = new List<ViewModels.Matters.MatterTag>();
+                        
+                            //ViewModels.Matters.MatterTag
+                            result.ListResponseContainer.Data
+                                .ForEach(tag =>
+                                {
+                                    ViewModels.Matters.MatterTag tagVM = 
+                                        ViewModels.Creator.Create<ViewModels.Matters.MatterTag>(Mapper.Map<Common.Models.Matters.MatterTag>(tag));
+                                    tagVMs.Add(tagVM);
+                                    if (tagVM.TagCategory != null)
+                                    {
+                                        catFetchTasks.Add(LoadTagCategory(tagVM.TagCategory,
+                                            loadCatResult =>
+                                            {
+                                                tagVM.TagCategory = loadCatResult;
+                                            }));
+                                    }
                                 });
 
-                                if (onComplete != null) onComplete(viewModel);
-                            }));
-                        });
-                    }
-                });
+                            if (result.ListResponseContainer.Data.Count > 0)
+                            {
+                                Task.Factory.ContinueWhenAll(catFetchTasks.ToArray(), data =>
+                                {
+                                    App.Current.Dispatcher.Invoke(new Action(() =>
+                                    {
+                                        viewModel.Tags.Clear();
+
+                                        tagVMs.ForEach(tag =>
+                                        {
+                                            viewModel.Tags.Add(tag);
+                                        });
+
+                                        if (onComplete != null) onComplete(viewModel);
+                                    }));
+                                });
+                            }
+                            else
+                            {
+                                App.Current.Dispatcher.Invoke(new Action(() =>
+                                {
+                                    viewModel.Tags.Clear();
+
+                                    if (onComplete != null) onComplete(viewModel);
+                                }));
+                            }
+                        }
+                    });
             }));
         }
 

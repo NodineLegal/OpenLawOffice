@@ -52,11 +52,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoMapper">
-      <HintPath>..\packages\AutoMapper.3.0.0\lib\net40\AutoMapper.dll</HintPath>
+    <Reference Include="AutoMapper, Version=3.1.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AutoMapper.3.1.0\lib\net40\AutoMapper.dll</HintPath>
     </Reference>
-    <Reference Include="AutoMapper.Net4">
-      <HintPath>..\packages\AutoMapper.3.0.0\lib\net40\AutoMapper.Net4.dll</HintPath>
+    <Reference Include="AutoMapper.Net4, Version=3.1.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AutoMapper.3.1.0\lib\net40\AutoMapper.Net4.dll</HintPath>
     </Reference>
     <Reference Include="DW.SharpTools">
       <HintPath>Libs\DW.SharpTools.dll</HintPath>
@@ -67,36 +69,44 @@
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.2.1.0\lib\net40\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="RestSharp">
-      <HintPath>..\packages\RestSharp.104.2.0\lib\net4\RestSharp.dll</HintPath>
+    <Reference Include="RestSharp, Version=104.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\RestSharp.104.4.0\lib\net4\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="RibbonControlsLibrary, Version=4.0.0.11019, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\Microsoft Ribbon for WPF\V4.0\RibbonControlsLibrary.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack">
-      <HintPath>..\packages\ServiceStack.3.9.66\lib\net35\ServiceStack.dll</HintPath>
+    <Reference Include="ServiceStack, Version=3.9.70.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\ServiceStack.3.9.70\lib\net35\ServiceStack.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.Common">
-      <HintPath>..\packages\ServiceStack.Common.3.9.66\lib\net35\ServiceStack.Common.dll</HintPath>
+    <Reference Include="ServiceStack.Common, Version=3.9.70.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\ServiceStack.Common.3.9.70\lib\net35\ServiceStack.Common.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.Interfaces">
-      <HintPath>..\packages\ServiceStack.Common.3.9.66\lib\net35\ServiceStack.Interfaces.dll</HintPath>
+    <Reference Include="ServiceStack.Interfaces, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ServiceStack.Common.3.9.70\lib\net35\ServiceStack.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.OrmLite">
-      <HintPath>..\packages\ServiceStack.OrmLite.SqlServer.3.9.66\lib\net35\ServiceStack.OrmLite.dll</HintPath>
+    <Reference Include="ServiceStack.OrmLite, Version=3.9.70.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\ServiceStack.OrmLite.SqlServer.3.9.70\lib\net35\ServiceStack.OrmLite.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.OrmLite.SqlServer">
-      <HintPath>..\packages\ServiceStack.OrmLite.SqlServer.3.9.66\lib\net35\ServiceStack.OrmLite.SqlServer.dll</HintPath>
+    <Reference Include="ServiceStack.OrmLite.SqlServer, Version=3.9.70.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\ServiceStack.OrmLite.SqlServer.3.9.70\lib\net35\ServiceStack.OrmLite.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.Redis">
-      <HintPath>..\packages\ServiceStack.Redis.3.9.66\lib\net35\ServiceStack.Redis.dll</HintPath>
+    <Reference Include="ServiceStack.Redis, Version=3.9.70.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\ServiceStack.Redis.3.9.70\lib\net35\ServiceStack.Redis.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.ServiceInterface">
-      <HintPath>..\packages\ServiceStack.3.9.66\lib\net35\ServiceStack.ServiceInterface.dll</HintPath>
+    <Reference Include="ServiceStack.ServiceInterface, Version=3.9.70.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\ServiceStack.3.9.70\lib\net35\ServiceStack.ServiceInterface.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.Text">
-      <HintPath>..\packages\ServiceStack.Text.3.9.66\lib\net35\ServiceStack.Text.dll</HintPath>
+    <Reference Include="ServiceStack.Text, Version=3.9.70.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\ServiceStack.Text.3.9.70\lib\net35\ServiceStack.Text.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -144,6 +154,7 @@
     <Compile Include="Consumers\ListConsumerResult.cs" />
     <Compile Include="Consumers\Matters\Matter.cs" />
     <Compile Include="Consumers\Matters\MatterTag.cs" />
+    <Compile Include="Consumers\Matters\ResponsibleUser.cs" />
     <Compile Include="Consumers\RequestBuilder.cs" />
     <Compile Include="Consumers\Security\Area.cs" />
     <Compile Include="Consumers\Security\AreaAcl.cs" />
@@ -159,6 +170,7 @@
     <Compile Include="Controllers\MasterDetailController.cs" />
     <Compile Include="Controllers\Matters\Matter.cs" />
     <Compile Include="Controllers\Matters\MatterTag.cs" />
+    <Compile Include="Controllers\Matters\ResponsibleUser.cs" />
     <Compile Include="Controllers\Security\AreaAcl.cs" />
     <Compile Include="Controllers\Security\Area.cs" />
     <Compile Include="Controllers\Security\User.cs" />
@@ -202,12 +214,6 @@
     </Compile>
     <Compile Include="Controls\TypedMasterDetailWindow.cs" />
     <Compile Include="Controls\WatermarkedRibbonTextBox.cs" />
-    <Compile Include="DetailViews\Matters\Matter.xaml.cs">
-      <DependentUpon>Matter.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="DetailViews\Matters\MatterEdit.xaml.cs">
-      <DependentUpon>MatterEdit.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ErrorHandling\ActionableErrorWindow.xaml.cs">
       <DependentUpon>ActionableErrorWindow.xaml</DependentUpon>
     </Compile>
@@ -247,6 +253,18 @@
     </Compile>
     <Compile Include="Views\Matters\MatterEdit.xaml.cs">
       <DependentUpon>MatterEdit.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Matters\ResponsibleUserCreate.xaml.cs">
+      <DependentUpon>ResponsibleUserCreate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Matters\ResponsibleUserDetail.xaml.cs">
+      <DependentUpon>ResponsibleUserDetail.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Matters\ResponsibleUserEdit.xaml.cs">
+      <DependentUpon>ResponsibleUserEdit.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Matters\ResponsibleUserRelation.xaml.cs">
+      <DependentUpon>ResponsibleUserRelation.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\NullView.xaml.cs">
       <DependentUpon>NullView.xaml</DependentUpon>
@@ -331,14 +349,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="DetailViews\Matters\Matter.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="DetailViews\Matters\MatterEdit.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="ErrorHandling\ActionableErrorWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -364,6 +374,22 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Matters\MatterEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Matters\ResponsibleUserCreate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Matters\ResponsibleUserDetail.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Matters\ResponsibleUserEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Matters\ResponsibleUserRelation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

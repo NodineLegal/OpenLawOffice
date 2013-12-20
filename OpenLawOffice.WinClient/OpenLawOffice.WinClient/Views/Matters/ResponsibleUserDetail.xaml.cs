@@ -1,11 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace OpenLawOffice.WinClient.Views.Security
+namespace OpenLawOffice.WinClient.Views.Matters
 {
     /// <summary>
-    /// Interaction logic for AreaAclDetail.xaml
+    /// Interaction logic for ResponsibleUserDetail.xaml
     /// </summary>
-    public partial class AreaAclDetail : UserControl, Controls.IDetail
+    public partial class ResponsibleUserDetail : UserControl, Controls.IDetail
     {
         public bool IsBusy
         {
@@ -13,7 +13,7 @@ namespace OpenLawOffice.WinClient.Views.Security
             set { UIBusyIndicator.IsBusy = value; }
         }
 
-        public AreaAclDetail()
+        public ResponsibleUserDetail()
         {
             InitializeComponent();
         }

@@ -75,7 +75,7 @@ namespace OpenLawOffice.WinClient.Controls
             }));
         }
 
-        public void GoIntoCreateMode(object obj)
+        public override void GoIntoCreateMode(object obj)
         {
             CreateView.DataContext = obj;
             DisplayMode = DisplayModeType.Create;

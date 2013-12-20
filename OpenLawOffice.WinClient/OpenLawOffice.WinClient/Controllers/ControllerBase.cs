@@ -19,8 +19,11 @@ namespace OpenLawOffice.WinClient.Controllers
         protected Consumers.ConsumerBase _consumer;
         public MainWindow MainWindow = Globals.Instance.MainWindow;
 
-        public abstract void LoadUI(ViewModels.IViewModel selected);
-        public abstract void LoadUI();
+        public abstract void LoadUI(ViewModels.IViewModel selected, Action callback = null);
+        public virtual void LoadUI(Action callback = null)
+        {
+            LoadUI(null, callback);
+        }
 
         public abstract Task LoadDetails(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete);
 
@@ -313,6 +316,7 @@ namespace OpenLawOffice.WinClient.Controllers
         }
 
         public abstract void SelectItem(ViewModels.IViewModel viewModel);
+        public abstract void GoIntoCreateMode(object obj);
         public abstract void SetDisplayMode(Controls.DisplayModeType mode);
 
         protected virtual Common.Rest.Requests.RequestBase BuildRequestFromAnonymousObject(object obj)
@@ -375,6 +379,159 @@ namespace OpenLawOffice.WinClient.Controllers
             if (baseType == null) return false;
 
             return IsAssignableToGenericType(baseType, genericType);
+        }
+
+        public virtual Task GetCoreDetails<TModel>(ViewModels.ViewModelCore<TModel> viewModel, 
+            Action<ViewModels.Security.User, ViewModels.Security.User, ViewModels.Security.User> onComplete)
+            where TModel : Common.Models.Core, new()
+        {
+            List<Task> tasks = new List<Task>();
+            ViewModels.Security.User creator = null, modifier = null, disabler = null;
+
+            tasks.Add(GetCreatingUser<TModel>(viewModel, userViewModel =>
+            {
+                creator = userViewModel;
+            }));
+            tasks.Add(GetModifyingUser<TModel>(viewModel, userViewModel =>
+            { 
+                modifier = userViewModel;
+            }));
+
+            if (viewModel.DisabledBy != null && viewModel.DisabledBy.Id.HasValue)
+                tasks.Add(GetDisablingUser<TModel>(viewModel, userViewModel =>
+                {
+                    disabler = userViewModel;
+                }));
+
+            return Task.Factory.ContinueWhenAll(tasks.ToArray(), data =>
+            {
+                App.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    if (onComplete != null) onComplete(creator, modifier, disabler);
+                }));
+            });
+        }
+
+        protected virtual Task GetCreatingUser<TModel>(ViewModels.ViewModelCore<TModel> viewModel, Action<ViewModels.Security.User> onComplete)
+            where TModel : Common.Models.Core, new()
+        {
+            return Task.Factory.StartNew(new Action(() =>
+            {
+                bool isDone = false;
+
+                DownloadUser(new Action<ViewModels.Security.User>(userViewModel =>
+                {
+                    if (onComplete != null) onComplete(userViewModel);
+                    isDone = true;
+                }), viewModel.CreatedBy.Id.Value);
+
+                while (!isDone)
+                    System.Threading.Thread.Sleep(250);
+            }));
+        }
+
+        protected virtual Task GetModifyingUser<TModel>(ViewModels.ViewModelCore<TModel> viewModel, Action<ViewModels.Security.User> onComplete)
+            where TModel : Common.Models.Core, new()
+        {
+            return Task.Factory.StartNew(new Action(() =>
+            {
+                bool isDone = false;
+
+                DownloadUser(new Action<ViewModels.Security.User>(userViewModel =>
+                {
+                    if (onComplete != null) onComplete(userViewModel);
+                    isDone = true;
+                }), viewModel.ModifiedBy.Id.Value);
+
+                while (!isDone)
+                    System.Threading.Thread.Sleep(250);
+            }));
+        }
+
+        protected virtual Task GetDisablingUser<TModel>(ViewModels.ViewModelCore<TModel> viewModel, Action<ViewModels.Security.User> onComplete)
+            where TModel : Common.Models.Core, new()
+        {
+            return Task.Factory.StartNew(new Action(() =>
+            {
+                bool isDone = false;
+
+                DownloadUser(new Action<ViewModels.Security.User>(userViewModel =>
+                {
+                    if (onComplete != null) onComplete(userViewModel);
+                    isDone = true;
+                }), viewModel.DisabledBy.Id.Value);
+
+                while (!isDone)
+                    System.Threading.Thread.Sleep(250);
+            }));
+        }
+
+        protected virtual void PushCreatingUserToUI<TModel>(ViewModels.ViewModelCore<TModel> viewModelToUpdate, ViewModels.Security.User viewModelToPush)
+            where TModel : Common.Models.Core, new()
+        {
+            App.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                viewModelToUpdate.CreatedBy = viewModelToPush;
+            }));
+        }
+
+        protected virtual void PushModifyingUserToUI<TModel>(ViewModels.ViewModelCore<TModel> viewModelToUpdate, ViewModels.Security.User viewModelToPush)
+            where TModel : Common.Models.Core, new()
+        {
+            App.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                viewModelToUpdate.ModifiedBy = viewModelToPush;
+            }));
+        }
+
+        protected virtual void PushDisablingUserToUI<TModel>(ViewModels.ViewModelCore<TModel> viewModelToUpdate, ViewModels.Security.User viewModelToPush)
+            where TModel : Common.Models.Core, new()
+        {
+            App.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                viewModelToUpdate.DisabledBy = viewModelToPush;
+            }));
+        }
+
+        protected virtual void DownloadUser(Action<ViewModels.Security.User> onComplete, int userid)
+        {
+            Consumers.Security.User userConsumer = new Consumers.Security.User();
+
+            userConsumer.GetSingle<Common.Rest.Requests.Security.User, Common.Rest.Responses.Security.User>
+                (new Common.Rest.Requests.Security.User()
+                {
+                    AuthToken = Globals.Instance.AuthToken,
+                    Id = userid
+                },
+            result =>
+            {
+                if (!result.ResponseContainer.WasSuccessful)
+                {
+                    ErrorHandling.ErrorManager.CreateAndThrow<ErrorHandling.ActionableError>(
+                        new ErrorHandling.ActionableError()
+                        {
+                            Level = ErrorHandling.LevelType.Error,
+                            Title = "Error",
+                            SimpleMessage = "Failed to retrieve the details about the user that created the security area.  Would you like to retry?",
+                            Message = "Error: " + result.ResponseContainer.Error.Message,
+                            Exception = result.ResponseContainer.Error.Exception,
+                            Source = "OpenLawOffice.WinClient.Controllers.Security.Area.DownloadUser()",
+                            Recover = (error, data, onFail) =>
+                            {
+                                DownloadUser(onComplete, userid);
+                            },
+                            Fail = (error, data) =>
+                            {
+                                onComplete(null);
+                            }
+                        });
+                }
+                else
+                {
+                    Common.Models.Security.User sysUser = Mapper.Map<Common.Models.Security.User>(result.Response);
+                    onComplete(ViewModels.Creator.Create<ViewModels.Security.User>(sysUser));
+                }
+            });
         }
     }
 }

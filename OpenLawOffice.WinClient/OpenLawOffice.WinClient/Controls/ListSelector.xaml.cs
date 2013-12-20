@@ -10,6 +10,7 @@ namespace OpenLawOffice.WinClient.Controls
     public partial class ListSelector : UserControl
     {
         public event EventHandler<EventArgs> OnSelect;
+        public event EventHandler<EventArgs> OnCancel;
 
         public object SelectedItem { get { return GetSelectedItem(); } }
         public bool IsBusy
@@ -48,6 +49,11 @@ namespace OpenLawOffice.WinClient.Controls
         public void ClearSelected()
         {
             UIList.SelectedIndex = -1;
+        }
+
+        private void UICancel_Click(object sender, RoutedEventArgs e)
+        {
+            if (OnCancel != null) OnCancel(sender, e);
         }
     }
 }

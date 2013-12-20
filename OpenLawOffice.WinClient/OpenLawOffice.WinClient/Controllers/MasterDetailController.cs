@@ -92,5 +92,10 @@ namespace OpenLawOffice.WinClient.Controllers
         {
             MasterDetailWindow.SetDisplayMode(mode);
         }
+
+        public override void GoIntoCreateMode(object obj)
+        {
+            MasterDetailWindow.GoIntoCreateMode(obj);
+        }
     }
 }

@@ -24,7 +24,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             Globals.Instance.MainWindow.SecurityAreaAclTab,
             Globals.Instance.MainWindow.SecurityAreaAcls_Edit,
             Globals.Instance.MainWindow.SecurityAreaAcls_Create,
-            Globals.Instance.MainWindow.SecurityAreas_Disable,
+            null,
             Globals.Instance.MainWindow.SecurityAreaAcls_Save,
             Globals.Instance.MainWindow.SecurityAreaAcls_Cancel)
         {
@@ -159,12 +159,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             });
         }
 
-        public override void LoadUI()
-        {
-            LoadUI(null);
-        }
-
-        public override void LoadUI(ViewModels.IViewModel selected)
+        public override void LoadUI(ViewModels.IViewModel selected, Action callback = null)
         {
             ObservableCollection<ViewModels.IViewModel> viewModelCollection = null;
 
@@ -270,6 +265,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                             LoadAreaAndUser(viewModel);
                         }
                         if (selected != null) SelectItem(selected);
+                        if (callback != null) callback();
                     });
                 }));
 

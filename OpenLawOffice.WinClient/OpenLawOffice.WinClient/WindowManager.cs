@@ -40,14 +40,19 @@ namespace OpenLawOffice.WinClient
             return null;
         }
 
+        public Controls.IDockableWindow Lookup(Controls.IDockableWindow window)
+        {
+            return Windows.Find(delegate(Controls.IDockableWindow winToCompare)
+            {
+                return window.Title == winToCompare.Title;
+            });
+        }
+
         public void RegisterWindow(Controls.IDockableWindow window)
         {
             if (!window.CanHaveMultipleInstances)
             {
-                if (Windows.Find(delegate(Controls.IDockableWindow winToCompare)
-                {
-                    return window.Title == winToCompare.Title;
-                }) != null)
+                if (Lookup(window) != null)
                     throw new Exception("Window with same title already instantiated and registered.");
             }
 

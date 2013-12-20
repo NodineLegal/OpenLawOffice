@@ -128,7 +128,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             return filter;
         }
 
-        public override void LoadUI(ViewModels.IViewModel selected)
+        public override void LoadUI(ViewModels.IViewModel selected, Action callback = null)
         {
             ObservableCollection<ViewModels.IViewModel> viewModelCollection = null;
 
@@ -255,12 +255,8 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             {
                 MasterDetailWindow.MasterDataContext = results;
                 if (selected != null) SelectItem(selected);
+                if (callback != null) callback();
             });
-        }
-
-        public override void LoadUI()
-        {
-            LoadUI(null);
         }
 
         public override Task LoadItems(ViewModels.IViewModel filter, ICollection<ViewModels.IViewModel> collection, Action<ICollection<ViewModels.IViewModel>, ErrorHandling.ActionableError> onComplete)

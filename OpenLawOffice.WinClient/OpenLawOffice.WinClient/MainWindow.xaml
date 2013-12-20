@@ -48,6 +48,7 @@
                     <ctrls:WatermarkedRibbonTextBox x:Name="Matters_List_Tags" x:FieldModifier="public" Watermark="Tag Filter" TextBoxWidth="150" />
                 </ribbon:RibbonGroup>
                 <ribbon:RibbonGroup x:Name="Matters_Relationships" Header="Relationships">
+                    <ribbon:RibbonButton x:Name="Matters_ResponsibleUsers" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Responsible Users" />
                     <ribbon:RibbonButton x:Name="Matters_Acls" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="ACLs" />
                     <ribbon:RibbonButton x:Name="Matters_Contacts" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Contacts" />
                     <ribbon:RibbonButton x:Name="Matters_Tasks" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Tasks" />
@@ -60,6 +61,31 @@
                     <ribbon:RibbonButton x:Name="Matters_Disable" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Disable" />
                     <ribbon:RibbonButton x:Name="Matters_Save" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Save" />
                     <ribbon:RibbonButton x:Name="Matters_Cancel" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Cancel" />
+                </ribbon:RibbonGroup>
+            </ribbon:RibbonTab>
+
+            <ribbon:RibbonTab x:Name="MatterResponsibleUsersTab" Header="Responsible Users" Visibility="Hidden">
+                <ribbon:RibbonGroup x:Name="MatterResponsibleUsers_Group" Header="Responsible Users">
+                    <ribbon:RibbonButton x:Name="MatterResponsibleUsers_List" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="List" />
+                    <StackPanel Orientation="Horizontal">
+                        <ctrls:WatermarkedRibbonTextBox x:Name="MatterResponsibleUsers_List_Matter" x:FieldModifier="public" Watermark="Title Filter" TextBoxWidth="150" />
+                        <ribbon:RibbonButton x:Name="MatterResponsibleUsers_ClearMatter" x:FieldModifier="public" SmallImageSource="Images\SmallIcon.png" Label="Clear" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="User:" Width="35" />
+                        <ComboBox x:Name="MatterResponsibleUsers_List_User" x:FieldModifier="public" Width="200" Background="White" BorderBrush="Black" BorderThickness="1" />
+                        <ribbon:RibbonButton x:Name="MatterResponsibleUsers_ClearUser" x:FieldModifier="public" SmallImageSource="Images\SmallIcon.png" Label="Clear" />
+                    </StackPanel>
+                </ribbon:RibbonGroup>
+                <ribbon:RibbonGroup x:Name="MatterResponsibleUsers_Relationships" Header="Relationships">
+
+                </ribbon:RibbonGroup>
+                <ribbon:RibbonGroup x:Name="MatterResponsibleUsers_Actions" Header="Actions">
+                    <ribbon:RibbonButton x:Name="MatterResponsibleUsers_Create" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Create" />
+                    <ribbon:RibbonToggleButton x:Name="MatterResponsibleUsers_Edit" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Edit" />
+                    <ribbon:RibbonButton x:Name="MatterResponsibleUsers_Disable" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Disable" />
+                    <ribbon:RibbonButton x:Name="MatterResponsibleUsers_Save" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Save" />
+                    <ribbon:RibbonButton x:Name="MatterResponsibleUsers_Cancel" x:FieldModifier="public" LargeImageSource="Images\LargeIcon.png" Label="Cancel" />
                 </ribbon:RibbonGroup>
             </ribbon:RibbonTab>
 

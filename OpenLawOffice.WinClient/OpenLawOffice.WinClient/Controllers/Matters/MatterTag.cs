@@ -21,7 +21,7 @@ namespace OpenLawOffice.WinClient.Controllers.Matters
         public override Type ModelType { get { return typeof(Common.Models.Matters.MatterTag); } }
 
         public MatterTag()
-            : base("Matters",
+            : base("Matter Tags",
             null,
             null,
             null,
@@ -32,12 +32,9 @@ namespace OpenLawOffice.WinClient.Controllers.Matters
             _consumer = new Consumers.Matters.Matter();
         }
 
-        public override void LoadUI(ViewModels.IViewModel selected)
+        public override void LoadUI(ViewModels.IViewModel selected, Action callback = null)
         {
-        }
-
-        public override void LoadUI()
-        {
+            if (callback != null) callback();
         }
 
         public override Task LoadDetails(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
