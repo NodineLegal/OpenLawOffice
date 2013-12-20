@@ -13,10 +13,18 @@ namespace OpenLawOffice.Server.Core.Services.Matters
         {
             string filterClause = "";
             int tagCatId = 0;
+            Guid matterId = Guid.Empty;
 
             // MatterId
             // TagCategory
             // Tag
+
+            if (request.MatterId.HasValue &&
+                request.MatterId.Value != Guid.Empty)
+            {
+                matterId = request.MatterId.Value;
+                filterClause += " \"matter_id\" = @MatterId AND ";
+            }
 
             if (request.TagCategoryId.HasValue &&
                 request.TagCategoryId.Value > 0)
@@ -31,7 +39,7 @@ namespace OpenLawOffice.Server.Core.Services.Matters
             filterClause += " \"utc_disabled\" is null";
 
             return db.Query<DBOs.Matters.MatterTag>("SELECT * FROM \"matter_tag\" WHERE" + filterClause,
-                new { TagId = tagCatId, Tag = request.Tag });
+                new { MatterId = matterId, TagId = tagCatId, Tag = request.Tag });
         }
     }
 }

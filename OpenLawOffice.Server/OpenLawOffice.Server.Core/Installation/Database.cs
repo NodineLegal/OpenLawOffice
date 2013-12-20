@@ -18,6 +18,7 @@ namespace OpenLawOffice.Server.Core.Installation
                 conn.CreateTableIfNotExists<DBOs.Tagging.TagCategory>();
                 conn.CreateTableIfNotExists<DBOs.Matters.Matter>();
                 conn.CreateTableIfNotExists<DBOs.Matters.MatterTag>();
+                conn.CreateTableIfNotExists<DBOs.Matters.ResponsibleUser>();
 
                 DBOs.Security.User dbUser = conn.QuerySingle<DBOs.Security.User>(new { Username = "TestUser" });
                 // == "a" on before client hash
@@ -140,21 +141,20 @@ namespace OpenLawOffice.Server.Core.Installation
                     dbAreaSecuredResourceAcl.Id = (int)conn.GetLastInsertId();
                 }
 
-                DBOs.Security.Area dbAreaMatters = conn.QuerySingle<DBOs.Security.Area>(new { Name = "Matters" });
-                if (dbAreaMatters == null)
+                DBOs.Security.Area dbAreaTagging = conn.QuerySingle<DBOs.Security.Area>(new { Name = "Tagging" });
+                if (dbAreaTagging == null)
                 {
-                    dbAreaMatters = new DBOs.Security.Area()
+                    dbAreaTagging = new DBOs.Security.Area()
                     {
-                        ParentId = dbSecurity.Id,
-                        Name = "Matters",
-                        Description = "Matters",
+                        Name = "Tagging",
+                        Description = "Tagging",
                         CreatedByUserId = dbUser.Id,
                         ModifiedByUserId = dbUser.Id,
                         UtcCreated = DateTime.Now,
                         UtcModified = DateTime.Now
                     };
-                    conn.Insert<DBOs.Security.Area>(dbAreaMatters);
-                    dbAreaMatters.Id = (int)conn.GetLastInsertId();
+                    conn.Insert<DBOs.Security.Area>(dbAreaTagging);
+                    dbAreaTagging.Id = (int)conn.GetLastInsertId();
                 }
 
                 DBOs.Security.Area dbAreaTaggingTagCategory = conn.QuerySingle<DBOs.Security.Area>(new { Name = "Tagging.TagCategory" });
@@ -174,12 +174,28 @@ namespace OpenLawOffice.Server.Core.Installation
                     dbAreaTaggingTagCategory.Id = (int)conn.GetLastInsertId();
                 }
 
+                DBOs.Security.Area dbAreaMatters = conn.QuerySingle<DBOs.Security.Area>(new { Name = "Matters" });
+                if (dbAreaMatters == null)
+                {
+                    dbAreaMatters = new DBOs.Security.Area()
+                    {
+                        Name = "Matters",
+                        Description = "Matters",
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.Area>(dbAreaMatters);
+                    dbAreaMatters.Id = (int)conn.GetLastInsertId();
+                }
+
                 DBOs.Security.Area dbAreaMattersMatter = conn.QuerySingle<DBOs.Security.Area>(new { Name = "Matters.Matter" });
                 if (dbAreaMattersMatter == null)
                 {
                     dbAreaMattersMatter = new DBOs.Security.Area()
                     {
-                        ParentId = dbSecurity.Id,
+                        ParentId = dbAreaMatters.Id,
                         Name = "Matters.Matter",
                         Description = "System matters",
                         CreatedByUserId = dbUser.Id,
@@ -196,7 +212,7 @@ namespace OpenLawOffice.Server.Core.Installation
                 {
                     dbAreaMattersTag = new DBOs.Security.Area()
                     {
-                        ParentId = dbSecurity.Id,
+                        ParentId = dbAreaMatters.Id,
                         Name = "Matters.MatterTag",
                         Description = "Tags for matters",
                         CreatedByUserId = dbUser.Id,
@@ -206,6 +222,23 @@ namespace OpenLawOffice.Server.Core.Installation
                     };
                     conn.Insert<DBOs.Security.Area>(dbAreaMattersTag);
                     dbAreaMattersTag.Id = (int)conn.GetLastInsertId();
+                }
+
+                DBOs.Security.Area dbAreaMattersResponsibleUser = conn.QuerySingle<DBOs.Security.Area>(new { Name = "Matters.ResponsibleUser" });
+                if (dbAreaMattersResponsibleUser == null)
+                {
+                    dbAreaMattersResponsibleUser = new DBOs.Security.Area()
+                    {
+                        ParentId = dbAreaMatters.Id,
+                        Name = "Matters.ResponsibleUser",
+                        Description = "User responsibilities for matters",
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.Area>(dbAreaMattersResponsibleUser);
+                    dbAreaMattersResponsibleUser.Id = (int)conn.GetLastInsertId();
                 }
 
                 #endregion
@@ -396,6 +429,25 @@ namespace OpenLawOffice.Server.Core.Installation
                     dbAAclMattersMatterTag.Id = (int)conn.GetLastInsertId();
                 }
 
+                // Matters.ResponsibleUser
+                DBOs.Security.AreaAcl dbAAclMattersResponsibleUser = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaMattersResponsibleUser.Id, UserId = dbUser.Id });
+                if (dbAAclMattersResponsibleUser == null)
+                {
+                    dbAAclMattersResponsibleUser = new DBOs.Security.AreaAcl()
+                    {
+                        SecurityAreaId = dbAreaMattersResponsibleUser.Id,
+                        UserId = dbUser.Id,
+                        AllowFlags = (int)(Common.Models.PermissionType.AllAdmin | Common.Models.PermissionType.AllWrite | Common.Models.PermissionType.AllRead),
+                        DenyFlags = 0,
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.AreaAcl>(dbAAclMattersResponsibleUser);
+                    dbAAclMattersResponsibleUser.Id = (int)conn.GetLastInsertId();
+                }
+
                 #endregion
 
                 #region Matters
@@ -480,7 +532,20 @@ namespace OpenLawOffice.Server.Core.Installation
                     conn.Insert<DBOs.Matters.MatterTag>(matterTag2);
                 }
 
-
+                DBOs.Matters.ResponsibleUser respUser1 = conn.QuerySingle<DBOs.Matters.ResponsibleUser>(new { MatterId = matter1.Id, UserId = dbUser.Id });
+                if (respUser1 == null)
+                {
+                    respUser1 = new DBOs.Matters.ResponsibleUser()
+                    {
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now,
+                        MatterId = matter1.Id,
+                        UserId = dbUser.Id,
+                        Responsibility = "Attorney"
+                    };
+                }
 
                 #endregion
             }
