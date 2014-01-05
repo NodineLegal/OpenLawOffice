@@ -1,0 +1,66 @@
+﻿<%@ Master Language="C#" Inherits="System.Web.Mvc.ViewMasterPage" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title><asp:ContentPlaceHolder ID="TitleContent" runat="server" /></title>
+    <link href="../../Content/Site.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../Scripts/aciTree/css/aciTree.css" media="all">
+</head>
+
+<body>
+    <div class="page">
+
+        <div id="header">
+            <div id="title">
+                <h1>OpenLawOffice</h1>
+            </div>
+              
+            <div id="logindisplay">
+                Logged in as: <%= Request.Cookies["Username"].Value %>
+            </div>
+        </div>
+
+        <div id="nav">
+            <ul>
+                <li><%: Html.ActionLink("Matters", "", "Matters") %></li>
+                <ul>
+                    <li><%: Html.ActionLink("New Matter", "Create", "Matters") %></li>
+                </ul>
+                <li>Contacts</li>
+                <ul>
+                    <li>Businesses</li>
+                    <li>Individuals</li>
+                </ul>
+                <li>Tasking</li>
+                <ul></ul>
+                <li>Notes</li>
+                <ul></ul>
+                <li>Documents</li>
+                <ul></ul>
+                <li>Billing</li>
+                <ul></ul>
+                <li>Security</li>
+                <ul>
+                    <li><%: Html.ActionLink("Areas", "", "SecurityAreas") %></li>
+                    <li><%: Html.ActionLink("Users", "", "Users") %></li>
+                </ul>
+            </ul>
+        </div>
+        
+        <div id="menucontainer">            
+            <ul id="menu">      
+                <asp:ContentPlaceHolder ID="MenuContent" runat="server" />
+            </ul>
+        </div>
+
+        <div id="main">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+
+            <div id="footer">
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

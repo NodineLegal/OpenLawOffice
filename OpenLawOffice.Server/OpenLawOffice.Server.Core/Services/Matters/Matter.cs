@@ -14,10 +14,18 @@ namespace OpenLawOffice.Server.Core.Services.Matters
 
             if (!string.IsNullOrEmpty(request.Title))
                 filterClause += " LOWER(\"title\") like '%' || LOWER(@Title) || '%' AND";
+            
+            //return db.Query<DBOs.Matters.Matter>(
+            //    "SELECT * FROM \"matter\" WHERE" + filterClause,
+            //    new { Title = request.Title });
 
-            filterClause += " \"utc_disabled\" is null";
-
-            return db.Query<DBOs.Matters.Matter>("SELECT * FROM \"matter\" WHERE" + filterClause,
+            return db.Query<DBOs.Matters.Matter>("SELECT * FROM \"matter\" JOIN \"secured_resource_acl\" ON " +
+                "\"matter\".\"id\"=\"secured_resource_acl\".\"secured_resource_id\" " +
+                "WHERE " + filterClause +
+                "\"secured_resource_acl\".\"allow_flags\" & 2 > 0 " +
+                "AND NOT \"secured_resource_acl\".\"deny_flags\" & 2 > 0 " +
+                "AND \"matter\".\"utc_disabled\" is null  " +
+                "AND \"secured_resource_acl\".\"utc_disabled\" is null",
                 new { Title = request.Title });
         }
     }

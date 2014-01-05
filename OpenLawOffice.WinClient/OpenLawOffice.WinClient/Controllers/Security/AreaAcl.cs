@@ -1,26 +1,18 @@
-﻿using System;
-using System.Windows.Input;
-using AutoMapper;
-using System.Collections.Generic;
-using DW.SharpTools;
-using System.Reflection;
-using System.Threading.Tasks;
-using System.Collections.ObjectModel;
-
-namespace OpenLawOffice.WinClient.Controllers.Security
+﻿namespace OpenLawOffice.WinClient.Controllers.Security
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Threading.Tasks;
+    using AutoMapper;
+
     [Handle(typeof(Common.Models.Security.AreaAcl))]
     public class AreaAcl
-        : MasterDetailControllerCore<Controls.ListGridView, Views.Security.AreaAclDetail, 
+        : MasterDetailControllerCore<Controls.ListGridView, Views.Security.AreaAclDetail,
             Views.Security.AreaAclEdit, Views.Security.AreaAclCreate>
     {
-        public override Type RequestType { get { return typeof(Common.Rest.Requests.Security.AreaAcl); } }
-        public override Type ResponseType { get { return typeof(Common.Rest.Responses.Security.AreaAcl); } }
-        public override Type ViewModelType { get { return typeof(ViewModels.Security.AreaAcl); } }
-        public override Type ModelType { get { return typeof(Common.Models.Security.AreaAcl); } }
-        
         public AreaAcl()
-            : base("Area ACLs", 
+            : base("Area ACLs",
             Globals.Instance.MainWindow.SecurityAreaAclTab,
             Globals.Instance.MainWindow.SecurityAreaAcls_Edit,
             Globals.Instance.MainWindow.SecurityAreaAcls_Create,
@@ -69,31 +61,77 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                 });
         }
 
-        private ViewModels.Security.AreaAcl BuildFilter()
+        public override Type ModelType { get { return typeof(Common.Models.Security.AreaAcl); } }
+
+        public override Type RequestType { get { return typeof(Common.Rest.Requests.Security.AreaAcl); } }
+
+        public override Type ResponseType { get { return typeof(Common.Rest.Responses.Security.AreaAcl); } }
+
+        public override Type ViewModelType { get { return typeof(ViewModels.Security.AreaAcl); } }
+
+        public override Task CreateItem(Common.Rest.Requests.RequestBase request, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
         {
-            ViewModels.Security.AreaAcl filter = ViewModels.Creator.Create<ViewModels.Security.AreaAcl>(
-                new Common.Models.Security.AreaAcl());
-
-            App.Current.Dispatcher.Invoke(new Action(() =>
+            return CreateItem<Common.Rest.Requests.Security.AreaAcl, Common.Rest.Responses.Security.AreaAcl>
+                ((Common.Rest.Requests.Security.AreaAcl)request, (result, error) =>
             {
-                ViewModels.Security.User userFilter = null;
-                ViewModels.Security.Area areaFilter = null;
+                if (error != null) return;
+                ViewModels.Security.AreaAcl castedResult = (ViewModels.Security.AreaAcl)result;
+                ICollection<ViewModels.IViewModel> collection = (ICollection<ViewModels.IViewModel>)MasterDetailWindow.MasterDataContext;
+                LoadAreaAndUser(castedResult);
+                collection.Add(castedResult);
+                if (onComplete != null)
+                    onComplete(castedResult, error);
+            });
+        }
 
-                if (MainWindow.SecurityAreaAcls_List_User.SelectedItem != null)
-                    userFilter = (ViewModels.Security.User)MainWindow.SecurityAreaAcls_List_User.SelectedItem;
-                if (MainWindow.SecurityAreaAcls_List_Area.SelectedItem != null)
-                    areaFilter = (ViewModels.Security.Area)MainWindow.SecurityAreaAcls_List_Area.SelectedItem;
+        public override Task DisableItem(Common.Rest.Requests.RequestBase request, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
+        {
+            return DisableItem<Common.Rest.Requests.Security.AreaAcl, Common.Rest.Responses.Security.AreaAcl>
+                ((Common.Rest.Requests.Security.AreaAcl)request, onComplete);
+        }
 
-                if (userFilter != null || areaFilter != null)
-                {
-                    if (userFilter != null)
-                        filter.User = userFilter;
-                    if (areaFilter != null)
-                        filter.Area = areaFilter;
-                }
-            }));
+        public override Task ListItems(Common.Rest.Requests.RequestBase request, Action<List<ViewModels.IViewModel>, ErrorHandling.ActionableError> onComplete)
+        {
+            return ListItems<Common.Rest.Requests.Security.AreaAcl, Common.Rest.Responses.Security.AreaAcl>
+                ((Common.Rest.Requests.Security.AreaAcl)request, onComplete);
+        }
 
-            return filter;
+        public void LoadAreaAndUser(ViewModels.Security.AreaAcl viewModel)
+        {
+            Consumers.ConsumerResult<Common.Rest.Requests.Security.Area, Common.Rest.Responses.Security.Area> areaResult = null;
+            Consumers.ConsumerResult<Common.Rest.Requests.Security.User, Common.Rest.Responses.Security.User> userResult = null;
+
+            Consumers.Security.Area areaConsumer = new Consumers.Security.Area();
+            Consumers.Security.User userConsumer = new Consumers.Security.User();
+
+            Common.Rest.Requests.Security.Area areaRequest = Mapper.Map<Common.Rest.Requests.Security.Area>(
+                new Common.Models.Security.Area() { Id = viewModel.Area.Id });
+
+            Common.Rest.Requests.Security.User userRequest = Mapper.Map<Common.Rest.Requests.Security.User>(
+                new Common.Models.Security.User() { Id = viewModel.User.Id });
+
+            areaResult = areaConsumer.GetSingle(areaRequest);
+            userResult = userConsumer.GetSingle(userRequest);
+
+            Common.Models.Security.Area areaModel = Mapper.Map<Common.Models.Security.Area>(areaResult.Response);
+            Common.Models.Security.User userModel = Mapper.Map<Common.Models.Security.User>(userResult.Response);
+
+            viewModel.Area = ViewModels.Creator.Create<ViewModels.Security.Area>(areaModel);
+            viewModel.User = ViewModels.Creator.Create<ViewModels.Security.User>(userModel);
+        }
+
+        public override Task LoadDetails(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
+        {
+            ViewModels.Security.AreaAcl castViewModel = (ViewModels.Security.AreaAcl)viewModel;
+
+            MasterDetailWindow.DetailView.IsBusy = true;
+            MasterDetailWindow.EditView.IsBusy = true;
+
+            return PopulateCoreDetails<Common.Models.Security.AreaAcl>(castViewModel, () =>
+            {
+                MasterDetailWindow.DetailView.IsBusy = false;
+                MasterDetailWindow.EditView.IsBusy = false;
+            });
         }
 
         public Task LoadFilterOptions()
@@ -112,10 +150,10 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                 {
                     areaOptions = areaConsumer.GetList<Common.Rest.Requests.Security.Area,
                         Common.Rest.Responses.Security.Area>(
-                        new Common.Rest.Requests.Security.Area() 
+                        new Common.Rest.Requests.Security.Area()
                         {
                             AuthToken = Globals.Instance.AuthToken,
-                            ShowAll = true 
+                            ShowAll = true
                         });
                 });
 
@@ -182,7 +220,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                 {
                     foreach (ViewModels.Security.AreaAcl result in results)
                         LoadAreaAndUser(result);
-                
+
                     MasterDetailWindow.MasterDataContext = results;
                 });
             });
@@ -223,7 +261,7 @@ namespace OpenLawOffice.WinClient.Controllers.Security
             MainWindow.SecurityAreaAcls_Cancel.Command = new Commands.DelegateCommand(x =>
             {
                 // Will need to reload the model from the server (easiest way)
-                // This needs to be improved - if we want to keep loading from the server instead of 
+                // This needs to be improved - if we want to keep loading from the server instead of
                 // doing a deep copy, then it needs to only load a single, not force the whole
                 // tree to reload.
                 App.Current.Dispatcher.Invoke(new Action(() =>
@@ -268,45 +306,6 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                         if (callback != null) callback();
                     });
                 }));
-
-            });
-        }
-
-        public void LoadAreaAndUser(ViewModels.Security.AreaAcl viewModel)
-        {
-            Consumers.ConsumerResult<Common.Rest.Requests.Security.Area, Common.Rest.Responses.Security.Area> areaResult = null;
-            Consumers.ConsumerResult<Common.Rest.Requests.Security.User, Common.Rest.Responses.Security.User> userResult = null;
-
-            Consumers.Security.Area areaConsumer = new Consumers.Security.Area();
-            Consumers.Security.User userConsumer = new Consumers.Security.User();
-
-            Common.Rest.Requests.Security.Area areaRequest = Mapper.Map<Common.Rest.Requests.Security.Area>(
-                new Common.Models.Security.Area() { Id = viewModel.Area.Id });
-
-            Common.Rest.Requests.Security.User userRequest = Mapper.Map<Common.Rest.Requests.Security.User>(
-                new Common.Models.Security.User() { Id = viewModel.User.Id });
-
-            areaResult = areaConsumer.GetSingle(areaRequest);
-            userResult = userConsumer.GetSingle(userRequest);
-
-            Common.Models.Security.Area areaModel = Mapper.Map<Common.Models.Security.Area>(areaResult.Response);
-            Common.Models.Security.User userModel = Mapper.Map<Common.Models.Security.User>(userResult.Response);
-
-            viewModel.Area = ViewModels.Creator.Create<ViewModels.Security.Area>(areaModel);
-            viewModel.User = ViewModels.Creator.Create<ViewModels.Security.User>(userModel);
-        }
-
-        public override Task LoadDetails(ViewModels.IViewModel viewModel, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
-        {
-            ViewModels.Security.AreaAcl castViewModel = (ViewModels.Security.AreaAcl)viewModel;
-
-            MasterDetailWindow.DetailView.IsBusy = true;
-            MasterDetailWindow.EditView.IsBusy = true;
-
-            return PopulateCoreDetails<Common.Models.Security.AreaAcl>(castViewModel, () =>
-            {
-                MasterDetailWindow.DetailView.IsBusy = false;
-                MasterDetailWindow.EditView.IsBusy = false;
             });
         }
 
@@ -316,31 +315,31 @@ namespace OpenLawOffice.WinClient.Controllers.Security
                 ((Common.Rest.Requests.Security.AreaAcl)request, onComplete);
         }
 
-        public override Task CreateItem(Common.Rest.Requests.RequestBase request, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
+        private ViewModels.Security.AreaAcl BuildFilter()
         {
-            return CreateItem<Common.Rest.Requests.Security.AreaAcl, Common.Rest.Responses.Security.AreaAcl>
-                ((Common.Rest.Requests.Security.AreaAcl)request, (result, error) =>
+            ViewModels.Security.AreaAcl filter = ViewModels.Creator.Create<ViewModels.Security.AreaAcl>(
+                new Common.Models.Security.AreaAcl());
+
+            App.Current.Dispatcher.Invoke(new Action(() =>
             {
-                if (error != null) return;
-                ViewModels.Security.AreaAcl castedResult = (ViewModels.Security.AreaAcl)result;                
-                ICollection<ViewModels.IViewModel> collection = (ICollection<ViewModels.IViewModel>)MasterDetailWindow.MasterDataContext;
-                LoadAreaAndUser(castedResult);
-                collection.Add(castedResult);
-                if (onComplete != null) 
-                    onComplete(castedResult, error);
-            });
-        }
+                ViewModels.Security.User userFilter = null;
+                ViewModels.Security.Area areaFilter = null;
 
-        public override Task DisableItem(Common.Rest.Requests.RequestBase request, Action<ViewModels.IViewModel, ErrorHandling.ActionableError> onComplete)
-        {
-            return DisableItem<Common.Rest.Requests.Security.AreaAcl, Common.Rest.Responses.Security.AreaAcl>
-                ((Common.Rest.Requests.Security.AreaAcl)request, onComplete);
-        }
+                if (MainWindow.SecurityAreaAcls_List_User.SelectedItem != null)
+                    userFilter = (ViewModels.Security.User)MainWindow.SecurityAreaAcls_List_User.SelectedItem;
+                if (MainWindow.SecurityAreaAcls_List_Area.SelectedItem != null)
+                    areaFilter = (ViewModels.Security.Area)MainWindow.SecurityAreaAcls_List_Area.SelectedItem;
 
-        public override Task ListItems(Common.Rest.Requests.RequestBase request, Action<List<ViewModels.IViewModel>, ErrorHandling.ActionableError> onComplete)
-        {
-            return ListItems<Common.Rest.Requests.Security.AreaAcl, Common.Rest.Responses.Security.AreaAcl>
-                ((Common.Rest.Requests.Security.AreaAcl)request, onComplete);
+                if (userFilter != null || areaFilter != null)
+                {
+                    if (userFilter != null)
+                        filter.User = userFilter;
+                    if (areaFilter != null)
+                        filter.Area = areaFilter;
+                }
+            }));
+
+            return filter;
         }
     }
 }

@@ -7,15 +7,15 @@ namespace OpenLawOffice.WinClient.Views.Security
     /// </summary>
     public partial class AreaDetail : UserControl, Controls.IDetail
     {
+        public AreaDetail()
+        {
+            InitializeComponent();
+        }
+
         public bool IsBusy
         {
             get { return UIBusyIndicator.IsBusy; }
             set { UIBusyIndicator.IsBusy = value; }
-        }
-
-        public AreaDetail()
-        {
-            InitializeComponent();
         }
     }
 }

@@ -3,6 +3,7 @@ using ServiceStack.OrmLite;
 using ServiceStack.ServiceHost;
 using ServiceStack.ServiceInterface;
 using System.Reflection;
+using System;
 
 namespace OpenLawOffice.Server.Core.Services
 {
@@ -36,13 +37,11 @@ namespace OpenLawOffice.Server.Core.Services
             }
         }
 
-        public Common.Rest.Responses.ResponseContainer<TResponse> Authorize(Common.Rest.Requests.RequestBase request, Common.Models.PermissionType permissionRequired)
+        public virtual Common.Rest.Responses.ResponseContainer<TResponse> Authorize(Common.Rest.Requests.RequestBase request, Common.Models.PermissionType permissionRequired)
         {
             Core.Security.Session session;
             Rest.Requests.Security.User userRequest;
             Rest.Requests.Security.Area areaRequest;
-            Rest.Requests.Security.SecuredResource securedResourceRequest;
-            Common.Models.Security.ISecuredResource imodel;
             Core.Security.AuthorizeResult authResult;
 
             session = new Core.Security.Session()
@@ -75,68 +74,6 @@ namespace OpenLawOffice.Server.Core.Services
                     Error = new Common.Error()
                     {
                         Message = "An error occurred while attempting to authorize the request.  Error message: " + authResult.ErrorMessage
-                    }
-                };
-
-            if (!authResult.IsAuthorized)
-                return new Common.Rest.Responses.ResponseContainer<TResponse>()
-                {
-                    HttpStatusCode = System.Net.HttpStatusCode.Unauthorized,
-                    Error = new Common.Error()
-                    {
-                        Message = "Access denied."
-                    }
-                };
-
-            // Do we need to test model specific access?
-            if (!typeof(Common.Models.Security.ISecuredResource).IsAssignableFrom(this.GetType()))
-            {
-                if (authResult.IsAuthorized)
-                    return new Common.Rest.Responses.ResponseContainer<TResponse>()
-                    {
-                        HttpStatusCode = System.Net.HttpStatusCode.OK
-                    };
-                else
-                    return new Common.Rest.Responses.ResponseContainer<TResponse>()
-                    {
-                        HttpStatusCode = System.Net.HttpStatusCode.Unauthorized,
-                        Error = new Common.Error()
-                        {
-                            Message = "Access denied."
-                        }
-                    };
-            }
-
-            imodel = (Common.Models.Security.ISecuredResource)this;
-            
-            // Verification check
-            if (imodel.SecuredResource == null || !imodel.SecuredResource.Id.HasValue)
-                return new Common.Rest.Responses.ResponseContainer<TResponse>()
-                {
-                    HttpStatusCode = System.Net.HttpStatusCode.InternalServerError,
-                    Error = new Common.Error()
-                    {
-                        Message = "Authorization expected, but was not provided a secured resource on which to check permissions."
-                    }
-                };
-
-            // Setup request
-            securedResourceRequest = new Rest.Requests.Security.SecuredResource()
-            {
-                AuthToken = request.AuthToken,
-                Id = imodel.SecuredResource.Id.Value,
-                Session = session
-            };
-
-            authResult = Core.Security.Authorize.SecuredResourceAccess(userRequest, securedResourceRequest, permissionRequired);
-
-            if (authResult.HasError)
-                return new Common.Rest.Responses.ResponseContainer<TResponse>()
-                {
-                    HttpStatusCode = System.Net.HttpStatusCode.InternalServerError,
-                    Error = new Common.Error()
-                    {
-                        Message = "An error occurred while attempting to authorize the request."
                     }
                 };
 

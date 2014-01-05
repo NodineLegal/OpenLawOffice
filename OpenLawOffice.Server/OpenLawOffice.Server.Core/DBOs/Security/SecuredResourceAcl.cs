@@ -109,8 +109,18 @@ namespace OpenLawOffice.Server.Core.DBOs.Security
                 {
                     return model.User.Id.Value;
                 }))
-                .ForMember(dst => dst.AllowFlags, opt => opt.MapFrom(src => src.AllowFlags))
-                .ForMember(dst => dst.DenyFlags, opt => opt.MapFrom(src => src.DenyFlags));
+                .ForMember(dst => dst.AllowFlags, opt => opt.ResolveUsing(model =>
+                {
+                    if (model.AllowFlags.HasValue)
+                        return (int)model.AllowFlags.Value;
+                    return -1;
+                }))
+                .ForMember(dst => dst.DenyFlags, opt => opt.ResolveUsing(model =>
+                {
+                    if (model.DenyFlags.HasValue)
+                        return (int)model.DenyFlags.Value;
+                    return -1;
+                }));
         }
     }
 }

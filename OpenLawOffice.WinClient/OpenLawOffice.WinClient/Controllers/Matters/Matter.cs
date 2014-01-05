@@ -82,6 +82,44 @@ namespace OpenLawOffice.WinClient.Controllers.Matters
                 });
             };
             MasterDetailWindow.AddRelationView<Common.Models.Matters.Matter>(respUserRelation);
+
+            Views.Security.SecuredResourceAclRelation resourcePerms = new Views.Security.SecuredResourceAclRelation();
+            resourcePerms.OnClose += iwin =>
+            {
+                MasterDetailWindow.HideRelationView();
+            };
+            resourcePerms.OnEdit += iwin =>
+            {
+                ViewModels.Security.SecuredResourceAcl itemToView = 
+                    (ViewModels.Security.SecuredResourceAcl)respUserRelation.GetSelectedItem();
+                ControllerManager.Instance.LoadUI<Common.Models.Security.SecuredResourceAcl>(itemToView, () =>
+                {
+                    ControllerManager.Instance.SetDisplayMode<Common.Models.Security.SecuredResourceAcl>(Controls.DisplayModeType.Edit);
+                });
+            };
+            resourcePerms.OnView += iwin =>
+            {
+                ViewModels.Security.SecuredResourceAcl itemToView = (ViewModels.Security.SecuredResourceAcl)respUserRelation.GetSelectedItem();
+                ControllerManager.Instance.LoadUI<Common.Models.Security.SecuredResourceAcl>(itemToView);
+                ControllerManager.Instance.SetDisplayMode<Common.Models.Security.SecuredResourceAcl>(Controls.DisplayModeType.View);
+            };
+            resourcePerms.OnAdd += iwin =>
+            {
+                ViewModels.Matters.Matter matter = iwin.ViewModel;
+                ViewModels.Security.SecuredResourceAcl itemToView = ViewModels.Creator.Create<ViewModels.Security.SecuredResourceAcl>(
+                    new Common.Models.Security.SecuredResourceAcl()
+                    {
+                        SecuredResource = new Common.Models.Security.SecuredResource()
+                        {
+                            Id = matter.Id
+                        }
+                    });
+                ControllerManager.Instance.LoadUI<Common.Models.Security.SecuredResourceAcl>(itemToView, () =>
+                {
+                    ControllerManager.Instance.GoIntoCreateMode<Common.Models.Security.SecuredResourceAcl>(itemToView);
+                });
+            };
+            MasterDetailWindow.AddRelationView<Common.Models.Security.SecuredResourceAcl>(resourcePerms);
         }
 
         private ViewModels.Matters.Matter BuildFilter()
@@ -124,6 +162,12 @@ namespace OpenLawOffice.WinClient.Controllers.Matters
                 MasterDetailWindow.ShowRelationView<Common.Models.Security.AreaAcl>();
             }, x => MasterDetailWindow.RelationshipsEnabled);
             MasterDetailWindow.RelationshipCommands.Add((Commands.DelegateCommand)MainWindow.Matters_Acls.Command);
+
+            MainWindow.Matters_SecuredResourceAcls.Command = new Commands.DelegateCommand(x =>
+            {
+                MasterDetailWindow.ShowRelationView<Common.Models.Security.SecuredResourceAcl>();
+            }, x => MasterDetailWindow.RelationshipsEnabled);
+            MasterDetailWindow.RelationshipCommands.Add((Commands.DelegateCommand)MainWindow.Matters_SecuredResourceAcls.Command);
 
             MainWindow.Matters_Contacts.Command = new Commands.DelegateCommand(x =>
             {
@@ -304,7 +348,45 @@ namespace OpenLawOffice.WinClient.Controllers.Matters
             return Task.Factory.StartNew(new Action(() =>
             {
                 Task taskTags, taskCore;
-                ViewModels.Matters.Matter castViewModel = (ViewModels.Matters.Matter)viewModel;                
+                ViewModels.Matters.Matter castViewModel = (ViewModels.Matters.Matter)viewModel;
+
+                Consumers.ConsumerResult<Common.Rest.Requests.Matters.Matter, Common.Rest.Responses.Matters.Matter>
+                    detailResult = _consumer.GetSingle<Common.Rest.Requests.Matters.Matter, Common.Rest.Responses.Matters.Matter>(
+                    new Common.Rest.Requests.Matters.Matter()
+                    {
+                        AuthToken = Globals.Instance.AuthToken,
+                        Id = castViewModel.Id
+                    });
+
+                if (!detailResult.ResponseContainer.WasSuccessful)
+                {
+                    ErrorHandling.ErrorManager.CreateAndThrow<ErrorHandling.ActionableError>(
+                        new ErrorHandling.ActionableError()
+                        {
+                            Level = ErrorHandling.LevelType.Error,
+                            Title = "Error",
+                            SimpleMessage = "Fetching data failed.  Would you like to retry?",
+                            Message = "Error: " + detailResult.ResponseContainer.Error.Message,
+                            Exception = detailResult.ResponseContainer.Error.Exception,
+                            Source = this.GetType().FullName + "ListItems(Common.Rest.Requests.RequestBase, Action<List<ViewModels.IViewModel>>)",
+                            Recover = (error, data, onFail) =>
+                            {
+                            },
+                            Fail = (error, data) =>
+                            {
+                                App.Current.Dispatcher.Invoke(new Action(() =>
+                                {
+                                    if (onComplete != null)
+                                        onComplete(null, error);
+                                }));
+                            }
+                        });
+                    return;
+                }
+
+                // Replace
+                Common.Models.Matters.Matter replacementModel = Mapper.Map<Common.Models.Matters.Matter>(detailResult.ResponseContainer.Data);
+                castViewModel.Bind(replacementModel);
 
                 // Load Tags
                 taskTags = LoadTags(castViewModel, result =>

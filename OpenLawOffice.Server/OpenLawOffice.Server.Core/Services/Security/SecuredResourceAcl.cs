@@ -16,7 +16,7 @@ namespace OpenLawOffice.Server.Core.Services.Security
 
             if (request.SecuredResourceId.HasValue && request.SecuredResourceId.Value != Guid.Empty)
             {
-                filterClause += " \"secured_resource_id\"=@SecuredResource AND";
+                filterClause += " \"secured_resource_id\"=@SecuredResourceId AND";
                 resid = request.SecuredResourceId.Value;
             }
             if (request.UserId.HasValue)
@@ -28,7 +28,7 @@ namespace OpenLawOffice.Server.Core.Services.Security
             filterClause += " \"utc_disabled\" is null";
 
             return db.Query<DBOs.Security.SecuredResourceAcl>("SELECT * FROM \"secured_resource_acl\" WHERE" + filterClause,
-                new { Area = resid, User = userid });
+                new { SecuredResourceId = resid, User = userid });
         }
     }
 }

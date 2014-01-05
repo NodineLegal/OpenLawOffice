@@ -12,14 +12,6 @@ namespace OpenLawOffice.WinClient.Views.Security
     /// </summary>
     public partial class AreaCreate : UserControl, Controls.IDetail
     {
-        public bool IsBusy
-        {
-            get { return UIBusyIndicator.IsBusy; }
-            set { UIBusyIndicator.IsBusy = value; }
-        }
-
-        private ViewModels.Security.Area _viewModel { get { return (ViewModels.Security.Area)DataContext; } }
-
         public AreaCreate()
         {
             InitializeComponent();
@@ -67,6 +59,14 @@ namespace OpenLawOffice.WinClient.Views.Security
                 })
                 .SetExpanderColumnTemplate("Name", "Name", 225);
         }
+
+        public bool IsBusy
+        {
+            get { return UIBusyIndicator.IsBusy; }
+            set { UIBusyIndicator.IsBusy = value; }
+        }
+
+        private ViewModels.Security.Area _viewModel { get { return (ViewModels.Security.Area)DataContext; } }
 
         private void UIParent_Click(object sender, RoutedEventArgs e)
         {

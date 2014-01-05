@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyTitle("OpenLawOffice.WinClient")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Nodine Legal, LLC")]
 [assembly: AssemblyProduct("OpenLawOffice.WinClient")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]

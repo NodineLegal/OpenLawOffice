@@ -64,15 +64,14 @@ namespace OpenLawOffice.WinClient.Controls
             {
                 _controller.LoadDetails((ViewModels.IViewModel)obj, (viewModel, error) =>
                 {
+                    App.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        DetailView.DataContext = obj;
+                        EditView.DataContext = obj;
+                        _relations.InitializeAllWith(obj);
+                    }));
                 });
-            }
-
-            App.Current.Dispatcher.Invoke(new Action(() =>
-            {
-                DetailView.DataContext = obj;
-                EditView.DataContext = obj;
-                _relations.InitializeAllWith(obj);
-            }));
+            }            
         }
 
         public override void GoIntoCreateMode(object obj)

@@ -173,6 +173,7 @@
     <Compile Include="Controllers\Matters\ResponsibleUser.cs" />
     <Compile Include="Controllers\Security\AreaAcl.cs" />
     <Compile Include="Controllers\Security\Area.cs" />
+    <Compile Include="Controllers\Security\SecuredResourceAcl.cs" />
     <Compile Include="Controllers\Security\User.cs" />
     <Compile Include="Controls\CoreDetailsView.xaml.cs">
       <DependentUpon>CoreDetailsView.xaml</DependentUpon>
@@ -289,6 +290,18 @@
     </Compile>
     <Compile Include="Views\Security\AreaEdit.xaml.cs">
       <DependentUpon>AreaEdit.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Security\SecuredResourceAclCreate.xaml.cs">
+      <DependentUpon>SecuredResourceAclCreate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Security\SecuredResourceAclDetail.xaml.cs">
+      <DependentUpon>SecuredResourceAclDetail.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Security\SecuredResourceAclEdit.xaml.cs">
+      <DependentUpon>SecuredResourceAclEdit.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Security\SecuredResourceAclRelation.xaml.cs">
+      <DependentUpon>SecuredResourceAclRelation.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Security\UserCreate.xaml.cs">
       <DependentUpon>UserCreate.xaml</DependentUpon>
@@ -422,6 +435,22 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Security\AreaEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Security\SecuredResourceAclCreate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Security\SecuredResourceAclDetail.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Security\SecuredResourceAclEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Security\SecuredResourceAclRelation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

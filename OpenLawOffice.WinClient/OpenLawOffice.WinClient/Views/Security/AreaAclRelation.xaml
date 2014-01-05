@@ -1,11 +1,11 @@
 ﻿<UserControl x:Class="OpenLawOffice.WinClient.Views.Security.AreaAclRelation"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:xctk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
              xmlns:local="clr-namespace:OpenLawOffice.WinClient.Controls"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" Background="White">
     <xctk:BusyIndicator x:Name="UIBusyIndicator" IsBusy="False">
         <Grid>
@@ -13,7 +13,7 @@
                 <RowDefinition Height="25" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            
+
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -21,25 +21,24 @@
                     <ColumnDefinition Width="75" />
                     <ColumnDefinition Width="75" />
                 </Grid.ColumnDefinitions>
-                
-                <TextBlock Text="Related Area ACLs" Width="Auto" HorizontalAlignment="Center" 
+
+                <TextBlock Text="Related Area ACLs" Width="Auto" HorizontalAlignment="Center"
                            VerticalAlignment="Center" Grid.Column="0" FontSize="16" />
                 <Button Name="View" Content="View" Grid.Column="1" Click="View_Click" />
                 <Button Name="Edit" Content="Edit" Grid.Column="2" Click="Edit_Click" />
                 <Button Name="Close" Content="Close" Grid.Column="3" Click="Close_Click" />
             </Grid>
 
-            <ListView Grid.Row="1" HorizontalAlignment="Stretch" Name="UIList" 
+            <ListView Grid.Row="1" HorizontalAlignment="Stretch" Name="UIList"
                       VerticalAlignment="Stretch">
                 <ListView.View>
                     <GridView x:Name="UIGrid">
-                        <GridViewColumn Header="User" DisplayMemberBinding="{Binding Path=User.Username, Mode=TwoWay}" Width="200"  />
-                        <GridViewColumn Header="Allow" DisplayMemberBinding="{Binding Path=AllowFlags, Mode=TwoWay}" Width="200"  />
-                        <GridViewColumn Header="Deny" DisplayMemberBinding="{Binding Path=DenyFlags, Mode=TwoWay}" Width="200"  />
+                        <GridViewColumn Header="User" DisplayMemberBinding="{Binding Path=User.Username, Mode=TwoWay}" Width="200" />
+                        <GridViewColumn Header="Allow" DisplayMemberBinding="{Binding Path=AllowFlags, Mode=TwoWay}" Width="200" />
+                        <GridViewColumn Header="Deny" DisplayMemberBinding="{Binding Path=DenyFlags, Mode=TwoWay}" Width="200" />
                     </GridView>
                 </ListView.View>
             </ListView>
-
         </Grid>
     </xctk:BusyIndicator>
 </UserControl>

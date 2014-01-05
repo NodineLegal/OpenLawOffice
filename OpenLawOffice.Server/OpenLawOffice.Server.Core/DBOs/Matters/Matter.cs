@@ -52,7 +52,8 @@ namespace OpenLawOffice.Server.Core.DBOs.Matters
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis))
-                .ForMember(dst => dst.Tags, opt => opt.Ignore());
+                .ForMember(dst => dst.Tags, opt => opt.Ignore())
+                .ForMember(dst => dst.SecuredResource, opt => opt.Ignore());
 
             Mapper.CreateMap<Common.Models.Matters.Matter, DBOs.Matters.Matter>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))

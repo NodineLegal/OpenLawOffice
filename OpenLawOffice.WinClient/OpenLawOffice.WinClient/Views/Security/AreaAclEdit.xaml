@@ -1,11 +1,11 @@
 ﻿<UserControl x:Class="OpenLawOffice.WinClient.Views.Security.AreaAclEdit"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:xctk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
              xmlns:local="clr-namespace:OpenLawOffice.WinClient.Controls"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <xctk:BusyIndicator x:Name="UIBusyIndicator" IsBusy="False">
         <Grid x:Name="UITopGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -15,7 +15,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            
+
             <Grid VerticalAlignment="Top" Height="Auto" Width="Auto" Name="UIGrid">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50" />
@@ -45,29 +45,29 @@
                         HorizontalAlignment="Left" VerticalAlignment="Center" Click="UIUser_Click" />
 
                 <Label Content="Allowed:" Grid.Row="3" Grid.Column="0" />
-                <local:PermissionSelector x:Name="UIAllowFlags" 
-                                          DataContext="{Binding Path=AllowFlags, Mode=TwoWay}" 
+                <local:PermissionSelector x:Name="UIAllowFlags"
+                                          DataContext="{Binding Path=AllowFlags, Mode=TwoWay}"
                                           Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" />
 
                 <Label Content="Denied:" Grid.Row="4" Grid.Column="0" />
-                <local:PermissionSelector x:Name="UIDenyFlags" 
-                                          DataContext="{Binding Path=DenyFlags, Mode=TwoWay}" 
+                <local:PermissionSelector x:Name="UIDenyFlags"
+                                          DataContext="{Binding Path=DenyFlags, Mode=TwoWay}"
                                           Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" />
 
                 <local:CoreDetailsView DataContext="{Binding}" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="4" />
             </Grid>
 
-            <Border x:Name="UIAreaSelectorOverlay" BorderBrush="Black" BorderThickness="1" 
-                    Background="#80000000" Visibility="Collapsed" HorizontalAlignment="Stretch" 
+            <Border x:Name="UIAreaSelectorOverlay" BorderBrush="Black" BorderThickness="1"
+                    Background="#80000000" Visibility="Collapsed" HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch" Grid.Row="0">
-                <local:HierarchicalSelector x:Name="UIAreaSelector" HorizontalAlignment="Center" 
+                <local:HierarchicalSelector x:Name="UIAreaSelector" HorizontalAlignment="Center"
                                       VerticalAlignment="Center" Height="300" Width="300" />
             </Border>
 
-            <Border x:Name="UIUserSelectorOverlay" BorderBrush="Black" BorderThickness="1" 
-                    Background="#80000000" Visibility="Collapsed" HorizontalAlignment="Stretch" 
+            <Border x:Name="UIUserSelectorOverlay" BorderBrush="Black" BorderThickness="1"
+                    Background="#80000000" Visibility="Collapsed" HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch" Grid.Row="0">
-                <local:ListSelector x:Name="UIUserSelector" HorizontalAlignment="Center" 
+                <local:ListSelector x:Name="UIUserSelector" HorizontalAlignment="Center"
                                       VerticalAlignment="Center" Height="300" Width="300" />
             </Border>
         </Grid>

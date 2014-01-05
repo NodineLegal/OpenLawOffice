@@ -186,12 +186,12 @@ namespace OpenLawOffice.Server.Core.Security
                     if (userRequest.AuthToken != Guid.Empty)
                     {
                         // Fetch by authtoken
-                        dbUser = db.QuerySingle<DBOs.Security.User>(new { userRequest.AuthToken });
+                        dbUser = db.QuerySingle<DBOs.Security.User>(new { UserAuthToken = userRequest.AuthToken });
                     }
                     else
                     {
                         // We know from validation that we must now have a Username
-                        dbUser = db.QuerySingle<DBOs.Security.User>(new { userRequest.Username });
+                        dbUser = db.QuerySingle<DBOs.Security.User>(new { Username = userRequest.Username });
                     }
                 }
                 else
@@ -243,7 +243,7 @@ namespace OpenLawOffice.Server.Core.Security
                 };
 
             // Test deny flags
-            if (!sysSecuredResourceAcl.DenyFlags.Value.HasFlag(permissionRequired))
+            if (sysSecuredResourceAcl.DenyFlags.Value.HasFlag(permissionRequired))
                 return new AuthorizeResult()
                 {
                     HasError = false,

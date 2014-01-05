@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Windows.Controls;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using System;
+using System.Windows.Controls;
 
 namespace OpenLawOffice.WinClient.Views.Security
 {
@@ -11,14 +11,6 @@ namespace OpenLawOffice.WinClient.Views.Security
     /// </summary>
     public partial class AreaAclCreate : UserControl, Controls.IDetail
     {
-        public bool IsBusy
-        {
-            get { return UIBusyIndicator.IsBusy; }
-            set { UIBusyIndicator.IsBusy = value; }
-        }
-
-        private ViewModels.Security.AreaAcl _viewModel { get { return (ViewModels.Security.AreaAcl)DataContext; } }
-
         public AreaAclCreate()
         {
             InitializeComponent();
@@ -87,6 +79,14 @@ namespace OpenLawOffice.WinClient.Views.Security
                 Width = 200
             });
         }
+
+        public bool IsBusy
+        {
+            get { return UIBusyIndicator.IsBusy; }
+            set { UIBusyIndicator.IsBusy = value; }
+        }
+
+        private ViewModels.Security.AreaAcl _viewModel { get { return (ViewModels.Security.AreaAcl)DataContext; } }
 
         private void UIArea_Click(object sender, RoutedEventArgs e)
         {

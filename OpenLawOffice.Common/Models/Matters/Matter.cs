@@ -1,15 +1,19 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using System.Collections.Generic;
 
 namespace OpenLawOffice.Common.Models.Matters
 {
     [MapMe]
     [Can(CanFlags.Get | CanFlags.Create | CanFlags.Update | CanFlags.Delete)]
-    public class Matter : Security.SecuredResource
+    public class Matter : Core, Security.ISecuredResource, IHasGuidId
     {
+        public Guid? Id { get; set; }
+        [ShowInList]
         public string Title { get; set; }
         public string Synopsis { get; set; }
         public List<MatterTag> Tags { get; set; }
+        public Security.SecuredResource SecuredResource { get; set; }
 
         public Matter()
         {
@@ -28,7 +32,8 @@ namespace OpenLawOffice.Common.Models.Matters
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis))
-                .ForMember(dst => dst.Tags, opt => opt.Ignore());
+                .ForMember(dst => dst.Tags, opt => opt.Ignore())
+                .ForMember(dst => dst.SecuredResource, opt => opt.Ignore());
 
             Mapper.CreateMap<Matter, Rest.Requests.Matters.Matter>()
                 .ForMember(dst => dst.Received, opt => opt.Ignore())
@@ -94,7 +99,8 @@ namespace OpenLawOffice.Common.Models.Matters
                     }
 
                     return modelTags;
-                }));
+                }))
+                .ForMember(dst => dst.SecuredResource, opt => opt.Ignore());
         }
     }
 }

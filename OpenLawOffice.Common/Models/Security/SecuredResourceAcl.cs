@@ -5,9 +5,9 @@ namespace OpenLawOffice.Common.Models.Security
 {
     [MapMe]
     [Can(CanFlags.Get | CanFlags.Create | CanFlags.Update | CanFlags.Delete)]
-    public class SecuredResourceAcl : Core, IHasIntId
+    public class SecuredResourceAcl : Core, IHasGuidId
     {
-        public int? Id { get; set; }
+        public Guid? Id { get; set; }
         public SecuredResource SecuredResource { get; set; }
         public User User { get; set; }
         public Models.PermissionType? AllowFlags { get; set; }
@@ -50,6 +50,15 @@ namespace OpenLawOffice.Common.Models.Security
                     else
                         return null;
                 }))
+                .ForMember(dst => dst.AllowFlags, opt => opt.MapFrom(src => src.AllowFlags))
+                .ForMember(dst => dst.DenyFlags, opt => opt.MapFrom(src => src.DenyFlags));
+
+            Mapper.CreateMap<SecuredResourceAcl, Rest.Requests.Security.SecuredResourceAcl>()
+                .ForMember(dst => dst.Received, opt => opt.Ignore())
+                .ForMember(dst => dst.AuthToken, opt => opt.Ignore())
+                .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dst => dst.SecuredResourceId, opt => opt.MapFrom(src => src.SecuredResource.Id))
+                .ForMember(dst => dst.UserId, opt => opt.MapFrom(src => src.User.Id))
                 .ForMember(dst => dst.AllowFlags, opt => opt.MapFrom(src => src.AllowFlags))
                 .ForMember(dst => dst.DenyFlags, opt => opt.MapFrom(src => src.DenyFlags));
 

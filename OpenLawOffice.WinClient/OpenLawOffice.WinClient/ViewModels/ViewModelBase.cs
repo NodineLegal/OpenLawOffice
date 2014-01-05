@@ -1,25 +1,13 @@
 ﻿using System;
-using System.Windows.Threading;
-using AutoMapper;
 using System.Reflection;
+using AutoMapper;
 
 namespace OpenLawOffice.WinClient.ViewModels
 {
-    public abstract class ViewModelBase<TModel> 
+    public abstract class ViewModelBase<TModel>
         : ViewModelBase
         where TModel : Common.Models.ModelBase
     {
-        public TModel Model 
-        { 
-            get 
-            {
-                if (_model == null)
-                    throw new UnboundModelException("ViewModel does not have a Model bound.");
-                return (TModel)_model; 
-            } 
-            protected set { _model = value; }
-        }
-
         public ViewModelBase()
             : base()
         {
@@ -29,17 +17,27 @@ namespace OpenLawOffice.WinClient.ViewModels
             : base(model)
         {
         }
+
+        public TModel Model
+        {
+            get
+            {
+                if (_model == null)
+                    throw new UnboundModelException("ViewModel does not have a Model bound.");
+                return (TModel)_model;
+            }
+
+            protected set
+            {
+                _model = value;
+            }
+        }
     }
 
-    public abstract class ViewModelBase : System.ComponentModel.INotifyPropertyChanged, IViewModel
+    public abstract class ViewModelBase 
+        : System.ComponentModel.INotifyPropertyChanged, IViewModel
     {
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-
         protected Common.Models.ModelBase _model;
-
-        public bool IsDummy { get; set; }
-        public virtual bool IsHierarchical { get { return false; } }
-        public StateType State { get; protected set; }
 
         public ViewModelBase()
         {
@@ -51,14 +49,13 @@ namespace OpenLawOffice.WinClient.ViewModels
             _model = model;
             State = StateType.Unknown;
         }
-        
-        protected void OnPropertyChanged(string propertyName)
-        {
-            State = StateType.ViewModelIsNewer;
-            if (PropertyChanged != null)
-                PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-        }
 
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        public bool IsDummy { get; set; }
+
+        public virtual bool IsHierarchical { get { return false; } }
+
+        public StateType State { get; protected set; }
         public static TViewModel Create<TViewModel>(Common.Models.ModelBase model)
             where TViewModel : ViewModelBase
         {
@@ -89,31 +86,9 @@ namespace OpenLawOffice.WinClient.ViewModels
             return viewModel;
         }
 
-        public TModel Export<TModel>()
-        {
-            return Mapper.Map<TModel>(this);
-        }
-
-        public void UpdateModel()
-        {
-            _model = (Common.Models.ModelBase)Mapper.Map(this, this.GetType(), _model.GetType());
-            State = StateType.Synchronized;
-        }
-
         public void Bind(Common.Models.ModelBase model)
         {
             _model = model;
-        }
-
-        public Common.Models.ModelBase GetModel()
-        {
-            return _model;
-        }
-
-        public T GetModel<T>()
-            where T : Common.Models.ModelBase
-        {
-            return (T)_model;
         }
 
         public override bool Equals(object obj)
@@ -173,6 +148,40 @@ namespace OpenLawOffice.WinClient.ViewModels
             }
 
             return false;
+        }
+
+        public TModel Export<TModel>()
+        {
+            return Mapper.Map<TModel>(this);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public Common.Models.ModelBase GetModel()
+        {
+            return _model;
+        }
+
+        public T GetModel<T>()
+            where T : Common.Models.ModelBase
+        {
+            return (T)_model;
+        }
+
+        public void UpdateModel()
+        {
+            _model = (Common.Models.ModelBase)Mapper.Map(this, this.GetType(), _model.GetType());
+            State = StateType.Synchronized;
+        }
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            State = StateType.ViewModelIsNewer;
+            if (PropertyChanged != null)
+                PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
 }

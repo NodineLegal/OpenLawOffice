@@ -12,15 +12,15 @@ namespace OpenLawOffice.WinClient.Views.Security
     /// </summary>
     public partial class UserCreate : UserControl, Controls.IDetail
     {
+        public UserCreate()
+        {
+            InitializeComponent();
+        }
+
         public bool IsBusy
         {
             get { return UIBusyIndicator.IsBusy; }
             set { UIBusyIndicator.IsBusy = value; }
-        }
-
-        public UserCreate()
-        {
-            InitializeComponent();
         }
 
         private void UIPassword_PasswordChanged(object sender, RoutedEventArgs e)

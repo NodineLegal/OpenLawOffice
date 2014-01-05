@@ -2,6 +2,7 @@
 
 namespace OpenLawOffice.WinClient.ViewModels.Security
 {
+    [Common.Models.MapMe]
     public class SecuredResourceAcl : ViewModelCore<Common.Models.Security.SecuredResourceAcl>
     {
         public int? _id;

@@ -127,7 +127,8 @@ namespace OpenLawOffice.WinClient.ViewModels.Matters
 
                     return tags;
                 }))
-                .ForMember(dst => dst.IsStub, opt => opt.UseValue(false));
+                .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
+                .ForMember(dst => dst.SecuredResource, opt => opt.Ignore());
         }
     }
 }

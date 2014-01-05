@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Collections.ObjectModel;
 using AutoMapper;
 
 namespace OpenLawOffice.WinClient.Views.Security
@@ -11,11 +11,12 @@ namespace OpenLawOffice.WinClient.Views.Security
     /// </summary>
     public partial class AreaAclRelation : UserControl, IRelationView, Controls.IDetail
     {
-        public Action<AreaAclRelation> OnClose { get; set; }
-        public Action<AreaAclRelation> OnEdit { get; set; }
-        public Action<AreaAclRelation> OnView { get; set; }
-
         private ViewModels.Security.Area _viewModel;
+
+        public AreaAclRelation()
+        {
+            InitializeComponent();
+        }
 
         public bool IsBusy
         {
@@ -23,9 +24,25 @@ namespace OpenLawOffice.WinClient.Views.Security
             set { UIBusyIndicator.IsBusy = value; }
         }
 
-        public AreaAclRelation()
+        public Action<AreaAclRelation> OnClose { get; set; }
+
+        public Action<AreaAclRelation> OnEdit { get; set; }
+
+        public Action<AreaAclRelation> OnView { get; set; }
+        public void ClearSelected()
         {
-            InitializeComponent();
+            UIList.UnselectAll();
+        }
+
+        public object GetSelectedItem()
+        {
+            return UIList.SelectedItem;
+        }
+
+        public TViewModel GetSelectedItem<TViewModel>()
+            where TViewModel : ViewModels.ViewModelBase
+        {
+            return (TViewModel)GetSelectedItem();
         }
 
         public void Initialize(object obj)
@@ -46,7 +63,7 @@ namespace OpenLawOffice.WinClient.Views.Security
 
             IsBusy = true;
 
-            Consumers.ListConsumerResult<Common.Rest.Requests.Security.AreaAcl, Common.Rest.Responses.Security.AreaAcl> 
+            Consumers.ListConsumerResult<Common.Rest.Requests.Security.AreaAcl, Common.Rest.Responses.Security.AreaAcl>
                 consumerResults =
                 consumer.GetList<Common.Rest.Requests.Security.AreaAcl, Common.Rest.Responses.Security.AreaAcl>(
                 new Common.Rest.Requests.Security.AreaAcl()
@@ -57,7 +74,7 @@ namespace OpenLawOffice.WinClient.Views.Security
             foreach (Common.Rest.Responses.Security.AreaAcl item in consumerResults.Response)
             {
                 Common.Models.Security.AreaAcl sysModel = Mapper.Map<Common.Models.Security.AreaAcl>(item);
-                
+
                 Consumers.ConsumerResult<Common.Rest.Requests.Security.User, Common.Rest.Responses.Security.User>
                     userResponse =
                     userConsumer.GetSingle<Common.Rest.Requests.Security.User, Common.Rest.Responses.Security.User>(
@@ -67,7 +84,7 @@ namespace OpenLawOffice.WinClient.Views.Security
                     });
 
                 Common.Models.Security.User sysUser = Mapper.Map<Common.Models.Security.User>(userResponse.Response);
-                
+
                 sysModel.User = sysUser;
 
                 ViewModels.Security.AreaAcl viewModel = ViewModels.Creator.Create<ViewModels.Security.AreaAcl>(sysModel);
@@ -79,23 +96,6 @@ namespace OpenLawOffice.WinClient.Views.Security
 
             IsBusy = false;
         }
-
-        public object GetSelectedItem()
-        {
-            return UIList.SelectedItem;
-        }
-
-        public TViewModel GetSelectedItem<TViewModel>()
-            where TViewModel : ViewModels.ViewModelBase
-        {
-            return (TViewModel)GetSelectedItem();
-        }
-
-        public void ClearSelected()
-        {
-            UIList.UnselectAll();
-        }
-
         private void Close_Click(object sender, RoutedEventArgs e)
         {
             if (OnClose != null) OnClose(this);

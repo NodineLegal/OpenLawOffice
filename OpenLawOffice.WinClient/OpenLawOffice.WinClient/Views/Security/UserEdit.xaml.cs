@@ -7,15 +7,15 @@ namespace OpenLawOffice.WinClient.Views.Security
     /// </summary>
     public partial class UserEdit : UserControl, Controls.IDetail
     {
+        public UserEdit()
+        {
+            InitializeComponent();
+        }
+
         public bool IsBusy
         {
             get { return UIBusyIndicator.IsBusy; }
             set { UIBusyIndicator.IsBusy = value; }
-        }
-
-        public UserEdit()
-        {
-            InitializeComponent();
         }
 
         private void UIPassword_PasswordChanged(object sender, System.Windows.RoutedEventArgs e)
