@@ -121,33 +121,60 @@
   <ItemGroup>
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\ContactsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MattersController.cs" />
+    <Compile Include="Controllers\MatterTagController.cs" />
+    <Compile Include="Controllers\SecurityAreaAclsController.cs" />
     <Compile Include="Controllers\SecurityFilterAttribute.cs" />
     <Compile Include="Controllers\SecurityAreasController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\AccountModels.cs" />
-    <Compile Include="Models\Account\LoginModel.cs" />
-    <Compile Include="Models\Security\AciTreeObject.cs" />
+    <Compile Include="ViewModels\Account\LoginModel.cs" />
+    <Compile Include="ViewModels\AciTreeObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserCache.cs" />
+    <Compile Include="ViewModels\Contacts\ContactViewModel.cs" />
+    <Compile Include="ViewModels\CoreViewModel.cs" />
+    <Compile Include="ViewModels\DateOnlyViewModelBase.cs" />
+    <Compile Include="ViewModels\Matters\MatterTagViewModel.cs" />
+    <Compile Include="ViewModels\Matters\MatterViewModel.cs" />
+    <Compile Include="ViewModels\Matters\ResponsibleUserViewModel.cs" />
+    <Compile Include="ViewModels\PermissionsViewModel.cs" />
+    <Compile Include="ViewModels\Security\AreaViewModel.cs" />
+    <Compile Include="ViewModels\Security\AreaAclViewModel.cs" />
+    <Compile Include="ViewModels\Security\SecuredResourceAclViewModel.cs" />
+    <Compile Include="ViewModels\Security\SecuredResourceViewModel.cs" />
+    <Compile Include="ViewModels\Security\UserViewModel.cs" />
+    <Compile Include="ViewModels\Tagging\TagBaseViewModel.cs" />
+    <Compile Include="ViewModels\Tagging\TagCategoryViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <Content Include="Views\Account\Login.aspx" />
+    <Content Include="Views\Contacts\Create.aspx" />
+    <Content Include="Views\Contacts\Details.aspx" />
+    <Content Include="Views\Contacts\Edit.aspx" />
+    <Content Include="Views\Contacts\Index.aspx" />
     <Content Include="Views\Matters\Create.aspx" />
     <Content Include="Views\Matters\Details.aspx" />
     <Content Include="Views\Matters\Edit.aspx" />
     <Content Include="Views\Matters\Index.aspx" />
+    <Content Include="Views\Matters\Tags.aspx" />
+    <Content Include="Views\SecurityAreaAcls\Create.aspx" />
+    <Content Include="Views\SecurityAreaAcls\Details.aspx" />
+    <Content Include="Views\SecurityAreaAcls\Edit.aspx" />
+    <Content Include="Views\SecurityAreaAcls\Index.aspx" />
     <Content Include="Views\SecurityAreas\Details.aspx" />
     <Content Include="Views\SecurityAreas\Index.aspx" />
     <Content Include="Views\SecurityAreas\Permissions.aspx" />
+    <Content Include="Views\Shared\DisplayTemplates\PermissionViewModel.ascx" />
+    <Content Include="Views\Shared\EditorTemplates\PermissionViewModel.ascx" />
     <Content Include="Views\Shared\InsufficientRights.aspx" />
-    <Content Include="Views\Shared\PermissionsControl.ascx" />
     <Content Include="Views\Users\Create.aspx" />
     <Content Include="Views\Users\Details.aspx" />
     <Content Include="Views\Users\Edit.aspx" />

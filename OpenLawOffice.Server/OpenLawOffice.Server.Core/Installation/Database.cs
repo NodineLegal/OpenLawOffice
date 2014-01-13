@@ -19,6 +19,7 @@ namespace OpenLawOffice.Server.Core.Installation
                 conn.CreateTableIfNotExists<DBOs.Matters.Matter>();
                 conn.CreateTableIfNotExists<DBOs.Matters.MatterTag>();
                 conn.CreateTableIfNotExists<DBOs.Matters.ResponsibleUser>();
+                conn.CreateTableIfNotExists<DBOs.Contacts.Contact>();
 
                 DBOs.Security.User dbUser = conn.QuerySingle<DBOs.Security.User>(new { Username = "TestUser" });
                 // == "a" on before client hash
@@ -162,7 +163,7 @@ namespace OpenLawOffice.Server.Core.Installation
                 {
                     dbAreaTaggingTagCategory = new DBOs.Security.Area()
                     {
-                        ParentId = dbSecurity.Id,
+                        ParentId = dbAreaTagging.Id,
                         Name = "Tagging.TagCategory",
                         Description = "Categories for tags",
                         CreatedByUserId = dbUser.Id,
@@ -239,6 +240,39 @@ namespace OpenLawOffice.Server.Core.Installation
                     };
                     conn.Insert<DBOs.Security.Area>(dbAreaMattersResponsibleUser);
                     dbAreaMattersResponsibleUser.Id = (int)conn.GetLastInsertId();
+                }
+
+                DBOs.Security.Area dbAreaContacts = conn.QuerySingle<DBOs.Security.Area>(new { Name = "Contacts" });
+                if (dbAreaContacts == null)
+                {
+                    dbAreaContacts = new DBOs.Security.Area()
+                    {
+                        Name = "Contacts",
+                        Description = "Contacts",
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.Area>(dbAreaContacts);
+                    dbAreaContacts.Id = (int)conn.GetLastInsertId();
+                }
+
+                DBOs.Security.Area dbAreaContactsContact = conn.QuerySingle<DBOs.Security.Area>(new { Name = "Contacts.Contact" });
+                if (dbAreaContactsContact == null)
+                {
+                    dbAreaContactsContact = new DBOs.Security.Area()
+                    {
+                        ParentId = dbAreaContacts.Id,
+                        Name = "Contacts.Contact",
+                        Description = "System contacts",
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.Area>(dbAreaContactsContact);
+                    dbAreaContactsContact.Id = (int)conn.GetLastInsertId();
                 }
 
                 #endregion
@@ -448,6 +482,44 @@ namespace OpenLawOffice.Server.Core.Installation
                     dbAAclMattersResponsibleUser.Id = (int)conn.GetLastInsertId();
                 }
 
+                // Contacts
+                DBOs.Security.AreaAcl dbAAclContacts = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaContacts.Id, UserId = dbUser.Id });
+                if (dbAAclContacts == null)
+                {
+                    dbAAclContacts = new DBOs.Security.AreaAcl()
+                    {
+                        SecurityAreaId = dbAreaContacts.Id,
+                        UserId = dbUser.Id,
+                        AllowFlags = (int)(Common.Models.PermissionType.AllAdmin | Common.Models.PermissionType.AllWrite | Common.Models.PermissionType.AllRead),
+                        DenyFlags = 0,
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.AreaAcl>(dbAAclContacts);
+                    dbAAclContacts.Id = (int)conn.GetLastInsertId();
+                }
+
+                // Contacts.Contact
+                DBOs.Security.AreaAcl dbAAclContactsContact = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaContactsContact.Id, UserId = dbUser.Id });
+                if (dbAAclContactsContact == null)
+                {
+                    dbAAclContactsContact = new DBOs.Security.AreaAcl()
+                    {
+                        SecurityAreaId = dbAreaContactsContact.Id,
+                        UserId = dbUser.Id,
+                        AllowFlags = (int)(Common.Models.PermissionType.AllAdmin | Common.Models.PermissionType.AllWrite | Common.Models.PermissionType.AllRead),
+                        DenyFlags = 0,
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.AreaAcl>(dbAAclContactsContact);
+                    dbAAclContactsContact.Id = (int)conn.GetLastInsertId();
+                }
+
                 #endregion
 
                 #region Matters
@@ -545,6 +617,54 @@ namespace OpenLawOffice.Server.Core.Installation
                         UserId = dbUser.Id,
                         Responsibility = "Attorney"
                     };
+                }
+
+                #endregion
+
+                #region Contacts
+
+                DBOs.Contacts.Contact dbContact = conn.QuerySingle<DBOs.Contacts.Contact>(new { DisplayName = "Lucas Nodine" });
+                if (dbContact == null)
+                {
+                    dbContact = new DBOs.Contacts.Contact()
+                    {
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now,
+                        IsOrganization = false,
+                        Nickname = "Luke",
+                        DisplayNamePrefix = "Mr.",
+                        Surname = "Nodine",
+                        MiddleName = "James",
+                        GivenName = "Lucas",
+                        Initials = "LJN",
+                        DisplayName = "Lucas Nodine",
+                        Email1DisplayName = "Fake Prevent Spambots",
+                        Email1EmailAddress = "no@one.com",
+                        Fax1DisplayName = "Fake Fax",
+                        Fax1FaxNumber = "1-555-555-5555",
+                        Address1DisplayName = "Nodine Legal PO Box",
+                        Address1AddressCity = "Parsons",
+                        Address1AddressStateOrProvince = "Kansas",
+                        Address1AddressPostalCode = "67357",
+                        Address1AddressCountry = "USA",
+                        Address1AddressCountryCode = "1",
+                        Address1AddressPostOfficeBox = "1125",
+                        Telephone1DisplayName = "Virtual Office",
+                        Telephone1TelephoneNumber = "620-577-4271",
+                        Birthday = new DateTime(1982, 3, 25),
+                        Wedding = new DateTime(2012, 5, 12),
+                        Title = "Managing Member",
+                        CompanyName = "Nodine Legal, LLC",
+                        Profession = "Attorney",
+                        Language = "English (American)",
+                        BusinessHomePage = "www.nodinelegal.com",
+                        Gender = "Male",
+                        ReferredByName = "Bob"
+                    };
+                    conn.Insert<DBOs.Contacts.Contact>(dbContact);
+                    dbContact.Id = (int)conn.GetLastInsertId();
                 }
 
                 #endregion

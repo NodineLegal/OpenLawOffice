@@ -19,7 +19,7 @@
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Index()
         {
-            List<Common.Models.Security.User> modelList = new List<Common.Models.Security.User>();
+            List<ViewModels.Security.UserViewModel> modelList = new List<ViewModels.Security.UserViewModel>();
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 List<DBOs.Security.User> list = db.Query<DBOs.Security.User>(
@@ -28,7 +28,7 @@
 
                 list.ForEach(dbo =>
                 {
-                    modelList.Add(Mapper.Map<Common.Models.Security.User>(dbo));
+                    modelList.Add(Mapper.Map<ViewModels.Security.UserViewModel>(dbo));
                 });
             }
 
@@ -41,7 +41,7 @@
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(int id)
         {
-            Common.Models.Security.User model = null;
+            ViewModels.Security.UserViewModel model = null;
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 // Load base DBO
@@ -49,7 +49,7 @@
                     "SELECT * FROM \"user\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id });
 
-                model = Mapper.Map<Common.Models.Security.User>(dbo);
+                model = Mapper.Map<ViewModels.Security.UserViewModel>(dbo);
             }
 
             return View(model);
@@ -69,12 +69,10 @@
         [SecurityFilter(SecurityAreaName = "Security.User", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
-        public ActionResult Create(Common.Models.Security.User model)
+        public ActionResult Create(ViewModels.Security.UserViewModel model)
         {
             try
             {
-                Common.Models.Security.User user = UserCache.Instance.Lookup(Request);
-
                 DBOs.Security.User dboUser = Mapper.Map<DBOs.Security.User>(model);
                 dboUser.UtcCreated = dboUser.UtcModified = DateTime.UtcNow;
                 dboUser.PasswordSalt = GetRandomString(10);
@@ -103,8 +101,7 @@
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(int id)
         {
-            Common.Models.Security.User model = null;
-            Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
+            ViewModels.Security.UserViewModel model = null;
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 // Load base DBO
@@ -112,7 +109,7 @@
                     "SELECT * FROM \"user\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id });
 
-                model = Mapper.Map<Common.Models.Security.User>(dbo);
+                model = Mapper.Map<ViewModels.Security.UserViewModel>(dbo);
             }
 
             model.Password = null;
@@ -125,12 +122,10 @@
         [SecurityFilter(SecurityAreaName = "Security.User", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
-        public ActionResult Edit(int id, Common.Models.Security.User model)
+        public ActionResult Edit(int id, ViewModels.Security.UserViewModel model)
         {
             try
             {
-                Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
-                
                 DBOs.Security.User dbo = Mapper.Map<DBOs.Security.User>(model);
                 dbo.UtcModified = DateTime.UtcNow;
 
@@ -148,6 +143,7 @@
                         db.UpdateOnly(dbo,
                             fields => new
                             {
+                                fields.Username,
                                 fields.Password,
                                 fields.UtcModified
                             },
@@ -155,7 +151,13 @@
                     }
                     else
                     {
-                        // Else there is nothing to update
+                        db.UpdateOnly(dbo,
+                            fields => new
+                            {
+                                fields.Username,
+                                fields.UtcModified
+                            },
+                            where => where.Id == dbo.Id);
                     }
                 }
  

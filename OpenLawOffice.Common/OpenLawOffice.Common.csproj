@@ -78,6 +78,7 @@
     <Compile Include="Error.cs" />
     <Compile Include="Models\CanAttribute.cs" />
     <Compile Include="Models\CanFlags.cs" />
+    <Compile Include="Models\Contacts\Contact.cs" />
     <Compile Include="Models\Core.cs" />
     <Compile Include="Models\DefaultPopulationType.cs" />
     <Compile Include="Models\IHasGuidId.cs" />

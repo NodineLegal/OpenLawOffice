@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<IEnumerable<OpenLawOffice.Common.Models.Security.AreaAcl>>" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<IEnumerable<OpenLawOffice.WebClient.ViewModels.Security.AreaAclViewModel>>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
 	Permissions
@@ -23,20 +23,17 @@
                 <th></th>
             </tr>
 
-        <%        
-            ViewDataDictionary dict = new ViewDataDictionary();
-            dict.Add("Readonly", true);
-            foreach (var item in Model) { %>
+        <% foreach (var item in Model) { %>
     
             <tr>
                 <td>
                     <%: item.User.Username %>
                 </td>
                 <td>                
-                    <% Html.RenderPartial("PermissionsControl", item.AllowFlags, dict);  %>
+                    <%: Html.DisplayFor(x => item.AllowPermissions, "PermissionViewModel") %>
                 </td>
                 <td>                
-                    <% Html.RenderPartial("PermissionsControl", item.DenyFlags, dict);  %>
+                    <%: Html.DisplayFor(x => item.AllowPermissions, "PermissionViewModel") %>
                 </td>
                 <td>
                     <%: Html.ActionLink("Edit", "Edit", "SecurityAreaAcls", new { id=item.Id }, null) %> |

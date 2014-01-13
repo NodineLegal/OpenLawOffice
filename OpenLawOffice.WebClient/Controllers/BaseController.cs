@@ -13,7 +13,7 @@
 
     public class BaseController : Controller
     {
-        public Common.Models.Security.User GetUser(int id)
+        public ViewModels.Security.UserViewModel GetUser(int id)
         {
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
@@ -21,7 +21,7 @@
             }
         }
 
-        public Common.Models.Security.User GetUser(Guid authToken)
+        public ViewModels.Security.UserViewModel GetUser(Guid authToken)
         {
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
@@ -29,21 +29,21 @@
             }
         }
 
-        public Common.Models.Security.User GetUser(int id, IDbConnection db)
+        public ViewModels.Security.UserViewModel GetUser(int id, IDbConnection db)
         {
             DBOs.Security.User dbo = db.GetById<DBOs.Security.User>(id);
             if (dbo == null) return null;
-            return Mapper.Map<Common.Models.Security.User>(dbo);
+            return Mapper.Map<ViewModels.Security.UserViewModel>(dbo);
         }
 
-        public Common.Models.Security.User GetUser(Guid authToken, IDbConnection db)
+        public ViewModels.Security.UserViewModel GetUser(Guid authToken, IDbConnection db)
         {
             DBOs.Security.User dbo = db.QuerySingle<DBOs.Security.User>(new { UserAuthToken = authToken });
             if (dbo == null) return null;
-            return Mapper.Map<Common.Models.Security.User>(dbo);
+            return Mapper.Map<ViewModels.Security.UserViewModel>(dbo);
         }
 
-        public void PopulateCoreDetails(Common.Models.Core model)
+        public void PopulateCoreDetails(ViewModels.CoreViewModel model)
         {
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
@@ -77,7 +77,7 @@
             }
         }
 
-        public Common.Models.Security.AreaAcl GetAreaAcl(int areaId, int userId)
+        public ViewModels.Security.AreaAclViewModel GetAreaAcl(int areaId, int userId)
         {
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
@@ -85,12 +85,12 @@
             }
         }
 
-        public Common.Models.Security.AreaAcl GetAreaAcl(int areaId, int userId, IDbConnection db)
+        public ViewModels.Security.AreaAclViewModel GetAreaAcl(int areaId, int userId, IDbConnection db)
         {
             DBOs.Security.AreaAcl dbo = db.QuerySingle<DBOs.Security.AreaAcl>(
                 new { SecurityAreaId = areaId, UserId = userId });
             if (dbo == null) return null;
-            return Mapper.Map<Common.Models.Security.AreaAcl>(dbo);
+            return Mapper.Map<ViewModels.Security.AreaAclViewModel>(dbo);
         }
 
         public Common.Models.Security.SecuredResourceAcl GetSecuredResourceAcl(

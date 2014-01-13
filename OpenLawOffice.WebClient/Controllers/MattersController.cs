@@ -21,7 +21,7 @@
         {
             string title = null;
             string filterClause = "";
-            List<Common.Models.Matters.Matter> modelList = new List<Common.Models.Matters.Matter>();
+            List<ViewModels.Matters.MatterViewModel> modelList = new List<ViewModels.Matters.MatterViewModel>();
 
             //if (!string.IsNullOrEmpty(request.Title))
             //    filterClause += " LOWER(\"title\") like '%' || LOWER(@Title) || '%' AND";
@@ -40,7 +40,7 @@
 
                 list.ForEach(dbo =>
                 {
-                    modelList.Add(Mapper.Map<Common.Models.Matters.Matter>(dbo));
+                    modelList.Add(Mapper.Map<ViewModels.Matters.MatterViewModel>(dbo));
                 });
             }
 
@@ -53,7 +53,7 @@
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(Guid id)
         {
-            Common.Models.Matters.Matter model = null;
+            ViewModels.Matters.MatterViewModel model = null;
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 // Load base DBO
@@ -61,7 +61,7 @@
                     "SELECT * FROM \"matter\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id});
 
-                model = Mapper.Map<Common.Models.Matters.Matter>(dbo);
+                model = Mapper.Map<ViewModels.Matters.MatterViewModel>(dbo);
 
                 // Core Details
                 PopulateCoreDetails(model);
@@ -84,7 +84,7 @@
         [SecurityFilter(SecurityAreaName = "Matters.Matter", IsSecuredResource = true,
             Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
-        public ActionResult Create(Common.Models.Matters.Matter model)
+        public ActionResult Create(ViewModels.Matters.MatterViewModel model)
         {
             try
             {
@@ -148,7 +148,7 @@
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(Guid id)
         {
-            Common.Models.Matters.Matter model = null;
+            ViewModels.Matters.MatterViewModel model = null;
             Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
@@ -157,7 +157,7 @@
                     "SELECT * FROM \"matter\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id });
 
-                model = Mapper.Map<Common.Models.Matters.Matter>(dbo);
+                model = Mapper.Map<ViewModels.Matters.MatterViewModel>(dbo);
             }
 
             return View(model);
@@ -168,7 +168,7 @@
         [SecurityFilter(SecurityAreaName = "Matters.Matter", IsSecuredResource = true,
             Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
-        public ActionResult Edit(Guid id, Common.Models.Matters.Matter model)
+        public ActionResult Edit(Guid id, ViewModels.Matters.MatterViewModel model)
         {
             try
             {
@@ -250,6 +250,32 @@
             {
                 return View();
             }
+        }
+
+        [SecurityFilter(SecurityAreaName = "Matters.MatterTag", IsSecuredResource = false,
+            Permission = Common.Models.PermissionType.Read)]
+        public ActionResult Tags(Guid id)
+        {
+            List<ViewModels.Matters.MatterTagViewModel> modelList = new List<ViewModels.Matters.MatterTagViewModel>();
+            using (IDbConnection db = Database.Instance.OpenConnection())
+            {
+                List<DBOs.Matters.MatterTag> list = db.Query<DBOs.Matters.MatterTag>(
+                    "SELECT * FROM \"matter_tag\" WHERE \"matter_id\"=@MatterId AND \"utc_disabled\" is null",
+                    new { MatterId = id });
+
+                list.ForEach(dbo =>
+                {
+                    ViewModels.Matters.MatterTagViewModel tagModel = Mapper.Map<ViewModels.Matters.MatterTagViewModel>(dbo);
+                    
+                    DBOs.Tagging.TagCategory tagCatDbo = db.GetById<DBOs.Tagging.TagCategory>(tagModel.TagCategory.Id);
+                    ViewModels.Tagging.TagCategoryViewModel tagCatVM = Mapper.Map<ViewModels.Tagging.TagCategoryViewModel>(tagCatDbo);
+                    tagModel.TagCategory = tagCatVM;
+
+                    modelList.Add(tagModel);
+                });
+            }
+
+            return View(modelList);
         }
     }
 }

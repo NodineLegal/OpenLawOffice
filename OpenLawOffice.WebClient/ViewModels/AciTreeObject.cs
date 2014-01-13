@@ -1,4 +1,4 @@
-﻿namespace OpenLawOffice.WebClient.Models.Security
+﻿namespace OpenLawOffice.WebClient.ViewModels.Security
 {
     using System.Collections.Generic;
 

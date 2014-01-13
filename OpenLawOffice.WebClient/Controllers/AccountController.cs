@@ -5,7 +5,7 @@
     using System.Web;
     using System.Web.Mvc;
     using OpenLawOffice.Server.Core;
-    using OpenLawOffice.WebClient.Models.Account;
+    using OpenLawOffice.WebClient.ViewModels.Account;
     using ServiceStack.OrmLite;
     using DBOs = OpenLawOffice.Server.Core.DBOs;
     using AutoMapper;

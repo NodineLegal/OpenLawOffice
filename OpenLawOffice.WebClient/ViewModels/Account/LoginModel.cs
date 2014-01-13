@@ -1,4 +1,4 @@
-﻿namespace OpenLawOffice.WebClient.Models.Account
+﻿namespace OpenLawOffice.WebClient.ViewModels.Account
 {
     public class LoginModel
     {

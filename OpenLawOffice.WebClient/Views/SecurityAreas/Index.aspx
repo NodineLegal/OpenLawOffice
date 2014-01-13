@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.Common.Models.Security.Area>" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Security.AreaViewModel>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
 	Index
@@ -8,7 +8,8 @@
 
     <script type="text/javascript" src="../../Scripts/aciTree/js/jquery.min.js"></script>
     <script type="text/javascript" src="../../Scripts/aciTree/js/jquery.aciPlugin.min.js"></script>
-    <script type="text/javascript" src="../../Scripts/aciTree/js/jquery.aciTree.min.js"></script>
+    <script type="text/javascript" src="../../Scripts/aciTree/js/jquery.aciTree.min.js"></script>
+
     <h2>Index</h2>
 
     <div id="tree" class="aciTree" style="height: 300px; width: 400px;"></div>

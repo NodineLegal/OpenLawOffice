@@ -31,15 +31,15 @@
             return Json(modelList, JsonRequestBehavior.AllowGet);
         }
 
-        private List<Models.Security.AciTreeObject> ConvertToAciTreeObjectList(List<Common.Models.Security.Area> list)
+        private List<ViewModels.Security.AciTreeObject> ConvertToAciTreeObjectList(List<Common.Models.Security.Area> list)
         {
-            List<Models.Security.AciTreeObject> newList = new List<Models.Security.AciTreeObject>();
+            List<ViewModels.Security.AciTreeObject> newList = new List<ViewModels.Security.AciTreeObject>();
 
             if (list == null) return null;
 
             list.ForEach(item =>
             {
-                Models.Security.AciTreeObject newItem = new Models.Security.AciTreeObject();
+                ViewModels.Security.AciTreeObject newItem = new ViewModels.Security.AciTreeObject();
                 newItem.id = item.Id.Value;
                 newItem.label = item.Name;
 
@@ -67,7 +67,7 @@
         {
             List<Common.Models.Security.Area> modelList = RecursiveListChildren(null);
 
-            List<Models.Security.AciTreeObject> aciTreeList = ConvertToAciTreeObjectList(modelList);
+            List<ViewModels.Security.AciTreeObject> aciTreeList = ConvertToAciTreeObjectList(modelList);
 
             return Json(aciTreeList, JsonRequestBehavior.AllowGet);
         }
@@ -108,7 +108,7 @@
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(int id)
         {
-            Common.Models.Security.Area model = null;
+            ViewModels.Security.AreaViewModel model = null;
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 // Load base DBO
@@ -116,14 +116,14 @@
                     "SELECT * FROM \"area\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id });
 
-                model = Mapper.Map<Common.Models.Security.Area>(dbo);
+                model = Mapper.Map<ViewModels.Security.AreaViewModel>(dbo);
 
                 if (dbo.ParentId.HasValue)
                 {
                     DBOs.Security.Area dboParent = db.QuerySingle<DBOs.Security.Area>(
                         "SELECT * FROM \"area\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                         new { Id = dbo.ParentId.Value });
-                    model.Parent = Mapper.Map<Common.Models.Security.Area>(dboParent);
+                    model.Parent = Mapper.Map<ViewModels.Security.AreaViewModel>(dboParent);
                 }
 
                 // Core Details
@@ -137,7 +137,7 @@
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Permissions(int id)
         {
-            List<Common.Models.Security.AreaAcl> modelList = new List<Common.Models.Security.AreaAcl>();
+            List<ViewModels.Security.AreaAclViewModel> modelList = new List<ViewModels.Security.AreaAclViewModel>();
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 // Load base DBO
@@ -147,9 +147,9 @@
 
                 dboList.ForEach(dbo =>
                 {
-                    Common.Models.Security.AreaAcl model = Mapper.Map<Common.Models.Security.AreaAcl>(dbo);
+                    ViewModels.Security.AreaAclViewModel model = Mapper.Map<ViewModels.Security.AreaAclViewModel>(dbo);
                     DBOs.Security.User userDbo = db.GetById<DBOs.Security.User>(model.User.Id);
-                    model.User = Mapper.Map<Common.Models.Security.User>(userDbo);
+                    model.User = Mapper.Map<ViewModels.Security.UserViewModel>(userDbo);
                     modelList.Add(model);
                 });                
             }

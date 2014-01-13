@@ -108,6 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Database.cs" />
+    <Compile Include="DBOs\Contacts\Contact.cs" />
     <Compile Include="DBOs\Core.cs" />
     <Compile Include="DBOs\DboBase.cs" />
     <Compile Include="DBOs\DboWithDatesOnly.cs" />

@@ -114,7 +114,7 @@ page width. Or, you can specify an exact pixel width. */
 #nav
 {
     float: left;
-    width: 200px;
+    width: 150px;
     height: 90%;
     background-color: #fff;
 }
@@ -132,8 +132,8 @@ page width. Or, you can specify an exact pixel width. */
     padding: 30px 30px 15px 30px;
     background-color: #fff;
     margin-bottom: 30px;
-    margin-left: 230px;
-    margin-right: 230px;
+    margin-left: 170px;
+    margin-right: 170px;
     _height: 1px; /* only IE6 applies CSS properties starting with an underscore */
 }
 
@@ -240,7 +240,7 @@ table th
 #menucontainer
 {
     float: right;
-    width: 200px;
+    width: 150px;
     height: 90%;
     background-color: #fff;
 }

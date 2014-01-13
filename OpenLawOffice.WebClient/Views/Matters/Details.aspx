@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.Common.Models.Matters.Matter>" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Matters.MatterViewModel>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
 	Details
@@ -12,7 +12,7 @@
         <li><%: Html.ActionLink("Delete ", "Delete", new { id = Model.Id })%></li>
         <li><%: Html.ActionLink("List", "Index") %></li>
     </ul>
-    <li><%: Html.ActionLink("Tags", "Tags", "Matters") %></li>
+    <li><%: Html.ActionLink("Tags", "Tags", new { id = Model.Id })%></li>
     <li><%: Html.ActionLink("Responsible Users", "Users", "Matters")%></li>
     <li><%: Html.ActionLink("Contacts", "Contacts", "Matters")%></li>
     <li><%: Html.ActionLink("Tasks", "Tasks", "Matters")%> (<%: Html.ActionLink("Add", "AddTask", new { controller = "Matters", id = Model.Id }) %>)</li>
