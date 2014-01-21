@@ -253,7 +253,7 @@
         }
 
         [SecurityFilter(SecurityAreaName = "Matters.MatterTag", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Read)]
+            Permission = Common.Models.PermissionType.List)]
         public ActionResult Tags(Guid id)
         {
             List<ViewModels.Matters.MatterTagViewModel> modelList = new List<ViewModels.Matters.MatterTagViewModel>();
@@ -266,12 +266,40 @@
                 list.ForEach(dbo =>
                 {
                     ViewModels.Matters.MatterTagViewModel tagModel = Mapper.Map<ViewModels.Matters.MatterTagViewModel>(dbo);
-                    
+
                     DBOs.Tagging.TagCategory tagCatDbo = db.GetById<DBOs.Tagging.TagCategory>(tagModel.TagCategory.Id);
                     ViewModels.Tagging.TagCategoryViewModel tagCatVM = Mapper.Map<ViewModels.Tagging.TagCategoryViewModel>(tagCatDbo);
                     tagModel.TagCategory = tagCatVM;
 
                     modelList.Add(tagModel);
+                });
+            }
+
+            return View(modelList);
+        }
+
+        [SecurityFilter(SecurityAreaName = "Matters.ResponsibleUser", IsSecuredResource = false,
+            Permission = Common.Models.PermissionType.List)]
+        public ActionResult ResponsibleUsers(Guid id)
+        {
+            List<ViewModels.Matters.ResponsibleUserViewModel> modelList = new List<ViewModels.Matters.ResponsibleUserViewModel>();
+            using (IDbConnection db = Database.Instance.OpenConnection())
+            {
+                List<DBOs.Matters.ResponsibleUser> list = db.Query<DBOs.Matters.ResponsibleUser>(
+                    "SELECT * FROM \"responsible_user\" WHERE \"matter_id\"=@MatterId AND \"utc_disabled\" is null",
+                    new { MatterId = id });
+
+                list.ForEach(dbo =>
+                {
+                    ViewModels.Matters.ResponsibleUserViewModel responsibleUser = Mapper.Map<ViewModels.Matters.ResponsibleUserViewModel>(dbo);
+
+                    //DBOs.Matters.Matter matterDbo = db.GetById<DBOs.Matters.Matter>(dbo.MatterId);
+                    DBOs.Security.User userDbo = db.GetById<DBOs.Security.User>(dbo.UserId);
+
+                    //responsibleUser.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(matterDbo);
+                    responsibleUser.User = Mapper.Map<ViewModels.Security.UserViewModel>(userDbo);
+
+                    modelList.Add(responsibleUser);
                 });
             }
 

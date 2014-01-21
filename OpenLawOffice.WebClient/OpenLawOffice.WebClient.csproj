@@ -124,10 +124,12 @@
     <Compile Include="Controllers\ContactsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MattersController.cs" />
-    <Compile Include="Controllers\MatterTagController.cs" />
+    <Compile Include="Controllers\MatterTagsController.cs" />
+    <Compile Include="Controllers\ResponsibleUsersController.cs" />
     <Compile Include="Controllers\SecurityAreaAclsController.cs" />
     <Compile Include="Controllers\SecurityFilterAttribute.cs" />
     <Compile Include="Controllers\SecurityAreasController.cs" />
+    <Compile Include="Controllers\TagCategoriesController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -153,6 +155,8 @@
     <Compile Include="ViewModels\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\jquery-ui-1.10.3.custom.css" />
+    <Content Include="Content\jquery-ui-1.10.3.custom.min.css" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <Content Include="Views\Account\Login.aspx" />
@@ -164,7 +168,16 @@
     <Content Include="Views\Matters\Details.aspx" />
     <Content Include="Views\Matters\Edit.aspx" />
     <Content Include="Views\Matters\Index.aspx" />
+    <Content Include="Views\Matters\ResponsibleUsers.aspx" />
     <Content Include="Views\Matters\Tags.aspx" />
+    <Content Include="Views\MatterTags\Create.aspx" />
+    <Content Include="Views\MatterTags\Delete.aspx" />
+    <Content Include="Views\MatterTags\Details.aspx" />
+    <Content Include="Views\MatterTags\Edit.aspx" />
+    <Content Include="Views\ResponsibleUsers\Create.aspx" />
+    <Content Include="Views\ResponsibleUsers\Delete.aspx" />
+    <Content Include="Views\ResponsibleUsers\Details.aspx" />
+    <Content Include="Views\ResponsibleUsers\Edit.aspx" />
     <Content Include="Views\SecurityAreaAcls\Create.aspx" />
     <Content Include="Views\SecurityAreaAcls\Details.aspx" />
     <Content Include="Views\SecurityAreaAcls\Edit.aspx" />
@@ -237,7 +250,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>57742</DevelopmentServerPort>
+          <DevelopmentServerPort>62914</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

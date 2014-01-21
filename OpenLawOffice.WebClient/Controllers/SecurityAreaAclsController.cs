@@ -95,7 +95,7 @@
             Permission = Common.Models.PermissionType.Create)]
         public ActionResult Create()
         {
-            List<Common.Models.Security.User> userList = new List<Common.Models.Security.User>();
+            List<ViewModels.Security.UserViewModel> userList = new List<ViewModels.Security.UserViewModel>();
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 List<DBOs.Security.User> list = db.Query<DBOs.Security.User>(
@@ -104,14 +104,18 @@
 
                 list.ForEach(dbo =>
                 {
-                    userList.Add(Mapper.Map<Common.Models.Security.User>(dbo));
+                    userList.Add(Mapper.Map<ViewModels.Security.UserViewModel>(dbo));
                 });
             }
 
             ViewData["Readonly"] = false;
             ViewData["UserList"] = userList;
 
-            return View(new Common.Models.Security.AreaAcl() { AllowFlags = 0, DenyFlags = 0 });
+            return View(new ViewModels.Security.AreaAclViewModel() 
+            {
+                AllowPermissions = new ViewModels.PermissionsViewModel(),
+                DenyPermissions = new ViewModels.PermissionsViewModel()
+            });
         } 
 
         //

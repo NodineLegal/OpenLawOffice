@@ -1,30 +1,17 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Matters.MatterViewModel>" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Matters.MatterTagViewModel>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-	Details
+	Delete
 </asp:Content>
 
-<asp:Content ID="Content2" ContentPlaceHolderID="MenuContent" runat="server">
-    <li>Navigation</li>
-    <ul style="list-style: none outside none; padding-left: 1em;">
-        <li><%: Html.ActionLink("New Matter", "Create") %></li>
-        <li><%: Html.ActionLink("Edit", "Edit", new { id = Model.Id })%></li>
-        <li><%: Html.ActionLink("Delete ", "Delete", new { id = Model.Id })%></li>
-        <li><%: Html.ActionLink("List", "Index") %></li>
-    </ul>
-    <li><%: Html.ActionLink("Tags", "Tags", new { id = Model.Id })%></li>
-    <li><%: Html.ActionLink("Responsible Users", "ResponsibleUsers", new { id = Model.Id })%></li>
-    <li><%: Html.ActionLink("Contacts", "Contacts", "Matters")%></li>
-    <li><%: Html.ActionLink("Tasks", "Tasks", "Matters")%> (<%: Html.ActionLink("Add", "AddTask", new { controller = "Matters", id = Model.Id }) %>)</li>
-    <li><%: Html.ActionLink("Notes", "Notes", "Matters")%> (<%: Html.ActionLink("Add", "AddNote", new { controller = "Matters", id = Model.Id }) %>)</li>
-    <li><%: Html.ActionLink("Documents", "Documents", "Matters")%> (<%: Html.ActionLink("Add", "AddDocument", new { controller = "Matters", id = Model.Id }) %>)</li>
-    <li><%: Html.ActionLink("Time", "Time", "Matters")%> (<%: Html.ActionLink("Add", "AddTime", new { controller = "Matters", id = Model.Id }) %>)</li>
-    <li><%: Html.ActionLink("Permissions", "Acls", "Matters")%></li>
-</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
-<asp:Content ID="Content3" ContentPlaceHolderID="MainContent" runat="server">
+    <h2>Delete</h2>
+    
+    <% using (Html.BeginForm()) {%>
+        <%: Html.ValidationSummary(true) %>
 
-    <h2>Details</h2>
+    <h3>Are you sure you want to delete this?</h3>
 
     <table class="detail_table">
         <tr>
@@ -32,12 +19,16 @@
             <td class="display-field"><%: Model.Id %></td>
         </tr>
         <tr>
-            <td class="display-label">Title</td>
-            <td class="display-field"><%: Model.Title %></td>
+            <td class="display-label">Matter</td>
+            <td class="display-field"><%: Model.Matter.Title %></td>
         </tr>
         <tr>
-            <td class="display-label">Synopsis</td>
-            <td class="display-field"><%: Model.Synopsis %></td>
+            <td class="display-label">Category</td>
+            <td class="display-field"><%: Model.TagCategory.Name %></td>
+        </tr>
+        <tr>
+            <td class="display-label">Tag</td>
+            <td class="display-field"><%: Model.Tag %></td>
         </tr>
     </table>
 
@@ -81,5 +72,21 @@
             <% } %>
         </tr>
     </table>
+            
+    <p>
+        <input type="submit" value="Delete" />
+    </p>
+    <% } %>
+
+</asp:Content>
+
+<asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
+    <li>Navigation</li>
+    <ul style="list-style: none outside none; padding-left: 1em;">
+        <li><%: Html.ActionLink("New Matter Tag", "Create", new { id = Model.Matter.Id })%></li>
+        <li><%: Html.ActionLink("Edit", "Edit", new { id = Model.Id })%></li>
+        <li><%: Html.ActionLink("Details ", "Details", new { id = Model.Id })%></li>
+        <li><%: Html.ActionLink("List", "Index") %></li>
+    </ul>
 </asp:Content>
 

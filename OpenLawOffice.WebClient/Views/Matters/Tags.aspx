@@ -29,9 +29,9 @@
                 <%: item.Tag %>
             </td>
             <td>
-                <%: Html.ActionLink("Edit", "Edit", new { id = item.Id.Value }) %> |
-                <%: Html.ActionLink("Details", "Details", new { id = item.Id.Value })%> |
-                <%: Html.ActionLink("Delete", "Delete", new { id = item.Id.Value })%>
+                <%: Html.ActionLink("Edit", "Edit", "MatterTags", new { id = item.Id.Value }, null)%> |
+                <%: Html.ActionLink("Details", "Details", "MatterTags", new { id = item.Id.Value }, null)%> |
+                <%: Html.ActionLink("Delete", "Delete", "MatterTags", new { id = item.Id.Value }, null)%>
             </td>
         </tr>
     
@@ -42,5 +42,9 @@
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
+    <li>Navigation</li>
+    <ul style="list-style: none outside none; padding-left: 1em;">
+        <li><%: Html.ActionLink("Add Tag", "Create", "MatterTags", new { id = RouteData.Values["Id"].ToString() }, null)%></li>
+    </ul>
 </asp:Content>
 
