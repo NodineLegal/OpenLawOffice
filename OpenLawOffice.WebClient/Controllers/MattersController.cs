@@ -305,5 +305,30 @@
 
             return View(modelList);
         }
+
+        [SecurityFilter(SecurityAreaName = "Contacts.Contact", IsSecuredResource = false,
+            Permission = Common.Models.PermissionType.List)]
+        public ActionResult Contacts(Guid id)
+        {
+            List<ViewModels.Matters.MatterContactViewModel> modelList = new List<ViewModels.Matters.MatterContactViewModel>();
+            using (IDbConnection db = Database.Instance.OpenConnection())
+            {
+                List<DBOs.Matters.MatterContact> list = db.Query<DBOs.Matters.MatterContact>(
+                    "SELECT * FROM \"matter_contact\" WHERE \"matter_id\"=@MatterId AND \"utc_disabled\" is null",
+                    new { MatterId = id });
+
+                list.ForEach(dbo =>
+                {
+                    ViewModels.Matters.MatterContactViewModel vm = Mapper.Map<ViewModels.Matters.MatterContactViewModel>(dbo);
+
+                    DBOs.Contacts.Contact contactDbo = db.GetById<DBOs.Contacts.Contact>(dbo.ContactId);
+
+                    vm.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contactDbo);
+                    modelList.Add(vm);
+                });
+            }
+
+            return View(modelList);
+        }
     }
 }

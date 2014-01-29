@@ -88,6 +88,7 @@
     <Compile Include="Models\IHierarchicalModel.cs" />
     <Compile Include="Models\MapMeAttribute.cs" />
     <Compile Include="Models\Matters\Matter.cs" />
+    <Compile Include="Models\Matters\MatterContact.cs" />
     <Compile Include="Models\Matters\MatterTag.cs" />
     <Compile Include="Models\Matters\ResponsibleUser.cs" />
     <Compile Include="Models\ModelBase.cs" />

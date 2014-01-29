@@ -14,7 +14,7 @@
     </ul>
     <li><%: Html.ActionLink("Tags", "Tags", new { id = Model.Id })%></li>
     <li><%: Html.ActionLink("Responsible Users", "ResponsibleUsers", new { id = Model.Id })%></li>
-    <li><%: Html.ActionLink("Contacts", "Contacts", "Matters")%></li>
+    <li><%: Html.ActionLink("Contacts", "Contacts", new { id = Model.Id })%></li>
     <li><%: Html.ActionLink("Tasks", "Tasks", "Matters")%> (<%: Html.ActionLink("Add", "AddTask", new { controller = "Matters", id = Model.Id }) %>)</li>
     <li><%: Html.ActionLink("Notes", "Notes", "Matters")%> (<%: Html.ActionLink("Add", "AddNote", new { controller = "Matters", id = Model.Id }) %>)</li>
     <li><%: Html.ActionLink("Documents", "Documents", "Matters")%> (<%: Html.ActionLink("Add", "AddDocument", new { controller = "Matters", id = Model.Id }) %>)</li>

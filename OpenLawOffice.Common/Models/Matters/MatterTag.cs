@@ -1,7 +1,7 @@
-﻿using AutoMapper;
-
-namespace OpenLawOffice.Common.Models.Matters
+﻿namespace OpenLawOffice.Common.Models.Matters
 {
+    using AutoMapper;
+
     [MapMe]
     [Can(CanFlags.Get | CanFlags.Create | CanFlags.Update | CanFlags.Delete)]
     public class MatterTag : Tagging.TagBase

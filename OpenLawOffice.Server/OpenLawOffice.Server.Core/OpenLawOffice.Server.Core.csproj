@@ -113,6 +113,7 @@
     <Compile Include="DBOs\DboBase.cs" />
     <Compile Include="DBOs\DboWithDatesOnly.cs" />
     <Compile Include="DBOs\Matters\Matter.cs" />
+    <Compile Include="DBOs\Matters\MatterContact.cs" />
     <Compile Include="DBOs\Matters\MatterTag.cs" />
     <Compile Include="DBOs\Matters\ResponsibleUser.cs" />
     <Compile Include="DBOs\NullDbo.cs" />

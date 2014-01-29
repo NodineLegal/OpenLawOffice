@@ -20,6 +20,7 @@ namespace OpenLawOffice.Server.Core.Installation
                 conn.CreateTableIfNotExists<DBOs.Matters.MatterTag>();
                 conn.CreateTableIfNotExists<DBOs.Matters.ResponsibleUser>();
                 conn.CreateTableIfNotExists<DBOs.Contacts.Contact>();
+                conn.CreateTableIfNotExists<DBOs.Matters.MatterContact>();
 
                 DBOs.Security.User dbUser = conn.QuerySingle<DBOs.Security.User>(new { Username = "TestUser" });
                 // == "a" on before client hash
@@ -275,6 +276,23 @@ namespace OpenLawOffice.Server.Core.Installation
                     dbAreaContactsContact.Id = (int)conn.GetLastInsertId();
                 }
 
+                DBOs.Security.Area dbAreaMattersMatterContact = conn.QuerySingle<DBOs.Security.Area>(new { Name = "Matters.MatterContact" });
+                if (dbAreaMattersMatterContact == null)
+                {
+                    dbAreaMattersMatterContact = new DBOs.Security.Area()
+                    {
+                        ParentId = dbAreaContacts.Id,
+                        Name = "Matters.MatterContact",
+                        Description = "Contacts for a specific matter",
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.Area>(dbAreaMattersMatterContact);
+                    dbAreaMattersMatterContact.Id = (int)conn.GetLastInsertId();
+                }
+
                 #endregion
 
                 #region Area Acls
@@ -520,6 +538,73 @@ namespace OpenLawOffice.Server.Core.Installation
                     dbAAclContactsContact.Id = (int)conn.GetLastInsertId();
                 }
 
+                // Matters.MatterContact
+                DBOs.Security.AreaAcl dbAAclMattersMatterContact = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaMattersMatterContact.Id, UserId = dbUser.Id });
+                if (dbAAclMattersMatterContact == null)
+                {
+                    dbAAclMattersMatterContact = new DBOs.Security.AreaAcl()
+                    {
+                        SecurityAreaId = dbAreaMattersMatterContact.Id,
+                        UserId = dbUser.Id,
+                        AllowFlags = (int)(Common.Models.PermissionType.AllAdmin | Common.Models.PermissionType.AllWrite | Common.Models.PermissionType.AllRead),
+                        DenyFlags = 0,
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.AreaAcl>(dbAAclMattersMatterContact);
+                    dbAAclMattersMatterContact.Id = (int)conn.GetLastInsertId();
+                }
+
+                #endregion
+                
+                #region Contacts
+
+                DBOs.Contacts.Contact dbContact = conn.QuerySingle<DBOs.Contacts.Contact>(new { DisplayName = "Lucas Nodine" });
+                if (dbContact == null)
+                {
+                    dbContact = new DBOs.Contacts.Contact()
+                    {
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now,
+                        IsOrganization = false,
+                        Nickname = "Luke",
+                        DisplayNamePrefix = "Mr.",
+                        Surname = "Nodine",
+                        MiddleName = "James",
+                        GivenName = "Lucas",
+                        Initials = "LJN",
+                        DisplayName = "Lucas Nodine",
+                        Email1DisplayName = "Fake Prevent Spambots",
+                        Email1EmailAddress = "no@one.com",
+                        Fax1DisplayName = "Fake Fax",
+                        Fax1FaxNumber = "1-555-555-5555",
+                        Address1DisplayName = "Nodine Legal PO Box",
+                        Address1AddressCity = "Parsons",
+                        Address1AddressStateOrProvince = "Kansas",
+                        Address1AddressPostalCode = "67357",
+                        Address1AddressCountry = "USA",
+                        Address1AddressCountryCode = "1",
+                        Address1AddressPostOfficeBox = "1125",
+                        Telephone1DisplayName = "Virtual Office",
+                        Telephone1TelephoneNumber = "620-577-4271",
+                        Birthday = new DateTime(1982, 3, 25),
+                        Wedding = new DateTime(2012, 5, 12),
+                        Title = "Managing Member",
+                        CompanyName = "Nodine Legal, LLC",
+                        Profession = "Attorney",
+                        Language = "English (American)",
+                        BusinessHomePage = "www.nodinelegal.com",
+                        Gender = "Male",
+                        ReferredByName = "Bob"
+                    };
+                    conn.Insert<DBOs.Contacts.Contact>(dbContact);
+                    dbContact.Id = (int)conn.GetLastInsertId();
+                }
+
                 #endregion
 
                 #region Matters
@@ -619,55 +704,22 @@ namespace OpenLawOffice.Server.Core.Installation
                     };
                 }
 
-                #endregion
-
-                #region Contacts
-
-                DBOs.Contacts.Contact dbContact = conn.QuerySingle<DBOs.Contacts.Contact>(new { DisplayName = "Lucas Nodine" });
-                if (dbContact == null)
+                DBOs.Matters.MatterContact matterContact1 = conn.QuerySingle<DBOs.Matters.MatterContact>(new { MatterId = matter1.Id, ContactId = dbContact.Id });
+                if (matterContact1 == null)
                 {
-                    dbContact = new DBOs.Contacts.Contact()
+                    matterContact1 = new DBOs.Matters.MatterContact()
                     {
                         CreatedByUserId = dbUser.Id,
                         ModifiedByUserId = dbUser.Id,
                         UtcCreated = DateTime.Now,
                         UtcModified = DateTime.Now,
-                        IsOrganization = false,
-                        Nickname = "Luke",
-                        DisplayNamePrefix = "Mr.",
-                        Surname = "Nodine",
-                        MiddleName = "James",
-                        GivenName = "Lucas",
-                        Initials = "LJN",
-                        DisplayName = "Lucas Nodine",
-                        Email1DisplayName = "Fake Prevent Spambots",
-                        Email1EmailAddress = "no@one.com",
-                        Fax1DisplayName = "Fake Fax",
-                        Fax1FaxNumber = "1-555-555-5555",
-                        Address1DisplayName = "Nodine Legal PO Box",
-                        Address1AddressCity = "Parsons",
-                        Address1AddressStateOrProvince = "Kansas",
-                        Address1AddressPostalCode = "67357",
-                        Address1AddressCountry = "USA",
-                        Address1AddressCountryCode = "1",
-                        Address1AddressPostOfficeBox = "1125",
-                        Telephone1DisplayName = "Virtual Office",
-                        Telephone1TelephoneNumber = "620-577-4271",
-                        Birthday = new DateTime(1982, 3, 25),
-                        Wedding = new DateTime(2012, 5, 12),
-                        Title = "Managing Member",
-                        CompanyName = "Nodine Legal, LLC",
-                        Profession = "Attorney",
-                        Language = "English (American)",
-                        BusinessHomePage = "www.nodinelegal.com",
-                        Gender = "Male",
-                        ReferredByName = "Bob"
+                        MatterId = matter1.Id,
+                        ContactId = dbContact.Id
                     };
-                    conn.Insert<DBOs.Contacts.Contact>(dbContact);
-                    dbContact.Id = (int)conn.GetLastInsertId();
                 }
 
                 #endregion
+
             }
         }
     }
