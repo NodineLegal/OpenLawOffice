@@ -50,14 +50,6 @@
         [SecurityFilter(SecurityAreaName = "Matters.Matter", IsSecuredResource = true,
             Permission = Common.Models.PermissionType.List)]
         [HttpGet]
-        public ActionResult ListChildren(Guid? id)
-        {
-            return Json(GetChildrenList(id), JsonRequestBehavior.AllowGet);
-        }
-
-        [SecurityFilter(SecurityAreaName = "Matters.Matter", IsSecuredResource = true,
-            Permission = Common.Models.PermissionType.List)]
-        [HttpGet]
         public ActionResult ListChildrenJqGrid(Guid? id)
         {
             ViewModels.JqGridObject jqObject;
@@ -162,8 +154,14 @@
                 DBOs.Matters.Matter dbo = db.QuerySingle<DBOs.Matters.Matter>(
                     "SELECT * FROM \"matter\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id});
-
+                
                 model = Mapper.Map<ViewModels.Matters.MatterViewModel>(dbo);
+
+                if (dbo.ParentId.HasValue)
+                {
+                    DBOs.Matters.Matter parentDbo = db.GetById<DBOs.Matters.Matter>(dbo.ParentId);
+                    model.Parent = Mapper.Map<ViewModels.Matters.MatterViewModel>(parentDbo);
+                }
 
                 // Core Details
                 PopulateCoreDetails(model);

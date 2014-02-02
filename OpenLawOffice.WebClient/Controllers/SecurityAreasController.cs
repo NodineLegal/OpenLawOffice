@@ -24,78 +24,82 @@
 
         [SecurityFilter(SecurityAreaName = "Security.Area", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
-        public ActionResult List()
+        [HttpGet]
+        public ActionResult ListChildrenJqGrid(int? id)
         {
-            List<Common.Models.Security.Area> modelList = RecursiveListChildren(null);
+            ViewModels.JqGridObject jqObject;
+            int level = 0;
 
-            return Json(modelList, JsonRequestBehavior.AllowGet);
-        }
-
-        private List<ViewModels.Security.AciTreeObject> ConvertToAciTreeObjectList(List<Common.Models.Security.Area> list)
-        {
-            List<ViewModels.Security.AciTreeObject> newList = new List<ViewModels.Security.AciTreeObject>();
-
-            if (list == null) return null;
-
-            list.ForEach(item =>
+            if (id == null)
             {
-                ViewModels.Security.AciTreeObject newItem = new ViewModels.Security.AciTreeObject();
-                newItem.id = item.Id.Value;
-                newItem.label = item.Name;
+                // jqGrid uses nodeid by default
+                if (!string.IsNullOrEmpty(Request["nodeid"]))
+                    id = int.Parse(Request["nodeid"]);
+            }
 
-                if (item.Children != null && item.Children.Count > 0)
-                {
-                    newItem.inode = true;
-                    newItem.branch = ConvertToAciTreeObjectList(item.Children);
-                }
+            List<ViewModels.Security.AreaViewModel> modelList = GetChildrenList(id);
+            List<object> anonList = new List<object>();
+
+            if (!string.IsNullOrEmpty(Request["n_level"]))
+                level = int.Parse(Request["n_level"]) + 1;
+
+            modelList.ForEach(x =>
+            {
+                if (x.Parent == null)
+                    anonList.Add(new
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        Description = x.Description,
+                        level = level,
+                        isLeaf = false,
+                        expanded = false
+                    });
                 else
-                {
-                    newItem.inode = false;
-                }
-
-                newItem.open = false;
-
-                newList.Add(newItem);
+                    anonList.Add(new
+                    {
+                        Id = x.Id,
+                        parent = x.Parent.Id,
+                        Name = x.Name,
+                        Description = x.Description,
+                        level = level,
+                        isLeaf = false,
+                        expanded = false
+                    });
             });
 
-            return newList;
+            jqObject = new ViewModels.JqGridObject()
+            {
+                TotalPages = 1,
+                CurrentPage = 1,
+                TotalRecords = modelList.Count,
+                Rows = anonList.ToArray()
+            };
+
+            return Json(jqObject, JsonRequestBehavior.AllowGet);
         }
-
-        [SecurityFilter(SecurityAreaName = "Security.Area", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.List)]
-        public ActionResult AciTreeList()
+        private List<ViewModels.Security.AreaViewModel> GetChildrenList(int? id)
         {
-            List<Common.Models.Security.Area> modelList = RecursiveListChildren(null);
-
-            List<ViewModels.Security.AciTreeObject> aciTreeList = ConvertToAciTreeObjectList(modelList);
-
-            return Json(aciTreeList, JsonRequestBehavior.AllowGet);
-        }
-
-        private List<Common.Models.Security.Area> RecursiveListChildren(Common.Models.Security.Area parent)
-        {
-            List<Common.Models.Security.Area> modelList = new List<Common.Models.Security.Area>();
+            List<ViewModels.Security.AreaViewModel> modelList = new List<ViewModels.Security.AreaViewModel>();
 
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 List<DBOs.Security.Area> list = null;
 
-                if (parent == null || !parent.Id.HasValue)
+                if (!id.HasValue)
                     list = db.Query<DBOs.Security.Area>(
                         "SELECT * FROM \"area\" WHERE \"parent_id\" is null AND \"utc_disabled\" is null");
                 else
                     list = db.Query<DBOs.Security.Area>(
                         "SELECT * FROM \"area\" WHERE \"parent_id\"=@ParentId AND \"utc_disabled\" is null",
-                        new { ParentId = parent.Id.Value });
+                        new { ParentId = id.Value });
 
                 if (list == null || list.Count == 0)
                     return null;
 
                 list.ForEach(dbo =>
                 {
-                    Common.Models.Security.Area model = Mapper.Map<Common.Models.Security.Area>(dbo);
-                    model.Children = RecursiveListChildren(model);
-                    modelList.Add(model);
+                    modelList.Add(Mapper.Map<ViewModels.Security.AreaViewModel>(dbo));
                 });
             }
 

@@ -19,7 +19,11 @@
         </tr>
         <tr>
             <td class="display-label">Parent</td>
-            <td class="display-field"><%: Model.Parent.Name %></td>
+            <td class="display-field">
+            <% if (Model.Parent != null)
+               { %>
+               <%: Model.Parent.Name %>
+            <% } %></td>
         </tr>
         <tr>
             <td class="display-label">Description</td>

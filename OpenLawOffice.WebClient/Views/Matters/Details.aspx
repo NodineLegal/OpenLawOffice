@@ -33,7 +33,11 @@
         </tr>
         <tr>
             <td class="display-label">Parent</td>
-            <td class="display-field"><%: Model.Parent.Title %></td>
+            <td class="display-field">
+            <% if (Model.Parent != null)
+               { %>
+                <%: Model.Parent.Title%>
+            <% } %></td>
         </tr>
         <tr>
             <td class="display-label">Title</td>
