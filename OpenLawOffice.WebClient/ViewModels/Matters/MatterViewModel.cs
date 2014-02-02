@@ -9,6 +9,7 @@
     public class MatterViewModel : CoreViewModel
     {
         public Guid? Id { get; set; }
+        public MatterViewModel Parent { get; set; }
         public string Title { get; set; }
         public string Synopsis { get; set; }
 
@@ -45,6 +46,15 @@
                     };
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dst => dst.Parent, opt => opt.ResolveUsing(db =>
+                {
+                    if (!db.ParentId.HasValue) return null;
+                    return new ViewModels.Matters.MatterViewModel()
+                    {
+                        Id = db.ParentId.Value,
+                        IsStub = true
+                    };
+                }))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis));
 
@@ -70,6 +80,12 @@
                     return model.DisabledBy.Id;
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dst => dst.ParentId, opt => opt.ResolveUsing(model =>
+                {
+                    if (model.Parent == null || !model.Parent.Id.HasValue)
+                        return null;
+                    return model.Parent.Id.Value;
+                }))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis));
         }

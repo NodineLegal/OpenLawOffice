@@ -13,6 +13,9 @@ namespace OpenLawOffice.Server.Core.DBOs.Matters
         [StringLength(250)]
         public string Title { get; set; }
 
+        [References(typeof(Matter))]
+        public Guid? ParentId { get; set; }
+
         [Required]
         [StringLength(5000)]
         public string Synopsis { get; set; }
@@ -50,6 +53,7 @@ namespace OpenLawOffice.Server.Core.DBOs.Matters
                     };
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dst => dst.ParentId, opt => opt.MapFrom(src => src.ParentId))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis))
                 .ForMember(dst => dst.Tags, opt => opt.Ignore())
@@ -77,6 +81,7 @@ namespace OpenLawOffice.Server.Core.DBOs.Matters
                     return model.DisabledBy.Id;
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dst => dst.ParentId, opt => opt.MapFrom(src => src.ParentId))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis));
         }

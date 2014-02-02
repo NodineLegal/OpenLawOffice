@@ -32,6 +32,10 @@
             <td class="display-field"><%: Model.Id %></td>
         </tr>
         <tr>
+            <td class="display-label">Parent</td>
+            <td class="display-field"><%: Model.Parent.Title %></td>
+        </tr>
+        <tr>
             <td class="display-label">Title</td>
             <td class="display-field"><%: Model.Title %></td>
         </tr>

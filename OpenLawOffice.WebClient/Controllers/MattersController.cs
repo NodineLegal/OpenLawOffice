@@ -47,6 +47,108 @@
             return View(modelList);
         }
 
+        [SecurityFilter(SecurityAreaName = "Matters.Matter", IsSecuredResource = true,
+            Permission = Common.Models.PermissionType.List)]
+        [HttpGet]
+        public ActionResult ListChildren(Guid? id)
+        {
+            return Json(GetChildrenList(id), JsonRequestBehavior.AllowGet);
+        }
+
+        [SecurityFilter(SecurityAreaName = "Matters.Matter", IsSecuredResource = true,
+            Permission = Common.Models.PermissionType.List)]
+        [HttpGet]
+        public ActionResult ListChildrenJqGrid(Guid? id)
+        {
+            ViewModels.JqGridObject jqObject;
+            int level = 0;
+
+            if (id == null)
+            {
+                // jqGrid uses nodeid by default
+                if (!string.IsNullOrEmpty(Request["nodeid"]))
+                    id = Guid.Parse(Request["nodeid"]);
+            }
+
+            List<ViewModels.Matters.MatterViewModel> modelList = GetChildrenList(id);
+            List<object> anonList = new List<object>();
+
+            if (!string.IsNullOrEmpty(Request["n_level"]))
+                level = int.Parse(Request["n_level"]) + 1;
+
+            modelList.ForEach(x =>
+            {
+                if (x.Parent == null)
+                    anonList.Add(new
+                    {
+                        Id = x.Id,
+                        Title = x.Title,
+                        Synopsis = x.Synopsis,
+                        level = level,
+                        isLeaf = false,
+                        expanded = false
+                    });
+                else
+                    anonList.Add(new
+                    {
+                        Id = x.Id,
+                        parent = x.Parent.Id,
+                        Title = x.Title,
+                        Synopsis = x.Synopsis,
+                        level = level,
+                        isLeaf = false,
+                        expanded = false
+                    });
+            });
+
+            jqObject = new ViewModels.JqGridObject()
+            {
+                TotalPages = 1,
+                CurrentPage = 1,
+                TotalRecords = modelList.Count,
+                Rows = anonList.ToArray()
+            };
+
+            return Json(jqObject, JsonRequestBehavior.AllowGet);
+        }
+
+        private List<ViewModels.Matters.MatterViewModel> GetChildrenList(Guid? id)
+        {
+            List<ViewModels.Matters.MatterViewModel> modelList = new List<ViewModels.Matters.MatterViewModel>();
+
+            using (IDbConnection db = Database.Instance.OpenConnection())
+            {
+                List<DBOs.Matters.Matter> list = null;
+
+                if (!id.HasValue)
+                    list = db.Query<DBOs.Matters.Matter>(
+                        "SELECT * FROM \"matter\" JOIN \"secured_resource_acl\" ON " +
+                        "\"matter\".\"id\"=\"secured_resource_acl\".\"secured_resource_id\" " +
+                        "WHERE \"secured_resource_acl\".\"allow_flags\" & 2 > 0 " +
+                        "AND NOT \"secured_resource_acl\".\"deny_flags\" & 2 > 0 " +
+                        "AND \"matter\".\"utc_disabled\" is null  " +
+                        "AND \"secured_resource_acl\".\"utc_disabled\" is null " +
+                        "AND \"matter\".\"parent_id\" is null");
+                else
+                    list = db.Query<DBOs.Matters.Matter>(
+                        "SELECT * FROM \"matter\" JOIN \"secured_resource_acl\" ON " +
+                        "\"matter\".\"id\"=\"secured_resource_acl\".\"secured_resource_id\" " +
+                        "WHERE \"secured_resource_acl\".\"allow_flags\" & 2 > 0 " +
+                        "AND NOT \"secured_resource_acl\".\"deny_flags\" & 2 > 0 " +
+                        "AND \"matter\".\"utc_disabled\" is null  " +
+                        "AND \"secured_resource_acl\".\"utc_disabled\" is null " +
+                        "AND \"matter\".\"parent_id\"=@ParentId",
+                        new { ParentId = id.Value });
+
+                list.ForEach(dbo =>
+                {
+                    modelList.Add(Mapper.Map<ViewModels.Matters.MatterViewModel>(dbo));
+                });
+            }
+
+            return modelList;
+        }
+
         //
         // GET: /Matter/Details/9acb1b4f-0442-4c9b-a550-ad7478e36fb2
         [SecurityFilter(SecurityAreaName = "Matters.Matter", IsSecuredResource = true,
@@ -80,7 +182,7 @@
         } 
 
         //
-        // POST: /Matter/Create
+        // POST: /Matter/CreateE:\Projects\OpenLawOffice\OpenLawOffice.WebClient\Controllers\HomeController.cs
         [SecurityFilter(SecurityAreaName = "Matters.Matter", IsSecuredResource = true,
             Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
@@ -194,6 +296,7 @@
                             {
                                 fields.Title,
                                 fields.Synopsis,
+                                fields.ParentId,
                                 fields.ModifiedByUserId,
                                 fields.UtcModified
                             },

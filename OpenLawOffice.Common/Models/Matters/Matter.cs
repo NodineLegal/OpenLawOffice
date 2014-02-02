@@ -9,6 +9,7 @@ namespace OpenLawOffice.Common.Models.Matters
     public class Matter : Core, Security.ISecuredResource, IHasGuidId
     {
         public Guid? Id { get; set; }
+        public Guid? ParentId { get; set; }
         [ShowInList]
         public string Title { get; set; }
         public string Synopsis { get; set; }
@@ -30,6 +31,7 @@ namespace OpenLawOffice.Common.Models.Matters
                 .ForMember(dst => dst.ModifiedBy, opt => opt.UseValue(null))
                 .ForMember(dst => dst.DisabledBy, opt => opt.UseValue(null))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dst => dst.ParentId, opt => opt.MapFrom(src => src.ParentId))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis))
                 .ForMember(dst => dst.Tags, opt => opt.Ignore())
@@ -39,6 +41,7 @@ namespace OpenLawOffice.Common.Models.Matters
                 .ForMember(dst => dst.Received, opt => opt.Ignore())
                 .ForMember(dst => dst.AuthToken, opt => opt.Ignore())
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dst => dst.ParentId, opt => opt.MapFrom(src => src.ParentId))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis))
                 .ForMember(dst => dst.TagQuery, opt => opt.ResolveUsing(model =>
@@ -56,6 +59,7 @@ namespace OpenLawOffice.Common.Models.Matters
                 .ForMember(dst => dst.ModifiedBy, opt => opt.MapFrom(src => src.ModifiedBy))
                 .ForMember(dst => dst.DisabledBy, opt => opt.MapFrom(src => src.DisabledBy))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dst => dst.ParentId, opt => opt.MapFrom(src => src.ParentId))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis))
                 .ForMember(dst => dst.Tags, opt => opt.ResolveUsing(model =>
@@ -83,6 +87,7 @@ namespace OpenLawOffice.Common.Models.Matters
                 .ForMember(dst => dst.ModifiedBy, opt => opt.MapFrom(src => src.ModifiedBy))
                 .ForMember(dst => dst.DisabledBy, opt => opt.MapFrom(src => src.DisabledBy))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dst => dst.ParentId, opt => opt.MapFrom(src => src.ParentId))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis))
                 .ForMember(dst => dst.Tags, opt => opt.ResolveUsing(response =>

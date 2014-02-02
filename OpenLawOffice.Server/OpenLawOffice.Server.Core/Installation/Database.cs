@@ -655,6 +655,38 @@ namespace OpenLawOffice.Server.Core.Installation
                     conn.Insert<DBOs.Matters.Matter>(matter1);
                 }
 
+                DBOs.Security.SecuredResource secRes1 = conn.QuerySingle<DBOs.Security.SecuredResource>(new { Id = matter1.Id });
+                if (secRes1 == null)
+                {
+                    secRes1 = new DBOs.Security.SecuredResource()
+                    {
+                        Id = matter1.Id,
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.SecuredResource>(secRes1);
+                }
+
+                DBOs.Security.SecuredResourceAcl secResAcl1 = conn.QuerySingle<DBOs.Security.SecuredResourceAcl>(new { SecuredResourceId = secRes1.Id, UserId = dbUser.Id });
+                if (secResAcl1 == null)
+                {
+                    secResAcl1 = new DBOs.Security.SecuredResourceAcl()
+                    {
+                        Id = Guid.NewGuid(),
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.UtcNow,
+                        UtcModified = DateTime.UtcNow,
+                        UserId = dbUser.Id,
+                        SecuredResourceId = secRes1.Id,
+                        AllowFlags = (int)(Common.Models.PermissionType.AllAdmin | Common.Models.PermissionType.AllRead | Common.Models.PermissionType.AllWrite),
+                        DenyFlags = (int)Common.Models.PermissionType.None
+                    };
+                    conn.Insert<DBOs.Security.SecuredResourceAcl>(secResAcl1);
+                }                
+
                 DBOs.Matters.MatterTag matterTag1 = conn.QuerySingle<DBOs.Matters.MatterTag>(new { Tag = "Active" });
                 if (matterTag1 == null)
                 {

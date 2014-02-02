@@ -24,6 +24,10 @@
 
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" runat="server">
 
+    <script type="text/javascript" src="../../Scripts/jqGrid-4.5.4/jquery-1.9.0.min.js"></script>
+    <script type="text/javascript" src="../../Scripts/jqGrid-4.5.4/grid.locale-en.js"></script>
+    <script type="text/javascript" src="../../Scripts/jqGrid-4.5.4/jquery.jqGrid.min.js"></script>
+
     <h2>Edit</h2>
 
     <% using (Html.BeginForm()) {%>
@@ -46,6 +50,56 @@
                 <td class="display-field">
                     <%: Html.TextBoxFor(model => model.Synopsis) %>
                     <%: Html.ValidationMessageFor(model => model.Synopsis) %>
+                </td>
+            </tr>
+            <tr>
+                <td class="display-label">Parent</td>
+                <td class="display-field">
+                    Parent: <%: Html.TextBoxFor(model => model.Parent.Id, new { @readonly = true })%>
+                    
+                    <br /><br /> 
+                    <table id="list"></table>
+                    <div id="pager"></div>
+                    <input id="clear" type="button" style="width:200px;" value="clear" />
+
+                    <script language="javascript">
+                        $(function () {
+                            $("#list").jqGrid({
+                                treeGrid: true,
+                                width: 250,
+                                url: '../../Matters/ListChildrenJqGrid',
+                                datatype: 'json',
+                                jsonReader: {
+                                    root: 'Rows',
+                                    page: 'CurrentPage',
+                                    total: 'TotalRecords',
+                                    id: 'Id',
+                                    rows: 'Rows'
+                                },
+                                colNames: ['id', 'Title', 'Synopsis'],
+                                colModel: [
+                                    { name: 'Id', width: 1, hidden: true, key: true },
+                                    { name: 'Title', width: 250 },
+                                    { name: 'Synopsis', hidden: true }
+                                ],
+                                pager: '#pager',
+                                gridview: true,
+                                treedatatype: 'json',
+                                treeGridModel: 'adjacency',
+                                ExpandColumn: 'Title',
+                                caption: 'Matters',
+                                onSelectRow: function (id) {
+                                    $("#Parent_Id").val(id);
+                                }
+                            });
+                        });
+
+                        $("#clear").click(function () {
+                            $("#list").jqGrid('resetSelection');
+                            $("#Parent_Id").val(null);
+                        });
+                    </script>
+
                 </td>
             </tr>
         </table>

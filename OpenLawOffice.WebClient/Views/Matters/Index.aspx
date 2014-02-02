@@ -13,45 +13,61 @@
 
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" runat="server">
 
+    <script type="text/javascript" src="../../Scripts/jqGrid-4.5.4/jquery-1.9.0.min.js"></script>
+    <script type="text/javascript" src="../../Scripts/jqGrid-4.5.4/grid.locale-en.js"></script>
+    <script type="text/javascript" src="../../Scripts/jqGrid-4.5.4/jquery.jqGrid.min.js"></script>
+
+    <style type="text/css">
+    div.ui-jqgrid-titlebar 
+    {
+        height: 16px;
+    }
+    </style>
+
     <h2>Matters</h2>
 
-    <table class="listing_table">
-        <tr>
-            <th style="text-align: center;">
-                Title
-            </th>
-            <th style="width: 150px;text-align: center;">
-                Created
-            </th>
-            <th style="width: 150px;text-align: center;">
-                Modified
-            </th>
-            <th style="width: 150px;"></th>
-        </tr>
+    <table id="list"></table>
+    <div id="pager"></div>
 
-    <% foreach (var item in Model) { %>
-    
-        <tr>
-            <td>
-                <%: item.Title %>
-            </td>
-            <td>
-                <%: String.Format("{0:g}", item.UtcCreated) %>
-            </td>
-            <td>
-                <%: String.Format("{0:g}", item.UtcModified) %>
-            </td>
-            <td>
-                <%: Html.ActionLink("Edit", "Edit", new { id = item.Id }) %> |
-                <%: Html.ActionLink("Details", "Details", new { id = item.Id })%> |
-                <%: Html.ActionLink("Delete", "Delete", new { id = item.Id })%>
-            </td>
-        </tr>
-    
-    <% } %>
-
-    </table>
-
+    <script language="javascript">
+        $(function () {
+            $("#list").jqGrid({
+                treeGrid: true,
+                autowidth: true,
+                url: '../Matters/ListChildrenJqGrid',
+                datatype: 'json',
+                jsonReader: {
+                    root: 'Rows',
+                    page: 'CurrentPage',
+                    total: 'TotalRecords',
+                    id: 'Id',
+                    rows: 'Rows'
+                },
+                colNames: ['id', 'Title', 'Synopsis', 'Actions'],
+                colModel: [
+                    { name: 'Id', width:1,hidden:true,key:true },
+                    { name: 'Title', width: 250 },
+                    { name: 'Synopsis', width: 400 },
+                    { name: 'act', width: 100}
+                ],
+                pager: '#pager',
+                gridview: true,
+                treedatatype: 'json',
+                treeGridModel: 'adjacency',
+                ExpandColumn:'Title',
+                caption: 'Matters',
+                gridComplete: function () {
+                    var ids = jQuery("#list").jqGrid('getDataIDs');
+                    for (var i = 0; i < ids.length; i++) {
+                        id = ids[i];
+                        detailButton = "<a href=\"../Matters/Details/" + ids[i] + "\">Details</a>";
+                        editButton = "<a href=\"../Matters/Edit/" + ids[i] + "\">Edit</a>";
+                        jQuery("#list").jqGrid('setRowData', ids[i], { act: detailButton + " | " + editButton });
+                    }
+                }
+            });
+        });
+    </script>
 
 </asp:Content>
 
