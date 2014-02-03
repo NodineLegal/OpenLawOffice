@@ -1,4 +1,4 @@
-﻿namespace OpenLawOffice.WebClient.ViewModels.Matters
+﻿namespace OpenLawOffice.WebClient.ViewModels.Timing
 {
     using System;
     using AutoMapper;
@@ -6,16 +6,16 @@
     using DBOs = OpenLawOffice.Server.Core.DBOs;
 
     [MapMe]
-    public class MatterViewModel : CoreViewModel
+    public class TimeViewModel : CoreViewModel
     {
         public Guid? Id { get; set; }
-        public MatterViewModel Parent { get; set; }
-        public string Title { get; set; }
-        public string Synopsis { get; set; }
+        public DateTime Start { get; set; }
+        public DateTime? Stop { get; set; }
+        public Contacts.ContactViewModel Worker { get; set; }
 
-        public void BuildMappings()
+        public new void BuildMappings()
         {
-            Mapper.CreateMap<DBOs.Matters.Matter, MatterViewModel>()
+            Mapper.CreateMap<DBOs.Timing.Time, TimeViewModel>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
@@ -46,19 +46,18 @@
                     };
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.Parent, opt => opt.ResolveUsing(db =>
+                .ForMember(dst => dst.Start, opt => opt.MapFrom(src => src.Start))
+                .ForMember(dst => dst.Stop, opt => opt.MapFrom(src => src.Stop))
+                .ForMember(dst => dst.Worker, opt => opt.ResolveUsing(db =>
                 {
-                    if (!db.ParentId.HasValue) return null;
-                    return new ViewModels.Matters.MatterViewModel()
+                    return new ViewModels.Contacts.ContactViewModel()
                     {
-                        Id = db.ParentId.Value,
+                        Id = db.WorkerContactId,
                         IsStub = true
                     };
-                }))
-                .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
-                .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis));
+                }));
 
-            Mapper.CreateMap<MatterViewModel, DBOs.Matters.Matter>()
+            Mapper.CreateMap<TimeViewModel, DBOs.Timing.Time>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
                 .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
@@ -80,14 +79,13 @@
                     return model.DisabledBy.Id;
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.ParentId, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.Start, opt => opt.MapFrom(src => src.Start))
+                .ForMember(dst => dst.Stop, opt => opt.MapFrom(src => src.Stop))
+                .ForMember(dst => dst.WorkerContactId, opt => opt.ResolveUsing(model =>
                 {
-                    if (model.Parent == null || !model.Parent.Id.HasValue)
-                        return null;
-                    return model.Parent.Id.Value;
-                }))
-                .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
-                .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis));
+                    if (model.Worker == null) return null;
+                    return model.Worker.Id;
+                }));
         }
     }
 }

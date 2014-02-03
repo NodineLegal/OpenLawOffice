@@ -120,7 +120,7 @@
 
                 return RedirectToAction("Tags", "Matters", new { Id = model.Matter.Id });
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 ViewModels.Matters.MatterViewModel matter = null;
 

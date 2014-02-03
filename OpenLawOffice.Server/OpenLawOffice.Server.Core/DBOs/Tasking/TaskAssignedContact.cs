@@ -1,25 +1,63 @@
-﻿namespace OpenLawOffice.WebClient.ViewModels.Matters
+﻿// -----------------------------------------------------------------------
+// <copyright file="TaskAssignedBusinessContact.cs" company="Nodine Legal, LLC">
+// Licensed to Nodine Legal, LLC under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  Nodine Legal, LLC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//  http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+// </copyright>
+// -----------------------------------------------------------------------
+
+namespace OpenLawOffice.Server.Core.DBOs.Tasking
 {
     using System;
     using AutoMapper;
-    using OpenLawOffice.Common.Models;
-    using DBOs = OpenLawOffice.Server.Core.DBOs;
+    using ServiceStack.DataAnnotations;
+    using System.ComponentModel.DataAnnotations;
+    using ServiceStack.DesignPatterns.Model;
 
-    [MapMe]
-    public class SelectableMatterContactViewModel : MatterContactViewModel
+    /// <summary>
+    /// Relates a contact to a task
+    /// </summary>
+    [Common.Models.MapMe]
+    public class TaskAssignedContact : Core, IHasGuidId
     {
-        public bool IsSelected { get; set; }
+        [Required]
+        public Guid Id { get; set; }
+
+        [Required]
+        [References(typeof(Task))]
+        public long TaskId { get; set; }
+
+        [Required]
+        [References(typeof(Contacts.Contact))]
+        public int ContactId { get; set; }
+
+        [Required]
+        [Default(1)]
+        public int AssignmentType { get; set; }
 
         public void BuildMappings()
         {
-            Mapper.CreateMap<DBOs.Matters.MatterContact, SelectableMatterContactViewModel>()
+            Mapper.CreateMap<DBOs.Tasking.TaskAssignedContact, Common.Models.Tasking.TaskAssignedContact>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
                 .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
                 .ForMember(dst => dst.CreatedBy, opt => opt.ResolveUsing(db =>
                 {
-                    return new ViewModels.Security.UserViewModel()
+                    return new Common.Models.Security.User()
                     {
                         Id = db.CreatedByUserId,
                         IsStub = true
@@ -27,7 +65,7 @@
                 }))
                 .ForMember(dst => dst.ModifiedBy, opt => opt.ResolveUsing(db =>
                 {
-                    return new ViewModels.Security.UserViewModel()
+                    return new Common.Models.Security.User()
                     {
                         Id = db.ModifiedByUserId,
                         IsStub = true
@@ -36,33 +74,32 @@
                 .ForMember(dst => dst.DisabledBy, opt => opt.ResolveUsing(db =>
                 {
                     if (!db.DisabledByUserId.HasValue) return null;
-                    return new ViewModels.Security.UserViewModel()
+                    return new Common.Models.Security.User()
                     {
                         Id = db.DisabledByUserId.Value,
                         IsStub = true
                     };
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.Matter, opt => opt.ResolveUsing(db =>
+                .ForMember(dst => dst.Task, opt => opt.ResolveUsing(db =>
                 {
-                    return new ViewModels.Matters.MatterViewModel()
+                    return new Common.Models.Tasking.Task()
                     {
-                        Id = db.MatterId,
+                        Id = db.TaskId,
                         IsStub = true
                     };
                 }))
                 .ForMember(dst => dst.Contact, opt => opt.ResolveUsing(db =>
                 {
-                    return new ViewModels.Contacts.ContactViewModel()
+                    return new Common.Models.Contacts.Contact()
                     {
                         Id = db.ContactId,
                         IsStub = true
                     };
                 }))
-                .ForMember(dst => dst.Role, opt => opt.MapFrom(src => src.Role))
-                .ForMember(dst => dst.IsSelected, opt => opt.Ignore());
+                .ForMember(dst => dst.AssignmentType, opt => opt.MapFrom(src => src.AssignmentType));
 
-            Mapper.CreateMap<SelectableMatterContactViewModel, DBOs.Matters.MatterContact>()
+            Mapper.CreateMap<Common.Models.Tasking.TaskAssignedContact, DBOs.Tasking.TaskAssignedContact>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
                 .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
@@ -84,17 +121,24 @@
                     return model.DisabledBy.Id;
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.MatterId, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.TaskId, opt => opt.ResolveUsing(model =>
                 {
-                    if (model.Matter == null) return null;
-                    return model.Matter.Id;
+                    if (model.Task != null)
+                        return model.Task.Id;
+                    else
+                        return null;
                 }))
                 .ForMember(dst => dst.ContactId, opt => opt.ResolveUsing(model =>
                 {
-                    if (model.Contact == null) return null;
-                    return model.Contact.Id;
+                    if (model.Contact != null)
+                        return model.Contact.Id;
+                    else
+                        return null;
                 }))
-                .ForMember(dst => dst.Role, opt => opt.MapFrom(src => src.Role));
+                .ForMember(dst => dst.AssignmentType, opt => opt.ResolveUsing(model =>
+                {
+                    return (int)model.AssignmentType;
+                }));
         }
     }
 }

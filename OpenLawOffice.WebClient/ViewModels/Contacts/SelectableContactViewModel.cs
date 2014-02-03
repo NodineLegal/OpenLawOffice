@@ -32,7 +32,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Contacts
     {
         public bool IsSelected { get; set; }
 
-        public void BuildMappings()
+        public new void BuildMappings()
         {
             Mapper.CreateMap<DBOs.Contacts.Contact, SelectableContactViewModel>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))

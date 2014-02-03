@@ -124,6 +124,13 @@
     <Compile Include="DBOs\Security\User.cs" />
     <Compile Include="DBOs\Tagging\TagBase.cs" />
     <Compile Include="DBOs\Tagging\TagCategory.cs" />
+    <Compile Include="DBOs\Tasking\Task.cs" />
+    <Compile Include="DBOs\Tasking\TaskAssignedContact.cs" />
+    <Compile Include="DBOs\Tasking\TaskMatter.cs" />
+    <Compile Include="DBOs\Tasking\TaskResponsibleUser.cs" />
+    <Compile Include="DBOs\Tasking\TaskTag.cs" />
+    <Compile Include="DBOs\Tasking\TaskTime.cs" />
+    <Compile Include="DBOs\Timing\Time.cs" />
     <Compile Include="Host.cs" />
     <Compile Include="Installation\Database.cs" />
     <Compile Include="InvalidObjectException.cs" />

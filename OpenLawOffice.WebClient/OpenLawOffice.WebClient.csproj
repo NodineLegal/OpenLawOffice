@@ -138,6 +138,7 @@
     <Compile Include="ViewModels\Account\LoginModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserCache.cs" />
+    <Compile Include="ViewModels\AssignmentTypeViewModel.cs" />
     <Compile Include="ViewModels\Contacts\ContactViewModel.cs" />
     <Compile Include="ViewModels\Contacts\SelectableContactViewModel.cs" />
     <Compile Include="ViewModels\CoreViewModel.cs" />
@@ -147,7 +148,6 @@
     <Compile Include="ViewModels\Matters\MatterTagViewModel.cs" />
     <Compile Include="ViewModels\Matters\MatterViewModel.cs" />
     <Compile Include="ViewModels\Matters\ResponsibleUserViewModel.cs" />
-    <Compile Include="ViewModels\Matters\SelectableMatterContactViewModel.cs" />
     <Compile Include="ViewModels\PermissionsViewModel.cs" />
     <Compile Include="ViewModels\Security\AreaViewModel.cs" />
     <Compile Include="ViewModels\Security\AreaAclViewModel.cs" />
@@ -156,6 +156,13 @@
     <Compile Include="ViewModels\Security\UserViewModel.cs" />
     <Compile Include="ViewModels\Tagging\TagBaseViewModel.cs" />
     <Compile Include="ViewModels\Tagging\TagCategoryViewModel.cs" />
+    <Compile Include="ViewModels\Tasking\TaskAssignedContactViewModel.cs" />
+    <Compile Include="ViewModels\Tasking\TaskMatterViewModel.cs" />
+    <Compile Include="ViewModels\Tasking\TaskResponsibleUserViewModel.cs" />
+    <Compile Include="ViewModels\Tasking\TaskTagViewModel.cs" />
+    <Compile Include="ViewModels\Tasking\TaskTimeViewModel.cs" />
+    <Compile Include="ViewModels\Tasking\TaskViewModel.cs" />
+    <Compile Include="ViewModels\Timing\TimeViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>

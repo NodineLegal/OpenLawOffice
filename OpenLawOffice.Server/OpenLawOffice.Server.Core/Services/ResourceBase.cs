@@ -29,7 +29,6 @@ namespace OpenLawOffice.Server.Core.Services
             Rest.Requests.Security.User userRequest;
             Core.Security.AuthorizeResult authResult;
             Rest.Requests.Security.SecuredResource securedResourceRequest;
-            Common.Models.Security.ISecuredResource imodel;
             Common.Rest.Responses.ResponseContainer<TResponse> result;
 
             session = new Core.Security.Session()

@@ -1,4 +1,25 @@
-﻿namespace OpenLawOffice.WebClient.ViewModels.Matters
+﻿// -----------------------------------------------------------------------
+// <copyright file="TaskTagViewModel.cs" company="Nodine Legal, LLC">
+// Licensed to Nodine Legal, LLC under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  Nodine Legal, LLC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//  http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+// </copyright>
+// -----------------------------------------------------------------------
+
+namespace OpenLawOffice.WebClient.ViewModels.Tasking
 {
     using System;
     using AutoMapper;
@@ -6,16 +27,13 @@
     using DBOs = OpenLawOffice.Server.Core.DBOs;
 
     [MapMe]
-    public class MatterViewModel : CoreViewModel
+    public class TaskTagViewModel : Tagging.TagBaseViewModel
     {
-        public Guid? Id { get; set; }
-        public MatterViewModel Parent { get; set; }
-        public string Title { get; set; }
-        public string Synopsis { get; set; }
+        public TaskViewModel Task { get; set; }
 
         public void BuildMappings()
         {
-            Mapper.CreateMap<DBOs.Matters.Matter, MatterViewModel>()
+            Mapper.CreateMap<DBOs.Tasking.TaskTag, TaskTagViewModel>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
@@ -46,19 +64,28 @@
                     };
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.Parent, opt => opt.ResolveUsing(db =>
+                .ForMember(dst => dst.Task, opt => opt.ResolveUsing(db =>
                 {
-                    if (!db.ParentId.HasValue) return null;
-                    return new ViewModels.Matters.MatterViewModel()
+                    return new ViewModels.Tasking.TaskViewModel()
                     {
-                        Id = db.ParentId.Value,
+                        Id = db.TaskId,
                         IsStub = true
                     };
                 }))
-                .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
-                .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis));
+                .ForMember(dst => dst.TagCategory, opt => opt.ResolveUsing(db =>
+                {
+                    if (!db.TagCategoryId.HasValue || db.TagCategoryId.Value < 1)
+                        return null;
 
-            Mapper.CreateMap<MatterViewModel, DBOs.Matters.Matter>()
+                    return new ViewModels.Tagging.TagCategoryViewModel()
+                    {
+                        Id = db.TagCategoryId.Value,
+                        IsStub = true
+                    };
+                }))
+                .ForMember(dst => dst.Tag, opt => opt.MapFrom(src => src.Tag));
+
+            Mapper.CreateMap<TaskTagViewModel, DBOs.Tasking.TaskTag>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
                 .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
@@ -80,14 +107,19 @@
                     return model.DisabledBy.Id;
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.ParentId, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.TaskId, opt => opt.ResolveUsing(model =>
                 {
-                    if (model.Parent == null || !model.Parent.Id.HasValue)
-                        return null;
-                    return model.Parent.Id.Value;
+                    if (model.Task == null || !model.Task.Id.HasValue)
+                        throw new Exception("Matter cannot be null");
+                    return model.Task.Id.Value;
                 }))
-                .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
-                .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis));
+                .ForMember(dst => dst.TagCategoryId, opt => opt.ResolveUsing(model =>
+                {
+                    if (model.TagCategory == null)
+                        return null;
+                    return model.TagCategory.Id;
+                }))
+                .ForMember(dst => dst.Tag, opt => opt.MapFrom(src => src.Tag));
         }
     }
 }

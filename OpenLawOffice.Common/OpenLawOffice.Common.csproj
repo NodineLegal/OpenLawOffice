@@ -104,6 +104,14 @@
     <Compile Include="Models\ShowInListAttribute.cs" />
     <Compile Include="Models\Tagging\TagBase.cs" />
     <Compile Include="Models\Tagging\TagCategory.cs" />
+    <Compile Include="Models\Tasking\AssignmentType.cs" />
+    <Compile Include="Models\Tasking\Task.cs" />
+    <Compile Include="Models\Tasking\TaskAssignedContact.cs" />
+    <Compile Include="Models\Tasking\TaskMatter.cs" />
+    <Compile Include="Models\Tasking\TaskResponsibleUser.cs" />
+    <Compile Include="Models\Tasking\TaskTag.cs" />
+    <Compile Include="Models\Tasking\TaskTime.cs" />
+    <Compile Include="Models\Timing\Time.cs" />
     <Compile Include="ObjectMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rest\Requests\IHasGuidId.cs" />

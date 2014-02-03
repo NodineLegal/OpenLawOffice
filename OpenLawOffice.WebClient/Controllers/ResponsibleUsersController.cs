@@ -158,7 +158,7 @@
 
                 return RedirectToAction("ResponsibleUsers", "Matters", new { Id = model.Matter.Id });
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Create(model.Matter.Id.Value);
             }
