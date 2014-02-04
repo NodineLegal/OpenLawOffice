@@ -19,12 +19,47 @@
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Index()
         {
+            return View(GetList());
+        }
+
+        [SecurityFilter(SecurityAreaName = "Contacts.Contact", IsSecuredResource = false,
+            Permission = Common.Models.PermissionType.List)]
+        public ActionResult ListJqGrid()
+        {
+            ViewModels.JqGridObject jqObject;
+            List<ViewModels.Contacts.ContactViewModel> modelList = GetList();
+            List<object> anonList = new List<object>();
+
+            modelList.ForEach(x =>
+            {
+                anonList.Add(new
+                {
+                    Id = x.Id,
+                    DisplayName = x.DisplayName,
+                    City = x.Address1AddressCity,
+                    State = x.Address1AddressStateOrProvince
+                });
+            });
+
+            jqObject = new ViewModels.JqGridObject()
+            {
+                TotalPages = 1,
+                CurrentPage = 1,
+                TotalRecords = modelList.Count,
+                Rows = anonList.ToArray()
+            };
+
+            return Json(jqObject, JsonRequestBehavior.AllowGet);
+        }
+
+        private List<ViewModels.Contacts.ContactViewModel> GetList()
+        {
             List<ViewModels.Contacts.ContactViewModel> modelList = new List<ViewModels.Contacts.ContactViewModel>();
+
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 List<DBOs.Contacts.Contact> list = db.Query<DBOs.Contacts.Contact>(
-                    "SELECT * FROM \"contact\" " +
-                    "WHERE \"utc_disabled\" is null");
+                    "SELECT * FROM \"contact\" WHERE \"utc_disabled\" is null");
 
                 list.ForEach(dbo =>
                 {
@@ -32,7 +67,7 @@
                 });
             }
 
-            return View(modelList);
+            return modelList;
         }
 
         //
