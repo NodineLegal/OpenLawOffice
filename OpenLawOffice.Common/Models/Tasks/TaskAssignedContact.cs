@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="TaskTag.cs" company="Nodine Legal, LLC">
+// <copyright file="TaskAssignedBusinessContact.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,18 +19,21 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.Common.Models.Tasking
+namespace OpenLawOffice.Common.Models.Tasks
 {
     using System;
     using AutoMapper;
 
     /// <summary>
-    /// Relates a tag to a task
+    /// Relates a contact to a task
     /// </summary>
     [MapMe]
-    public class TaskTag : Tagging.TagBase, IHasGuidId
+    public class TaskAssignedContact : Core, IHasGuidId
     {
+        public Guid? Id { get; set; }
         public Task Task { get; set; }
+        public Contacts.Contact Contact { get; set; }
+        public AssignmentType AssignmentType { get; set; }
 
         public override void BuildMappings()
         {

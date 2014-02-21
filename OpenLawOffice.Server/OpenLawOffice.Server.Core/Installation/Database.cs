@@ -21,6 +21,13 @@ namespace OpenLawOffice.Server.Core.Installation
                 conn.CreateTableIfNotExists<DBOs.Matters.ResponsibleUser>();
                 conn.CreateTableIfNotExists<DBOs.Contacts.Contact>();
                 conn.CreateTableIfNotExists<DBOs.Matters.MatterContact>();
+                conn.CreateTableIfNotExists<DBOs.Timing.Time>();
+                conn.CreateTableIfNotExists<DBOs.Tasks.Task>();
+                conn.CreateTableIfNotExists<DBOs.Tasks.TaskAssignedContact>();
+                conn.CreateTableIfNotExists<DBOs.Tasks.TaskMatter>();
+                conn.CreateTableIfNotExists<DBOs.Tasks.TaskResponsibleUser>();
+                conn.CreateTableIfNotExists<DBOs.Tasks.TaskTag>();
+                conn.CreateTableIfNotExists<DBOs.Tasks.TaskTime>();
 
                 DBOs.Security.User dbUser = conn.QuerySingle<DBOs.Security.User>(new { Username = "TestUser" });
                 // == "a" on before client hash
@@ -243,6 +250,23 @@ namespace OpenLawOffice.Server.Core.Installation
                     dbAreaMattersResponsibleUser.Id = (int)conn.GetLastInsertId();
                 }
 
+                DBOs.Security.Area dbAreaMattersMatterContact = conn.QuerySingle<DBOs.Security.Area>(new { Name = "Matters.MatterContact" });
+                if (dbAreaMattersMatterContact == null)
+                {
+                    dbAreaMattersMatterContact = new DBOs.Security.Area()
+                    {
+                        ParentId = dbAreaMatters.Id,
+                        Name = "Matters.MatterContact",
+                        Description = "Contacts for a specific matter",
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.Area>(dbAreaMattersMatterContact);
+                    dbAreaMattersMatterContact.Id = (int)conn.GetLastInsertId();
+                }
+
                 DBOs.Security.Area dbAreaContacts = conn.QuerySingle<DBOs.Security.Area>(new { Name = "Contacts" });
                 if (dbAreaContacts == null)
                 {
@@ -276,21 +300,155 @@ namespace OpenLawOffice.Server.Core.Installation
                     dbAreaContactsContact.Id = (int)conn.GetLastInsertId();
                 }
 
-                DBOs.Security.Area dbAreaMattersMatterContact = conn.QuerySingle<DBOs.Security.Area>(new { Name = "Matters.MatterContact" });
-                if (dbAreaMattersMatterContact == null)
+                DBOs.Security.Area dbAreaTasks = conn.QuerySingle<DBOs.Security.Area>(new { Name = "Tasks" });
+                if (dbAreaTasks == null)
                 {
-                    dbAreaMattersMatterContact = new DBOs.Security.Area()
+                    dbAreaTasks = new DBOs.Security.Area()
                     {
-                        ParentId = dbAreaContacts.Id,
-                        Name = "Matters.MatterContact",
-                        Description = "Contacts for a specific matter",
+                        Name = "Tasks",
+                        Description = "Tasks",
                         CreatedByUserId = dbUser.Id,
                         ModifiedByUserId = dbUser.Id,
                         UtcCreated = DateTime.Now,
                         UtcModified = DateTime.Now
                     };
-                    conn.Insert<DBOs.Security.Area>(dbAreaMattersMatterContact);
-                    dbAreaMattersMatterContact.Id = (int)conn.GetLastInsertId();
+                    conn.Insert<DBOs.Security.Area>(dbAreaTasks);
+                    dbAreaTasks.Id = (int)conn.GetLastInsertId();
+                }
+
+                DBOs.Security.Area dbAreaTasksTask = conn.QuerySingle<DBOs.Security.Area>(new { Name = "Tasks.Task" });
+                if (dbAreaTasksTask == null)
+                {
+                    dbAreaTasksTask = new DBOs.Security.Area()
+                    {
+                        ParentId = dbAreaTasks.Id,
+                        Name = "Tasks.Task",
+                        Description = "System tasks",
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.Area>(dbAreaTasksTask);
+                    dbAreaTasksTask.Id = (int)conn.GetLastInsertId();
+                }
+
+                DBOs.Security.Area dbAreaTasksTaskAssignedContact = conn.QuerySingle<DBOs.Security.Area>(new { Name = "Tasks.TaskAssignedContact" });
+                if (dbAreaTasksTaskAssignedContact == null)
+                {
+                    dbAreaTasksTaskAssignedContact = new DBOs.Security.Area()
+                    {
+                        ParentId = dbAreaTasks.Id,
+                        Name = "Tasks.TaskAssignedContact",
+                        Description = "Contacts assigned to tasks",
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.Area>(dbAreaTasksTaskAssignedContact);
+                    dbAreaTasksTaskAssignedContact.Id = (int)conn.GetLastInsertId();
+                }
+
+                DBOs.Security.Area dbAreaTasksTaskMatter = conn.QuerySingle<DBOs.Security.Area>(new { Name = "Tasks.TaskMatter" });
+                if (dbAreaTasksTaskMatter == null)
+                {
+                    dbAreaTasksTaskMatter = new DBOs.Security.Area()
+                    {
+                        ParentId = dbAreaTasks.Id,
+                        Name = "Tasks.TaskMatter",
+                        Description = "Tasks assigned to matters",
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.Area>(dbAreaTasksTaskMatter);
+                    dbAreaTasksTaskMatter.Id = (int)conn.GetLastInsertId();
+                }
+
+                DBOs.Security.Area dbAreaTasksTaskResponsibleUser = conn.QuerySingle<DBOs.Security.Area>(new { Name = "Tasks.TaskResponsibleUser" });
+                if (dbAreaTasksTaskResponsibleUser == null)
+                {
+                    dbAreaTasksTaskResponsibleUser = new DBOs.Security.Area()
+                    {
+                        ParentId = dbAreaTasks.Id,
+                        Name = "Tasks.TaskResponsibleUser",
+                        Description = "User responsibilities for tasks",
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.Area>(dbAreaTasksTaskResponsibleUser);
+                    dbAreaTasksTaskResponsibleUser.Id = (int)conn.GetLastInsertId();
+                }
+
+                DBOs.Security.Area dbAreaTasksTaskTag = conn.QuerySingle<DBOs.Security.Area>(new { Name = "Tasks.TaskTag" });
+                if (dbAreaTasksTaskTag == null)
+                {
+                    dbAreaTasksTaskTag = new DBOs.Security.Area()
+                    {
+                        ParentId = dbAreaTasks.Id,
+                        Name = "Tasks.TaskTag",
+                        Description = "Task tags",
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.Area>(dbAreaTasksTaskTag);
+                    dbAreaTasksTaskTag.Id = (int)conn.GetLastInsertId();
+                }
+
+                DBOs.Security.Area dbAreaTasksTaskTime = conn.QuerySingle<DBOs.Security.Area>(new { Name = "Tasks.TaskTime" });
+                if (dbAreaTasksTaskTime == null)
+                {
+                    dbAreaTasksTaskTime = new DBOs.Security.Area()
+                    {
+                        ParentId = dbAreaTasks.Id,
+                        Name = "Tasks.TaskTime",
+                        Description = "Time entries for tasks",
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.Area>(dbAreaTasksTaskTime);
+                    dbAreaTasksTaskTime.Id = (int)conn.GetLastInsertId();
+                }
+
+                DBOs.Security.Area dbAreaTiming = conn.QuerySingle<DBOs.Security.Area>(new { Name = "Timing" });
+                if (dbAreaTiming == null)
+                {
+                    dbAreaTiming = new DBOs.Security.Area()
+                    {
+                        Name = "Timing",
+                        Description = "Timing",
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.Area>(dbAreaTiming);
+                    dbAreaTiming.Id = (int)conn.GetLastInsertId();
+                }
+
+                DBOs.Security.Area dbAreaTimingTime = conn.QuerySingle<DBOs.Security.Area>(new { Name = "Timing.Time" });
+                if (dbAreaTimingTime == null)
+                {
+                    dbAreaTimingTime = new DBOs.Security.Area()
+                    {
+                        ParentId = dbAreaTiming.Id,
+                        Name = "Timing.Time",
+                        Description = "System time entries",
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.Area>(dbAreaTimingTime);
+                    dbAreaTimingTime.Id = (int)conn.GetLastInsertId();
                 }
 
                 #endregion
@@ -500,6 +658,25 @@ namespace OpenLawOffice.Server.Core.Installation
                     dbAAclMattersResponsibleUser.Id = (int)conn.GetLastInsertId();
                 }
 
+                // Matters.MatterContact
+                DBOs.Security.AreaAcl dbAAclMattersMatterContact = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaMattersMatterContact.Id, UserId = dbUser.Id });
+                if (dbAAclMattersMatterContact == null)
+                {
+                    dbAAclMattersMatterContact = new DBOs.Security.AreaAcl()
+                    {
+                        SecurityAreaId = dbAreaMattersMatterContact.Id,
+                        UserId = dbUser.Id,
+                        AllowFlags = (int)(Common.Models.PermissionType.AllAdmin | Common.Models.PermissionType.AllWrite | Common.Models.PermissionType.AllRead),
+                        DenyFlags = 0,
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.AreaAcl>(dbAAclMattersMatterContact);
+                    dbAAclMattersMatterContact.Id = (int)conn.GetLastInsertId();
+                }
+
                 // Contacts
                 DBOs.Security.AreaAcl dbAAclContacts = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaContacts.Id, UserId = dbUser.Id });
                 if (dbAAclContacts == null)
@@ -538,13 +715,13 @@ namespace OpenLawOffice.Server.Core.Installation
                     dbAAclContactsContact.Id = (int)conn.GetLastInsertId();
                 }
 
-                // Matters.MatterContact
-                DBOs.Security.AreaAcl dbAAclMattersMatterContact = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaMattersMatterContact.Id, UserId = dbUser.Id });
-                if (dbAAclMattersMatterContact == null)
+                // Tasks
+                DBOs.Security.AreaAcl dbAAclTasks = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaTasks.Id, UserId = dbUser.Id });
+                if (dbAAclTasks == null)
                 {
-                    dbAAclMattersMatterContact = new DBOs.Security.AreaAcl()
+                    dbAAclTasks = new DBOs.Security.AreaAcl()
                     {
-                        SecurityAreaId = dbAreaMattersMatterContact.Id,
+                        SecurityAreaId = dbAreaTasks.Id,
                         UserId = dbUser.Id,
                         AllowFlags = (int)(Common.Models.PermissionType.AllAdmin | Common.Models.PermissionType.AllWrite | Common.Models.PermissionType.AllRead),
                         DenyFlags = 0,
@@ -553,8 +730,160 @@ namespace OpenLawOffice.Server.Core.Installation
                         UtcCreated = DateTime.Now,
                         UtcModified = DateTime.Now
                     };
-                    conn.Insert<DBOs.Security.AreaAcl>(dbAAclMattersMatterContact);
-                    dbAAclMattersMatterContact.Id = (int)conn.GetLastInsertId();
+                    conn.Insert<DBOs.Security.AreaAcl>(dbAAclTasks);
+                    dbAAclTasks.Id = (int)conn.GetLastInsertId();
+                }
+
+                // Tasks.Task
+                DBOs.Security.AreaAcl dbAAclTasksTask = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaTasksTask.Id, UserId = dbUser.Id });
+                if (dbAAclTasksTask == null)
+                {
+                    dbAAclTasksTask = new DBOs.Security.AreaAcl()
+                    {
+                        SecurityAreaId = dbAreaTasksTask.Id,
+                        UserId = dbUser.Id,
+                        AllowFlags = (int)(Common.Models.PermissionType.AllAdmin | Common.Models.PermissionType.AllWrite | Common.Models.PermissionType.AllRead),
+                        DenyFlags = 0,
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.AreaAcl>(dbAAclTasksTask);
+                    dbAAclTasksTask.Id = (int)conn.GetLastInsertId();
+                }
+
+                // Tasks.TaskAssignedContact
+                DBOs.Security.AreaAcl dbAAclTasksTaskAssignedContact = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaTasksTask.Id, UserId = dbUser.Id });
+                if (dbAAclTasksTask == null)
+                {
+                    dbAAclTasksTask = new DBOs.Security.AreaAcl()
+                    {
+                        SecurityAreaId = dbAreaTasksTask.Id,
+                        UserId = dbUser.Id,
+                        AllowFlags = (int)(Common.Models.PermissionType.AllAdmin | Common.Models.PermissionType.AllWrite | Common.Models.PermissionType.AllRead),
+                        DenyFlags = 0,
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.AreaAcl>(dbAAclTasksTask);
+                    dbAAclTasksTask.Id = (int)conn.GetLastInsertId();
+                }
+
+                // Tasks.TaskMatter
+                DBOs.Security.AreaAcl dbAAclTasksTaskMatter = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaTasksTaskMatter.Id, UserId = dbUser.Id });
+                if (dbAAclTasksTaskMatter == null)
+                {
+                    dbAAclTasksTaskMatter = new DBOs.Security.AreaAcl()
+                    {
+                        SecurityAreaId = dbAreaTasksTaskMatter.Id,
+                        UserId = dbUser.Id,
+                        AllowFlags = (int)(Common.Models.PermissionType.AllAdmin | Common.Models.PermissionType.AllWrite | Common.Models.PermissionType.AllRead),
+                        DenyFlags = 0,
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.AreaAcl>(dbAAclTasksTaskMatter);
+                    dbAAclTasksTaskMatter.Id = (int)conn.GetLastInsertId();
+                }
+
+                // Tasks.TaskResponsibleUser
+                DBOs.Security.AreaAcl dbAAclTasksTaskResponsibleUser = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaTasksTaskResponsibleUser.Id, UserId = dbUser.Id });
+                if (dbAAclTasksTask == null)
+                {
+                    dbAAclTasksTaskResponsibleUser = new DBOs.Security.AreaAcl()
+                    {
+                        SecurityAreaId = dbAreaTasksTaskResponsibleUser.Id,
+                        UserId = dbUser.Id,
+                        AllowFlags = (int)(Common.Models.PermissionType.AllAdmin | Common.Models.PermissionType.AllWrite | Common.Models.PermissionType.AllRead),
+                        DenyFlags = 0,
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.AreaAcl>(dbAAclTasksTaskResponsibleUser);
+                    dbAAclTasksTaskResponsibleUser.Id = (int)conn.GetLastInsertId();
+                }
+
+                // Tasks.TaskTag
+                DBOs.Security.AreaAcl dbAAclTasksTaskTag = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaTasksTaskTag.Id, UserId = dbUser.Id });
+                if (dbAAclTasksTaskTag == null)
+                {
+                    dbAAclTasksTaskTag = new DBOs.Security.AreaAcl()
+                    {
+                        SecurityAreaId = dbAreaTasksTaskTag.Id,
+                        UserId = dbUser.Id,
+                        AllowFlags = (int)(Common.Models.PermissionType.AllAdmin | Common.Models.PermissionType.AllWrite | Common.Models.PermissionType.AllRead),
+                        DenyFlags = 0,
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.AreaAcl>(dbAAclTasksTaskTag);
+                    dbAAclTasksTaskTag.Id = (int)conn.GetLastInsertId();
+                }
+
+                // Tasks.TaskTime
+                DBOs.Security.AreaAcl dbAAclTasksTaskTime = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaTasksTaskTime.Id, UserId = dbUser.Id });
+                if (dbAAclTasksTaskTime == null)
+                {
+                    dbAAclTasksTaskTime = new DBOs.Security.AreaAcl()
+                    {
+                        SecurityAreaId = dbAreaTasksTaskTime.Id,
+                        UserId = dbUser.Id,
+                        AllowFlags = (int)(Common.Models.PermissionType.AllAdmin | Common.Models.PermissionType.AllWrite | Common.Models.PermissionType.AllRead),
+                        DenyFlags = 0,
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.AreaAcl>(dbAAclTasksTaskTime);
+                    dbAAclTasksTaskTime.Id = (int)conn.GetLastInsertId();
+                }
+
+                // Timing
+                DBOs.Security.AreaAcl dbAAclTiming = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaTiming.Id, UserId = dbUser.Id });
+                if (dbAAclTiming == null)
+                {
+                    dbAAclTiming = new DBOs.Security.AreaAcl()
+                    {
+                        SecurityAreaId = dbAreaTiming.Id,
+                        UserId = dbUser.Id,
+                        AllowFlags = (int)(Common.Models.PermissionType.AllAdmin | Common.Models.PermissionType.AllWrite | Common.Models.PermissionType.AllRead),
+                        DenyFlags = 0,
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.AreaAcl>(dbAAclTiming);
+                    dbAAclTiming.Id = (int)conn.GetLastInsertId();
+                }
+
+                // Timing.Time
+                DBOs.Security.AreaAcl dbAAclTimingTime = conn.QuerySingle<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaTimingTime.Id, UserId = dbUser.Id });
+                if (dbAAclTimingTime == null)
+                {
+                    dbAAclTimingTime = new DBOs.Security.AreaAcl()
+                    {
+                        SecurityAreaId = dbAreaTimingTime.Id,
+                        UserId = dbUser.Id,
+                        AllowFlags = (int)(Common.Models.PermissionType.AllAdmin | Common.Models.PermissionType.AllWrite | Common.Models.PermissionType.AllRead),
+                        DenyFlags = 0,
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now
+                    };
+                    conn.Insert<DBOs.Security.AreaAcl>(dbAAclTimingTime);
+                    dbAAclTimingTime.Id = (int)conn.GetLastInsertId();
                 }
 
                 #endregion
@@ -734,6 +1063,8 @@ namespace OpenLawOffice.Server.Core.Installation
                         UserId = dbUser.Id,
                         Responsibility = "Attorney"
                     };
+                    conn.Insert<DBOs.Matters.ResponsibleUser>(respUser1);
+                    respUser1.Id = (int)conn.GetLastInsertId();
                 }
 
                 DBOs.Matters.MatterContact matterContact1 = conn.QuerySingle<DBOs.Matters.MatterContact>(new { MatterId = matter1.Id, ContactId = dbContact.Id });
@@ -746,8 +1077,174 @@ namespace OpenLawOffice.Server.Core.Installation
                         UtcCreated = DateTime.Now,
                         UtcModified = DateTime.Now,
                         MatterId = matter1.Id,
-                        ContactId = dbContact.Id
+                        ContactId = dbContact.Id,
+                        Role = "Head Attorney"
                     };
+                    conn.Insert<DBOs.Matters.MatterContact>(matterContact1);
+                    matterContact1.Id = (int)conn.GetLastInsertId();
+                }
+
+                #endregion
+
+                #region Timing
+
+                DBOs.Timing.Time time1 = conn.QuerySingle<DBOs.Timing.Time>(new { Id = Guid.Parse("f1220521-20d6-4544-9438-d664d8719935") });
+                if (time1 == null)
+                {
+                    time1 = new DBOs.Timing.Time()
+                    {
+                        Id = Guid.NewGuid(),
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now,
+                        Start = DateTime.UtcNow.AddMinutes(-12),
+                        Stop = DateTime.UtcNow,
+                        WorkerContactId = dbContact.Id
+                    };
+                    conn.Insert<DBOs.Timing.Time>(time1);
+                }
+
+                #endregion
+
+                #region Tasks
+
+                DBOs.Tasks.Task task1 = conn.QuerySingle<DBOs.Tasks.Task>(new { Title = "Test Task 1" });
+                if (task1 == null)
+                {
+                    task1 = new DBOs.Tasks.Task()
+                    {
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now,
+                        Title = "Test Task 1",
+                        Description = "Test Task 1 description",
+                        ProjectedStart = DateTime.UtcNow,
+                        DueDate = DateTime.UtcNow.AddDays(4),
+                        ProjectedEnd = DateTime.UtcNow.AddDays(3),
+                        ActualEnd = null,
+                        ParentId = null,
+                        IsGroupingTask = false,
+                        SequentialPredecessorId = null
+                    };
+                    conn.Insert<DBOs.Tasks.Task>(task1);
+                    task1.Id = conn.GetLastInsertId();
+                }
+
+                DBOs.Tasks.TaskAssignedContact taskAssignedContact1 = conn.QuerySingle<DBOs.Tasks.TaskAssignedContact>(new { TaskId = task1.Id, ContactId = dbContact.Id });
+                if (taskAssignedContact1 == null)
+                {
+                    taskAssignedContact1 = new DBOs.Tasks.TaskAssignedContact()
+                    {
+                        Id = Guid.NewGuid(),
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now,
+                        TaskId = task1.Id,
+                        ContactId = dbContact.Id,
+                        AssignmentType = (int)Common.Models.Tasks.AssignmentType.Direct
+                    };
+                    conn.Insert<DBOs.Tasks.TaskAssignedContact>(taskAssignedContact1);
+                }
+
+                DBOs.Tasks.TaskMatter taskMatter1 = conn.QuerySingle<DBOs.Tasks.TaskMatter>(new { TaskId = task1.Id, MatterId = matter1.Id });
+                if (taskMatter1 == null)
+                {
+                    taskMatter1 = new DBOs.Tasks.TaskMatter()
+                    {
+                        Id = Guid.NewGuid(),
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now,
+                        TaskId = task1.Id,
+                        MatterId = matter1.Id
+                    };
+                    conn.Insert<DBOs.Tasks.TaskMatter>(taskMatter1);
+                }
+
+                DBOs.Tasks.TaskResponsibleUser taskRespUser1 = conn.QuerySingle<DBOs.Tasks.TaskResponsibleUser>(new { TaskId = task1.Id, UserId = dbUser.Id });
+                if (taskRespUser1 == null)
+                {
+                    taskRespUser1 = new DBOs.Tasks.TaskResponsibleUser()
+                    {
+                        Id = Guid.NewGuid(),
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now,
+                        TaskId = task1.Id,
+                        UserId = dbUser.Id,
+                        AssignmentType = (int)Common.Models.Tasks.AssignmentType.Direct
+                    };
+                    conn.Insert<DBOs.Tasks.TaskResponsibleUser>(taskRespUser1);
+                }
+
+                DBOs.Tagging.TagCategory dbTagCategory3 = conn.QuerySingle<DBOs.Tagging.TagCategory>(new { Name = "Priority" });
+                if (dbTagCategory3 == null)
+                {
+                    dbTagCategory3 = new DBOs.Tagging.TagCategory()
+                    {
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now,
+                        Name = "Priority"
+                    };
+                    conn.Insert<DBOs.Tagging.TagCategory>(dbTagCategory3);
+                    dbTagCategory3.Id = (int)conn.GetLastInsertId();
+                }
+
+                DBOs.Tasks.TaskTag taskTag1 = conn.QuerySingle<DBOs.Tasks.TaskTag>(new { Tag = "Pending" });
+                if (taskTag1 == null)
+                {
+                    taskTag1 = new DBOs.Tasks.TaskTag()
+                    {
+                        Id = Guid.NewGuid(),
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now,
+                        TaskId = task1.Id,
+                        TagCategoryId = 1,
+                        Tag = "Pending"
+                    };
+                    conn.Insert<DBOs.Tasks.TaskTag>(taskTag1);
+                }
+
+                DBOs.Tasks.TaskTag taskTag2 = conn.QuerySingle<DBOs.Tasks.TaskTag>(new { Tag = "High" });
+                if (taskTag2 == null)
+                {
+                    taskTag2 = new DBOs.Tasks.TaskTag()
+                    {
+                        Id = Guid.NewGuid(),
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now,
+                        TaskId = task1.Id,
+                        TagCategoryId = 3,
+                        Tag = "High"
+                    };
+                    conn.Insert<DBOs.Tasks.TaskTag>(taskTag2);
+                }
+
+                DBOs.Tasks.TaskTime taskTime1 = conn.QuerySingle<DBOs.Tasks.TaskTime>(new { TaskId = task1.Id, TimeId = time1.Id });
+                if (taskTime1 == null)
+                {
+                    taskTime1 = new DBOs.Tasks.TaskTime()
+                    {
+                        Id = Guid.NewGuid(),
+                        CreatedByUserId = dbUser.Id,
+                        ModifiedByUserId = dbUser.Id,
+                        UtcCreated = DateTime.Now,
+                        UtcModified = DateTime.Now,
+                        TaskId = task1.Id,
+                        TimeId = time1.Id
+                    };
+                    conn.Insert<DBOs.Tasks.TaskTime>(taskTime1);
                 }
 
                 #endregion

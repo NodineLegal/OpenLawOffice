@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="TaskMatter.cs" company="Nodine Legal, LLC">
+// <copyright file="Task.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,7 +19,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.Server.Core.DBOs.Tasking
+namespace OpenLawOffice.Server.Core.DBOs.Tasks
 {
     using System;
     using AutoMapper;
@@ -28,24 +28,31 @@ namespace OpenLawOffice.Server.Core.DBOs.Tasking
     using ServiceStack.DesignPatterns.Model;
 
     /// <summary>
-    /// Relates a task to a matter.
+    /// Represents a system task
     /// </summary>
-    public class TaskMatter : Core, IHasGuidId
+    [Common.Models.MapMe]
+    public class Task : Core, IHasLongId
     {
-        [Required]
-        public Guid Id { get; set; }
+        [AutoIncrement]
+        public long Id { get; set; }
 
-        [Required]
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public DateTime? ProjectedStart { get; set; }
+        public DateTime? DueDate { get; set; }
+        public DateTime? ProjectedEnd { get; set; }
+        public DateTime? ActualEnd { get; set; }
+
         [References(typeof(Task))]
-        public long TaskId { get; set; }
+        public long? ParentId { get; set; }
+        public bool IsGroupingTask { get; set; }
 
-        [Required]
-        [References(typeof(Matters.Matter))]
-        public Guid MatterId { get; set; }
+        [References(typeof(Task))]
+        public long? SequentialPredecessorId { get; set; }
 
         public void BuildMappings()
         {
-            Mapper.CreateMap<DBOs.Tasking.TaskMatter, Common.Models.Tasking.TaskMatter>()
+            Mapper.CreateMap<DBOs.Tasks.Task, Common.Models.Tasks.Task>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
@@ -76,24 +83,37 @@ namespace OpenLawOffice.Server.Core.DBOs.Tasking
                     };
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.Task, opt => opt.ResolveUsing(db =>
+                .ForMember(dst => dst.Parent, opt => opt.ResolveUsing(db =>
                 {
-                    return new Common.Models.Tasking.Task()
-                    {
-                        Id = db.TaskId,
-                        IsStub = true
-                    };
+                    if (db.ParentId.HasValue)
+                        return new Common.Models.Tasks.Task()
+                        {
+                            Id = db.ParentId.Value,
+                            IsStub = true
+                        };
+                    else
+                        return null;
                 }))
-                .ForMember(dst => dst.Matter, opt => opt.ResolveUsing(db =>
+                .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
+                .ForMember(dst => dst.Description, opt => opt.MapFrom(src => src.Description))
+                .ForMember(dst => dst.ProjectedStart, opt => opt.MapFrom(src => src.ProjectedStart))
+                .ForMember(dst => dst.DueDate, opt => opt.MapFrom(src => src.DueDate))
+                .ForMember(dst => dst.ProjectedEnd, opt => opt.MapFrom(src => src.ProjectedEnd))
+                .ForMember(dst => dst.ActualEnd, opt => opt.MapFrom(src => src.ActualEnd))
+                .ForMember(dst => dst.IsGroupingTask, opt => opt.MapFrom(src => src.IsGroupingTask))
+                .ForMember(dst => dst.SequentialPredecessor, opt => opt.ResolveUsing(db =>
                 {
-                    return new Common.Models.Matters.Matter()
-                    {
-                        Id = db.MatterId,
-                        IsStub = true
-                    };
+                    if (db.SequentialPredecessorId.HasValue)
+                        return new Common.Models.Tasks.Task()
+                        {
+                            Id = db.SequentialPredecessorId.Value,
+                            IsStub = true
+                        };
+                    else
+                        return null;
                 }));
 
-            Mapper.CreateMap<Common.Models.Tasking.TaskMatter, DBOs.Tasking.TaskMatter>()
+            Mapper.CreateMap<Common.Models.Tasks.Task, DBOs.Tasks.Task>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
                 .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
@@ -115,17 +135,24 @@ namespace OpenLawOffice.Server.Core.DBOs.Tasking
                     return model.DisabledBy.Id;
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.TaskId, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.ParentId, opt => opt.ResolveUsing(model =>
                 {
-                    if (model.Task != null)
-                        return model.Task.Id;
+                    if (model.Parent != null)
+                        return model.Parent.Id;
                     else
                         return null;
                 }))
-                .ForMember(dst => dst.MatterId, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
+                .ForMember(dst => dst.Description, opt => opt.MapFrom(src => src.Description))
+                .ForMember(dst => dst.ProjectedStart, opt => opt.MapFrom(src => src.ProjectedStart))
+                .ForMember(dst => dst.DueDate, opt => opt.MapFrom(src => src.DueDate))
+                .ForMember(dst => dst.ProjectedEnd, opt => opt.MapFrom(src => src.ProjectedEnd))
+                .ForMember(dst => dst.ActualEnd, opt => opt.MapFrom(src => src.ActualEnd))
+                .ForMember(dst => dst.IsGroupingTask, opt => opt.MapFrom(src => src.IsGroupingTask))
+                .ForMember(dst => dst.SequentialPredecessorId, opt => opt.ResolveUsing(model =>
                 {
-                    if (model.Matter != null)
-                        return model.Matter.Id;
+                    if (model.SequentialPredecessor != null)
+                        return model.SequentialPredecessor.Id;
                     else
                         return null;
                 }));

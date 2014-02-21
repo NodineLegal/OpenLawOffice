@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="TaskTime.cs" company="Nodine Legal, LLC">
+// <copyright file="TaskResponsibleUser.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,7 +19,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.Server.Core.DBOs.Tasking
+namespace OpenLawOffice.Server.Core.DBOs.Tasks
 {
     using System;
     using AutoMapper;
@@ -28,9 +28,10 @@ namespace OpenLawOffice.Server.Core.DBOs.Tasking
     using ServiceStack.DesignPatterns.Model;
 
     /// <summary>
-    /// Relates a time entry to a task
+    /// Relates a user to a task
     /// </summary>
-    public class TaskTime : Core, IHasGuidId
+    [Common.Models.MapMe]
+    public class TaskResponsibleUser : Core, IHasGuidId
     {
         [Required]
         public Guid Id { get; set; }
@@ -40,12 +41,16 @@ namespace OpenLawOffice.Server.Core.DBOs.Tasking
         public long TaskId { get; set; }
 
         [Required]
-        [References(typeof(Timing.Time))]
-        public Guid TimeId { get; set; }
+        [References(typeof(Security.User))]
+        public int UserId { get; set; }
+
+        [Required]
+        [Default(1)]
+        public int AssignmentType { get; set; }
 
         public void BuildMappings()
         {
-            Mapper.CreateMap<DBOs.Tasking.TaskTime, Common.Models.Tasking.TaskTime>()
+            Mapper.CreateMap<DBOs.Tasks.TaskResponsibleUser, Common.Models.Tasks.TaskResponsibleUser>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
@@ -78,22 +83,23 @@ namespace OpenLawOffice.Server.Core.DBOs.Tasking
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Task, opt => opt.ResolveUsing(db =>
                 {
-                    return new Common.Models.Tasking.Task()
+                    return new Common.Models.Tasks.Task()
                     {
                         Id = db.TaskId,
                         IsStub = true
                     };
                 }))
-                .ForMember(dst => dst.Time, opt => opt.ResolveUsing(db =>
+                .ForMember(dst => dst.User, opt => opt.ResolveUsing(db =>
                 {
-                    return new Common.Models.Timing.Time()
+                    return new Common.Models.Security.User()
                     {
-                        Id = db.TimeId,
+                        Id = db.UserId,
                         IsStub = true
                     };
-                }));
+                }))
+                .ForMember(dst => dst.AssignmentType, opt => opt.MapFrom(src => src.AssignmentType));
 
-            Mapper.CreateMap<Common.Models.Tasking.TaskTime, DBOs.Tasking.TaskTime>()
+            Mapper.CreateMap<Common.Models.Tasks.TaskResponsibleUser, DBOs.Tasks.TaskResponsibleUser>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
                 .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
@@ -122,12 +128,16 @@ namespace OpenLawOffice.Server.Core.DBOs.Tasking
                     else
                         return null;
                 }))
-                .ForMember(dst => dst.TimeId, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.UserId, opt => opt.ResolveUsing(model =>
                 {
-                    if (model.Time != null)
-                        return model.Time.Id;
+                    if (model.User != null)
+                        return model.User.Id;
                     else
                         return null;
+                }))
+                .ForMember(dst => dst.AssignmentType, opt => opt.ResolveUsing(model =>
+                {
+                    return (int)model.AssignmentType;
                 }));
         }
     }

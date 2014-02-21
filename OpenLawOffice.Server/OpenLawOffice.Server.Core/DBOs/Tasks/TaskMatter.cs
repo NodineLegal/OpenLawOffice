@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="TaskMatterViewModel.cs" company="Nodine Legal, LLC">
+// <copyright file="TaskMatter.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,30 +19,40 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.WebClient.ViewModels.Tasking
+namespace OpenLawOffice.Server.Core.DBOs.Tasks
 {
     using System;
     using AutoMapper;
-    using OpenLawOffice.Common.Models;
-    using DBOs = OpenLawOffice.Server.Core.DBOs;
+    using ServiceStack.DataAnnotations;
+    using System.ComponentModel.DataAnnotations;
+    using ServiceStack.DesignPatterns.Model;
 
-    [MapMe]
-    public class TaskMatterViewModel : CoreViewModel
+    /// <summary>
+    /// Relates a task to a matter.
+    /// </summary>
+    public class TaskMatter : Core, IHasGuidId
     {
-        public Guid? Id { get; set; }
-        public TaskViewModel Task { get; set; }
-        public Matters.MatterViewModel Matter { get; set; }
+        [Required]
+        public Guid Id { get; set; }
+
+        [Required]
+        [References(typeof(Task))]
+        public long TaskId { get; set; }
+
+        [Required]
+        [References(typeof(Matters.Matter))]
+        public Guid MatterId { get; set; }
 
         public void BuildMappings()
         {
-            Mapper.CreateMap<DBOs.Tasking.TaskMatter, TaskMatterViewModel>()
+            Mapper.CreateMap<DBOs.Tasks.TaskMatter, Common.Models.Tasks.TaskMatter>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
                 .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
                 .ForMember(dst => dst.CreatedBy, opt => opt.ResolveUsing(db =>
                 {
-                    return new ViewModels.Security.UserViewModel()
+                    return new Common.Models.Security.User()
                     {
                         Id = db.CreatedByUserId,
                         IsStub = true
@@ -50,7 +60,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasking
                 }))
                 .ForMember(dst => dst.ModifiedBy, opt => opt.ResolveUsing(db =>
                 {
-                    return new ViewModels.Security.UserViewModel()
+                    return new Common.Models.Security.User()
                     {
                         Id = db.ModifiedByUserId,
                         IsStub = true
@@ -59,7 +69,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasking
                 .ForMember(dst => dst.DisabledBy, opt => opt.ResolveUsing(db =>
                 {
                     if (!db.DisabledByUserId.HasValue) return null;
-                    return new ViewModels.Security.UserViewModel()
+                    return new Common.Models.Security.User()
                     {
                         Id = db.DisabledByUserId.Value,
                         IsStub = true
@@ -68,7 +78,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasking
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Task, opt => opt.ResolveUsing(db =>
                 {
-                    return new ViewModels.Tasking.TaskViewModel()
+                    return new Common.Models.Tasks.Task()
                     {
                         Id = db.TaskId,
                         IsStub = true
@@ -76,14 +86,14 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasking
                 }))
                 .ForMember(dst => dst.Matter, opt => opt.ResolveUsing(db =>
                 {
-                    return new ViewModels.Matters.MatterViewModel()
+                    return new Common.Models.Matters.Matter()
                     {
                         Id = db.MatterId,
                         IsStub = true
                     };
                 }));
 
-            Mapper.CreateMap<TaskMatterViewModel, DBOs.Tasking.TaskMatter>()
+            Mapper.CreateMap<Common.Models.Tasks.TaskMatter, DBOs.Tasks.TaskMatter>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
                 .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))

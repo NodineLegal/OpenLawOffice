@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="TaskResponsibleUser.cs" company="Nodine Legal, LLC">
+// <copyright file="TaskTag.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,7 +19,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.Server.Core.DBOs.Tasking
+namespace OpenLawOffice.Server.Core.DBOs.Tasks
 {
     using System;
     using AutoMapper;
@@ -28,10 +28,10 @@ namespace OpenLawOffice.Server.Core.DBOs.Tasking
     using ServiceStack.DesignPatterns.Model;
 
     /// <summary>
-    /// Relates a user to a task
+    /// Relates a tag to a task
     /// </summary>
     [Common.Models.MapMe]
-    public class TaskResponsibleUser : Core, IHasGuidId
+    public class TaskTag : Tagging.TagBase, IHasGuidId
     {
         [Required]
         public Guid Id { get; set; }
@@ -40,17 +40,9 @@ namespace OpenLawOffice.Server.Core.DBOs.Tasking
         [References(typeof(Task))]
         public long TaskId { get; set; }
 
-        [Required]
-        [References(typeof(Security.User))]
-        public int UserId { get; set; }
-
-        [Required]
-        [Default(1)]
-        public int AssignmentType { get; set; }
-
         public void BuildMappings()
         {
-            Mapper.CreateMap<DBOs.Tasking.TaskResponsibleUser, Common.Models.Tasking.TaskResponsibleUser>()
+            Mapper.CreateMap<DBOs.Tasks.TaskTag, Common.Models.Tasks.TaskTag>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
@@ -83,23 +75,26 @@ namespace OpenLawOffice.Server.Core.DBOs.Tasking
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Task, opt => opt.ResolveUsing(db =>
                 {
-                    return new Common.Models.Tasking.Task()
+                    return new Common.Models.Tasks.Task()
                     {
                         Id = db.TaskId,
                         IsStub = true
                     };
                 }))
-                .ForMember(dst => dst.User, opt => opt.ResolveUsing(db =>
+                .ForMember(dst => dst.TagCategory, opt => opt.ResolveUsing(db =>
                 {
-                    return new Common.Models.Security.User()
+                    if (!db.TagCategoryId.HasValue || db.TagCategoryId.Value < 1)
+                        return null;
+
+                    return new Common.Models.Tagging.TagCategory()
                     {
-                        Id = db.UserId,
+                        Id = db.TagCategoryId.Value,
                         IsStub = true
                     };
                 }))
-                .ForMember(dst => dst.AssignmentType, opt => opt.MapFrom(src => src.AssignmentType));
+                .ForMember(dst => dst.Tag, opt => opt.MapFrom(src => src.Tag));
 
-            Mapper.CreateMap<Common.Models.Tasking.TaskResponsibleUser, DBOs.Tasking.TaskResponsibleUser>()
+            Mapper.CreateMap<Common.Models.Tasks.TaskTag, DBOs.Tasks.TaskTag>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
                 .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
@@ -123,22 +118,17 @@ namespace OpenLawOffice.Server.Core.DBOs.Tasking
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.TaskId, opt => opt.ResolveUsing(model =>
                 {
-                    if (model.Task != null)
-                        return model.Task.Id;
-                    else
-                        return null;
+                    if (model.Task == null || !model.Task.Id.HasValue)
+                        throw new Exception("Task cannot be null");
+                    return model.Task.Id.Value;
                 }))
-                .ForMember(dst => dst.UserId, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.TagCategoryId, opt => opt.ResolveUsing(model =>
                 {
-                    if (model.User != null)
-                        return model.User.Id;
-                    else
+                    if (model.TagCategory == null)
                         return null;
+                    return model.TagCategory.Id;
                 }))
-                .ForMember(dst => dst.AssignmentType, opt => opt.ResolveUsing(model =>
-                {
-                    return (int)model.AssignmentType;
-                }));
+                .ForMember(dst => dst.Tag, opt => opt.MapFrom(src => src.Tag));
         }
     }
 }

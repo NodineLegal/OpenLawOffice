@@ -48,10 +48,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\OpenLawOffice.Server\packages\Npgsql.2.0.14.3\lib\net40\Npgsql.dll</HintPath>
     </Reference>
-    <Reference Include="policy.2.0.Npgsql, Version=0.0.0.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\policy.2.0.Npgsql.dll</HintPath>
-    </Reference>
     <Reference Include="ServiceStack, Version=3.9.70.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\ServiceStack.dll</HintPath>
@@ -131,6 +127,7 @@
     <Compile Include="Controllers\SecurityFilterAttribute.cs" />
     <Compile Include="Controllers\SecurityAreasController.cs" />
     <Compile Include="Controllers\TagCategoriesController.cs" />
+    <Compile Include="Controllers\TasksController.cs" />
     <Compile Include="Controllers\TimeController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Global.asax.cs">
@@ -157,12 +154,12 @@
     <Compile Include="ViewModels\Security\UserViewModel.cs" />
     <Compile Include="ViewModels\Tagging\TagBaseViewModel.cs" />
     <Compile Include="ViewModels\Tagging\TagCategoryViewModel.cs" />
-    <Compile Include="ViewModels\Tasking\TaskAssignedContactViewModel.cs" />
-    <Compile Include="ViewModels\Tasking\TaskMatterViewModel.cs" />
-    <Compile Include="ViewModels\Tasking\TaskResponsibleUserViewModel.cs" />
-    <Compile Include="ViewModels\Tasking\TaskTagViewModel.cs" />
-    <Compile Include="ViewModels\Tasking\TaskTimeViewModel.cs" />
-    <Compile Include="ViewModels\Tasking\TaskViewModel.cs" />
+    <Compile Include="ViewModels\Tasks\TaskAssignedContactViewModel.cs" />
+    <Compile Include="ViewModels\Tasks\TaskMatterViewModel.cs" />
+    <Compile Include="ViewModels\Tasks\TaskResponsibleUserViewModel.cs" />
+    <Compile Include="ViewModels\Tasks\TaskTagViewModel.cs" />
+    <Compile Include="ViewModels\Tasks\TaskTimeViewModel.cs" />
+    <Compile Include="ViewModels\Tasks\TaskViewModel.cs" />
     <Compile Include="ViewModels\Timing\TimeViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
   </ItemGroup>
@@ -187,6 +184,7 @@
     <Content Include="Views\Matters\Index.aspx" />
     <Content Include="Views\Matters\ResponsibleUsers.aspx" />
     <Content Include="Views\Matters\Tags.aspx" />
+    <Content Include="Views\Matters\Tasks.aspx" />
     <Content Include="Views\MatterTags\Create.aspx" />
     <Content Include="Views\MatterTags\Delete.aspx" />
     <Content Include="Views\MatterTags\Details.aspx" />
@@ -206,6 +204,8 @@
     <Content Include="Views\Shared\EditorTemplates\PermissionViewModel.ascx" />
     <Content Include="Views\Shared\InsufficientRights.aspx" />
     <Content Include="Views\Shared\InvalidRequest.aspx" />
+    <Content Include="Views\Tasks\Details.aspx" />
+    <Content Include="Views\Tasks\Edit.aspx" />
     <Content Include="Views\Time\Detail.aspx" />
     <Content Include="Views\Time\Edit.aspx" />
     <Content Include="Views\Users\Create.aspx" />
@@ -228,7 +228,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Procedures\" />
     <Folder Include="Scripts\" />
   </ItemGroup>
   <ItemGroup>

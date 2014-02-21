@@ -80,7 +80,7 @@
                                 colModel: [
                                     { name: 'Id', width: 1, hidden: true, key: true },
                                     { name: 'Title', width: 250 },
-                                    { name: 'Synopsis', hidden: true }
+                                    { name: 'Synopsis', width: 250 }
                                 ],
                                 pager: '#pager',
                                 gridview: true,

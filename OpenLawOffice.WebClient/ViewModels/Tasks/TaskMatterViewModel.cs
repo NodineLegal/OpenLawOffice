@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="TaskTagViewModel.cs" company="Nodine Legal, LLC">
+// <copyright file="TaskMatterViewModel.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,7 +19,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.WebClient.ViewModels.Tasking
+namespace OpenLawOffice.WebClient.ViewModels.Tasks
 {
     using System;
     using AutoMapper;
@@ -27,13 +27,15 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasking
     using DBOs = OpenLawOffice.Server.Core.DBOs;
 
     [MapMe]
-    public class TaskTagViewModel : Tagging.TagBaseViewModel
+    public class TaskMatterViewModel : CoreViewModel
     {
+        public Guid? Id { get; set; }
         public TaskViewModel Task { get; set; }
+        public Matters.MatterViewModel Matter { get; set; }
 
         public void BuildMappings()
         {
-            Mapper.CreateMap<DBOs.Tasking.TaskTag, TaskTagViewModel>()
+            Mapper.CreateMap<DBOs.Tasks.TaskMatter, TaskMatterViewModel>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
@@ -66,26 +68,22 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasking
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Task, opt => opt.ResolveUsing(db =>
                 {
-                    return new ViewModels.Tasking.TaskViewModel()
+                    return new ViewModels.Tasks.TaskViewModel()
                     {
                         Id = db.TaskId,
                         IsStub = true
                     };
                 }))
-                .ForMember(dst => dst.TagCategory, opt => opt.ResolveUsing(db =>
+                .ForMember(dst => dst.Matter, opt => opt.ResolveUsing(db =>
                 {
-                    if (!db.TagCategoryId.HasValue || db.TagCategoryId.Value < 1)
-                        return null;
-
-                    return new ViewModels.Tagging.TagCategoryViewModel()
+                    return new ViewModels.Matters.MatterViewModel()
                     {
-                        Id = db.TagCategoryId.Value,
+                        Id = db.MatterId,
                         IsStub = true
                     };
-                }))
-                .ForMember(dst => dst.Tag, opt => opt.MapFrom(src => src.Tag));
+                }));
 
-            Mapper.CreateMap<TaskTagViewModel, DBOs.Tasking.TaskTag>()
+            Mapper.CreateMap<TaskMatterViewModel, DBOs.Tasks.TaskMatter>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
                 .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
@@ -109,17 +107,18 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasking
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.TaskId, opt => opt.ResolveUsing(model =>
                 {
-                    if (model.Task == null || !model.Task.Id.HasValue)
-                        throw new Exception("Matter cannot be null");
-                    return model.Task.Id.Value;
-                }))
-                .ForMember(dst => dst.TagCategoryId, opt => opt.ResolveUsing(model =>
-                {
-                    if (model.TagCategory == null)
+                    if (model.Task != null)
+                        return model.Task.Id;
+                    else
                         return null;
-                    return model.TagCategory.Id;
                 }))
-                .ForMember(dst => dst.Tag, opt => opt.MapFrom(src => src.Tag));
+                .ForMember(dst => dst.MatterId, opt => opt.ResolveUsing(model =>
+                {
+                    if (model.Matter != null)
+                        return model.Matter.Id;
+                    else
+                        return null;
+                }));
         }
     }
 }

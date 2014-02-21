@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="Task.cs" company="Nodine Legal, LLC">
+// <copyright file="TaskAssignedBusinessContact.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,7 +19,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.Server.Core.DBOs.Tasking
+namespace OpenLawOffice.Server.Core.DBOs.Tasks
 {
     using System;
     using AutoMapper;
@@ -28,31 +28,29 @@ namespace OpenLawOffice.Server.Core.DBOs.Tasking
     using ServiceStack.DesignPatterns.Model;
 
     /// <summary>
-    /// Represents a system task
+    /// Relates a contact to a task
     /// </summary>
     [Common.Models.MapMe]
-    public class Task : Core, IHasLongId
+    public class TaskAssignedContact : Core, IHasGuidId
     {
-        [AutoIncrement]
-        public long Id { get; set; }
+        [Required]
+        public Guid Id { get; set; }
 
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public DateTime? ProjectedStart { get; set; }
-        public DateTime? DueDate { get; set; }
-        public DateTime? ProjectedEnd { get; set; }
-        public DateTime? ActualEnd { get; set; }
-
+        [Required]
         [References(typeof(Task))]
-        public long? ParentId { get; set; }
-        public bool IsGroupingTask { get; set; }
+        public long TaskId { get; set; }
 
-        [References(typeof(Task))]
-        public long? SequentialPredecessorId { get; set; }
+        [Required]
+        [References(typeof(Contacts.Contact))]
+        public int ContactId { get; set; }
+
+        [Required]
+        [Default(1)]
+        public int AssignmentType { get; set; }
 
         public void BuildMappings()
         {
-            Mapper.CreateMap<DBOs.Tasking.Task, Common.Models.Tasking.Task>()
+            Mapper.CreateMap<DBOs.Tasks.TaskAssignedContact, Common.Models.Tasks.TaskAssignedContact>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
@@ -83,37 +81,25 @@ namespace OpenLawOffice.Server.Core.DBOs.Tasking
                     };
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.Parent, opt => opt.ResolveUsing(db =>
+                .ForMember(dst => dst.Task, opt => opt.ResolveUsing(db =>
                 {
-                    if (db.ParentId.HasValue)
-                        return new Common.Models.Tasking.Task()
-                        {
-                            Id = db.ParentId.Value,
-                            IsStub = true
-                        };
-                    else
-                        return null;
+                    return new Common.Models.Tasks.Task()
+                    {
+                        Id = db.TaskId,
+                        IsStub = true
+                    };
                 }))
-                .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
-                .ForMember(dst => dst.Description, opt => opt.MapFrom(src => src.Description))
-                .ForMember(dst => dst.ProjectedStart, opt => opt.MapFrom(src => src.ProjectedStart))
-                .ForMember(dst => dst.DueDate, opt => opt.MapFrom(src => src.DueDate))
-                .ForMember(dst => dst.ProjectedEnd, opt => opt.MapFrom(src => src.ProjectedEnd))
-                .ForMember(dst => dst.ActualEnd, opt => opt.MapFrom(src => src.ActualEnd))
-                .ForMember(dst => dst.IsGroupingTask, opt => opt.MapFrom(src => src.IsGroupingTask))
-                .ForMember(dst => dst.SequentialPredecessor, opt => opt.ResolveUsing(db =>
+                .ForMember(dst => dst.Contact, opt => opt.ResolveUsing(db =>
                 {
-                    if (db.SequentialPredecessorId.HasValue)
-                        return new Common.Models.Tasking.Task()
-                        {
-                            Id = db.SequentialPredecessorId.Value,
-                            IsStub = true
-                        };
-                    else
-                        return null;
-                }));
+                    return new Common.Models.Contacts.Contact()
+                    {
+                        Id = db.ContactId,
+                        IsStub = true
+                    };
+                }))
+                .ForMember(dst => dst.AssignmentType, opt => opt.MapFrom(src => src.AssignmentType));
 
-            Mapper.CreateMap<Common.Models.Tasking.Task, DBOs.Tasking.Task>()
+            Mapper.CreateMap<Common.Models.Tasks.TaskAssignedContact, DBOs.Tasks.TaskAssignedContact>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
                 .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
@@ -135,26 +121,23 @@ namespace OpenLawOffice.Server.Core.DBOs.Tasking
                     return model.DisabledBy.Id;
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.ParentId, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.TaskId, opt => opt.ResolveUsing(model =>
                 {
-                    if (model.Parent != null)
-                        return model.Parent.Id;
+                    if (model.Task != null)
+                        return model.Task.Id;
                     else
                         return null;
                 }))
-                .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
-                .ForMember(dst => dst.Description, opt => opt.MapFrom(src => src.Description))
-                .ForMember(dst => dst.ProjectedStart, opt => opt.MapFrom(src => src.ProjectedStart))
-                .ForMember(dst => dst.DueDate, opt => opt.MapFrom(src => src.DueDate))
-                .ForMember(dst => dst.ProjectedEnd, opt => opt.MapFrom(src => src.ProjectedEnd))
-                .ForMember(dst => dst.ActualEnd, opt => opt.MapFrom(src => src.ActualEnd))
-                .ForMember(dst => dst.IsGroupingTask, opt => opt.MapFrom(src => src.IsGroupingTask))
-                .ForMember(dst => dst.SequentialPredecessorId, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.ContactId, opt => opt.ResolveUsing(model =>
                 {
-                    if (model.SequentialPredecessor != null)
-                        return model.SequentialPredecessor.Id;
+                    if (model.Contact != null)
+                        return model.Contact.Id;
                     else
                         return null;
+                }))
+                .ForMember(dst => dst.AssignmentType, opt => opt.ResolveUsing(model =>
+                {
+                    return (int)model.AssignmentType;
                 }));
         }
     }

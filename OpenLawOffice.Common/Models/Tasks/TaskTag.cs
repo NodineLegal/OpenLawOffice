@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="TaskTime.cs" company="Nodine Legal, LLC">
+// <copyright file="TaskTag.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,19 +19,18 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.Common.Models.Tasking
+namespace OpenLawOffice.Common.Models.Tasks
 {
     using System;
     using AutoMapper;
 
     /// <summary>
-    /// Relates a time entry to a task
+    /// Relates a tag to a task
     /// </summary>
-    public class TaskTime : Core, IHasGuidId
+    [MapMe]
+    public class TaskTag : Tagging.TagBase, IHasGuidId
     {
-        public Guid? Id { get; set; }
         public Task Task { get; set; }
-        public Timing.Time Time { get; set; }
 
         public override void BuildMappings()
         {

@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="TaskMatter.cs" company="Nodine Legal, LLC">
+// <copyright file="AssignmentType.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,23 +19,23 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.Common.Models.Tasking
+namespace OpenLawOffice.Common.Models.Tasks
 {
-    using System;
-    using AutoMapper;
-
     /// <summary>
-    /// Relates a task to a matter.
+    /// Represents the method of assignment
     /// </summary>
-    [MapMe]
-    public class TaskMatter : Core, IHasGuidId
+    /// <author>Lucas Nodine</author>
+    public enum AssignmentType
     {
-        public Guid? Id { get; set; }
-        public Task Task { get; set; }
-        public Matters.Matter Matter { get; set; }
-
-        public override void BuildMappings()
-        {
-        }
+        /// <summary>
+        /// Direct assignment
+        /// </summary>
+        /// <author>Lucas Nodine</author>
+        Direct = 1,
+        /// <summary>
+        /// Assignment was delegated from another
+        /// </summary>
+        /// <author>Lucas Nodine</author>
+        Delegated = 2
     }
 }

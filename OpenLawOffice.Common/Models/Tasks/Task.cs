@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="TaskAssignedBusinessContact.cs" company="Nodine Legal, LLC">
+// <copyright file="Task.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,21 +19,29 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.Common.Models.Tasking
+namespace OpenLawOffice.Common.Models.Tasks
 {
     using System;
     using AutoMapper;
+    using System.Collections.Generic;
 
     /// <summary>
-    /// Relates a contact to a task
+    /// TODO: Update summary.
     /// </summary>
     [MapMe]
-    public class TaskAssignedContact : Core, IHasGuidId
+    [Can(CanFlags.Get | CanFlags.Create | CanFlags.Update | CanFlags.Delete)]
+    public class Task : Core, IHasLongId
     {
-        public Guid? Id { get; set; }
-        public Task Task { get; set; }
-        public Contacts.Contact Contact { get; set; }
-        public AssignmentType AssignmentType { get; set; }
+        public long? Id { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public DateTime? ProjectedStart { get; set; }
+        public DateTime? DueDate { get; set; }
+        public DateTime? ProjectedEnd { get; set; }
+        public DateTime? ActualEnd { get; set; }
+        public Task Parent { get; set; }
+        public bool IsGroupingTask { get; set; }
+        public Task SequentialPredecessor { get; set; }
 
         public override void BuildMappings()
         {

@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="TaskAssignedBusinessContact.cs" company="Nodine Legal, LLC">
+// <copyright file="TaskAssignedContactViewModel.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,45 +19,34 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.Server.Core.DBOs.Tasking
+namespace OpenLawOffice.WebClient.ViewModels.Tasks
 {
     using System;
     using AutoMapper;
-    using ServiceStack.DataAnnotations;
-    using System.ComponentModel.DataAnnotations;
-    using ServiceStack.DesignPatterns.Model;
+    using OpenLawOffice.Common.Models;
+    using DBOs = OpenLawOffice.Server.Core.DBOs;
 
     /// <summary>
     /// Relates a contact to a task
     /// </summary>
-    [Common.Models.MapMe]
-    public class TaskAssignedContact : Core, IHasGuidId
+    [MapMe]
+    public class TaskAssignedContactViewModel : CoreViewModel
     {
-        [Required]
-        public Guid Id { get; set; }
-
-        [Required]
-        [References(typeof(Task))]
-        public long TaskId { get; set; }
-
-        [Required]
-        [References(typeof(Contacts.Contact))]
-        public int ContactId { get; set; }
-
-        [Required]
-        [Default(1)]
-        public int AssignmentType { get; set; }
+        public Guid? Id { get; set; }
+        public TaskViewModel Task { get; set; }
+        public Contacts.ContactViewModel Contact { get; set; }
+        public AssignmentTypeViewModel AssignmentType { get; set; }
 
         public void BuildMappings()
         {
-            Mapper.CreateMap<DBOs.Tasking.TaskAssignedContact, Common.Models.Tasking.TaskAssignedContact>()
+            Mapper.CreateMap<DBOs.Tasks.TaskAssignedContact, Common.Models.Tasks.TaskAssignedContact>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
                 .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
                 .ForMember(dst => dst.CreatedBy, opt => opt.ResolveUsing(db =>
                 {
-                    return new Common.Models.Security.User()
+                    return new ViewModels.Security.UserViewModel()
                     {
                         Id = db.CreatedByUserId,
                         IsStub = true
@@ -65,7 +54,7 @@ namespace OpenLawOffice.Server.Core.DBOs.Tasking
                 }))
                 .ForMember(dst => dst.ModifiedBy, opt => opt.ResolveUsing(db =>
                 {
-                    return new Common.Models.Security.User()
+                    return new ViewModels.Security.UserViewModel()
                     {
                         Id = db.ModifiedByUserId,
                         IsStub = true
@@ -74,7 +63,7 @@ namespace OpenLawOffice.Server.Core.DBOs.Tasking
                 .ForMember(dst => dst.DisabledBy, opt => opt.ResolveUsing(db =>
                 {
                     if (!db.DisabledByUserId.HasValue) return null;
-                    return new Common.Models.Security.User()
+                    return new ViewModels.Security.UserViewModel()
                     {
                         Id = db.DisabledByUserId.Value,
                         IsStub = true
@@ -83,7 +72,7 @@ namespace OpenLawOffice.Server.Core.DBOs.Tasking
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Task, opt => opt.ResolveUsing(db =>
                 {
-                    return new Common.Models.Tasking.Task()
+                    return new ViewModels.Tasks.TaskViewModel()
                     {
                         Id = db.TaskId,
                         IsStub = true
@@ -91,7 +80,7 @@ namespace OpenLawOffice.Server.Core.DBOs.Tasking
                 }))
                 .ForMember(dst => dst.Contact, opt => opt.ResolveUsing(db =>
                 {
-                    return new Common.Models.Contacts.Contact()
+                    return new ViewModels.Contacts.ContactViewModel()
                     {
                         Id = db.ContactId,
                         IsStub = true
@@ -99,7 +88,7 @@ namespace OpenLawOffice.Server.Core.DBOs.Tasking
                 }))
                 .ForMember(dst => dst.AssignmentType, opt => opt.MapFrom(src => src.AssignmentType));
 
-            Mapper.CreateMap<Common.Models.Tasking.TaskAssignedContact, DBOs.Tasking.TaskAssignedContact>()
+            Mapper.CreateMap<Common.Models.Tasks.TaskAssignedContact, DBOs.Tasks.TaskAssignedContact>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
                 .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))

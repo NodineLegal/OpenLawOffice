@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="AssignmentType.cs" company="Nodine Legal, LLC">
+// <copyright file="TaskTime.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,23 +19,22 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.Common.Models.Tasking
+namespace OpenLawOffice.Common.Models.Tasks
 {
+    using System;
+    using AutoMapper;
+
     /// <summary>
-    /// Represents the method of assignment
+    /// Relates a time entry to a task
     /// </summary>
-    /// <author>Lucas Nodine</author>
-    public enum AssignmentType
+    public class TaskTime : Core, IHasGuidId
     {
-        /// <summary>
-        /// Direct assignment
-        /// </summary>
-        /// <author>Lucas Nodine</author>
-        Direct = 1,
-        /// <summary>
-        /// Assignment was delegated from another
-        /// </summary>
-        /// <author>Lucas Nodine</author>
-        Delegated = 2
+        public Guid? Id { get; set; }
+        public Task Task { get; set; }
+        public Timing.Time Time { get; set; }
+
+        public override void BuildMappings()
+        {
+        }
     }
 }

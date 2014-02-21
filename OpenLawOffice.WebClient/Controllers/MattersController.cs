@@ -431,5 +431,14 @@
 
             return View(modelList);
         }
+
+        [SecurityFilter(SecurityAreaName = "Tasks.Task", IsSecuredResource = false,
+            Permission = Common.Models.PermissionType.List)]
+        public ActionResult Tasks(Guid id)
+        {
+            List<ViewModels.Tasks.TaskViewModel> modelList = TasksController.GetListForMatter(id);
+
+            return View(modelList);
+        }
     }
 }
