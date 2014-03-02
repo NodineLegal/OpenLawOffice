@@ -6,11 +6,14 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
-    <script type="text/javascript" src="../../Scripts/jqGrid-4.5.4/jquery-1.9.0.min.js"></script>
-    <script type="text/javascript" src="../../Scripts/jqGrid-4.5.4/grid.locale-en.js"></script>
-    <script type="text/javascript" src="../../Scripts/jqGrid-4.5.4/jquery.jqGrid.min.js"></script>
+    <script type="text/javascript" src="/Scripts/jqGrid-4.5.4/jquery-1.9.0.min.js"></script>
+    <script type="text/javascript" src="/Scripts/jqGrid-4.5.4/grid.locale-en.js"></script>
+    <script type="text/javascript" src="/Scripts/jqGrid-4.5.4/jquery.jqGrid.min.js"></script>
 
     <h2>Edit</h2>
+
+    <% using (Html.BeginForm()) {%>
+        <%: Html.ValidationSummary(true) %>
     
     <table class="detail_table">
         <tr>
@@ -19,38 +22,53 @@
         </tr>
         <tr>
             <td class="display-label">Title</td>
-            <td class="display-field"><%: Html.TextBoxFor(model => model.Title) %></td>
+            <td class="display-field">
+                <%: Html.TextBoxFor(model => model.Title) %>
+                <%: Html.ValidationMessageFor(model => model.Title) %>
+                </td>
         </tr>
         <tr>
             <td class="display-label">Description</td>
-            <td class="display-field"><%: Html.TextBoxFor(model => model.Description)%></td>
+            <td class="display-field">
+                <%: Html.TextBoxFor(model => model.Description)%>
+                <%: Html.ValidationMessageFor(model => model.Description)%>
+            </td>
         </tr>
         <tr>
             <td class="display-label">Projected Start</td>
-            <td class="display-field"><%: Html.EditorFor(model => model.ProjectedStart)%></td>
+            <td class="display-field">
+                <%: Html.EditorFor(model => model.ProjectedStart)%>
+                <%: Html.ValidationMessageFor(model => model.ProjectedStart)%>
+            </td>
         </tr>
         <tr>
             <td class="display-label">Due Date</td>
-            <td class="display-field"><%: Html.EditorFor(model => model.DueDate)%></td>
+            <td class="display-field">
+                <%: Html.EditorFor(model => model.DueDate)%>
+                <%: Html.ValidationMessageFor(model => model.DueDate)%>
+            </td>
         </tr>
         <tr>
             <td class="display-label">Projected End</td>
-            <td class="display-field"><%: Html.EditorFor(model => model.ProjectedEnd)%></td>
+            <td class="display-field">
+                <%: Html.EditorFor(model => model.ProjectedEnd)%>
+                <%: Html.ValidationMessageFor(model => model.ProjectedEnd)%>
+            </td>
         </tr>
         <tr>
             <td class="display-label">Actual End</td>
-            <td class="display-field"><%: Html.EditorFor(model => model.ActualEnd)%></td>
-        </tr>
-        <tr>
-            <td class="display-label">Is a Grouping Task</td>
             <td class="display-field">
-                <%: Html.CheckBoxFor(model => model.IsGroupingTask, new { @readonly=true }) %>
+                <%: Html.EditorFor(model => model.ActualEnd)%>
+                <%: Html.ValidationMessageFor(model => model.ActualEnd)%>
             </td>
         </tr>
         <tr>
             <td class="display-label">Parent</td>
             <td class="display-field">
+
+            <div id="ParentDiv">
                 Parent: <%: Html.TextBoxFor(model => model.Parent.Id, new { @readonly = true })%>
+                <%: Html.ValidationMessageFor(model => model.Parent.Id)%>
                     
                 <br /><br /> 
                 <table id="parentlist"></table>
@@ -61,8 +79,8 @@
                     $(function () {
                         $("#parentlist").jqGrid({
                             treeGrid: true,
-                            width: 250,
-                            url: '../../Tasks/ListChildrenJqGrid',
+                            autowidth: true,
+                            url: '/Tasks/ListChildrenJqGrid?MatterId=<%: ViewData["MatterId"].ToString() %>',
                             datatype: 'json',
                             jsonReader: {
                                 root: 'Rows',
@@ -95,25 +113,44 @@
                         $("#Parent_Id").val(null);
                     });
                 </script>
+
+            </div>
+            <div id="ParentDivHidden">
+                This task's parent cannot be modified as it is part of a sequence.  Task sequence members automatically have their parent task managed.
+            </div>
             </td>
         </tr>
-        <tr>
-            <td class="display-label">Sequential Predecessor</td>
+        <%--<tr>
+            <td class="display-label">Sequence</td>
             <td class="display-field">
+
+            <div id="SeqDiv">
+                This task is a member of a sequence.
+                
+                <br /><br />
+
+                <input id="spclear" type="button" style="width:200px;" value="Remove from Sequence" />
+                
+                <br /><br />
+
+                If you would like to change this task's position in the sequence, you may do so by
+                selecting it's new predecessor below.
+
+                <br /><br />
             
                 Sequential Predecessor: <%: Html.TextBoxFor(model => model.SequentialPredecessor.Id, new { @readonly = true })%>
+                <%: Html.ValidationMessageFor(model => model.SequentialPredecessor.Id)%>
                     
                 <br /><br /> 
                 <table id="splist"></table>
                 <div id="sppager"></div>
-                <input id="spclear" type="button" style="width:200px;" value="clear" />
 
                 <script language="javascript">
                     $(function () {
                         $("#splist").jqGrid({
                             treeGrid: true,
-                            width: 250,
-                            url: '../../Tasks/ListChildrenJqGrid',
+                            autowidth: true,
+                            url: '/Tasks/ListChildrenJqGrid?MatterId=<%: ViewData["MatterId"].ToString() %>',
                             datatype: 'json',
                             jsonReader: {
                                 root: 'Rows',
@@ -136,7 +173,7 @@
                             ExpandColumn: 'Title',
                             caption: 'Parent Task',
                             onSelectRow: function (id) {
-                                $("#Parent_Id").val(id);
+                                $("#SequentialPredecessor_Id").val(id);
                             }
                         });
                     });
@@ -144,10 +181,61 @@
                     $("#spclear").click(function () {
                         $("#splist").jqGrid('resetSelection');
                         $("#SequentialPredecessor_Id").val(null);
+                        $("#ParentDiv").show();
+                        $("#ParentDivHidden").hide();
+                        $("#SeqDiv").hide();
+                        $("#SeqDivHidden").show();
                     });
                 </script>
-        </tr>
+            </div>
+            <div id="SeqDivHidden">
+                This task's is not part of a sequence.  To make this task a sequence member click the button.
+                <br />                
+                <input id="makeSeqMember" type="button" style="width:200px;" value="Add to Sequence" />
+                
+                <script language="javascript">
+                    $("#makeSeqMember").click(function () {
+                        $("#splist").jqGrid('resetSelection');
+                        $("#SequentialPredecessor_Id").val(null);
+                        $("#ParentDiv").hide();
+                        $("#ParentDivHidden").show();
+                        $("#SeqDiv").show();
+                        $("#SeqDivHidden").hide();
+                    });
+        
+                </script>
+
+            </div>
+            </td>
+        </tr>--%>
     </table>
+            
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+
+    <% } %>
+
+    <script language="javascript">
+        $(function () {
+            var seqPredId = $("#SequentialPredecessor_Id").val();
+
+            if (seqPredId == null || seqPredId == '') {
+                // NOT sequence member
+                $("#ParentDiv").show();
+                $("#ParentDivHidden").hide();
+                //$("#SeqDiv").hide();
+                //$("#SeqDivHidden").show();
+            } else {
+                // Sequence member
+                $("#ParentDiv").hide();
+                $("#ParentDivHidden").show();
+                //$("#SeqDiv").show();
+                //$("#SeqDivHidden").hide();
+            }
+        });
+        
+    </script>
 
 </asp:Content>
 

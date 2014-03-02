@@ -6,9 +6,9 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
-    <script type="text/javascript" src="../../Scripts/jqGrid-4.5.4/jquery-1.9.0.min.js"></script>
-    <script type="text/javascript" src="../../Scripts/jqGrid-4.5.4/grid.locale-en.js"></script>
-    <script type="text/javascript" src="../../Scripts/jqGrid-4.5.4/jquery.jqGrid.min.js"></script>
+    <script type="text/javascript" src="/Scripts/jqGrid-4.5.4/jquery-1.9.0.min.js"></script>
+    <script type="text/javascript" src="/Scripts/jqGrid-4.5.4/grid.locale-en.js"></script>
+    <script type="text/javascript" src="/Scripts/jqGrid-4.5.4/jquery.jqGrid.min.js"></script>
 
     <style type="text/css">
     div.ui-jqgrid-titlebar 
@@ -27,7 +27,7 @@
             $("#list").jqGrid({
                 treeGrid: true,
                 autowidth: true,
-                url: '../../Tasks/ListChildrenJqGrid?MatterId=<%: RouteData.Values["Id"].ToString() %>',
+                url: '/Tasks/ListChildrenJqGrid?MatterId=<%: RouteData.Values["Id"].ToString() %>',
                 datatype: 'json',
                 jsonReader: {
                     root: 'Rows',
@@ -54,8 +54,8 @@
                     var ids = jQuery("#list").jqGrid('getDataIDs');
                     for (var i = 0; i < ids.length; i++) {
                         id = ids[i];
-                        detailButton = "<a href=\"../../Tasks/Details/" + ids[i] + "\">Details</a>";
-                        editButton = "<a href=\"../../Tasks/Edit/" + ids[i] + "\">Edit</a>";
+                        detailButton = "<a href=\"/Tasks/Details/" + ids[i] + "\">Details</a>";
+                        editButton = "<a href=\"/Tasks/Edit/" + ids[i] + "\">Edit</a>";
                         jQuery("#list").jqGrid('setRowData', ids[i], { act: detailButton + " | " + editButton });
                     }
                 }

@@ -60,7 +60,7 @@
         <tr>
             <td class="display-label">Is a Grouping Task</td>
             <td class="display-field">
-                <%: Html.CheckBoxFor(model => model.IsGroupingTask, new { @readonly=true }) %>
+                <%: Html.CheckBoxFor(model => model.IsGroupingTask, new { disabled=true }) %>
             </td>
         </tr>
         <tr>
