@@ -128,7 +128,7 @@
     <Compile Include="Controllers\SecurityAreasController.cs" />
     <Compile Include="Controllers\TagCategoriesController.cs" />
     <Compile Include="Controllers\TasksController.cs" />
-    <Compile Include="Controllers\TimeController.cs" />
+    <Compile Include="Controllers\TimingController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -204,10 +204,12 @@
     <Content Include="Views\Shared\EditorTemplates\PermissionViewModel.ascx" />
     <Content Include="Views\Shared\InsufficientRights.aspx" />
     <Content Include="Views\Shared\InvalidRequest.aspx" />
+    <Content Include="Views\Tasks\Create.aspx" />
     <Content Include="Views\Tasks\Details.aspx" />
     <Content Include="Views\Tasks\Edit.aspx" />
-    <Content Include="Views\Time\Detail.aspx" />
-    <Content Include="Views\Time\Edit.aspx" />
+    <Content Include="Views\Tasks\Time.aspx" />
+    <Content Include="Views\Timing\Details.aspx" />
+    <Content Include="Views\Timing\Edit.aspx" />
     <Content Include="Views\Users\Create.aspx" />
     <Content Include="Views\Users\Details.aspx" />
     <Content Include="Views\Users\Edit.aspx" />

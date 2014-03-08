@@ -12,6 +12,7 @@
         public DateTime Start { get; set; }
         public DateTime? Stop { get; set; }
         public Contacts.ContactViewModel Worker { get; set; }
+        public string WorkerDisplayName { get; set; }
 
         public new void BuildMappings()
         {
@@ -55,7 +56,8 @@
                         Id = db.WorkerContactId,
                         IsStub = true
                     };
-                }));
+                }))
+                .ForMember(dst => dst.WorkerDisplayName, opt => opt.Ignore());
 
             Mapper.CreateMap<TimeViewModel, DBOs.Timing.Time>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))

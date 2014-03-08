@@ -247,5 +247,10 @@
         <li><%: Html.ActionLink("Delete ", "Delete", new { id = Model.Id })%></li>
         <li><%: Html.ActionLink("Matter ", "Details", "Matters", new { id = ViewData["MatterId"] }, null)%></li>
     </ul>
-    <li><%: Html.ActionLink("Time", "ForTask", "Times", new { id = Model.Id }, null)%></li>
+    <li><%: Html.ActionLink("Tags", "Tags", "Tasks", new { id = Model.Id }, null)%></li>
+    <li><%: Html.ActionLink("Responsible Users", "ResponsibleUsers", "Tasks", new { id = Model.Id }, null)%></li>
+    <li><%: Html.ActionLink("Contacts", "Contacts", "Tasks", new { id = Model.Id }, null)%></li>
+    <li><%: Html.ActionLink("Notes", "Notes", "Tasks", new { id = Model.Id }, null)%> (<%: Html.ActionLink("Add", "Create", "Notes", new { controller = "Tasks", TaskId = Model.Id }) %>)</li>
+    <li><%: Html.ActionLink("Documents", "Documents", "Tasks", new { id = Model.Id }, null)%> (<%: Html.ActionLink("Add", "Create", "Documents", new { controller = "Tasks", TaskId = Model.Id })%>)</li>
+    <li><%: Html.ActionLink("Time", "Time", "Tasks", new { id = Model.Id }, null)%> (<%: Html.ActionLink("Add", "Create", "Times", new { controller = "Tasks", TaskId = Model.Id })%>)</li>
 </asp:Content>

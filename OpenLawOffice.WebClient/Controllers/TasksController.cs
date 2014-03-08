@@ -276,50 +276,6 @@
             return View(model);
         }
 
-        //
-        // GET: /Matter/Edit/9acb1b4f-0442-4c9b-a550-ad7478e36fb2
-        [SecurityFilter(SecurityAreaName = "Tasks.Task", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Modify)]
-        public ActionResult Edit(long id)
-        {
-            Guid matterid;
-            ViewModels.Tasks.TaskViewModel model = null;
-            using (IDbConnection db = Database.Instance.OpenConnection())
-            {
-
-                // Load base DBO
-                DBOs.Tasks.Task dbo = db.QuerySingle<DBOs.Tasks.Task>(
-                    "SELECT * FROM \"task\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
-                    new { Id = id });
-
-                DBOs.Tasks.TaskMatter dboTaskMatter = db.QuerySingle<DBOs.Tasks.TaskMatter>(
-                    "SELECT * FROM \"task_matter\" WHERE \"task_id\"=@TaskId",
-                    new { TaskId = dbo.Id });
-
-                model = Mapper.Map<ViewModels.Tasks.TaskViewModel>(dbo);
-                matterid = dboTaskMatter.MatterId;
-
-                if (dbo.ParentId.HasValue)
-                {
-                    DBOs.Tasks.Task parentDbo = db.GetById<DBOs.Tasks.Task>(dbo.ParentId);
-                    model.Parent = Mapper.Map<ViewModels.Tasks.TaskViewModel>(parentDbo);
-                }
-
-                if (dbo.SequentialPredecessorId.HasValue)
-                {
-                    DBOs.Tasks.Task sequentialPredecessorDbo = db.GetById<DBOs.Tasks.Task>(dbo.SequentialPredecessorId);
-                    model.SequentialPredecessor = Mapper.Map<ViewModels.Tasks.TaskViewModel>(sequentialPredecessorDbo);
-                }
-
-                // Core Details
-                PopulateCoreDetails(model);
-            }
-
-            ViewData["MatterId"] = matterid;
-
-            return View(model);
-        }
-
         public static void UpdateGroupingTaskProperties(DBOs.Tasks.Task groupingTaskDbo, IDbConnection db)
         {
             bool groupingTaskChanged = false;
@@ -414,8 +370,48 @@
             return GetParentTask(taskDbo.Id, db);
         }
 
-        //
-        // POST: /Matter/Edit/5
+        [SecurityFilter(SecurityAreaName = "Tasks.Task", IsSecuredResource = false,
+            Permission = Common.Models.PermissionType.Modify)]
+        public ActionResult Edit(long id)
+        {
+            Guid matterid;
+            ViewModels.Tasks.TaskViewModel model = null;
+            using (IDbConnection db = Database.Instance.OpenConnection())
+            {
+
+                // Load base DBO
+                DBOs.Tasks.Task dbo = db.QuerySingle<DBOs.Tasks.Task>(
+                    "SELECT * FROM \"task\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
+                    new { Id = id });
+
+                DBOs.Tasks.TaskMatter dboTaskMatter = db.QuerySingle<DBOs.Tasks.TaskMatter>(
+                    "SELECT * FROM \"task_matter\" WHERE \"task_id\"=@TaskId",
+                    new { TaskId = dbo.Id });
+
+                model = Mapper.Map<ViewModels.Tasks.TaskViewModel>(dbo);
+                matterid = dboTaskMatter.MatterId;
+
+                if (dbo.ParentId.HasValue)
+                {
+                    DBOs.Tasks.Task parentDbo = db.GetById<DBOs.Tasks.Task>(dbo.ParentId);
+                    model.Parent = Mapper.Map<ViewModels.Tasks.TaskViewModel>(parentDbo);
+                }
+
+                if (dbo.SequentialPredecessorId.HasValue)
+                {
+                    DBOs.Tasks.Task sequentialPredecessorDbo = db.GetById<DBOs.Tasks.Task>(dbo.SequentialPredecessorId);
+                    model.SequentialPredecessor = Mapper.Map<ViewModels.Tasks.TaskViewModel>(sequentialPredecessorDbo);
+                }
+
+                // Core Details
+                PopulateCoreDetails(model);
+            }
+
+            ViewData["MatterId"] = matterid;
+
+            return View(model);
+        }
+
         [SecurityFilter(SecurityAreaName = "Tasks.Task", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
@@ -499,22 +495,42 @@
                                 ViewData["MatterId"] = dboTaskMatter.MatterId;
                                 return View(model);
                             }
+
+                            db.UpdateOnly(dbo,
+                                fields => new
+                                {
+                                    fields.ActualEnd,
+                                    fields.Description,
+                                    fields.DueDate,
+                                    fields.ModifiedByUserId,
+                                    fields.ParentId,
+                                    fields.ProjectedEnd,
+                                    fields.ProjectedStart,
+                                    fields.Title,
+                                    fields.UtcModified
+                                },
+                                where => where.Id == dbo.Id);
+
+                            UpdateGroupingTaskProperties(proposedParentTask, db);
+                        }
+                        else
+                        {
+                            db.UpdateOnly(dbo,
+                                fields => new
+                                {
+                                    fields.ActualEnd,
+                                    fields.Description,
+                                    fields.DueDate,
+                                    fields.ModifiedByUserId,
+                                    fields.ParentId,
+                                    fields.ProjectedEnd,
+                                    fields.ProjectedStart,
+                                    fields.Title,
+                                    fields.UtcModified
+                                },
+                                where => where.Id == dbo.Id);
                         }
 
-                        db.UpdateOnly(dbo,
-                            fields => new
-                            {
-                                fields.ActualEnd,
-                                fields.Description,
-                                fields.DueDate,
-                                fields.ModifiedByUserId,
-                                fields.ParentId,
-                                fields.ProjectedEnd,
-                                fields.ProjectedStart,
-                                fields.Title,
-                                fields.UtcModified
-                            },
-                            where => where.Id == dbo.Id);
 
                         #region Commented Out Sequential Predecessor Code
                         //if (model.SequentialPredecessor.Id.HasValue 
@@ -657,6 +673,71 @@
             }
         }
 
+        [SecurityFilter(SecurityAreaName = "Tasks.Task", IsSecuredResource = false,
+            Permission = Common.Models.PermissionType.Create)]
+        public ActionResult Create()
+        {
+            ViewData["MatterId"] = Request["MatterId"];
+            return View();
+        }
+
+        [SecurityFilter(SecurityAreaName = "Tasks.Task", IsSecuredResource = false,
+            Permission = Common.Models.PermissionType.Create)]
+        [HttpPost]
+        public ActionResult Create(ViewModels.Tasks.TaskViewModel model)
+        {
+            Guid matterid = Guid.Empty;
+
+            try
+            {
+                Common.Models.Security.User user = UserCache.Instance.Lookup(Request);
+
+                // TODO : need to make this verify with DB
+                matterid = Guid.Parse(Request["MatterId"]);
+
+                using (IDbConnection db = Database.Instance.OpenConnection())
+                {
+                    using (IDbTransaction tran = db.BeginTransaction())
+                    {
+                        DBOs.Tasks.Task taskDbo = Mapper.Map<DBOs.Tasks.Task>(model);
+                        taskDbo.CreatedByUserId = taskDbo.ModifiedByUserId = user.Id.Value;
+                        taskDbo.UtcCreated = taskDbo.UtcModified = DateTime.UtcNow;
+
+                        db.Insert<DBOs.Tasks.Task>(taskDbo);
+                        taskDbo.Id = db.GetLastInsertId();
+
+                        DBOs.Tasks.TaskMatter taskMatterDbo = new DBOs.Tasks.TaskMatter()
+                        {
+                            Id = Guid.NewGuid(),
+                            MatterId = matterid,
+                            TaskId = taskDbo.Id,
+                            UtcCreated = DateTime.UtcNow,
+                            UtcModified = DateTime.UtcNow,
+                            CreatedByUserId = user.Id.Value,
+                            ModifiedByUserId = user.Id.Value
+                        };
+
+                        db.Insert<DBOs.Tasks.TaskMatter>(taskMatterDbo);
+
+                        tran.Commit();
+
+                        return RedirectToAction("Details", new { Id = taskDbo.Id });
+                    }
+                }
+            }
+            catch
+            {
+                ViewData["MatterId"] = Request["MatterId"];
+                return View(model);
+            }
+        }
+        
+        [SecurityFilter(SecurityAreaName = "Timing.Time", IsSecuredResource = false,
+            Permission = Common.Models.PermissionType.List)]
+        public ActionResult Time(long id)
+        {
+            return View();
+        }
 
         #region Commented Out Sequential Predecessor Code
 
