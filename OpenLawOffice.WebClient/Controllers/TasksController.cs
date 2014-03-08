@@ -739,6 +739,31 @@
             return View();
         }
 
+        [SecurityFilter(SecurityAreaName = "Contacts.Contact", IsSecuredResource = false,
+            Permission = Common.Models.PermissionType.List)]
+        public ActionResult Contacts(long id)
+        {
+            List<ViewModels.Tasks.TaskAssignedContactViewModel> modelList = new List<ViewModels.Tasks.TaskAssignedContactViewModel>();
+            using (IDbConnection db = Database.Instance.OpenConnection())
+            {
+                List<DBOs.Tasks.TaskAssignedContact> list = db.Query<DBOs.Tasks.TaskAssignedContact>(
+                    "SELECT * FROM \"task_assigned_contact\" WHERE \"task_id\"=@TaskId AND \"utc_disabled\" is null",
+                    new { TaskId = id });
+
+                list.ForEach(dbo =>
+                {
+                    ViewModels.Tasks.TaskAssignedContactViewModel vm = Mapper.Map<ViewModels.Tasks.TaskAssignedContactViewModel>(dbo);
+
+                    DBOs.Contacts.Contact contactDbo = db.GetById<DBOs.Contacts.Contact>(dbo.ContactId);
+
+                    vm.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contactDbo);
+                    modelList.Add(vm);
+                });
+            }
+
+            return View(modelList);
+        }
+
         #region Commented Out Sequential Predecessor Code
 
         //public static DBOs.Tasks.Task GetSequentialPredecessor(DBOs.Tasks.Task taskDbo, IDbConnection db)

@@ -68,7 +68,7 @@
     <li>Navigation</li>
     <ul style="list-style: none outside none; padding-left: 1em;">
         <li><%: Html.ActionLink("New Task", "Create", "Tasks", new { MatterId = RouteData.Values["Id"].ToString() }, null)%></li>
-    <li><%: Html.ActionLink("Matter", "Details", "Matters", new { Id = RouteData.Values["Id"].ToString() }, null)%></li>
+        <li><%: Html.ActionLink("Matter", "Details", "Matters", new { Id = RouteData.Values["Id"].ToString() }, null)%></li>
     </ul>
 </asp:Content>
 

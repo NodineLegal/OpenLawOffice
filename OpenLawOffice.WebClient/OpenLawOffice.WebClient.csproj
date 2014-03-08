@@ -127,6 +127,7 @@
     <Compile Include="Controllers\SecurityFilterAttribute.cs" />
     <Compile Include="Controllers\SecurityAreasController.cs" />
     <Compile Include="Controllers\TagCategoriesController.cs" />
+    <Compile Include="Controllers\TaskContactController.cs" />
     <Compile Include="Controllers\TasksController.cs" />
     <Compile Include="Controllers\TimingController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
@@ -204,6 +205,9 @@
     <Content Include="Views\Shared\EditorTemplates\PermissionViewModel.ascx" />
     <Content Include="Views\Shared\InsufficientRights.aspx" />
     <Content Include="Views\Shared\InvalidRequest.aspx" />
+    <Content Include="Views\TaskContact\AssignContact.aspx" />
+    <Content Include="Views\TaskContact\SelectContactToAssign.aspx" />
+    <Content Include="Views\Tasks\Contacts.aspx" />
     <Content Include="Views\Tasks\Create.aspx" />
     <Content Include="Views\Tasks\Details.aspx" />
     <Content Include="Views\Tasks\Edit.aspx" />

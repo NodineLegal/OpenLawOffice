@@ -39,7 +39,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasks
 
         public void BuildMappings()
         {
-            Mapper.CreateMap<DBOs.Tasks.TaskAssignedContact, Common.Models.Tasks.TaskAssignedContact>()
+            Mapper.CreateMap<DBOs.Tasks.TaskAssignedContact, TaskAssignedContactViewModel>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
@@ -88,7 +88,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasks
                 }))
                 .ForMember(dst => dst.AssignmentType, opt => opt.MapFrom(src => src.AssignmentType));
 
-            Mapper.CreateMap<Common.Models.Tasks.TaskAssignedContact, DBOs.Tasks.TaskAssignedContact>()
+            Mapper.CreateMap<TaskAssignedContactViewModel, DBOs.Tasks.TaskAssignedContact>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
                 .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
