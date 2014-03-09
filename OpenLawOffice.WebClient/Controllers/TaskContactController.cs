@@ -94,13 +94,13 @@
                 {
                     dbo.DisabledByUserId = null;
                     dbo.UtcDisabled = null;
-                    dbo.Role = model.Role;
+                    dbo.AssignmentType = (int)model.AssignmentType;
                     dbo.UtcModified = DateTime.UtcNow;
                     dbo.ModifiedByUserId = currentUser.Id.Value;
                     db.UpdateOnly(dbo,
                         fields => new
                         {
-                            fields.Role,
+                            fields.AssignmentType,
                             fields.UtcDisabled,
                             fields.DisabledByUserId,
                             fields.ModifiedByUserId,
@@ -108,30 +108,30 @@
                         }, where => where.Id == dbo.Id);
                 }
 
-                dbo = db.GetById<DBOs.Matters.MatterContact>(dbo.Id);
+                dbo = db.GetById<DBOs.Tasks.TaskAssignedContact>(dbo.Id);
             }
 
-            return RedirectToAction("Contacts", "Matters", new { id = dbo.MatterId.ToString() });
+            return RedirectToAction("Contacts", "Tasks", new { id = dbo.TaskId.ToString() });
         }
 
         [SecurityFilter(SecurityAreaName = "Tasks.TaskContact", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
-        public ActionResult Edit(int id)
+        public ActionResult Edit(Guid id)
         {
-            ViewModels.Matters.MatterContactViewModel model = null;
+            ViewModels.Tasks.TaskAssignedContactViewModel model = null;
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 // Load base DBO
-                DBOs.Matters.MatterContact dbo = db.QuerySingle<DBOs.Matters.MatterContact>(
-                    "SELECT * FROM \"matter_contact\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
+                DBOs.Tasks.TaskAssignedContact dbo = db.QuerySingle<DBOs.Tasks.TaskAssignedContact>(
+                    "SELECT * FROM \"task_assigned_contact\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id });
 
-                DBOs.Matters.Matter matterDbo = db.GetById<DBOs.Matters.Matter>(dbo.MatterId);
+                DBOs.Tasks.Task taskDbo = db.GetById<DBOs.Tasks.Task>(dbo.TaskId);
                 DBOs.Contacts.Contact contactDbo = db.GetById<DBOs.Contacts.Contact>(dbo.ContactId);
 
-                model = Mapper.Map<ViewModels.Matters.MatterContactViewModel>(dbo);
+                model = Mapper.Map<ViewModels.Tasks.TaskAssignedContactViewModel>(dbo);
                 model.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contactDbo);
-                model.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(matterDbo);
+                model.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(taskDbo);
             }
 
             return View(model);
@@ -140,13 +140,13 @@
         [SecurityFilter(SecurityAreaName = "Tasks.TaskContact", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
-        public ActionResult Edit(int id, ViewModels.Matters.MatterContactViewModel model)
+        public ActionResult Edit(Guid id, ViewModels.Tasks.TaskAssignedContactViewModel model)
         {
             try
             {
                 Common.Models.Security.User user = UserCache.Instance.Lookup(Request);
 
-                DBOs.Matters.MatterContact dbo = Mapper.Map<DBOs.Matters.MatterContact>(model);
+                DBOs.Tasks.TaskAssignedContact dbo = Mapper.Map<DBOs.Tasks.TaskAssignedContact>(model);
                 dbo.UtcModified = DateTime.UtcNow;
                 dbo.ModifiedByUserId = user.Id.Value;
 
@@ -155,42 +155,41 @@
                     db.UpdateOnly(dbo,
                         fields => new
                         {
-                            fields.Role,
+                            fields.AssignmentType,
                             fields.ModifiedByUserId,
                             fields.UtcModified
                         },
                         where => where.Id == dbo.Id);
 
-                    dbo = db.GetById<DBOs.Matters.MatterContact>(dbo.Id);
+                    dbo = db.GetById<DBOs.Tasks.TaskAssignedContact>(dbo.Id);
                 }
 
-                return RedirectToAction("Contacts", "Matters", new { id = dbo.MatterId.ToString() });
+                return RedirectToAction("Contacts", "Tasks", new { id = dbo.TaskId.ToString() });
             }
             catch
             {
                 return View(model);
             }
         }
-
-
+        
         [SecurityFilter(SecurityAreaName = "Tasks.TaskContact", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Read)]
-        public ActionResult Details(int id)
+        public ActionResult Details(Guid id)
         {
-            ViewModels.Matters.MatterContactViewModel model = null;
+            ViewModels.Tasks.TaskAssignedContactViewModel model = null;
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 // Load base DBO
-                DBOs.Matters.MatterContact dbo = db.QuerySingle<DBOs.Matters.MatterContact>(
-                    "SELECT * FROM \"matter_contact\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
+                DBOs.Tasks.TaskAssignedContact dbo = db.QuerySingle<DBOs.Tasks.TaskAssignedContact>(
+                    "SELECT * FROM \"task_assigned_contact\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id });
 
-                DBOs.Matters.Matter matterDbo = db.GetById<DBOs.Matters.Matter>(dbo.MatterId);
+                DBOs.Tasks.Task taskDbo = db.GetById<DBOs.Tasks.Task>(dbo.TaskId);
                 DBOs.Contacts.Contact contactDbo = db.GetById<DBOs.Contacts.Contact>(dbo.ContactId);
 
-                model = Mapper.Map<ViewModels.Matters.MatterContactViewModel>(dbo);
+                model = Mapper.Map<ViewModels.Tasks.TaskAssignedContactViewModel>(dbo);
                 model.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contactDbo);
-                model.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(matterDbo);
+                model.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(taskDbo);
 
                 // Core Details
                 PopulateCoreDetails(model);
@@ -201,7 +200,7 @@
 
         [SecurityFilter(SecurityAreaName = "Tasks.TaskContact", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Disable)]
-        public ActionResult Delete(int id)
+        public ActionResult Delete(Guid id)
         {
             return Details(id);
         }
@@ -209,13 +208,13 @@
         [SecurityFilter(SecurityAreaName = "Tasks.TaskContact", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Disable)]
         [HttpPost]
-        public ActionResult Delete(int id, ViewModels.Matters.MatterContactViewModel model)
+        public ActionResult Delete(Guid id, ViewModels.Tasks.TaskAssignedContactViewModel model)
         {
             try
             {
                 Common.Models.Security.User user = UserCache.Instance.Lookup(Request);
 
-                DBOs.Matters.MatterContact dbo = Mapper.Map<DBOs.Matters.MatterContact>(model);
+                DBOs.Tasks.TaskAssignedContact dbo = Mapper.Map<DBOs.Tasks.TaskAssignedContact>(model);
                 dbo.UtcDisabled = DateTime.UtcNow;
                 dbo.DisabledByUserId = user.Id.Value;
 
@@ -229,10 +228,10 @@
                         },
                         where => where.Id == dbo.Id);
 
-                    dbo = db.GetById<DBOs.Matters.MatterContact>(dbo.Id);
+                    dbo = db.GetById<DBOs.Tasks.TaskAssignedContact>(dbo.Id);
                 }
 
-                return RedirectToAction("Contacts", "Matters", new { id = dbo.MatterId.ToString() });
+                return RedirectToAction("Contacts", "Matters", new { id = dbo.TaskId.ToString() });
             }
             catch
             {
