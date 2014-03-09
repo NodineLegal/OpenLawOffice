@@ -1,4 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Tasks.TaskAssignedContactViewModel>" %>
+<%@ Import Namespace="OpenLawOffice.WebClient.Helpers" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
 	AssignContact
@@ -8,14 +9,7 @@
 
     <h2>AssignContact</h2>
 
-    <% using (Html.BeginForm()) {
-            List<object> list = new List<object>();
-            list.Add(new { Id = 1, Name = "Direct" });
-            list.Add(new { Id = 2, Name = "Assigned" });
-            SelectList assignmentList = new SelectList(list, "Id", "Name");
-           
-           
-           %>
+    <% using (Html.BeginForm()) { %>
         <%: Html.ValidationSummary(true) %>
 
         <table class="detail_table">
@@ -36,7 +30,7 @@
             <tr>
                 <td class="display-label">Assignment</td>
                 <td class="display-field">
-                    <%: Html.DropDownListFor(model => model.AssignmentType, assignmentList) %>
+                    <%: Html.EnumDropDownListFor(model => model.AssignmentType) %>
                     <%: Html.ValidationMessageFor(model => model.AssignmentType)%>
                 </td>
             </tr>

@@ -134,6 +134,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\EnumDropDownListForHelper.cs" />
     <Compile Include="ViewModels\Account\LoginModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserCache.cs" />
@@ -206,6 +207,9 @@
     <Content Include="Views\Shared\InsufficientRights.aspx" />
     <Content Include="Views\Shared\InvalidRequest.aspx" />
     <Content Include="Views\TaskContact\AssignContact.aspx" />
+    <Content Include="Views\TaskContact\Delete.aspx" />
+    <Content Include="Views\TaskContact\Details.aspx" />
+    <Content Include="Views\TaskContact\Edit.aspx" />
     <Content Include="Views\TaskContact\SelectContactToAssign.aspx" />
     <Content Include="Views\Tasks\Contacts.aspx" />
     <Content Include="Views\Tasks\Create.aspx" />

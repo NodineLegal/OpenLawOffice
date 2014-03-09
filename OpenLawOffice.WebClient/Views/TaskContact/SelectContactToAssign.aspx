@@ -29,7 +29,7 @@
                 <%: item.Address1AddressCity + ", " + item.Address1AddressStateOrProvince %>
             </td>
             <td>
-                <%: Html.ActionLink("Details", "Details", new { id = item.Id, TaskId = RouteData.Values["Id"].ToString() })%> |
+                <%: Html.ActionLink("Details", "Details", "Contacts", new { id = item.Id, TaskId = RouteData.Values["Id"].ToString() }, null)%> |
                 <%: Html.ActionLink("Assign", "AssignContact", new { id = item.Id, TaskId = RouteData.Values["Id"].ToString() })%>
             </td>
         </tr>

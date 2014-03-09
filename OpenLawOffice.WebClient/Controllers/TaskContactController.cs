@@ -231,7 +231,7 @@
                     dbo = db.GetById<DBOs.Tasks.TaskAssignedContact>(dbo.Id);
                 }
 
-                return RedirectToAction("Contacts", "Matters", new { id = dbo.TaskId.ToString() });
+                return RedirectToAction("Contacts", "Tasks", new { id = dbo.TaskId.ToString() });
             }
             catch
             {
