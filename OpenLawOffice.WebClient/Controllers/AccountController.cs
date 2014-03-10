@@ -4,11 +4,10 @@
     using System.Data;
     using System.Web;
     using System.Web.Mvc;
-    using OpenLawOffice.Server.Core;
+    using AutoMapper;
     using OpenLawOffice.WebClient.ViewModels.Account;
     using ServiceStack.OrmLite;
-    using DBOs = OpenLawOffice.Server.Core.DBOs;
-    using AutoMapper;
+    using ServiceStack.OrmLite.PostgreSQL;
 
     [HandleError]
     public class AccountController : BaseController
@@ -25,7 +24,7 @@
             {
                 using (IDbConnection db = Database.Instance.OpenConnection())
                 {
-                    DBOs.Security.User userDbo = db.QuerySingle<DBOs.Security.User>(new { Username = model.Username });
+                    DBOs.Security.User userDbo = db.Single<DBOs.Security.User>(new { Username = model.Username });
 
                     if (userDbo == null)
                     {
@@ -34,10 +33,10 @@
                     }
 
                     // Apply client hash (ideally this will be done on the client side in javascript eventually)
-                    string hashedPassword = OpenLawOffice.Server.Core.Services.Security.Authentication.ClientHashPassword(model.Password);
+                    string hashedPassword = WebClient.Security.ClientHashPassword(model.Password);
 
                     // Apply server hash
-                    hashedPassword = OpenLawOffice.Server.Core.Services.Security.Authentication.ServerHashPassword(hashedPassword, userDbo.PasswordSalt);
+                    hashedPassword = WebClient.Security.ServerHashPassword(hashedPassword, userDbo.PasswordSalt);
 
                     if (hashedPassword != userDbo.Password)
                     {
@@ -52,7 +51,7 @@
                     HttpContext.Response.AppendCookie(new HttpCookie("Username", userDbo.Username));
 
                     userDbo.UserAuthToken = newAuthToken;
-                    userDbo.UserAuthTokenExpiry = DateTime.Now.AddMinutes(15);
+                    userDbo.UserAuthTokenExpiry = DateTime.UtcNow.AddMinutes(15);
 
                     db.UpdateOnly(userDbo,
                         fields => new { fields.UserAuthToken, fields.UserAuthTokenExpiry },

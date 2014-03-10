@@ -7,8 +7,6 @@
     using System.Web.Mvc;
     using System.Data;
     using ServiceStack.OrmLite;
-    using OpenLawOffice.Server.Core;
-    using DBOs = OpenLawOffice.Server.Core.DBOs;
     using AutoMapper;
 
     public class ContactsController : BaseController
@@ -58,7 +56,7 @@
 
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
-                List<DBOs.Contacts.Contact> list = db.Query<DBOs.Contacts.Contact>(
+                List<DBOs.Contacts.Contact> list = db.SqlList<DBOs.Contacts.Contact>(
                     "SELECT * FROM \"contact\" WHERE \"utc_disabled\" is null");
 
                 list.ForEach(dbo =>
@@ -80,7 +78,7 @@
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 // Load base DBO
-                DBOs.Contacts.Contact dbo = db.QuerySingle<DBOs.Contacts.Contact>(
+                DBOs.Contacts.Contact dbo = db.Single<DBOs.Contacts.Contact>(
                     "SELECT * FROM \"contact\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id });
 
@@ -141,7 +139,7 @@
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 // Load base DBO
-                DBOs.Contacts.Contact dbo = db.QuerySingle<DBOs.Contacts.Contact>(
+                DBOs.Contacts.Contact dbo = db.Single<DBOs.Contacts.Contact>(
                     "SELECT * FROM \"contact\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id });
 
@@ -168,7 +166,7 @@
 
                 using (IDbConnection db = Database.Instance.OpenConnection())
                 {
-                    DBOs.Contacts.Contact currentDbo = db.GetById<DBOs.Contacts.Contact>(id);
+                    DBOs.Contacts.Contact currentDbo = db.SingleById<DBOs.Contacts.Contact>(id);
 
                     // load existing, move over constant information and update the whole thing
                     // we can change this to remove the db call to load the current object later

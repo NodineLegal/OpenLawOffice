@@ -33,56 +33,40 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoMapper, Version=3.1.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
-      <HintPath>..\OpenLawOffice.Server\packages\AutoMapper.3.1.0\lib\net40\AutoMapper.dll</HintPath>
+    <Reference Include="AutoMapper, Version=3.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\OpenLawOffice.Server\packages\AutoMapper.3.1.1\lib\net40\AutoMapper.dll</HintPath>
     </Reference>
-    <Reference Include="AutoMapper.Net4, Version=3.1.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
-      <HintPath>..\OpenLawOffice.Server\packages\AutoMapper.3.1.0\lib\net40\AutoMapper.Net4.dll</HintPath>
+    <Reference Include="AutoMapper.Net4, Version=3.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\OpenLawOffice.Server\packages\AutoMapper.3.1.1\lib\net40\AutoMapper.Net4.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Mono.Security, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\OpenLawOffice.Server\packages\Npgsql.2.0.14.3\lib\net40\Mono.Security.dll</HintPath>
     </Reference>
     <Reference Include="Npgsql, Version=2.0.14.3, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\OpenLawOffice.Server\packages\Npgsql.2.0.14.3\lib\net40\Npgsql.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack, Version=3.9.70.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ServiceStack.Common, Version=4.0.12.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\ServiceStack.dll</HintPath>
+      <HintPath>..\OpenLawOffice.Server\packages\ServiceStack.Common.4.0.12\lib\net40\ServiceStack.Common.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.Common, Version=3.9.70.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ServiceStack.Interfaces, Version=4.0.0.0, Culture=neutral, PublicKeyToken=e06fbc6124f57c43, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\ServiceStack.Common.dll</HintPath>
+      <HintPath>..\OpenLawOffice.Server\packages\ServiceStack.Interfaces.4.0.12\lib\net40\ServiceStack.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.Interfaces, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ServiceStack.OrmLite, Version=4.0.12.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\ServiceStack.Interfaces.dll</HintPath>
+      <HintPath>..\OpenLawOffice.Server\packages\ServiceStack.OrmLite.4.0.12\lib\net40\ServiceStack.OrmLite.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.OrmLite, Version=3.9.70.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ServiceStack.OrmLite.PostgreSQL, Version=4.0.12.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\ServiceStack.OrmLite.dll</HintPath>
+      <HintPath>..\OpenLawOffice.Server\packages\ServiceStack.OrmLite.PostgreSQL.4.0.12\lib\net40\ServiceStack.OrmLite.PostgreSQL.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.OrmLite.PostgreSQL, Version=3.9.70.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ServiceStack.Text, Version=4.0.12.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\ServiceStack.OrmLite.PostgreSQL.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.OrmLite.SqlServer, Version=3.9.70.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\ServiceStack.OrmLite.SqlServer.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Redis, Version=3.9.70.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\ServiceStack.Redis.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.ServiceInterface, Version=3.9.70.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\ServiceStack.ServiceInterface.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Text, Version=3.9.70.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\ServiceStack.Text.dll</HintPath>
+      <HintPath>..\OpenLawOffice.Server\packages\ServiceStack.Text.4.0.12\lib\net40\ServiceStack.Text.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -115,6 +99,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuthorizeResult.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ContactsController.cs" />
@@ -127,14 +112,41 @@
     <Compile Include="Controllers\SecurityFilterAttribute.cs" />
     <Compile Include="Controllers\SecurityAreasController.cs" />
     <Compile Include="Controllers\TagCategoriesController.cs" />
-    <Compile Include="Controllers\TaskContactController.cs" />
+    <Compile Include="Controllers\TaskAssignedContactController.cs" />
     <Compile Include="Controllers\TasksController.cs" />
     <Compile Include="Controllers\TimingController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
+    <Compile Include="Database.cs" />
+    <Compile Include="DBOs\Contacts\Contact.cs" />
+    <Compile Include="DBOs\Core.cs" />
+    <Compile Include="DBOs\DboBase.cs" />
+    <Compile Include="DBOs\DboWithDatesOnly.cs" />
+    <Compile Include="DBOs\Matters\Matter.cs" />
+    <Compile Include="DBOs\Matters\MatterContact.cs" />
+    <Compile Include="DBOs\Matters\MatterTag.cs" />
+    <Compile Include="DBOs\Matters\ResponsibleUser.cs" />
+    <Compile Include="DBOs\NullDbo.cs" />
+    <Compile Include="DBOs\Security\Area.cs" />
+    <Compile Include="DBOs\Security\AreaAcl.cs" />
+    <Compile Include="DBOs\Security\SecuredResource.cs" />
+    <Compile Include="DBOs\Security\SecuredResourceAcl.cs" />
+    <Compile Include="DBOs\Security\User.cs" />
+    <Compile Include="DBOs\Tagging\TagBase.cs" />
+    <Compile Include="DBOs\Tagging\TagCategory.cs" />
+    <Compile Include="DBOs\Tasks\Task.cs" />
+    <Compile Include="DBOs\Tasks\TaskAssignedContact.cs" />
+    <Compile Include="DBOs\Tasks\TaskMatter.cs" />
+    <Compile Include="DBOs\Tasks\TaskResponsibleUser.cs" />
+    <Compile Include="DBOs\Tasks\TaskTag.cs" />
+    <Compile Include="DBOs\Tasks\TaskTime.cs" />
+    <Compile Include="DBOs\Timing\Time.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\EnumDropDownListForHelper.cs" />
+    <Compile Include="Installation\Database.cs" />
+    <Compile Include="Security.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="ViewModels\Account\LoginModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserCache.cs" />
@@ -206,11 +218,12 @@
     <Content Include="Views\Shared\EditorTemplates\PermissionViewModel.ascx" />
     <Content Include="Views\Shared\InsufficientRights.aspx" />
     <Content Include="Views\Shared\InvalidRequest.aspx" />
-    <Content Include="Views\TaskContact\AssignContact.aspx" />
-    <Content Include="Views\TaskContact\Delete.aspx" />
-    <Content Include="Views\TaskContact\Details.aspx" />
-    <Content Include="Views\TaskContact\Edit.aspx" />
-    <Content Include="Views\TaskContact\SelectContactToAssign.aspx" />
+    <Content Include="Views\TaskAssignedContact\AssignContact.aspx" />
+    <Content Include="Views\TaskAssignedContact\Delete.aspx" />
+    <Content Include="Views\TaskAssignedContact\Details.aspx" />
+    <Content Include="Views\TaskAssignedContact\Edit.aspx" />
+    <Content Include="Views\TaskAssignedContact\SelectContactToAssign.aspx" />
+    <Content Include="Views\TaskResponsibleUser\Create.aspx" />
     <Content Include="Views\Tasks\Contacts.aspx" />
     <Content Include="Views\Tasks\Create.aspx" />
     <Content Include="Views\Tasks\Details.aspx" />
@@ -244,10 +257,6 @@
     <ProjectReference Include="..\OpenLawOffice.Common\OpenLawOffice.Common.csproj">
       <Project>{042206B5-2D13-42E0-B1B9-30254952BACA}</Project>
       <Name>OpenLawOffice.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\OpenLawOffice.Server\OpenLawOffice.Server.Core\OpenLawOffice.Server.Core.csproj">
-      <Project>{13E362D3-81BF-415A-B04B-9DBDF21D90ED}</Project>
-      <Name>OpenLawOffice.Server.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

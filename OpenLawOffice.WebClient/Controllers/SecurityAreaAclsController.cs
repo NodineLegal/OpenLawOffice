@@ -7,8 +7,6 @@
     using System.Web.Mvc;
     using System.Data;
     using ServiceStack.OrmLite;
-    using OpenLawOffice.Server.Core;
-    using DBOs = OpenLawOffice.Server.Core.DBOs;
     using AutoMapper;
 
     public class SecurityAreaAclsController : BaseController
@@ -22,16 +20,16 @@
             List<ViewModels.Security.AreaAclViewModel> modelList = new List<ViewModels.Security.AreaAclViewModel>();
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
-                List<DBOs.Security.AreaAcl> list = db.Query<DBOs.Security.AreaAcl>(
+                List<DBOs.Security.AreaAcl> list = db.SqlList<DBOs.Security.AreaAcl>(
                     "SELECT * FROM \"area_acl\" WHERE \"utc_disabled\" is null");
 
                 list.ForEach(dbo =>
                 {
                     // Get User
-                    DBOs.Security.User userDbo = db.GetById<DBOs.Security.User>(dbo.UserId);
+                    DBOs.Security.User userDbo = db.LoadSingleById<DBOs.Security.User>(dbo.UserId);
 
                     // Get Area
-                    DBOs.Security.Area areaDbo = db.GetById<DBOs.Security.Area>(dbo.SecurityAreaId);
+                    DBOs.Security.Area areaDbo = db.LoadSingleById<DBOs.Security.Area>(dbo.SecurityAreaId);
 
                     ViewModels.Security.AreaAclViewModel model = Mapper.Map<ViewModels.Security.AreaAclViewModel>(dbo);
 
@@ -56,7 +54,7 @@
             ViewModels.Security.AreaAclViewModel model = null;
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
-                List<DBOs.Security.User> list = db.Query<DBOs.Security.User>(
+                List<DBOs.Security.User> list = db.SqlList<DBOs.Security.User>(
                     "SELECT * FROM \"user\" " +
                     "WHERE \"utc_disabled\" is null");
 
@@ -66,15 +64,15 @@
                 });
 
                 // Load base DBO
-                DBOs.Security.AreaAcl dboAcl = db.QuerySingle<DBOs.Security.AreaAcl>(
+                DBOs.Security.AreaAcl dboAcl = db.Single<DBOs.Security.AreaAcl>(
                     "SELECT * FROM \"area_acl\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id });
 
                 // Get User
-                DBOs.Security.User userDbo = db.GetById<DBOs.Security.User>(dboAcl.UserId);
+                DBOs.Security.User userDbo = db.SingleById<DBOs.Security.User>(dboAcl.UserId);
 
                 // Get Area
-                DBOs.Security.Area areaDbo = db.GetById<DBOs.Security.Area>(dboAcl.SecurityAreaId);
+                DBOs.Security.Area areaDbo = db.SingleById<DBOs.Security.Area>(dboAcl.SecurityAreaId);
 
                 model = Mapper.Map<ViewModels.Security.AreaAclViewModel>(dboAcl);
 
@@ -98,7 +96,7 @@
             List<ViewModels.Security.UserViewModel> userList = new List<ViewModels.Security.UserViewModel>();
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
-                List<DBOs.Security.User> list = db.Query<DBOs.Security.User>(
+                List<DBOs.Security.User> list = db.SqlList<DBOs.Security.User>(
                     "SELECT * FROM \"user\" " +
                     "WHERE \"utc_disabled\" is null");
 
@@ -158,11 +156,11 @@
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 // Load base DBO
-                DBOs.Security.AreaAcl dboAcl = db.QuerySingle<DBOs.Security.AreaAcl>(
+                DBOs.Security.AreaAcl dboAcl = db.Single<DBOs.Security.AreaAcl>(
                     "SELECT * FROM \"area_acl\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id });
 
-                List<DBOs.Security.User> list = db.Query<DBOs.Security.User>(
+                List<DBOs.Security.User> list = db.SqlList<DBOs.Security.User>(
                     "SELECT * FROM \"user\" " +
                     "WHERE \"utc_disabled\" is null");
 
@@ -172,10 +170,10 @@
                 });
 
                 // Get User
-                DBOs.Security.User userDbo = db.GetById<DBOs.Security.User>(dboAcl.UserId);
+                DBOs.Security.User userDbo = db.SingleById<DBOs.Security.User>(dboAcl.UserId);
 
                 // Get Area
-                DBOs.Security.Area areaDbo = db.GetById<DBOs.Security.Area>(dboAcl.SecurityAreaId);
+                DBOs.Security.Area areaDbo = db.SingleById<DBOs.Security.Area>(dboAcl.SecurityAreaId);
 
                 model = Mapper.Map<ViewModels.Security.AreaAclViewModel>(dboAcl);
 

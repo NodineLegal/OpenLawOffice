@@ -7,8 +7,6 @@
     using System.Web.Mvc;
     using System.Data;
     using ServiceStack.OrmLite;
-    using OpenLawOffice.Server.Core;
-    using DBOs = OpenLawOffice.Server.Core.DBOs;
     using AutoMapper;
 
     public class TasksController : BaseController
@@ -99,12 +97,12 @@
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 // Get the Matter Id - allows to test against task_matter
-                DBOs.Tasks.TaskMatter taskMatter = db.QuerySingle<DBOs.Tasks.TaskMatter>(new { TaskId = id });
+                DBOs.Tasks.TaskMatter taskMatter = db.Single<DBOs.Tasks.TaskMatter>(new { TaskId = id });
 
                 if (taskMatter == null)
                     throw new ArgumentException("No matter exists paired to the specified task id");
 
-                List<DBOs.Tasks.Task> list = db.Query<DBOs.Tasks.Task>(
+                List<DBOs.Tasks.Task> list = db.SqlList<DBOs.Tasks.Task>(
                     "SELECT * FROM \"task\" WHERE \"parent_id\"=@TaskId AND " +
                     "\"id\" in (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId) AND " +
                     "\"utc_disabled\" is null",
@@ -116,7 +114,7 @@
                     
                     if (model.IsGroupingTask)
                     {
-                        List<DBOs.Tasks.Task> seq = db.Query<DBOs.Tasks.Task>(
+                        List<DBOs.Tasks.Task> seq = db.SqlList<DBOs.Tasks.Task>(
                             "SELECT * FROM \"task\" WHERE \"sequential_predecessor_id\"=@TaskId",
                             new { TaskId = model.Id.Value });
 
@@ -127,7 +125,7 @@
                     }
                     else
                     {
-                        List<DBOs.Tasks.Task> seq = db.Query<DBOs.Tasks.Task>(
+                        List<DBOs.Tasks.Task> seq = db.SqlList<DBOs.Tasks.Task>(
                             "SELECT * FROM \"task\" WHERE \"id\"=@TaskId AND \"sequential_predecessor_id\" is not null",
                             new { TaskId = model.Id.Value });
 
@@ -192,7 +190,7 @@
                  * 
                  */
 
-                List<DBOs.Tasks.Task> list = db.Query<DBOs.Tasks.Task>(
+                List<DBOs.Tasks.Task> list = db.SqlList<DBOs.Tasks.Task>(
                     "SELECT * FROM \"task\" WHERE \"parent_id\" is null AND " +
                     "\"id\" in (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId) AND " +
                     "\"utc_disabled\" is null",
@@ -204,7 +202,7 @@
 
                     if (model.IsGroupingTask)
                     {
-                        List<DBOs.Tasks.Task> seq = db.Query<DBOs.Tasks.Task>(
+                        List<DBOs.Tasks.Task> seq = db.SqlList<DBOs.Tasks.Task>(
                             "SELECT * FROM \"task\" WHERE \"sequential_predecessor_id\"=@TaskId",
                             new { TaskId = model.Id.Value });
 
@@ -215,7 +213,7 @@
                     }
                     else
                     {
-                        List<DBOs.Tasks.Task> seq = db.Query<DBOs.Tasks.Task>(
+                        List<DBOs.Tasks.Task> seq = db.SqlList<DBOs.Tasks.Task>(
                             "SELECT * FROM \"task\" WHERE \"id\"=@TaskId AND \"sequential_predecessor_id\" is not null",
                             new { TaskId = model.Id.Value });
 
@@ -244,11 +242,11 @@
             {
 
                 // Load base DBO
-                DBOs.Tasks.Task dbo = db.QuerySingle<DBOs.Tasks.Task>(
+                DBOs.Tasks.Task dbo = db.Single<DBOs.Tasks.Task>(
                     "SELECT * FROM \"task\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id });
 
-                DBOs.Tasks.TaskMatter dboTaskMatter = db.QuerySingle<DBOs.Tasks.TaskMatter>(
+                DBOs.Tasks.TaskMatter dboTaskMatter = db.Single<DBOs.Tasks.TaskMatter>(
                     "SELECT * FROM \"task_matter\" WHERE \"task_id\"=@TaskId",
                     new { TaskId = dbo.Id });
 
@@ -257,13 +255,13 @@
 
                 if (dbo.ParentId.HasValue)
                 {
-                    DBOs.Tasks.Task parentDbo = db.GetById<DBOs.Tasks.Task>(dbo.ParentId);
+                    DBOs.Tasks.Task parentDbo = db.SingleById<DBOs.Tasks.Task>(dbo.ParentId);
                     model.Parent = Mapper.Map<ViewModels.Tasks.TaskViewModel>(parentDbo);
                 }
 
                 if (dbo.SequentialPredecessorId.HasValue)
                 {
-                    DBOs.Tasks.Task sequentialPredecessorDbo = db.GetById<DBOs.Tasks.Task>(dbo.SequentialPredecessorId);
+                    DBOs.Tasks.Task sequentialPredecessorDbo = db.SingleById<DBOs.Tasks.Task>(dbo.SequentialPredecessorId);
                     model.SequentialPredecessor = Mapper.Map<ViewModels.Tasks.TaskViewModel>(sequentialPredecessorDbo);
                 }
 
@@ -281,7 +279,7 @@
             bool groupingTaskChanged = false;
 
             // Projected Start - can probably clean this up into a single query
-            DBOs.Tasks.Task temp = db.QuerySingle<DBOs.Tasks.Task>(
+            DBOs.Tasks.Task temp = db.Single<DBOs.Tasks.Task>(
                 "SELECT * FROM \"task\" WHERE \"parent_id\"=@ParentId AND \"utc_disabled\" is null ORDER BY \"projected_start\" DESC limit 1",
                 new { ParentId = groupingTaskDbo.Id });
 
@@ -292,7 +290,7 @@
 
             if (temp.ProjectedStart.HasValue)
             {
-                temp = db.QuerySingle<DBOs.Tasks.Task>(
+                temp = db.Single<DBOs.Tasks.Task>(
                     "SELECT * FROM \"task\" WHERE \"parent_id\"=@ParentId AND \"utc_disabled\" is null ORDER BY \"projected_start\" ASC limit 1",
                     new { ParentId = groupingTaskDbo.Id });
                 if (groupingTaskDbo.ProjectedStart != temp.ProjectedStart)
@@ -311,7 +309,7 @@
             }
 
             // Due Date
-            temp = db.QuerySingle<DBOs.Tasks.Task>(
+            temp = db.Single<DBOs.Tasks.Task>(
                 "SELECT * FROM \"task\" WHERE \"parent_id\"=@ParentId AND \"utc_disabled\" is null ORDER BY \"due_date\" DESC limit 1",
                 new { ParentId = groupingTaskDbo.Id });
             if (temp.DueDate != groupingTaskDbo.DueDate)
@@ -321,7 +319,7 @@
             }
 
             // Projected End
-            temp = db.QuerySingle<DBOs.Tasks.Task>(
+            temp = db.Single<DBOs.Tasks.Task>(
                 "SELECT * FROM \"task\" WHERE \"parent_id\"=@ParentId AND \"utc_disabled\" is null ORDER BY \"projected_end\" DESC limit 1",
                 new { ParentId = groupingTaskDbo.Id });
             if (temp.ProjectedEnd != groupingTaskDbo.ProjectedEnd)
@@ -331,7 +329,7 @@
             }
 
             // Actual End
-            temp = db.QuerySingle<DBOs.Tasks.Task>(
+            temp = db.Single<DBOs.Tasks.Task>(
                 "SELECT * FROM \"task\" WHERE \"parent_id\"=@ParentId AND \"utc_disabled\" is null ORDER BY \"actual_end\" DESC limit 1",
                 new { ParentId = groupingTaskDbo.Id });
             if (temp.ActualEnd != groupingTaskDbo.ActualEnd)
@@ -357,7 +355,7 @@
 
         public static DBOs.Tasks.Task GetParentTask(long taskId, IDbConnection db)
         {
-            return db.QuerySingle<DBOs.Tasks.Task>(
+            return db.Single<DBOs.Tasks.Task>(
                 "SELECT * FROM \"task\" WHERE \"id\" in (SELECT \"parent_id\" FROM \"task\" WHERE \"id\"=@Id AND \"utc_disabled\" is null) AND \"utc_disabled\" is null",
                 new { Id = taskId });
         }
@@ -380,11 +378,11 @@
             {
 
                 // Load base DBO
-                DBOs.Tasks.Task dbo = db.QuerySingle<DBOs.Tasks.Task>(
+                DBOs.Tasks.Task dbo = db.Single<DBOs.Tasks.Task>(
                     "SELECT * FROM \"task\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id });
 
-                DBOs.Tasks.TaskMatter dboTaskMatter = db.QuerySingle<DBOs.Tasks.TaskMatter>(
+                DBOs.Tasks.TaskMatter dboTaskMatter = db.Single<DBOs.Tasks.TaskMatter>(
                     "SELECT * FROM \"task_matter\" WHERE \"task_id\"=@TaskId",
                     new { TaskId = dbo.Id });
 
@@ -393,13 +391,13 @@
 
                 if (dbo.ParentId.HasValue)
                 {
-                    DBOs.Tasks.Task parentDbo = db.GetById<DBOs.Tasks.Task>(dbo.ParentId);
+                    DBOs.Tasks.Task parentDbo = db.SingleById<DBOs.Tasks.Task>(dbo.ParentId);
                     model.Parent = Mapper.Map<ViewModels.Tasks.TaskViewModel>(parentDbo);
                 }
 
                 if (dbo.SequentialPredecessorId.HasValue)
                 {
-                    DBOs.Tasks.Task sequentialPredecessorDbo = db.GetById<DBOs.Tasks.Task>(dbo.SequentialPredecessorId);
+                    DBOs.Tasks.Task sequentialPredecessorDbo = db.SingleById<DBOs.Tasks.Task>(dbo.SequentialPredecessorId);
                     model.SequentialPredecessor = Mapper.Map<ViewModels.Tasks.TaskViewModel>(sequentialPredecessorDbo);
                 }
 
@@ -462,7 +460,7 @@
                     using (IDbTransaction tran = db.BeginTransaction())
                     {
                         // We need to pull the current task for compairison
-                        DBOs.Tasks.Task currentTaskDbo = db.GetById<DBOs.Tasks.Task>(id);
+                        DBOs.Tasks.Task currentTaskDbo = db.SingleById<DBOs.Tasks.Task>(id);
 
 
                         // When we actually implement sequential lists, we need to remove the following lines
@@ -473,11 +471,11 @@
                         // Need to test for parent being sequence (not allowed)
                         if (dbo.ParentId.HasValue)
                         {
-                            DBOs.Tasks.Task proposedParentTask = db.GetById<DBOs.Tasks.Task>(dbo.ParentId);
-                            DBOs.Tasks.Task seqChild = db.QuerySingle<DBOs.Tasks.Task>(
+                            DBOs.Tasks.Task proposedParentTask = db.SingleById<DBOs.Tasks.Task>(dbo.ParentId);
+                            DBOs.Tasks.Task seqChild = db.Single<DBOs.Tasks.Task>(
                                 "SELECT * FROM \"task\" WHERE \"sequential_predecessor_id\"=@Id AND \"utc_disabled\" is null ORDER BY \"id\" ASC limit 1",
                                 new { Id = proposedParentTask.Id });
-                            DBOs.Tasks.TaskMatter dboTaskMatter = db.QuerySingle<DBOs.Tasks.TaskMatter>(
+                            DBOs.Tasks.TaskMatter dboTaskMatter = db.Single<DBOs.Tasks.TaskMatter>(
                                 "SELECT * FROM \"task_matter\" WHERE \"task_id\"=@TaskId",
                                 new { TaskId = dbo.Id });
 
@@ -570,11 +568,11 @@
                         //            // Need to test for parent being sequence (not allowed)
                         //            if (dbo.ParentId.HasValue)
                         //            {
-                        //                DBOs.Tasks.Task proposedParentTask = db.GetById<DBOs.Tasks.Task>(dbo.ParentId);
-                        //                DBOs.Tasks.Task seqChild = db.QuerySingle<DBOs.Tasks.Task>(
+                        //                DBOs.Tasks.Task proposedParentTask = db.SingleById<DBOs.Tasks.Task>(dbo.ParentId);
+                        //                DBOs.Tasks.Task seqChild = db.Single<DBOs.Tasks.Task>(
                         //                    "SELECT * FROM \"task\" WHERE \"sequential_predecessor_id\"=@Id AND \"utc_disabled\" is null ORDER BY \"id\" ASC limit 1",
                         //                    new { Id = proposedParentTask.Id });
-                        //                DBOs.Tasks.TaskMatter dboTaskMatter = db.QuerySingle<DBOs.Tasks.TaskMatter>(
+                        //                DBOs.Tasks.TaskMatter dboTaskMatter = db.Single<DBOs.Tasks.TaskMatter>(
                         //                    "SELECT * FROM \"task_matter\" WHERE \"task_id\"=@TaskId",
                         //                    new { TaskId = dbo.Id });
                         //                ModelState.AddModelError("Parent.Id", "Parent cannot be set to a sequential group.");
@@ -618,11 +616,11 @@
                         //        // Need to test for parent being sequence (not allowed)
                         //        if (dbo.ParentId.HasValue)
                         //        {
-                        //            DBOs.Tasks.Task proposedParentTask = db.GetById<DBOs.Tasks.Task>(dbo.ParentId);
-                        //            DBOs.Tasks.Task seqChild = db.QuerySingle<DBOs.Tasks.Task>(
+                        //            DBOs.Tasks.Task proposedParentTask = db.SingleById<DBOs.Tasks.Task>(dbo.ParentId);
+                        //            DBOs.Tasks.Task seqChild = db.Single<DBOs.Tasks.Task>(
                         //                "SELECT * FROM \"task\" WHERE \"sequential_predecessor_id\"=@Id AND \"utc_disabled\" is null ORDER BY \"id\" ASC limit 1",
                         //                new { Id = proposedParentTask.Id });
-                        //            DBOs.Tasks.TaskMatter dboTaskMatter = db.QuerySingle<DBOs.Tasks.TaskMatter>(
+                        //            DBOs.Tasks.TaskMatter dboTaskMatter = db.Single<DBOs.Tasks.TaskMatter>(
                         //                "SELECT * FROM \"task_matter\" WHERE \"task_id\"=@TaskId",
                         //                new { TaskId = dbo.Id });
 
@@ -704,7 +702,7 @@
                         taskDbo.UtcCreated = taskDbo.UtcModified = DateTime.UtcNow;
 
                         db.Insert<DBOs.Tasks.Task>(taskDbo);
-                        taskDbo.Id = db.GetLastInsertId();
+                        taskDbo.Id = db.LastInsertId();
 
                         DBOs.Tasks.TaskMatter taskMatterDbo = new DBOs.Tasks.TaskMatter()
                         {
@@ -746,7 +744,7 @@
             List<ViewModels.Tasks.TaskAssignedContactViewModel> modelList = new List<ViewModels.Tasks.TaskAssignedContactViewModel>();
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
-                List<DBOs.Tasks.TaskAssignedContact> list = db.Query<DBOs.Tasks.TaskAssignedContact>(
+                List<DBOs.Tasks.TaskAssignedContact> list = db.SqlList<DBOs.Tasks.TaskAssignedContact>(
                     "SELECT * FROM \"task_assigned_contact\" WHERE \"task_id\"=@TaskId AND \"utc_disabled\" is null",
                     new { TaskId = id });
 
@@ -754,7 +752,7 @@
                 {
                     ViewModels.Tasks.TaskAssignedContactViewModel vm = Mapper.Map<ViewModels.Tasks.TaskAssignedContactViewModel>(dbo);
 
-                    DBOs.Contacts.Contact contactDbo = db.GetById<DBOs.Contacts.Contact>(dbo.ContactId);
+                    DBOs.Contacts.Contact contactDbo = db.SingleById<DBOs.Contacts.Contact>(dbo.ContactId);
 
                     vm.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contactDbo);
                     modelList.Add(vm);
@@ -768,7 +766,7 @@
 
         //public static DBOs.Tasks.Task GetSequentialPredecessor(DBOs.Tasks.Task taskDbo, IDbConnection db)
         //{
-        //    return db.QuerySingle<DBOs.Tasks.Task>(
+        //    return db.Single<DBOs.Tasks.Task>(
         //        "SELECT * FROM \"task\" WHERE \"id\"=@SeqPredId AND \"utc_disabled\" is null",
         //        new { SeqPredId = taskDbo.SequentialPredecessorId });
         //}
@@ -783,7 +781,7 @@
         //    // What if a member is not selected, but the sequential grouping task itself is selected?
         //    if (groupingTaskDbo == null)
         //    {
-        //        groupingTaskDbo = db.GetById<DBOs.Tasks.Task>(idOfPredecessor);
+        //        groupingTaskDbo = db.SingleById<DBOs.Tasks.Task>(idOfPredecessor);
         //        if (!groupingTaskDbo.IsGroupingTask)
         //            return "Predecessor must be either a sequence member or grouping sequence.";
         //    }
@@ -809,7 +807,7 @@
         //    DBOs.Tasks.Task tempTask;
 
         //    // Load task currently in the position
-        //    tempTask = db.QuerySingle<DBOs.Tasks.Task>(
+        //    tempTask = db.Single<DBOs.Tasks.Task>(
         //        "SELECT * FROM \"task\" WHERE \"sequential_predecessor_id\"=@Id AND \"utc_disabled\" is null",
         //        new { Id = idOfPredecessor });
 
@@ -828,7 +826,7 @@
         //            where => where.Id == taskToInsertDbo.Id);
 
         //        // Load the next task to update into memory
-        //        nextTask = db.QuerySingle<DBOs.Tasks.Task>(
+        //        nextTask = db.Single<DBOs.Tasks.Task>(
         //            "SELECT * FROM \"task\" WHERE \"sequential_predecessor_id\"=@Id AND \"utc_disabled\" is null",
         //            new { Id = tempTask.Id });
 
@@ -849,7 +847,7 @@
         //            tempTask = nextTask;
 
         //            // Load new next task
-        //            nextTask = db.QuerySingle<DBOs.Tasks.Task>(
+        //            nextTask = db.Single<DBOs.Tasks.Task>(
         //                "SELECT * FROM \"task\" WHERE \"sequential_predecessor_id\"=@Id AND \"utc_disabled\" is null",
         //                new { Id = tempTask.Id });
 
@@ -910,7 +908,7 @@
         //        },
         //        where => where.Id == taskToRemove.Id);
 
-        //    nextTask = db.QuerySingle<DBOs.Tasks.Task>(
+        //    nextTask = db.Single<DBOs.Tasks.Task>(
         //        "SELECT * FROM \"task\" WHERE \"sequential_predecessor_id\"=@Id AND \"utc_disabled\" is null",
         //        new { Id = taskToRemove.Id });
 
@@ -928,7 +926,7 @@
         //            where => where.Id == nextTask.Id);
 
         //        lastTask = nextTask;
-        //        nextTask = db.QuerySingle<DBOs.Tasks.Task>(
+        //        nextTask = db.Single<DBOs.Tasks.Task>(
         //            "SELECT * FROM \"task\" WHERE \"sequential_predecessor_id\"=@Id AND \"utc_disabled\" is null",
         //            new { Id = nextTask.Id });
         //    }

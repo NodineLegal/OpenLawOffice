@@ -7,8 +7,6 @@
     using System.Web.Mvc;
     using System.Data;
     using ServiceStack.OrmLite;
-    using OpenLawOffice.Server.Core;
-    using DBOs = OpenLawOffice.Server.Core.DBOs;
     using AutoMapper;
 
     public class ResponsibleUsersController : BaseController
@@ -23,12 +21,12 @@
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 // Load base DBO
-                DBOs.Matters.ResponsibleUser dbo = db.QuerySingle<DBOs.Matters.ResponsibleUser>(
+                DBOs.Matters.ResponsibleUser dbo = db.Single<DBOs.Matters.ResponsibleUser>(
                     "SELECT * FROM \"responsible_user\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id });
 
-                DBOs.Matters.Matter dboMatter = db.GetById<DBOs.Matters.Matter>(dbo.MatterId);
-                DBOs.Security.User dboUser = db.GetById<DBOs.Security.User>(dbo.UserId);
+                DBOs.Matters.Matter dboMatter = db.LoadSingleById<DBOs.Matters.Matter>(dbo.MatterId);
+                DBOs.Security.User dboUser = db.LoadSingleById<DBOs.Security.User>(dbo.UserId);
 
                 model = Mapper.Map<ViewModels.Matters.ResponsibleUserViewModel>(dbo);
                 model.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(dboMatter);
@@ -52,11 +50,11 @@
 
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
-                DBOs.Matters.Matter matterDbo = db.QuerySingle<DBOs.Matters.Matter>(
+                DBOs.Matters.Matter matterDbo = db.Single<DBOs.Matters.Matter>(
                     "SELECT * FROM \"matter\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id });
 
-                List<DBOs.Security.User> dboUserList = db.Query<DBOs.Security.User>(
+                List<DBOs.Security.User> dboUserList = db.SqlList<DBOs.Security.User>(
                    "SELECT * FROM \"user\" WHERE \"utc_disabled\" is null");
 
                 dboUserList.ForEach(x =>
@@ -92,7 +90,7 @@
                 
                 using (IDbConnection db = Database.Instance.OpenConnection())
                 {
-                    foundUserHits = db.Query<DBOs.Matters.ResponsibleUser>(
+                    foundUserHits = db.SqlList<DBOs.Matters.ResponsibleUser>(
                         "SELECT * FROM \"responsible_user\" WHERE \"matter_id\"=@MatterId AND \"user_id\"=@UserId",
                         new { MatterId = model.Matter.Id.Value, UserId = model.User.Id.Value });
 
@@ -106,11 +104,11 @@
                             
                             ModelState.AddModelError("User", "This user already has a responsibility.");
 
-                            DBOs.Matters.Matter matterDbo = db.QuerySingle<DBOs.Matters.Matter>(
+                            DBOs.Matters.Matter matterDbo = db.Single<DBOs.Matters.Matter>(
                                 "SELECT * FROM \"matter\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                                 new { Id = x.MatterId });
 
-                            List<DBOs.Security.User> dboUserList = db.Query<DBOs.Security.User>(
+                            List<DBOs.Security.User> dboUserList = db.SqlList<DBOs.Security.User>(
                                "SELECT * FROM \"user\" WHERE \"utc_disabled\" is null");
 
                             matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(matterDbo);
@@ -176,15 +174,15 @@
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 // Load base DBO
-                DBOs.Matters.ResponsibleUser dbo = db.QuerySingle<DBOs.Matters.ResponsibleUser>(
+                DBOs.Matters.ResponsibleUser dbo = db.Single<DBOs.Matters.ResponsibleUser>(
                     "SELECT * FROM \"responsible_user\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id });
 
-                List<DBOs.Security.User> dboUserList = db.Query<DBOs.Security.User>(
+                List<DBOs.Security.User> dboUserList = db.SqlList<DBOs.Security.User>(
                     "SELECT * FROM \"user\" WHERE \"utc_disabled\" is null");
 
-                DBOs.Matters.Matter dboMatter = db.GetById<DBOs.Matters.Matter>(dbo.MatterId);
-                DBOs.Security.User dboUser = db.GetById<DBOs.Security.User>(dbo.UserId);
+                DBOs.Matters.Matter dboMatter = db.SingleById<DBOs.Matters.Matter>(dbo.MatterId);
+                DBOs.Security.User dboUser = db.SingleById<DBOs.Security.User>(dbo.UserId);
 
                 model = Mapper.Map<ViewModels.Matters.ResponsibleUserViewModel>(dbo);
                 model.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(dboMatter);
@@ -221,10 +219,10 @@
 
                 using (IDbConnection db = Database.Instance.OpenConnection())
                 {
-                    DBOs.Matters.ResponsibleUser currentDbo = db.GetById<DBOs.Matters.ResponsibleUser>(id);
+                    DBOs.Matters.ResponsibleUser currentDbo = db.SingleById<DBOs.Matters.ResponsibleUser>(id);
                     
                     model.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(
-                        db.GetById<DBOs.Matters.Matter>(currentDbo.MatterId));
+                        db.SingleById<DBOs.Matters.Matter>(currentDbo.MatterId));
 
                     db.UpdateOnly(dbo,
                         fields => new
@@ -267,7 +265,7 @@
 
                 using (IDbConnection db = Database.Instance.OpenConnection())
                 {
-                    DBOs.Matters.ResponsibleUser dbo = db.QuerySingle<DBOs.Matters.ResponsibleUser>(
+                    DBOs.Matters.ResponsibleUser dbo = db.Single<DBOs.Matters.ResponsibleUser>(
                         "SELECT * FROM \"responsible_user\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                         new { Id = id });
 

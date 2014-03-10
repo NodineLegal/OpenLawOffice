@@ -24,7 +24,6 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasks
     using System;
     using AutoMapper;
     using OpenLawOffice.Common.Models;
-    using DBOs = OpenLawOffice.Server.Core.DBOs;
 
     /// <summary>
     /// Relates a user to a task
@@ -35,7 +34,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasks
         public Guid? Id { get; set; }
         public TaskViewModel Task { get; set; }
         public Security.UserViewModel User { get; set; }
-        public AssignmentTypeViewModel AssignmentType { get; set; }
+        public string Responsibility { get; set; }
 
         public void BuildMappings()
         {
@@ -86,7 +85,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasks
                         IsStub = true
                     };
                 }))
-                .ForMember(dst => dst.AssignmentType, opt => opt.MapFrom(src => src.AssignmentType));
+                .ForMember(dst => dst.Responsibility, opt => opt.MapFrom(src => src.Responsibility));
 
             Mapper.CreateMap<TaskResponsibleUserViewModel, DBOs.Tasks.TaskResponsibleUser>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
@@ -124,10 +123,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasks
                     else
                         return null;
                 }))
-                .ForMember(dst => dst.AssignmentType, opt => opt.ResolveUsing(model =>
-                {
-                    return (int)model.AssignmentType;
-                }));
+                .ForMember(dst => dst.Responsibility, opt => opt.MapFrom(src => src.Responsibility));
         }
     }
 }

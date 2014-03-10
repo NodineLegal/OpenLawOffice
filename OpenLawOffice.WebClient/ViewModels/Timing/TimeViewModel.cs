@@ -3,7 +3,6 @@
     using System;
     using AutoMapper;
     using OpenLawOffice.Common.Models;
-    using DBOs = OpenLawOffice.Server.Core.DBOs;
 
     [MapMe]
     public class TimeViewModel : CoreViewModel
@@ -14,7 +13,7 @@
         public Contacts.ContactViewModel Worker { get; set; }
         public string WorkerDisplayName { get; set; }
 
-        public new void BuildMappings()
+        public void BuildMappings()
         {
             Mapper.CreateMap<DBOs.Timing.Time, TimeViewModel>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))

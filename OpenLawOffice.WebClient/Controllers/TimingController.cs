@@ -7,8 +7,6 @@
     using System.Web.Mvc;
     using System.Data;
     using ServiceStack.OrmLite;
-    using OpenLawOffice.Server.Core;
-    using DBOs = OpenLawOffice.Server.Core.DBOs;
     using AutoMapper;
 
     public class TimingController : BaseController
@@ -59,14 +57,14 @@
 
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
-                List<DBOs.Timing.Time> list = db.Query<DBOs.Timing.Time>(
+                List<DBOs.Timing.Time> list = db.SqlList<DBOs.Timing.Time>(
                     "SELECT * FROM \"time\" WHERE \"id\" in (SELECT \"time_id\" FROM \"task_time\" WHERE \"task_id\"=@TaskId) AND " +
                     "\"utc_disabled\" is null ORDER BY \"start\" DESC",
                     new { TaskId = id });
 
                 list.ForEach(dbo =>
                 {
-                    DBOs.Contacts.Contact workerDbo = db.GetById<DBOs.Contacts.Contact>(dbo.WorkerContactId);
+                    DBOs.Contacts.Contact workerDbo = db.SingleById<DBOs.Contacts.Contact>(dbo.WorkerContactId);
                     ViewModels.Timing.TimeViewModel model = Mapper.Map<ViewModels.Timing.TimeViewModel>(dbo);
 
                     model.WorkerDisplayName = workerDbo.DisplayName;
@@ -86,16 +84,16 @@
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 // Load base DBO
-                DBOs.Timing.Time dbo = db.QuerySingle<DBOs.Timing.Time>(
+                DBOs.Timing.Time dbo = db.Single<DBOs.Timing.Time>(
                     "SELECT * FROM \"time\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id });
 
-                DBOs.Contacts.Contact workerDbo = db.GetById<DBOs.Contacts.Contact>(dbo.WorkerContactId);
+                DBOs.Contacts.Contact workerDbo = db.SingleById<DBOs.Contacts.Contact>(dbo.WorkerContactId);
                     
                 model = Mapper.Map<ViewModels.Timing.TimeViewModel>(dbo);
                 model.Worker = Mapper.Map<ViewModels.Contacts.ContactViewModel>(workerDbo);
 
-                DBOs.Tasks.Task task = db.QuerySingle<DBOs.Tasks.Task>(
+                DBOs.Tasks.Task task = db.Single<DBOs.Tasks.Task>(
                     "SELECT * FROM \"task\" WHERE \"id\" in (SELECT \"task_id\" FROM \"task_time\" WHERE \"time_id\"=@TimeId AND \"utc_disabled\" is null)",
                     new { TimeId = id });
 
@@ -117,13 +115,13 @@
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 // Load base DBO
-                DBOs.Timing.Time dbo = db.QuerySingle<DBOs.Timing.Time>(
+                DBOs.Timing.Time dbo = db.Single<DBOs.Timing.Time>(
                     "SELECT * FROM \"time\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id });
 
                 model = Mapper.Map<ViewModels.Timing.TimeViewModel>(dbo);
 
-                DBOs.Tasks.Task task = db.QuerySingle<DBOs.Tasks.Task>(
+                DBOs.Tasks.Task task = db.Single<DBOs.Tasks.Task>(
                     "SELECT * FROM \"task\" WHERE \"id\" in (SELECT \"task_id\" FROM \"task_time\" WHERE \"time_id\"=@TimeId AND \"utc_disabled\" is null)",
                     new { TimeId = id });
 

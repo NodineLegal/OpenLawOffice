@@ -3,7 +3,6 @@
     using System;
     using AutoMapper;
     using OpenLawOffice.Common.Models;
-    using DBOs = OpenLawOffice.Server.Core.DBOs;
 
     public class TagBaseViewModel : CoreViewModel
     {

@@ -7,8 +7,6 @@
     using System.Web.Mvc;
     using System.Data;
     using ServiceStack.OrmLite;
-    using Database = OpenLawOffice.Server.Core.Database;
-    using DBOs = OpenLawOffice.Server.Core.DBOs;
     using AutoMapper;
 
     public class BaseController : Controller
@@ -31,14 +29,14 @@
 
         public ViewModels.Security.UserViewModel GetUser(int id, IDbConnection db)
         {
-            DBOs.Security.User dbo = db.GetById<DBOs.Security.User>(id);
+            DBOs.Security.User dbo = db.SingleById<DBOs.Security.User>(id);
             if (dbo == null) return null;
             return Mapper.Map<ViewModels.Security.UserViewModel>(dbo);
         }
 
         public ViewModels.Security.UserViewModel GetUser(Guid authToken, IDbConnection db)
         {
-            DBOs.Security.User dbo = db.QuerySingle<DBOs.Security.User>(new { UserAuthToken = authToken });
+            DBOs.Security.User dbo = db.Single<DBOs.Security.User>(new { UserAuthToken = authToken });
             if (dbo == null) return null;
             return Mapper.Map<ViewModels.Security.UserViewModel>(dbo);
         }
@@ -87,7 +85,7 @@
 
         public ViewModels.Security.AreaAclViewModel GetAreaAcl(int areaId, int userId, IDbConnection db)
         {
-            DBOs.Security.AreaAcl dbo = db.QuerySingle<DBOs.Security.AreaAcl>(
+            DBOs.Security.AreaAcl dbo = db.Single<DBOs.Security.AreaAcl>(
                 new { SecurityAreaId = areaId, UserId = userId });
             if (dbo == null) return null;
             return Mapper.Map<ViewModels.Security.AreaAclViewModel>(dbo);
@@ -105,7 +103,7 @@
         public Common.Models.Security.SecuredResourceAcl GetSecuredResourceAcl(
             Guid securedResourceId, int userId, IDbConnection db)
         {
-            DBOs.Security.SecuredResourceAcl dbo = db.QuerySingle<DBOs.Security.SecuredResourceAcl>(
+            DBOs.Security.SecuredResourceAcl dbo = db.Single<DBOs.Security.SecuredResourceAcl>(
                 new { SecuredResourceId = securedResourceId, UserId = userId });
             if (dbo == null) return null;
             return Mapper.Map<Common.Models.Security.SecuredResourceAcl>(dbo);

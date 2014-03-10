@@ -29,9 +29,9 @@
                 <%: item.AssignmentType %>
             </td>
             <td>
-                <%: Html.ActionLink("Edit", "Edit", "TaskContact", new { id = item.Id }, null) %> |
-                <%: Html.ActionLink("Details", "Details", "TaskContact", new { id = item.Id }, null)%> |
-                <%: Html.ActionLink("Unassign", "Delete", "TaskContact", new { id = item.Id }, null)%>
+                <%: Html.ActionLink("Edit", "Edit", "TaskAssignedContact", new { id = item.Id }, null) %> |
+                <%: Html.ActionLink("Details", "Details", "TaskAssignedContact", new { id = item.Id }, null)%> |
+                <%: Html.ActionLink("Unassign", "Delete", "TaskAssignedContact", new { id = item.Id }, null)%>
             </td>
         </tr>
     
@@ -45,7 +45,7 @@
     <li>Navigation</li>
     <ul style="list-style: none outside none; padding-left: 1em;">
         <li><%: Html.ActionLink("New Contact", "Create", "Contacts", new { TaskId = RouteData.Values["Id"].ToString() }, null)%></li>
-        <li><%: Html.ActionLink("Assign Contact", "SelectContactToAssign", "TaskContact", new { id = RouteData.Values["Id"].ToString() }, null)%></li>
+        <li><%: Html.ActionLink("Assign Contact", "SelectContactToAssign", "TaskAssignedContact", new { id = RouteData.Values["Id"].ToString() }, null)%></li>
         <li><%: Html.ActionLink("Task", "Details", "Tasks", new { Id = RouteData.Values["Id"].ToString() }, null)%></li>
     </ul>
 </asp:Content>

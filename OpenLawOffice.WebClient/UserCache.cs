@@ -47,10 +47,10 @@
 
             if (_table.ContainsKey(authToken)) return _table[authToken];
 
-            using (IDbConnection db = OpenLawOffice.Server.Core.Database.Instance.OpenConnection())
+            using (IDbConnection db = Database.Instance.OpenConnection())
             {
-                OpenLawOffice.Server.Core.DBOs.Security.User dboUser = 
-                    db.QuerySingle<OpenLawOffice.Server.Core.DBOs.Security.User>(
+                DBOs.Security.User dboUser = 
+                    db.Single<DBOs.Security.User>(
                     new { UserAuthToken = authToken });
 
                 if (dboUser == null) return null;

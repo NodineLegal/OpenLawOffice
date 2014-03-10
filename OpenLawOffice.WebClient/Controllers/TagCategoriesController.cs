@@ -7,8 +7,6 @@
     using System.Web.Mvc;
     using System.Data;
     using ServiceStack.OrmLite;
-    using OpenLawOffice.Server.Core;
-    using DBOs = OpenLawOffice.Server.Core.DBOs;
     using AutoMapper;
 
     public class TagCategoriesController : BaseController
@@ -30,7 +28,7 @@
 
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
-                List<DBOs.Tagging.TagCategory> list = db.Query<DBOs.Tagging.TagCategory>(
+                List<DBOs.Tagging.TagCategory> list = db.SqlList<DBOs.Tagging.TagCategory>(
                     "SELECT * FROM \"tag_category\" WHERE LOWER(\"name\") LIKE '%' || LOWER(@Term) || '%' AND \"utc_disabled\" is null",
                     new { Term = term });
 

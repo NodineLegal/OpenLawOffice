@@ -7,8 +7,6 @@
     using System.Web.Mvc;
     using System.Data;
     using ServiceStack.OrmLite;
-    using OpenLawOffice.Server.Core;
-    using DBOs = OpenLawOffice.Server.Core.DBOs;
     using AutoMapper;
 
     public class MatterTagsController : BaseController
@@ -23,18 +21,18 @@
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 // Load base DBO
-                DBOs.Matters.MatterTag dbo = db.QuerySingle<DBOs.Matters.MatterTag>(
+                DBOs.Matters.MatterTag dbo = db.Single<DBOs.Matters.MatterTag>(
                     "SELECT * FROM \"matter_tag\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id});
 
-                DBOs.Matters.Matter dboMatter = db.GetById<DBOs.Matters.Matter>(dbo.MatterId);
+                DBOs.Matters.Matter dboMatter = db.SingleById<DBOs.Matters.Matter>(dbo.MatterId);
 
                 model = Mapper.Map<ViewModels.Matters.MatterTagViewModel>(dbo);
                 model.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(dboMatter);
 
                 if (dbo.TagCategoryId.HasValue)
                 {
-                    DBOs.Tagging.TagCategory dboTagCat = db.GetById<DBOs.Tagging.TagCategory>(dbo.TagCategoryId.Value);
+                    DBOs.Tagging.TagCategory dboTagCat = db.SingleById<DBOs.Tagging.TagCategory>(dbo.TagCategoryId.Value);
                     model.TagCategory = Mapper.Map<ViewModels.Tagging.TagCategoryViewModel>(dboTagCat);
                 }                
 
@@ -55,7 +53,7 @@
 
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
-                DBOs.Matters.Matter matterDbo = db.QuerySingle<DBOs.Matters.Matter>(
+                DBOs.Matters.Matter matterDbo = db.Single<DBOs.Matters.Matter>(
                     "SELECT * FROM \"matter\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id });
 
@@ -88,7 +86,7 @@
 
                 using (IDbConnection db = Database.Instance.OpenConnection())
                 {
-                    DBOs.Tagging.TagCategory tagCat = db.QuerySingle<DBOs.Tagging.TagCategory>(
+                    DBOs.Tagging.TagCategory tagCat = db.Single<DBOs.Tagging.TagCategory>(
                         "SELECT * FROM \"tag_category\" WHERE \"name\"=@Name AND \"utc_disabled\" is null",
                         new { Name = model.TagCategory.Name });
 
@@ -109,7 +107,7 @@
                         };
 
                         db.Insert<DBOs.Tagging.TagCategory>(tagCat);
-                        tagCat.Id = (int)db.GetLastInsertId();
+                        tagCat.Id = (int)db.LastInsertId();
 
                         dboMatterTag.TagCategoryId = tagCat.Id;
                     }
@@ -126,7 +124,7 @@
 
                 using (IDbConnection db = Database.Instance.OpenConnection())
                 {
-                    DBOs.Matters.Matter matterDbo = db.QuerySingle<DBOs.Matters.Matter>(
+                    DBOs.Matters.Matter matterDbo = db.Single<DBOs.Matters.Matter>(
                         "SELECT * FROM \"matter\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                         new { Id = Guid.Parse(RouteData.Values["Id"].ToString()) });
 
@@ -147,18 +145,18 @@
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 // Load base DBO
-                DBOs.Matters.MatterTag dbo = db.QuerySingle<DBOs.Matters.MatterTag>(
+                DBOs.Matters.MatterTag dbo = db.Single<DBOs.Matters.MatterTag>(
                     "SELECT * FROM \"matter_tag\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id });
 
-                DBOs.Matters.Matter dboMatter = db.GetById<DBOs.Matters.Matter>(dbo.MatterId);
+                DBOs.Matters.Matter dboMatter = db.SingleById<DBOs.Matters.Matter>(dbo.MatterId);
 
                 model = Mapper.Map<ViewModels.Matters.MatterTagViewModel>(dbo);
                 model.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(dboMatter);
 
                 if (dbo.TagCategoryId.HasValue)
                 {
-                    DBOs.Tagging.TagCategory dboTagCat = db.GetById<DBOs.Tagging.TagCategory>(dbo.TagCategoryId.Value);
+                    DBOs.Tagging.TagCategory dboTagCat = db.SingleById<DBOs.Tagging.TagCategory>(dbo.TagCategoryId.Value);
                     model.TagCategory = Mapper.Map<ViewModels.Tagging.TagCategoryViewModel>(dboTagCat);
                 }
 
@@ -183,7 +181,7 @@
 
                 using (IDbConnection db = Database.Instance.OpenConnection())
                 {
-                    DBOs.Matters.MatterTag dbo = db.QuerySingle<DBOs.Matters.MatterTag>(
+                    DBOs.Matters.MatterTag dbo = db.Single<DBOs.Matters.MatterTag>(
                         "SELECT * FROM \"matter_tag\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                         new { Id = id });
 
@@ -193,7 +191,7 @@
                     dbo.ModifiedByUserId = currentUser.Id.Value;
                     dbo.UtcModified = DateTime.UtcNow;
 
-                    DBOs.Tagging.TagCategory tagCat = db.QuerySingle<DBOs.Tagging.TagCategory>(
+                    DBOs.Tagging.TagCategory tagCat = db.Single<DBOs.Tagging.TagCategory>(
                         "SELECT * FROM \"tag_category\" WHERE \"name\"=@Name AND \"utc_disabled\" is null",
                         new { Name = model.TagCategory.Name });
 
@@ -214,7 +212,7 @@
                         };
 
                         db.Insert<DBOs.Tagging.TagCategory>(tagCat);
-                        tagCat.Id = (int)db.GetLastInsertId();
+                        tagCat.Id = (int)db.LastInsertId();
 
                         dbo.TagCategoryId = tagCat.Id;
                     }
@@ -260,7 +258,7 @@
 
                 using (IDbConnection db = Database.Instance.OpenConnection())
                 {
-                    DBOs.Matters.MatterTag dbo = db.QuerySingle<DBOs.Matters.MatterTag>(
+                    DBOs.Matters.MatterTag dbo = db.Single<DBOs.Matters.MatterTag>(
                         "SELECT * FROM \"matter_tag\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                         new { Id = id });
 

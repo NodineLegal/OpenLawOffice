@@ -24,7 +24,6 @@ namespace OpenLawOffice.WebClient.ViewModels.Contacts
     using System;
     using AutoMapper;
     using OpenLawOffice.Common.Models;
-    using DBOs = OpenLawOffice.Server.Core.DBOs;
     using System.ComponentModel.DataAnnotations;
 
     [MapMe]

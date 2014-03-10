@@ -33,7 +33,7 @@ namespace OpenLawOffice.Common.Models.Tasks
         public Guid? Id { get; set; }
         public Task Task { get; set; }
         public Security.User User { get; set; }
-        public AssignmentType AssignmentType { get; set; }
+        public string Responsibility { get; set; }
 
         public override void BuildMappings()
         {

@@ -7,8 +7,6 @@
     using System.Web.Mvc;
     using System.Data;
     using ServiceStack.OrmLite;
-    using OpenLawOffice.Server.Core;
-    using DBOs = OpenLawOffice.Server.Core.DBOs;
     using AutoMapper;
 
     public class UsersController : BaseController
@@ -22,7 +20,7 @@
             List<ViewModels.Security.UserViewModel> modelList = new List<ViewModels.Security.UserViewModel>();
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
-                List<DBOs.Security.User> list = db.Query<DBOs.Security.User>(
+                List<DBOs.Security.User> list = db.SqlList<DBOs.Security.User>(
                     "SELECT * FROM \"user\" "+
                     "WHERE \"utc_disabled\" is null");
 
@@ -45,7 +43,7 @@
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 // Load base DBO
-                DBOs.Security.User dbo = db.QuerySingle<DBOs.Security.User>(
+                DBOs.Security.User dbo = db.Single<DBOs.Security.User>(
                     "SELECT * FROM \"user\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id });
 
@@ -77,8 +75,8 @@
                 dboUser.UtcCreated = dboUser.UtcModified = DateTime.UtcNow;
                 dboUser.PasswordSalt = GetRandomString(10);
                 // TODO : This will eventually be done in javascript on the browser
-                dboUser.Password = OpenLawOffice.Server.Core.Services.Security.Authentication.ClientHashPassword("12345");
-                dboUser.Password = OpenLawOffice.Server.Core.Services.Security.Authentication.ServerHashPassword(
+                dboUser.Password = WebClient.Security.ClientHashPassword("12345");
+                dboUser.Password = WebClient.Security.ServerHashPassword(
                     dboUser.Password, dboUser.PasswordSalt);
                 
                 using (IDbConnection db = Database.Instance.OpenConnection())
@@ -105,7 +103,7 @@
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 // Load base DBO
-                DBOs.Security.User dbo = db.QuerySingle<DBOs.Security.User>(
+                DBOs.Security.User dbo = db.Single<DBOs.Security.User>(
                     "SELECT * FROM \"user\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id });
 
@@ -133,11 +131,11 @@
                 {
                     if (model.Password != null && model.Password.Length > 0)
                     {
-                        DBOs.Security.User dboCurrent = db.GetById<DBOs.Security.User>(id);
+                        DBOs.Security.User dboCurrent = db.SingleById<DBOs.Security.User>(id);
 
                         // TODO : This will eventually be done in javascript on the browser
-                        dbo.Password = OpenLawOffice.Server.Core.Services.Security.Authentication.ClientHashPassword(model.Password);
-                        dbo.Password = OpenLawOffice.Server.Core.Services.Security.Authentication.ServerHashPassword(
+                        dbo.Password = WebClient.Security.ClientHashPassword(model.Password);
+                        dbo.Password = WebClient.Security.ServerHashPassword(
                         dbo.Password, dboCurrent.PasswordSalt);
 
                         db.UpdateOnly(dbo,

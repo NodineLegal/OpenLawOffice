@@ -7,8 +7,6 @@
     using System.Web.Mvc;
     using System.Data;
     using ServiceStack.OrmLite;
-    using OpenLawOffice.Server.Core;
-    using DBOs = OpenLawOffice.Server.Core.DBOs;
     using AutoMapper;
 
     public class SecurityAreasController : BaseController
@@ -87,10 +85,10 @@
                 List<DBOs.Security.Area> list = null;
 
                 if (!id.HasValue)
-                    list = db.Query<DBOs.Security.Area>(
+                    list = db.SqlList<DBOs.Security.Area>(
                         "SELECT * FROM \"area\" WHERE \"parent_id\" is null AND \"utc_disabled\" is null");
                 else
-                    list = db.Query<DBOs.Security.Area>(
+                    list = db.SqlList<DBOs.Security.Area>(
                         "SELECT * FROM \"area\" WHERE \"parent_id\"=@ParentId AND \"utc_disabled\" is null",
                         new { ParentId = id.Value });
 
@@ -116,7 +114,7 @@
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 // Load base DBO
-                DBOs.Security.Area dbo = db.QuerySingle<DBOs.Security.Area>(
+                DBOs.Security.Area dbo = db.Single<DBOs.Security.Area>(
                     "SELECT * FROM \"area\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id });
 
@@ -124,7 +122,7 @@
 
                 if (dbo.ParentId.HasValue)
                 {
-                    DBOs.Security.Area dboParent = db.QuerySingle<DBOs.Security.Area>(
+                    DBOs.Security.Area dboParent = db.Single<DBOs.Security.Area>(
                         "SELECT * FROM \"area\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                         new { Id = dbo.ParentId.Value });
                     model.Parent = Mapper.Map<ViewModels.Security.AreaViewModel>(dboParent);
@@ -145,14 +143,14 @@
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 // Load base DBO
-                List<DBOs.Security.AreaAcl> dboList = db.Query<DBOs.Security.AreaAcl>(
+                List<DBOs.Security.AreaAcl> dboList = db.SqlList<DBOs.Security.AreaAcl>(
                     "SELECT * FROM \"area_acl\" WHERE \"security_area_id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id });
 
                 dboList.ForEach(dbo =>
                 {
                     ViewModels.Security.AreaAclViewModel model = Mapper.Map<ViewModels.Security.AreaAclViewModel>(dbo);
-                    DBOs.Security.User userDbo = db.GetById<DBOs.Security.User>(model.User.Id);
+                    DBOs.Security.User userDbo = db.SingleById<DBOs.Security.User>(model.User.Id);
                     model.User = Mapper.Map<ViewModels.Security.UserViewModel>(userDbo);
                     modelList.Add(model);
                 });                

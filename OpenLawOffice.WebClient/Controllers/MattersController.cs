@@ -7,8 +7,6 @@
     using System.Web.Mvc;
     using System.Data;
     using ServiceStack.OrmLite;
-    using OpenLawOffice.Server.Core;
-    using DBOs = OpenLawOffice.Server.Core.DBOs;
     using AutoMapper;
 
     public class MattersController : BaseController
@@ -28,7 +26,7 @@
             
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
-                List<DBOs.Matters.Matter> list = db.Query<DBOs.Matters.Matter>(
+                List<DBOs.Matters.Matter> list = db.SqlList<DBOs.Matters.Matter>(
                     "SELECT * FROM \"matter\" JOIN \"secured_resource_acl\" ON " +
                     "\"matter\".\"id\"=\"secured_resource_acl\".\"secured_resource_id\" " +
                     "WHERE " + filterClause +
@@ -113,7 +111,7 @@
                 List<DBOs.Matters.Matter> list = null;
 
                 if (!id.HasValue)
-                    list = db.Query<DBOs.Matters.Matter>(
+                    list = db.SqlList<DBOs.Matters.Matter>(
                         "SELECT * FROM \"matter\" JOIN \"secured_resource_acl\" ON " +
                         "\"matter\".\"id\"=\"secured_resource_acl\".\"secured_resource_id\" " +
                         "WHERE \"secured_resource_acl\".\"allow_flags\" & 2 > 0 " +
@@ -122,7 +120,7 @@
                         "AND \"secured_resource_acl\".\"utc_disabled\" is null " +
                         "AND \"matter\".\"parent_id\" is null");
                 else
-                    list = db.Query<DBOs.Matters.Matter>(
+                    list = db.SqlList<DBOs.Matters.Matter>(
                         "SELECT * FROM \"matter\" JOIN \"secured_resource_acl\" ON " +
                         "\"matter\".\"id\"=\"secured_resource_acl\".\"secured_resource_id\" " +
                         "WHERE \"secured_resource_acl\".\"allow_flags\" & 2 > 0 " +
@@ -151,7 +149,7 @@
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 // Load base DBO
-                DBOs.Matters.Matter dbo = db.QuerySingle<DBOs.Matters.Matter>(
+                DBOs.Matters.Matter dbo = db.Single<DBOs.Matters.Matter>(
                     "SELECT * FROM \"matter\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id});
                 
@@ -159,7 +157,7 @@
 
                 if (dbo.ParentId.HasValue)
                 {
-                    DBOs.Matters.Matter parentDbo = db.GetById<DBOs.Matters.Matter>(dbo.ParentId);
+                    DBOs.Matters.Matter parentDbo = db.SingleById<DBOs.Matters.Matter>(dbo.ParentId);
                     model.Parent = Mapper.Map<ViewModels.Matters.MatterViewModel>(parentDbo);
                 }
 
@@ -253,7 +251,7 @@
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 // Load base DBO
-                DBOs.Matters.Matter dbo = db.QuerySingle<DBOs.Matters.Matter>(
+                DBOs.Matters.Matter dbo = db.Single<DBOs.Matters.Matter>(
                     "SELECT * FROM \"matter\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id });
 
@@ -360,7 +358,7 @@
             List<ViewModels.Matters.MatterTagViewModel> modelList = new List<ViewModels.Matters.MatterTagViewModel>();
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
-                List<DBOs.Matters.MatterTag> list = db.Query<DBOs.Matters.MatterTag>(
+                List<DBOs.Matters.MatterTag> list = db.SqlList<DBOs.Matters.MatterTag>(
                     "SELECT * FROM \"matter_tag\" WHERE \"matter_id\"=@MatterId AND \"utc_disabled\" is null",
                     new { MatterId = id });
 
@@ -368,7 +366,7 @@
                 {
                     ViewModels.Matters.MatterTagViewModel tagModel = Mapper.Map<ViewModels.Matters.MatterTagViewModel>(dbo);
 
-                    DBOs.Tagging.TagCategory tagCatDbo = db.GetById<DBOs.Tagging.TagCategory>(tagModel.TagCategory.Id);
+                    DBOs.Tagging.TagCategory tagCatDbo = db.SingleById<DBOs.Tagging.TagCategory>(tagModel.TagCategory.Id);
                     ViewModels.Tagging.TagCategoryViewModel tagCatVM = Mapper.Map<ViewModels.Tagging.TagCategoryViewModel>(tagCatDbo);
                     tagModel.TagCategory = tagCatVM;
 
@@ -386,7 +384,7 @@
             List<ViewModels.Matters.ResponsibleUserViewModel> modelList = new List<ViewModels.Matters.ResponsibleUserViewModel>();
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
-                List<DBOs.Matters.ResponsibleUser> list = db.Query<DBOs.Matters.ResponsibleUser>(
+                List<DBOs.Matters.ResponsibleUser> list = db.SqlList<DBOs.Matters.ResponsibleUser>(
                     "SELECT * FROM \"responsible_user\" WHERE \"matter_id\"=@MatterId AND \"utc_disabled\" is null",
                     new { MatterId = id });
 
@@ -394,8 +392,8 @@
                 {
                     ViewModels.Matters.ResponsibleUserViewModel responsibleUser = Mapper.Map<ViewModels.Matters.ResponsibleUserViewModel>(dbo);
 
-                    //DBOs.Matters.Matter matterDbo = db.GetById<DBOs.Matters.Matter>(dbo.MatterId);
-                    DBOs.Security.User userDbo = db.GetById<DBOs.Security.User>(dbo.UserId);
+                    //DBOs.Matters.Matter matterDbo = db.SingleById<DBOs.Matters.Matter>(dbo.MatterId);
+                    DBOs.Security.User userDbo = db.SingleById<DBOs.Security.User>(dbo.UserId);
 
                     //responsibleUser.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(matterDbo);
                     responsibleUser.User = Mapper.Map<ViewModels.Security.UserViewModel>(userDbo);
@@ -414,7 +412,7 @@
             List<ViewModels.Matters.MatterContactViewModel> modelList = new List<ViewModels.Matters.MatterContactViewModel>();
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
-                List<DBOs.Matters.MatterContact> list = db.Query<DBOs.Matters.MatterContact>(
+                List<DBOs.Matters.MatterContact> list = db.SqlList<DBOs.Matters.MatterContact>(
                     "SELECT * FROM \"matter_contact\" WHERE \"matter_id\"=@MatterId AND \"utc_disabled\" is null",
                     new { MatterId = id });
 
@@ -422,7 +420,7 @@
                 {
                     ViewModels.Matters.MatterContactViewModel vm = Mapper.Map<ViewModels.Matters.MatterContactViewModel>(dbo);
 
-                    DBOs.Contacts.Contact contactDbo = db.GetById<DBOs.Contacts.Contact>(dbo.ContactId);
+                    DBOs.Contacts.Contact contactDbo = db.SingleById<DBOs.Contacts.Contact>(dbo.ContactId);
 
                     vm.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contactDbo);
                     modelList.Add(vm);

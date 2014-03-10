@@ -3,7 +3,6 @@
     using System;
     using System.Web.Mvc;
     using System.Web;
-    using CoreSecurity = OpenLawOffice.Server.Core.Security;
     using System.Data;
 
     public class SecurityFilterAttribute : ActionFilterAttribute
@@ -18,7 +17,7 @@
             Guid id = Guid.Empty;
             BaseController controller;
             HttpCookie cookie = null;
-            CoreSecurity.AuthorizeResult authResult;
+            AuthorizeResult authResult;
             
             cookie = filterContext.HttpContext.Request.Cookies["UserAuthToken"];
 
@@ -39,15 +38,10 @@
                 return;
             }
 
-            authResult = CoreSecurity.Authorize.AreaAccess(
-                new Server.Core.Rest.Requests.Security.User()
-                {
-                    AuthToken = authToken
-                },
-                new Server.Core.Rest.Requests.Security.Area()
-                {
-                    Name = SecurityAreaName
-                },
+            authResult = WebClient.Security.AreaAccess(
+                new ViewModels.Security.UserViewModel(),
+                new ViewModels.Security.AreaViewModel() { Name = SecurityAreaName },
+                authToken,
                 Permission);
 
             if (!authResult.IsAuthorized)
@@ -71,15 +65,10 @@
                         throw new Exception("Resource id could not be parsed.");
                 }
 
-                authResult = CoreSecurity.Authorize.SecuredResourceAccess(
-                    new Server.Core.Rest.Requests.Security.User()
-                    {
-                        AuthToken = authToken
-                    },
-                    new Server.Core.Rest.Requests.Security.SecuredResource()
-                    {
-                        Id = id
-                    },
+                authResult = WebClient.Security.SecuredResourceAccess(
+                    new ViewModels.Security.UserViewModel(),
+                    new ViewModels.Security.SecuredResourceViewModel() { Id = id },
+                    authToken,
                     Permission);
 
                 if (!authResult.IsAuthorized)

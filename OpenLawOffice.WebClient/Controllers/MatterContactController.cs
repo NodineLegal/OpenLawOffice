@@ -7,8 +7,6 @@
     using System.Web.Mvc;
     using System.Data;
     using ServiceStack.OrmLite;
-    using OpenLawOffice.Server.Core;
-    using DBOs = OpenLawOffice.Server.Core.DBOs;
     using AutoMapper;
 
     public class MatterContactController : BaseController
@@ -22,7 +20,7 @@
 
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
-                List<DBOs.Contacts.Contact> contactsDbo = db.Query<DBOs.Contacts.Contact>(
+                List<DBOs.Contacts.Contact> contactsDbo = db.SqlList<DBOs.Contacts.Contact>(
                     "SELECT * FROM \"contact\" WHERE \"utc_disabled\" is null");
 
                 contactsDbo.ForEach(x =>
@@ -51,10 +49,10 @@
 
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
-                DBOs.Matters.Matter matterDbo = db.QuerySingle<DBOs.Matters.Matter>(
+                DBOs.Matters.Matter matterDbo = db.Single<DBOs.Matters.Matter>(
                     "SELECT * FROM \"matter\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = matterId });
-                DBOs.Contacts.Contact contactDbo = db.QuerySingle<DBOs.Contacts.Contact>(
+                DBOs.Contacts.Contact contactDbo = db.Single<DBOs.Contacts.Contact>(
                     "SELECT * FROM \"contact\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id });
 
@@ -79,7 +77,7 @@
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
 
-                dbo = db.QuerySingle<DBOs.Matters.MatterContact>(
+                dbo = db.Single<DBOs.Matters.MatterContact>(
                     "SELECT * FROM \"matter_contact\" WHERE \"matter_id\"=@MatterId AND \"contact_id\"=@ContactId",
                     new { MatterId = model.Matter.Id, ContactId = model.Contact.Id });
 
@@ -89,7 +87,7 @@
                     dbo.CreatedByUserId = dbo.ModifiedByUserId = currentUser.Id.Value;
                     dbo.UtcCreated = dbo.UtcModified = DateTime.UtcNow;
                     db.Insert<DBOs.Matters.MatterContact>(dbo);
-                    dbo.Id = (int)db.GetLastInsertId();
+                    dbo.Id = (int)db.LastInsertId();
                 }
                 else
                 {
@@ -109,7 +107,7 @@
                         }, where => where.Id == dbo.Id);
                 }
 
-                dbo = db.GetById<DBOs.Matters.MatterContact>(dbo.Id);
+                dbo = db.SingleById<DBOs.Matters.MatterContact>(dbo.Id);
             }
 
             return RedirectToAction("Contacts", "Matters", new { id = dbo.MatterId.ToString() });
@@ -125,12 +123,12 @@
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 // Load base DBO
-                DBOs.Matters.MatterContact dbo = db.QuerySingle<DBOs.Matters.MatterContact>(
+                DBOs.Matters.MatterContact dbo = db.Single<DBOs.Matters.MatterContact>(
                     "SELECT * FROM \"matter_contact\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id });
 
-                DBOs.Matters.Matter matterDbo = db.GetById<DBOs.Matters.Matter>(dbo.MatterId);
-                DBOs.Contacts.Contact contactDbo = db.GetById<DBOs.Contacts.Contact>(dbo.ContactId);
+                DBOs.Matters.Matter matterDbo = db.SingleById<DBOs.Matters.Matter>(dbo.MatterId);
+                DBOs.Contacts.Contact contactDbo = db.SingleById<DBOs.Contacts.Contact>(dbo.ContactId);
 
                 model = Mapper.Map<ViewModels.Matters.MatterContactViewModel>(dbo);
                 model.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contactDbo);
@@ -166,7 +164,7 @@
                         },
                         where => where.Id == dbo.Id);
 
-                    dbo = db.GetById<DBOs.Matters.MatterContact>(dbo.Id);
+                    dbo = db.SingleById<DBOs.Matters.MatterContact>(dbo.Id);
                 }
 
                 return RedirectToAction("Contacts", "Matters", new { id = dbo.MatterId.ToString() });
@@ -187,12 +185,12 @@
             using (IDbConnection db = Database.Instance.OpenConnection())
             {
                 // Load base DBO
-                DBOs.Matters.MatterContact dbo = db.QuerySingle<DBOs.Matters.MatterContact>(
+                DBOs.Matters.MatterContact dbo = db.Single<DBOs.Matters.MatterContact>(
                     "SELECT * FROM \"matter_contact\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
                     new { Id = id });
 
-                DBOs.Matters.Matter matterDbo = db.GetById<DBOs.Matters.Matter>(dbo.MatterId);
-                DBOs.Contacts.Contact contactDbo = db.GetById<DBOs.Contacts.Contact>(dbo.ContactId);
+                DBOs.Matters.Matter matterDbo = db.SingleById<DBOs.Matters.Matter>(dbo.MatterId);
+                DBOs.Contacts.Contact contactDbo = db.SingleById<DBOs.Contacts.Contact>(dbo.ContactId);
 
                 model = Mapper.Map<ViewModels.Matters.MatterContactViewModel>(dbo);
                 model.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contactDbo);
@@ -239,7 +237,7 @@
                         },
                         where => where.Id == dbo.Id);
 
-                    dbo = db.GetById<DBOs.Matters.MatterContact>(dbo.Id);
+                    dbo = db.SingleById<DBOs.Matters.MatterContact>(dbo.Id);
                 }
 
                 return RedirectToAction("Contacts", "Matters", new { id = dbo.MatterId.ToString() });
