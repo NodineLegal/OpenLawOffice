@@ -12,7 +12,7 @@
     public class TaskAssignedContactController : BaseController
     {
         // Selects link based on Guid of Matter
-        [SecurityFilter(SecurityAreaName = "Tasks.TaskContact", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tasks.TaskAssignedContact", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         public ActionResult SelectContactToAssign(long id)
         {
@@ -33,7 +33,7 @@
             return View(modelList);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks.TaskContact", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tasks.TaskAssignedContact", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         public ActionResult AssignContact(long id)
         {
@@ -63,7 +63,7 @@
             return View(vm);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks.TaskContact", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tasks.TaskAssignedContact", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
         public ActionResult AssignContact(ViewModels.Tasks.TaskAssignedContactViewModel model)
@@ -112,7 +112,7 @@
             return RedirectToAction("Contacts", "Tasks", new { id = dbo.TaskId.ToString() });
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks.TaskContact", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tasks.TaskAssignedContact", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(Guid id)
         {
@@ -134,8 +134,8 @@
 
             return View(model);
         }
-        
-        [SecurityFilter(SecurityAreaName = "Tasks.TaskContact", IsSecuredResource = false,
+
+        [SecurityFilter(SecurityAreaName = "Tasks.TaskAssignedContact", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
         public ActionResult Edit(Guid id, ViewModels.Tasks.TaskAssignedContactViewModel model)
@@ -170,7 +170,7 @@
             }
         }
         
-        [SecurityFilter(SecurityAreaName = "Tasks.TaskContact", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tasks.TaskAssignedContact", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(Guid id)
         {
@@ -196,14 +196,14 @@
             return View(model);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks.TaskContact", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tasks.TaskAssignedContact", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Disable)]
         public ActionResult Delete(Guid id)
         {
             return Details(id);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks.TaskContact", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tasks.TaskAssignedContact", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Disable)]
         [HttpPost]
         public ActionResult Delete(Guid id, ViewModels.Tasks.TaskAssignedContactViewModel model)

@@ -1,6 +1,6 @@
 ﻿using System;
 using AutoMapper;
-using ServiceStack.Model;
+using ServiceStack.DesignPatterns.Model;
 
 namespace OpenLawOffice.WebClient.DBOs.Security
 {

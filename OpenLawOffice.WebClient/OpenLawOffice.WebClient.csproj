@@ -42,31 +42,37 @@
       <HintPath>..\OpenLawOffice.Server\packages\AutoMapper.3.1.1\lib\net40\AutoMapper.Net4.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Mono.Security, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <HintPath>..\OpenLawOffice.Server\packages\Npgsql.2.0.14.3\lib\net40\Mono.Security.dll</HintPath>
-    </Reference>
-    <Reference Include="Npgsql, Version=2.0.14.3, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
-      <HintPath>..\OpenLawOffice.Server\packages\Npgsql.2.0.14.3\lib\net40\Npgsql.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Common, Version=4.0.12.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ServiceStack, Version=3.9.71.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\OpenLawOffice.Server\packages\ServiceStack.Common.4.0.12\lib\net40\ServiceStack.Common.dll</HintPath>
+      <HintPath>..\OpenLawOffice.Server\packages\ServiceStack.3.9.71\lib\net35\ServiceStack.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.Interfaces, Version=4.0.0.0, Culture=neutral, PublicKeyToken=e06fbc6124f57c43, processorArchitecture=MSIL">
+    <Reference Include="ServiceStack.Common, Version=3.9.71.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\OpenLawOffice.Server\packages\ServiceStack.Interfaces.4.0.12\lib\net40\ServiceStack.Interfaces.dll</HintPath>
+      <HintPath>..\OpenLawOffice.Server\packages\ServiceStack.Common.3.9.71\lib\net35\ServiceStack.Common.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.OrmLite, Version=4.0.12.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ServiceStack.Interfaces, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\OpenLawOffice.Server\packages\ServiceStack.OrmLite.4.0.12\lib\net40\ServiceStack.OrmLite.dll</HintPath>
+      <HintPath>..\OpenLawOffice.Server\packages\ServiceStack.Common.3.9.71\lib\net35\ServiceStack.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.OrmLite.PostgreSQL, Version=4.0.12.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ServiceStack.OrmLite, Version=3.9.71.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\OpenLawOffice.Server\packages\ServiceStack.OrmLite.PostgreSQL.4.0.12\lib\net40\ServiceStack.OrmLite.PostgreSQL.dll</HintPath>
+      <HintPath>..\OpenLawOffice.Server\packages\ServiceStack.OrmLite.SqlServer.3.9.71\lib\net35\ServiceStack.OrmLite.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.Text, Version=4.0.12.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ServiceStack.OrmLite.SqlServer, Version=3.9.71.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\OpenLawOffice.Server\packages\ServiceStack.Text.4.0.12\lib\net40\ServiceStack.Text.dll</HintPath>
+      <HintPath>..\OpenLawOffice.Server\packages\ServiceStack.OrmLite.SqlServer.3.9.71\lib\net35\ServiceStack.OrmLite.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Redis, Version=3.9.71.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\OpenLawOffice.Server\packages\ServiceStack.Redis.3.9.71\lib\net35\ServiceStack.Redis.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.ServiceInterface, Version=3.9.71.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\OpenLawOffice.Server\packages\ServiceStack.3.9.71\lib\net35\ServiceStack.ServiceInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Text, Version=3.9.71.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\OpenLawOffice.Server\packages\ServiceStack.Text.3.9.71\lib\net35\ServiceStack.Text.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

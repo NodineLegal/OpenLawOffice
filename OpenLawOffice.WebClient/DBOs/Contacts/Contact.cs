@@ -22,9 +22,10 @@
 namespace OpenLawOffice.WebClient.DBOs.Contacts
 {
     using System;
+    using System.ComponentModel.DataAnnotations;
     using AutoMapper;
     using ServiceStack.DataAnnotations;
-    using ServiceStack.Model;
+    using ServiceStack.DesignPatterns.Model;
 
     /// <summary>
     /// Represents a system contact, loosely based on MS-OXONTC's message syntax for contact object properties

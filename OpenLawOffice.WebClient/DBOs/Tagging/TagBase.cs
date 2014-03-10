@@ -1,4 +1,5 @@
-﻿using ServiceStack.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using ServiceStack.DataAnnotations;
 
 namespace OpenLawOffice.WebClient.DBOs.Tagging
 {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using AutoMapper;
 using ServiceStack.DataAnnotations;
 

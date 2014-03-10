@@ -1,7 +1,8 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using AutoMapper;
 using ServiceStack.DataAnnotations;
-using ServiceStack.Model;
+using ServiceStack.DesignPatterns.Model;
 
 namespace OpenLawOffice.WebClient.DBOs.Matters
 {

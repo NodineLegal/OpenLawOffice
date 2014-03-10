@@ -24,7 +24,7 @@ namespace OpenLawOffice.WebClient.DBOs.Tasks
     using System;
     using AutoMapper;
     using ServiceStack.DataAnnotations;
-    using ServiceStack.Model;
+    using ServiceStack.DesignPatterns.Model;
 
     /// <summary>
     /// Represents a system task

@@ -22,9 +22,10 @@
 namespace OpenLawOffice.WebClient.DBOs.Tasks
 {
     using System;
+    using System.ComponentModel.DataAnnotations;
     using AutoMapper;
     using ServiceStack.DataAnnotations;
-    using ServiceStack.Model;
+    using ServiceStack.DesignPatterns.Model;
 
     /// <summary>
     /// Relates a tag to a task

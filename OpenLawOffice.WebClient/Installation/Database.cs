@@ -757,9 +757,9 @@
                 DBOs.Security.AreaAcl dbAAclTasksTaskAssignedContact = conn.Single<DBOs.Security.AreaAcl>(new { SecurityAreaId = dbAreaTasksTask.Id, UserId = dbUser.Id });
                 if (dbAAclTasksTask == null)
                 {
-                    dbAAclTasksTask = new DBOs.Security.AreaAcl()
+                    dbAAclTasksTaskAssignedContact = new DBOs.Security.AreaAcl()
                     {
-                        SecurityAreaId = dbAreaTasksTask.Id,
+                        SecurityAreaId = dbAAclTasksTaskAssignedContact.Id,
                         UserId = dbUser.Id,
                         AllowFlags = (int)(Common.Models.PermissionType.AllAdmin | Common.Models.PermissionType.AllWrite | Common.Models.PermissionType.AllRead),
                         DenyFlags = 0,
@@ -768,8 +768,8 @@
                         UtcCreated = DateTime.UtcNow,
                         UtcModified = DateTime.UtcNow
                     };
-                    conn.Insert<DBOs.Security.AreaAcl>(dbAAclTasksTask);
-                    dbAAclTasksTask.Id = (int)conn.LastInsertId();
+                    conn.Insert<DBOs.Security.AreaAcl>(dbAAclTasksTaskAssignedContact);
+                    dbAAclTasksTaskAssignedContact.Id = (int)conn.LastInsertId();
                 }
 
                 // Tasks.TaskMatter
