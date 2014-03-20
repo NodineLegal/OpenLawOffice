@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Web;
     using System.Data;
-    using ServiceStack.OrmLite;
     using AutoMapper;
 
     public class UserCache : Common.Singleton<UserCache>

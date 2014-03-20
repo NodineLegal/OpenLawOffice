@@ -6,7 +6,6 @@
     using System.Web;
     using System.Web.Mvc;
     using System.Data;
-    using ServiceStack.OrmLite;
     using AutoMapper;
 
     public class ResponsibleUsersController : BaseController

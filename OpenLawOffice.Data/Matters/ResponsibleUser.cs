@@ -76,14 +76,14 @@ namespace OpenLawOffice.Data.Matters
             model.UtcCreated = model.UtcModified = DateTime.UtcNow;
             model.CreatedBy = model.ModifiedBy = creator;
 
-            DBOs.Security.User dbo = Mapper.Map<DBOs.Security.User>(model);
+            DBOs.Matters.ResponsibleUser dbo = Mapper.Map<DBOs.Matters.ResponsibleUser>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("INSERT INTO \"responsible_user\" (\"matter_id\", \"user_id\", \"responsibility\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
                     "VALUES (@MatterId, @UserId, @Responsibility, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);
-                model.Id = conn.Query<DBOs.Security.User>("SELECT currval(pg_get_serial_sequence('responsible_user', 'id')) AS \"id\"").Single().Id;
+                model.Id = conn.Query<DBOs.Matters.ResponsibleUser>("SELECT currval(pg_get_serial_sequence('responsible_user', 'id')) AS \"id\"").Single().Id;
             }
 
             return model;

@@ -112,8 +112,9 @@ namespace OpenLawOffice.Data.Contacts
                     "@Fax3FaxNumber, @Fax3DisplayName, @Fax2FaxNumber, @Fax2DisplayName, @Fax1FaxNumber, " +
                     "@Fax1DisplayName, @Email3EmailAddress, @Email3DisplayName, @Email2EmailAddress, @Email2DisplayName, " +
                     "@Email1EmailAddress, @Email1DisplayName, @DisplayName, @Initials, @GivenName, " +
-                    "@MiddleName, @Surname, @DisplayNamePrefix, @Generation, @Nickname, @IsOrganization); " +
-                    "SELECT CAST(scope_identity() as int);", dbo);
+                    "@MiddleName, @Surname, @DisplayNamePrefix, @Generation, @Nickname, @IsOrganization)", dbo);
+
+                model.Id = conn.Query<DBOs.Contacts.Contact>("SELECT currval(pg_get_serial_sequence('contact', 'id')) AS \"id\"").Single().Id;
             }
 
             return model;

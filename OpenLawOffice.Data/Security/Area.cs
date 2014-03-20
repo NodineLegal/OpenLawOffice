@@ -87,6 +87,7 @@ namespace OpenLawOffice.Data.Security
                 conn.Execute("INSERT INTO \"area\" (\"parent_id\", \"name\", \"description\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
                     "VALUES (@ParentId, @Name, @Description, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);
+                model.Id = conn.Query<DBOs.Security.Area>("SELECT currval(pg_get_serial_sequence('area', 'id')) AS \"id\"").Single().Id;
             }
             
             return model;

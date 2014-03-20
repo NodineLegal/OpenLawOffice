@@ -1,9 +1,6 @@
 ﻿namespace OpenLawOffice.WebClient
 {
     using System;
-    using System.Data;
-    using ServiceStack.OrmLite;
-    using AutoMapper;
 
     public class Security
     {

@@ -26,6 +26,8 @@ namespace OpenLawOffice.Data.Tagging
     using System.Linq;
     using System.Text;
     using AutoMapper;
+    using Dapper;
+    using System.Data;
 
     /// <summary>
     /// TODO: Update summary.
@@ -34,45 +36,60 @@ namespace OpenLawOffice.Data.Tagging
     {
         public static Common.Models.Tagging.TagCategory Get(int id)
         {
+            return DataHelper.Get<Common.Models.Tagging.TagCategory, DBOs.Tagging.TagCategory>(
+                "SELECT * FROM \"tag_category\" WHERE \"id\"=@id AND \"utc_disabled\" is null",
+                new { id = id });
         }
 
         public static Common.Models.Tagging.TagCategory Get(string name)
         {
-            return null;
-            //DbModels.TagCategory dbo = DbModels.TagCategory.FirstOrDefault(
-            //    "SELECT * FROM \"tag_category\" WHERE \"name\"=@0 AND \"utc_disabled\" is null",
-            //    name);
-            //if (dbo == null) return null;
-            //return Mapper.Map<Common.Models.Tagging.TagCategory>(dbo);
+            return DataHelper.Get<Common.Models.Tagging.TagCategory, DBOs.Tagging.TagCategory>(
+                "SELECT * FROM \"tag_category\" WHERE \"name\"=@name AND \"utc_disabled\" is null",
+                new { name = name });
         }
 
         public static Common.Models.Tagging.TagCategory Create(Common.Models.Tagging.TagCategory model,
             Common.Models.Security.User creator)
         {
-            return null;
-            //model.CreatedBy = model.ModifiedBy = creator;
-            //model.UtcCreated = model.UtcModified = DateTime.UtcNow;
-            //DbModels.TagCategory dbo = Mapper.Map<DbModels.TagCategory>(model);
-            //model.Id = dbo.Id = (int)dbo.Insert();
-            //return model;
+            model.CreatedBy = model.ModifiedBy = creator;
+            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            DBOs.Tagging.TagCategory dbo = Mapper.Map<DBOs.Tagging.TagCategory>(model);
+
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                conn.Execute("INSERT INTO \"tag_category\" (\"name\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                    "VALUES (@Name, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
+                    dbo);
+                model.Id = conn.Query<DBOs.Tagging.TagCategory>("SELECT currval(pg_get_serial_sequence('tag_category', 'id')) AS \"id\"").Single().Id;
+            }
+
+            return model;
+        }
+
+        public static Common.Models.Tagging.TagCategory Disable(Common.Models.Tagging.TagCategory model,
+            Common.Models.Security.User disabler)
+        {
+            model.DisabledBy = disabler;
+            model.UtcDisabled = DateTime.UtcNow;
+
+            DataHelper.Disable<Common.Models.Tagging.TagCategory,
+                DBOs.Tagging.TagCategory>("tag_category", disabler.Id.Value);
+
+            return model;
         }
 
         public static Common.Models.Tagging.TagCategory Enable(Common.Models.Tagging.TagCategory model,
             Common.Models.Security.User enabler)
         {
-            return null;
-            //model.ModifiedBy = enabler;
-            //model.UtcModified = DateTime.UtcNow;
-            //model.DisabledBy = null;
-            //model.UtcDisabled = null;
-            //DbModels.TagCategory dbo = Mapper.Map<DbModels.TagCategory>(model);
-            //dbo.Update(new string[] {
-            //    "utc_modified",
-            //    "modified_by_user_id",
-            //    "utc_disabled",
-            //    "disabled_by_user_id"
-            //});
-            //return model;
+            model.ModifiedBy = enabler;
+            model.UtcModified = DateTime.UtcNow;
+            model.DisabledBy = null;
+            model.UtcDisabled = null;
+
+            DataHelper.Enable<Common.Models.Tagging.TagCategory,
+                DBOs.Tagging.TagCategory>("tag_category", enabler.Id.Value);
+
+            return model;
         }
     }
 }

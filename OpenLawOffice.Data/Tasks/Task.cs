@@ -26,6 +26,8 @@ namespace OpenLawOffice.Data.Tasks
     using System.Linq;
     using System.Text;
     using AutoMapper;
+    using Dapper;
+    using System.Data;
 
     /// <summary>
     /// TODO: Update summary.
@@ -34,23 +36,15 @@ namespace OpenLawOffice.Data.Tasks
     {
         public static Common.Models.Tasks.Task Get(long id)
         {
-            return null;
-            //DbModels.Task dbo = DbModels.Task.FirstOrDefault(
-            //    "SELECT * FROM \"task\" WHERE \"id\"=@0 AND \"utc_disabled\" is null",
-            //    id);
-            //if (dbo == null) return null;
-            //return Mapper.Map<Common.Models.Tasks.Task>(dbo);
+            return DataHelper.Get<Common.Models.Tasks.Task, DBOs.Tasks.Task>(
+                "SELECT * FROM \"task\" WHERE \"id\"=@id AND \"utc_disabled\" is null",
+                new { id = id });
         }
 
         public static List<Common.Models.Tasks.Task> List()
         {
-            return null;
-            //List<Common.Models.Tasks.Task> list = new List<Common.Models.Tasks.Task>();
-            //IEnumerable<DbModels.Task> ie = DbModels.Task.Query(
-            //    "SELECT * FROM \"task\" WHERE \"utc_disabled\" is null");
-            //foreach (DbModels.Task dbo in ie)
-            //    list.Add(Mapper.Map<Common.Models.Tasks.Task>(dbo));
-            //return list;
+            return DataHelper.List<Common.Models.Tasks.Task, DBOs.Tasks.Task>(
+                "SELECT * FROM \"task\" WHERE \"utc_disabled\" is null");
         }
 
         public static List<Common.Models.Tasks.Task> ListForMatter(Guid matterId)
@@ -96,86 +90,91 @@ namespace OpenLawOffice.Data.Tasks
              * ST8
              * 
              */
-            return null;
-            //List<Common.Models.Tasks.Task> list = new List<Common.Models.Tasks.Task>();
-            //IEnumerable<DbModels.Task> ie = DbModels.Task.Query(
-            //    "SELECT * FROM \"task\" WHERE \"parent_id\" is null AND " +
-            //    "\"id\" in (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@0) AND " +
-            //    "\"utc_disabled\" is null", matterId);
-
-            //foreach (DbModels.Task dbo in ie)
-            //    list.Add(Mapper.Map<Common.Models.Tasks.Task>(dbo));
-
-            //return list;
+            return DataHelper.List<Common.Models.Tasks.Task, DBOs.Tasks.Task>(
+                "SELECT * FROM \"task\" WHERE \"parent_id\" is null AND " +
+                "\"id\" in (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId) AND " +
+                "\"utc_disabled\" is null",
+                new { MatterId = matterId });
         }
 
         public static List<Common.Models.Tasks.Task> ListChildren(long? parentId)
         {
-            return null;
-            //List<Common.Models.Tasks.Task> list = new List<Common.Models.Tasks.Task>();
-            //IEnumerable<DbModels.Task> ie = null;
+            List<Common.Models.Tasks.Task> list = new List<Common.Models.Tasks.Task>();
+            IEnumerable<DBOs.Tasks.Task> ie = null;
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                if (parentId.HasValue)
+                    ie = conn.Query<DBOs.Tasks.Task>(
+                        "SELECT * FROM \"task\" WHERE \"parent_id\"=@ParentId AND \"utc_disabled\" is null",
+                        new { ParentId = parentId.Value });
+                else
+                    ie = conn.Query<DBOs.Tasks.Task>(
+                        "SELECT * FROM \"task\" WHERE \"parent_id\" is null AND \"utc_disabled\" is null");
+            }
 
-            //if (parentId.HasValue)
-            //    ie = DbModels.Task.Query(
-            //        "SELECT * FROM \"task\" WHERE \"parent_id\"=@0 AND \"utc_disabled\" is null",
-            //        parentId.Value);
-            //else
-            //    ie = DbModels.Task.Query(
-            //        "SELECT * FROM \"task\" WHERE \"parent_id\" is null AND \"utc_disabled\" is null");
+            foreach (DBOs.Tasks.Task dbo in ie)
+                list.Add(Mapper.Map<Common.Models.Tasks.Task>(dbo));
 
-            //foreach (DbModels.Task dbo in ie)
-            //    list.Add(Mapper.Map<Common.Models.Tasks.Task>(dbo));
-
-            //return list;
+            return list;
         }
 
         public static Common.Models.Tasks.Task GetTaskForWhichIAmTheSequentialPredecessor(long id)
         {
-            return null;
-            //List<Common.Models.Tasks.Task> list = new List<Common.Models.Tasks.Task>();
-            //DbModels.Task model = DbModels.Task.FirstOrDefault("SELECT * FROM \"task\" WHERE \"sequential_predecessor_id\"=@0", id);
-            //if (model == null) return null;            
-            //return Mapper.Map<Common.Models.Tasks.Task>(model);
+            return DataHelper.Get<Common.Models.Tasks.Task, DBOs.Tasks.Task>(
+                "SELECT * FROM \"task\" WHERE \"sequential_predecessor_id\"=@id AND \"utc_disabled\" is null",
+                new { id = id });
         }
 
         public static Common.Models.Matters.Matter GetRelatedMatter(long taskId)
         {
-            return null;
-            //DbModels.Matter dbo = DbModels.Matter.FirstOrDefault(
-            //    "SELECT * FROM \"matter\" JOIN \"task_matter\" ON \"matter\".\"id\"=\"task_matter\".\"matter_id\" " +
-            //    "WHERE \"task_id\"=@0 AND \"utc_disabled\" is null",
-            //    taskId);
-            //if (dbo == null) return null;
-            //return Mapper.Map<Common.Models.Matters.Matter>(dbo);
+            return DataHelper.Get<Common.Models.Matters.Matter, DBOs.Matters.Matter>(
+                "SELECT * FROM \"matter\" JOIN \"task_matter\" ON \"matter\".\"id\"=\"task_matter\".\"matter_id\" " +
+                "WHERE \"task_id\"=@TaskId AND \"utc_disabled\" is null",
+                new { TaskId = taskId });
         }
 
         public static Common.Models.Tasks.Task Create(Common.Models.Tasks.Task model,
             Common.Models.Security.User creator)
         {
-            return null;
-            //model.CreatedBy = model.ModifiedBy = creator;
-            //model.UtcCreated = model.UtcModified = DateTime.UtcNow;
-            //DbModels.Task dbo = Mapper.Map<DbModels.Task>(model);
-            //model.Id = dbo.Id = (long)dbo.Insert();
-            //return model;
+            model.CreatedBy = model.ModifiedBy = creator;
+            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            DBOs.Tasks.Task dbo = Mapper.Map<DBOs.Tasks.Task>(model);
+
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                conn.Execute("INSERT INTO \"task\" (\"title\", \"description\", \"projected_start\", \"due_date\", \"projected_end\", \"actual_end\", \"parent_id\", \"is_grouping_task\", \"sequential_predecessor_id\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                    "VALUES (@Title, @Description, @ProjectedStart, @DueDate, @ProjectedEnd, @ActualEnd, @ParentId, @IsGroupingTask, @SequentialPredecessorId, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
+                    dbo);
+                model.Id = conn.Query<DBOs.Security.Area>("SELECT currval(pg_get_serial_sequence('task', 'id')) AS \"id\"").Single().Id;
+            }
+
+            return model;
         }
 
         public static Common.Models.Tasks.TaskMatter RelateMatter(Common.Models.Tasks.Task taskModel,
             Guid matterId, Common.Models.Security.User creator)
         {
-            return null;
-            //DbModels.TaskMatter taskMatter = new DbModels.TaskMatter()
-            //{
-            //    Id = Guid.NewGuid().ToString(),
-            //    MatterId = matterId.ToString(),
-            //    TaskId = taskModel.Id.Value,
-            //    UtcCreated = DateTime.UtcNow,
-            //    UtcModified = DateTime.UtcNow,
-            //    CreatedByUserId = creator.Id.Value,
-            //    ModifiedByUserId = creator.Id.Value
-            //};
-            //taskMatter.Insert();
-            //return Mapper.Map<Common.Models.Tasks.TaskMatter>(taskMatter);
+            Common.Models.Tasks.TaskMatter taskMatter = new Common.Models.Tasks.TaskMatter()
+            {
+                Id = Guid.NewGuid(),
+                Matter = new Common.Models.Matters.Matter() { Id = matterId },
+                Task = taskModel,
+                UtcCreated = DateTime.UtcNow,
+                UtcModified = DateTime.UtcNow,
+                CreatedBy = creator,
+                ModifiedBy = creator
+            };
+
+            DBOs.Tasks.TaskMatter dbo = Mapper.Map<DBOs.Tasks.TaskMatter>(taskMatter);
+
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                conn.Execute("INSERT INTO \"task_matter\" (\"id\", \"task_id\", \"matter_id\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                    "VALUES (@Id, @TaskId, @MatterId, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
+                    dbo);
+            }
+
+            return taskMatter;
         }
 
         public static Common.Models.Tasks.Task Edit(Common.Models.Tasks.Task model,
@@ -210,117 +209,111 @@ namespace OpenLawOffice.Data.Tasks
              * 
              */
 
-            return null;
-            //if (model.Parent != null && model.Parent.Id.HasValue)
-            //{
-            //    // There is a proposed parent, we need to check and make sure it is not trying
-            //    // to set itself as its parent
-            //    if (model.Parent.Id.Value == model.Id)
-            //        throw new ArgumentException("Task cannot have itself as its parent.");
-            //}
+            if (model.Parent != null && model.Parent.Id.HasValue)
+            {
+                // There is a proposed parent, we need to check and make sure it is not trying
+                // to set itself as its parent
+                if (model.Parent.Id.Value == model.Id)
+                    throw new ArgumentException("Task cannot have itself as its parent.");
+            }
 
-            //model.ModifiedBy = modifier;
-            //model.UtcModified = DateTime.UtcNow;
-            //DbModels.Matter dbo = Mapper.Map<DbModels.Matter>(model);
-            //dbo.Update(new string[] {
-            //    "utc_modified",
-            //    "modified_by_user_id",
-            //    "title",
-            //    "description",
-            //    "projected_start",
-            //    "due_date",
-            //    "projected_end",
-            //    "actual_end",
-            //    "parent_id"
-            //});
+            model.ModifiedBy = modifier;
+            model.UtcModified = DateTime.UtcNow;
+            DBOs.Tasks.Task dbo = Mapper.Map<DBOs.Tasks.Task>(model);
 
-            //if (model.Parent != null && model.Parent.Id.HasValue)
-            //    UpdateGroupingTaskProperties(OpenLawOffice.Data.Tasks.Task.Get(model.Parent.Id.Value));
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                conn.Execute("UPDATE \"task\" SET " +
+                    "\"title\"=@Title, \"description\"=@Description, \"projected_start\"=@ProjectedStart, " +
+                    "\"due_date\"=@DueDate, \"projected_end\"=@ProjectedEnd, \"actual_end\"=@ActualEnd, \"parent_id\"=@ParentId" +
+                    "\"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId " +
+                    "WHERE \"id\"=@Id", dbo);
+            }
 
-            //return model;
+            if (model.Parent != null && model.Parent.Id.HasValue)
+                UpdateGroupingTaskProperties(OpenLawOffice.Data.Tasks.Task.Get(model.Parent.Id.Value));
+
+            return model;
         }
 
         private static void UpdateGroupingTaskProperties(Common.Models.Tasks.Task groupingTask)
         {
-            return;
-            //bool groupingTaskChanged = false;
+            bool groupingTaskChanged = false;
 
-            //// Projected Start
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                // Projected Start
+                DBOs.Tasks.Task temp = conn.Query<DBOs.Tasks.Task>(
+                    "SELECT * FROM \"task\" WHERE \"parent_id\"=@ParentId AND \"utc_disabled\" is null ORDER BY \"projected_start\" DESC limit 1",
+                    new { ParentId = groupingTask.Id.Value }).SingleOrDefault();
 
-            //DbModels.Task temp = DbModels.Task.FirstOrDefault(
-            //    "SELECT * FROM \"task\" WHERE \"parent_id\"=@0 AND \"utc_disabled\" is null ORDER BY \"projected_start\" DESC limit 1",
-            //    groupingTask.Id.Value);
+                // If temp.ProjectedStart has a value then we know that there are no rows
+                // with null value and so, we may update the grouping task to be the
+                // earliest projected start value.  However, if null, then we need to
+                // set the grouping task's projected start value to null.
 
-            //// If temp.ProjectedStart has a value then we know that there are no rows
-            //// with null value and so, we may update the grouping task to be the
-            //// earliest projected start value.  However, if null, then we need to
-            //// set the grouping task's projected start value to null.
+                if (temp.ProjectedStart.HasValue)
+                {
+                    temp = conn.Query<DBOs.Tasks.Task>(
+                        "SELECT * FROM \"task\" WHERE \"parent_id\"=@ParentId AND \"utc_disabled\" is null ORDER BY \"projected_start\" ASC limit 1",
+                        new { ParentId = groupingTask.Id.Value }).SingleOrDefault();
+                    if (groupingTask.ProjectedStart != temp.ProjectedStart)
+                    {
+                        groupingTask.ProjectedStart = temp.ProjectedStart;
+                        groupingTaskChanged = true;
+                    }
+                }
+                else
+                {
+                    if (groupingTask.ProjectedStart.HasValue)
+                    {
+                        groupingTask.ProjectedStart = null;
+                        groupingTaskChanged = true;
+                    }
+                }
 
-            //if (temp.ProjectedStart.HasValue)
-            //{
-            //    temp = DbModels.Task.FirstOrDefault(
-            //        "SELECT * FROM \"task\" WHERE \"parent_id\"=@0 AND \"utc_disabled\" is null ORDER BY \"projected_start\" ASC limit 1",
-            //        groupingTask.Id.Value);
-            //    if (groupingTask.ProjectedStart != temp.ProjectedStart)
-            //    {
-            //        groupingTask.ProjectedStart = temp.ProjectedStart;
-            //        groupingTaskChanged = true;
-            //    }
-            //}
-            //else
-            //{
-            //    if (groupingTask.ProjectedStart.HasValue)
-            //    {
-            //        groupingTask.ProjectedStart = null;
-            //        groupingTaskChanged = true;
-            //    }
-            //}
+                // Due Date
+                temp = conn.Query<DBOs.Tasks.Task>(
+                    "SELECT * FROM \"task\" WHERE \"parent_id\"=@ParentId AND \"utc_disabled\" is null ORDER BY \"due_date\" DESC limit 1",
+                    new { ParentId = groupingTask.Id.Value }).SingleOrDefault();
+                if (temp.DueDate != groupingTask.DueDate)
+                {
+                    groupingTask.DueDate = temp.DueDate;
+                    groupingTaskChanged = true;
+                }
 
-            //// Due Date
-            //temp = DbModels.Task.FirstOrDefault(
-            //    "SELECT * FROM \"task\" WHERE \"parent_id\"=@ParentId AND \"utc_disabled\" is null ORDER BY \"due_date\" DESC limit 1",
-            //    groupingTask.Id);
-            //if (temp.DueDate != groupingTask.DueDate)
-            //{
-            //    groupingTask.DueDate = temp.DueDate;
-            //    groupingTaskChanged = true;
-            //}
+                // Projected End
+                temp = conn.Query<DBOs.Tasks.Task>(
+                    "SELECT * FROM \"task\" WHERE \"parent_id\"=@ParentId AND \"utc_disabled\" is null ORDER BY \"projected_end\" DESC limit 1",
+                    new { ParentId = groupingTask.Id.Value }).SingleOrDefault();
+                if (temp.ProjectedEnd != groupingTask.ProjectedEnd)
+                {
+                    groupingTask.ProjectedEnd = temp.ProjectedEnd;
+                    groupingTaskChanged = true;
+                }
 
-            //// Projected End
-            //temp = DbModels.Task.FirstOrDefault(
-            //    "SELECT * FROM \"task\" WHERE \"parent_id\"=@ParentId AND \"utc_disabled\" is null ORDER BY \"projected_end\" DESC limit 1",
-            //    new { ParentId = groupingTask.Id });
-            //if (temp.ProjectedEnd != groupingTask.ProjectedEnd)
-            //{
-            //    groupingTask.ProjectedEnd = temp.ProjectedEnd;
-            //    groupingTaskChanged = true;
-            //}
+                // Actual End
+                temp = conn.Query<DBOs.Tasks.Task>(
+                    "SELECT * FROM \"task\" WHERE \"parent_id\"=@ParentId AND \"utc_disabled\" is null ORDER BY \"actual_end\" DESC limit 1",
+                    new { ParentId = groupingTask.Id.Value }).SingleOrDefault();
+                if (temp.ActualEnd != groupingTask.ActualEnd)
+                {
+                    groupingTask.ActualEnd = temp.ActualEnd;
+                    groupingTaskChanged = true;
+                }
 
-            //// Actual End
-            //temp = DbModels.Task.FirstOrDefault(
-            //    "SELECT * FROM \"task\" WHERE \"parent_id\"=@ParentId AND \"utc_disabled\" is null ORDER BY \"actual_end\" DESC limit 1",
-            //    new { ParentId = groupingTask.Id });
-            //if (temp.ActualEnd != groupingTask.ActualEnd)
-            //{
-            //    groupingTask.ActualEnd = temp.ActualEnd;
-            //    groupingTaskChanged = true;
-            //}
+                // Update grouping task if needed
+                if (groupingTaskChanged)
+                {
+                    DBOs.Tasks.Task task = Mapper.Map<DBOs.Tasks.Task>(groupingTask);
+                    conn.Execute("UPDATE \"task\" SET \"projected_start\"=@ProjectedStart, \"due_date\"=@DueDate, \"projected_end\"=@ProjectedEnd, " +
+                        "\"actual_end\"=@ActualEnd WHERE \"id\"=@Id",
+                        task);
 
-            //// Update grouping task if needed
-            //if (groupingTaskChanged)
-            //{
-            //    DbModels.Task task = Mapper.Map<DbModels.Task>(groupingTask);
-            //    task.Update(new string[]
-            //    {
-            //        "projected_start",
-            //        "due_date",
-            //        "projected_end",
-            //        "actual_end"
-            //    });
-
-            //    if (groupingTask.Parent != null && groupingTask.Parent.Id.HasValue)
-            //        UpdateGroupingTaskProperties(OpenLawOffice.Data.Tasks.Task.Get(groupingTask.Parent.Id.Value));
-            //}
+                    if (groupingTask.Parent != null && groupingTask.Parent.Id.HasValue)
+                        UpdateGroupingTaskProperties(OpenLawOffice.Data.Tasks.Task.Get(groupingTask.Parent.Id.Value));
+                }
+            }
         }
     }
 }

@@ -32,13 +32,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoMapper">
-      <HintPath>..\OpenLawOffice.Server\packages\AutoMapper.3.1.1\lib\net40\AutoMapper.dll</HintPath>
+      <HintPath>..\OpenLawOffice.WebClient\packages\AutoMapper.3.1.1\lib\net40\AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="AutoMapper.Net4">
-      <HintPath>..\OpenLawOffice.Server\packages\AutoMapper.3.1.1\lib\net40\AutoMapper.Net4.dll</HintPath>
+      <HintPath>..\OpenLawOffice.WebClient\packages\AutoMapper.3.1.1\lib\net40\AutoMapper.Net4.dll</HintPath>
     </Reference>
     <Reference Include="Dapper">
-      <HintPath>..\OpenLawOffice.Server\packages\Dapper.1.13\lib\net40\Dapper.dll</HintPath>
+      <HintPath>..\OpenLawOffice.WebClient\packages\Dapper.1.13\lib\net40\Dapper.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Security">
       <HintPath>..\OpenLawOffice.Server\packages\Npgsql.2.0.14.3\lib\net40\Mono.Security.dll</HintPath>
@@ -60,7 +60,6 @@
     <Compile Include="Authorization.cs" />
     <Compile Include="DataHelper.cs" />
     <Compile Include="Contacts\Contact.cs" />
-    <Compile Include="Dapper\SqlMapperExtensions.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="DBOs\Contacts\Contact.cs" />
     <Compile Include="DBOs\Core.cs" />

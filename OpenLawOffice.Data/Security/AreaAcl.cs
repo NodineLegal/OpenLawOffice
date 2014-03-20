@@ -26,6 +26,8 @@ namespace OpenLawOffice.Data.Security
     using System.Linq;
     using System.Text;
     using AutoMapper;
+    using Dapper;
+    using System.Data;
 
     /// <summary>
     /// TODO: Update summary.
@@ -34,106 +36,90 @@ namespace OpenLawOffice.Data.Security
     {
         public static Common.Models.Security.AreaAcl Get(int id)
         {
-            return null;
-            //DbModels.AreaAcl dbo = DbModels.AreaAcl.FirstOrDefault(
-            //    "SELECT * FROM \"area_acl\" WHERE \"id\"=@0 AND \"utc_disabled\" is null",
-            //    id);
-            //if (dbo == null) return null;
-            //return Mapper.Map<Common.Models.Security.AreaAcl>(dbo);
+            return DataHelper.Get<Common.Models.Security.AreaAcl, DBOs.Security.AreaAcl>(
+                "SELECT * FROM \"area_acl\" WHERE \"id\"=@id AND \"utc_disabled\" is null",
+                new { id = id });
         }
 
         public static Common.Models.Security.AreaAcl Get(int userId, int areaId)
         {
-            return null;
-            //DbModels.AreaAcl dbo = DbModels.AreaAcl.FirstOrDefault(
-            //    "SELECT * FROM \"area_acl\" WHERE \"user_id\"=@0 AND \"area_id\"=@1 AND \"utc_disabled\" is null",
-            //    userId, areaId);
-            //if (dbo == null) return null;
-            //return Mapper.Map<Common.Models.Security.AreaAcl>(dbo);
+            return DataHelper.Get<Common.Models.Security.AreaAcl, DBOs.Security.AreaAcl>(
+                "SELECT * FROM \"area_acl\" WHERE \"user_id\"=@UserId AND \"area_id\"=@AreaId AND \"utc_disabled\" is null",
+                new { UserId = userId, AreaId = areaId });
         }
 
         public static List<Common.Models.Security.AreaAcl> List()
         {
-            return null;
-            //List<Common.Models.Security.AreaAcl> list = new List<Common.Models.Security.AreaAcl>();
-            //IEnumerable<DbModels.AreaAcl> ie = DbModels.AreaAcl.Query(
-            //    "SELECT * FROM \"area_acl\" WHERE \"utc_disabled\" is null");
-            //foreach (DbModels.AreaAcl dbo in ie)
-            //    list.Add(Mapper.Map<Common.Models.Security.AreaAcl>(dbo));
-            //return list;
+            return DataHelper.List<Common.Models.Security.AreaAcl, DBOs.Security.AreaAcl>(
+                "SELECT * FROM \"area_acl\" WHERE \"utc_disabled\" is null");
         }
 
         public static List<Common.Models.Security.AreaAcl> ListForArea(int areaId)
         {
-            return null;
-            //List<Common.Models.Security.AreaAcl> list = new List<Common.Models.Security.AreaAcl>();
-            //IEnumerable<DbModels.AreaAcl> ie = DbModels.AreaAcl.Query(
-            //    "SELECT * FROM \"area_acl\" WHERE \"security_area_id\"=@0 \"utc_disabled\" is null",
-            //    areaId);
-            //foreach (DbModels.AreaAcl dbo in ie)
-            //    list.Add(Mapper.Map<Common.Models.Security.AreaAcl>(dbo));
-            //return list;
+            return DataHelper.List<Common.Models.Security.AreaAcl, DBOs.Security.AreaAcl>(
+                "SELECT * FROM \"area_acl\" WHERE \"area_id\"=@AreaId AND \"utc_disabled\" is null",
+                new { AreaId = areaId });
         }
 
         public static Common.Models.Security.AreaAcl Create(Common.Models.Security.AreaAcl model,
             Common.Models.Security.User creator)
         {
-            return null;
-            //model.CreatedBy = model.ModifiedBy = creator;
-            //model.UtcCreated = model.UtcModified = DateTime.UtcNow;
-            //DbModels.AreaAcl dbo = Mapper.Map<DbModels.AreaAcl>(model);
-            //model.Id = dbo.Id = (int)dbo.Insert();
-            //return model;
+            model.CreatedBy = model.ModifiedBy = creator;
+            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            DBOs.Security.AreaAcl dbo = Mapper.Map<DBOs.Security.AreaAcl>(model);
+
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                conn.Execute("INSERT INTO \"area_acl\" (\"security_area_id\", \"user_id\", \"allow_flags\", \"deny_flags\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                    "VALUES (@SecurityAreaId, @UserId, @AllowFlags, @DenyFlags, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
+                    dbo);
+                model.Id = conn.Query<DBOs.Security.AreaAcl>("SELECT currval(pg_get_serial_sequence('area_acl', 'id')) AS \"id\"").Single().Id;
+            }
+
+            return model;
         }
 
         public static Common.Models.Security.AreaAcl Edit(Common.Models.Security.AreaAcl model,
             Common.Models.Security.User modifier)
         {
-            return null;
-            //model.ModifiedBy = modifier;
-            //model.UtcModified = DateTime.UtcNow;
-            //DbModels.AreaAcl dbo = Mapper.Map<DbModels.AreaAcl>(model);
-            //dbo.Update(new string[] {
-            //    "utc_modified",
-            //    "modified_by_user_id",
-            //    "security_area_id",
-            //    "user_id",
-            //    "allow_flags",
-            //    "deny_flags"
-            //});
-            //return model;
+            model.ModifiedBy = modifier;
+            model.UtcModified = DateTime.UtcNow;
+            DBOs.Security.AreaAcl dbo = Mapper.Map<DBOs.Security.AreaAcl>(model);
+
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                conn.Execute("UPDATE \"area_acl\" SET " +
+                    "\"security_area_id\"=@SecurityAreaId, \"user_id\"=@UserId, \"allow_flags\"=@AllowFlags, \"deny_flags\"=@DenyFlags, \"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId " +
+                    "WHERE \"id\"=@Id", dbo);
+            }
+
+            return model;
         }
 
-        public static Common.Models.Matters.MatterContact Disable(Common.Models.Matters.MatterContact model,
+        public static Common.Models.Security.AreaAcl Disable(Common.Models.Security.AreaAcl model,
             Common.Models.Security.User disabler)
         {
-            return null;
-            //model.DisabledBy = disabler;
-            //model.UtcDisabled = DateTime.UtcNow;
-            //DbModels.MatterContact dbo = Mapper.Map<DbModels.MatterContact>(model);
-            //dbo.Update(new string[] {
-            //    "utc_disabled",
-            //    "disabled_by_user_id"
-            //});
-            //return model;
+            model.DisabledBy = disabler;
+            model.UtcDisabled = DateTime.UtcNow;
+
+            DataHelper.Disable<Common.Models.Security.AreaAcl,
+                DBOs.Security.AreaAcl>("area_acl", disabler.Id.Value);
+
+            return model;
         }
 
-        public static Common.Models.Matters.MatterContact Enable(Common.Models.Matters.MatterContact model,
+        public static Common.Models.Security.AreaAcl Enable(Common.Models.Security.AreaAcl model,
             Common.Models.Security.User enabler)
         {
-            return null;
-            //model.ModifiedBy = enabler;
-            //model.UtcModified = DateTime.UtcNow;
-            //model.DisabledBy = null;
-            //model.UtcDisabled = null;
-            //DbModels.MatterContact dbo = Mapper.Map<DbModels.MatterContact>(model);
-            //dbo.Update(new string[] {
-            //    "utc_modified",
-            //    "modified_by_user_id",
-            //    "utc_disabled",
-            //    "disabled_by_user_id"
-            //});
-            //return model;
+            model.ModifiedBy = enabler;
+            model.UtcModified = DateTime.UtcNow;
+            model.DisabledBy = null;
+            model.UtcDisabled = null;
+
+            DataHelper.Enable<Common.Models.Security.AreaAcl,
+                DBOs.Security.AreaAcl>("area_acl", enabler.Id.Value);
+
+            return model;
         }
     }
 }

@@ -25,6 +25,8 @@ namespace OpenLawOffice.Data.Tasks
     using System.Linq;
     using System.Text;
     using AutoMapper;
+    using Dapper;
+    using System.Data;
 
     /// <summary>
     /// TODO: Update summary.
@@ -33,34 +35,36 @@ namespace OpenLawOffice.Data.Tasks
     {
         public static Common.Models.Tasks.TaskResponsibleUser Get(Guid id)
         {
-            return null;
-            //DbModels.TaskResponsibleUser dbo = DbModels.TaskResponsibleUser.FirstOrDefault(
-            //    "SELECT * FROM \"task_responsible_user\" WHERE \"id\"=@0 AND \"utc_disabled\" is null",
-            //    id);
-            //if (dbo == null) return null;
-            //return Mapper.Map<Common.Models.Tasks.TaskResponsibleUser>(dbo);
+            return DataHelper.Get<Common.Models.Tasks.TaskResponsibleUser, DBOs.Tasks.TaskResponsibleUser>(
+                "SELECT * FROM \"task_responsible_user\" WHERE \"id\"=@id AND \"utc_disabled\" is null",
+                new { id = id });
         }
 
         public static Common.Models.Tasks.TaskResponsibleUser Get(long taskId, int userId)
         {
-            return null;
-            //DbModels.TaskResponsibleUser dbo = DbModels.TaskResponsibleUser.FirstOrDefault(
-            //    "SELECT * FROM \"task_responsible_user\" WHERE \"task_id\"=@0 AND \"user_id\"=@1 AND \"utc_disabled\" is null",
-            //    taskId, userId);
-            //if (dbo == null) return null;
-            //return Mapper.Map<Common.Models.Tasks.TaskResponsibleUser>(dbo);
+            return DataHelper.Get<Common.Models.Tasks.TaskResponsibleUser, DBOs.Tasks.TaskResponsibleUser>(
+                "SELECT * FROM \"task_responsible_user\" WHERE \"task_id\"=@TaskId AND \"user_id\"=@UserId AND \"utc_disabled\" is null",
+                new { TaskId = taskId, UserId = userId });
         }
 
         public static Common.Models.Tasks.TaskResponsibleUser Create(Common.Models.Tasks.TaskResponsibleUser model,
             Common.Models.Security.User creator)
         {
-            return null;
-            //if (!model.Id.HasValue) model.Id = Guid.NewGuid();
-            //model.CreatedBy = model.ModifiedBy = creator;
-            //model.UtcCreated = model.UtcModified = DateTime.UtcNow;
-            //DbModels.TaskResponsibleUser dbo = Mapper.Map<DbModels.TaskResponsibleUser>(model);
-            //dbo.Insert();
-            //return model;
+            if (!model.Id.HasValue) model.Id = Guid.NewGuid();
+            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            model.CreatedBy = model.ModifiedBy = creator;
+
+            DBOs.Tasks.TaskResponsibleUser dbo = Mapper.Map<DBOs.Tasks.TaskResponsibleUser>(model);
+
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                conn.Execute("INSERT INTO \"task_responsible_user\" (\"id\", \"task_id\", \"user_id\", \"responsibility\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                    "VALUES (@Id, @TaskId, @UserId, @Responsibility, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
+                    dbo);
+                model.Id = conn.Query<DBOs.Tasks.TaskAssignedContact>("SELECT currval(pg_get_serial_sequence('task_responsible_user', 'id')) AS \"id\"").Single().Id;
+            }
+
+            return model;
         }
     }
 }

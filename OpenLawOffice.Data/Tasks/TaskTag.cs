@@ -26,6 +26,8 @@ namespace OpenLawOffice.Data.Tasks
     using System.Linq;
     using System.Text;
     using AutoMapper;
+    using Dapper;
+    using System.Data;
 
     /// <summary>
     /// TODO: Update summary.
@@ -34,190 +36,186 @@ namespace OpenLawOffice.Data.Tasks
     {
         public static Common.Models.Tasks.TaskTag Get(Guid id)
         {
-            return null;
-            //DbModels.TaskTag dbo = DbModels.TaskTag.FirstOrDefault(
-            //    "SELECT * FROM \"task_tag\" WHERE \"id\"=@0 AND \"utc_disabled\" is null",
-            //    id);
-            //if (dbo == null) return null;
+            Common.Models.Tasks.TaskTag model =
+                DataHelper.Get<Common.Models.Tasks.TaskTag, DBOs.Tasks.TaskTag>(
+                "SELECT * FROM \"task_tag\" WHERE \"id\"=@id AND \"utc_disabled\" is null",
+                new { id = id });
 
-            //Common.Models.Tasks.TaskTag model = Mapper.Map<Common.Models.Tasks.TaskTag>(dbo);
+            if (model == null) return null;
 
-            //if (dbo.TagCategoryId.HasValue)
-            //    model.TagCategory = Mapper.Map<Common.Models.Tagging.TagCategory>(
-            //        DbModels.TagCategory.SingleOrDefault(model.TagCategory.Id));
+            if (model.TagCategory != null)
+                model.TagCategory = Tagging.TagCategory.Get(model.TagCategory.Id);
 
-            //return model;
+            return model;
         }
 
         public static List<Common.Models.Tasks.TaskTag> List()
         {
-            return null;
-            //List<Common.Models.Tasks.TaskTag> list = new List<Common.Models.Tasks.TaskTag>();
-            //IEnumerable<DbModels.TaskTag> ie = DbModels.TaskTag.Query(
-            //    "SELECT * FROM \"task_tag\" WHERE \"utc_disabled\" is null");
-            //foreach (DbModels.TaskTag dbo in ie)
-            //    list.Add(Mapper.Map<Common.Models.Tasks.TaskTag>(dbo));
-            //return list;
+            return DataHelper.List<Common.Models.Tasks.TaskTag, DBOs.Tasks.TaskTag>(
+                "SELECT * FROM \"task_tag\" WHERE \"utc_disabled\" is null");
         }
 
-        public static List<Common.Models.Tasks.TaskTag> ListForMatter(Guid taskId)
+        public static List<Common.Models.Tasks.TaskTag> ListForTask(Guid taskId)
         {
-            return null;
-            //List<Common.Models.Tasks.TaskTag> list = new List<Common.Models.Tasks.TaskTag>();
-            //IEnumerable<DbModels.TaskTag> ie = DbModels.TaskTag.Query(
-            //    "SELECT * FROM \"task_tag\" WHERE \"task_id\"=@0 \"utc_disabled\" is null",
-            //    taskId.ToString());
-            //foreach (DbModels.TaskTag dbo in ie)
-            //{
-            //    Common.Models.Tasks.TaskTag tagModel = Mapper.Map<Common.Models.Tasks.TaskTag>(dbo);
-            //    if (dbo.TagCategoryId.HasValue)
-            //    {
-            //        DbModels.TagCategory tagCat = DbModels.TagCategory.SingleOrDefault(dbo.TagCategoryId.Value);
-            //        tagModel.TagCategory = Mapper.Map<Common.Models.Tagging.TagCategory>(tagCat);
-            //    }
-            //    list.Add(tagModel);
-            //}
-            //return list;
+            List<Common.Models.Tasks.TaskTag> list =
+                DataHelper.List<Common.Models.Tasks.TaskTag, DBOs.Tasks.TaskTag>(
+                "SELECT * FROM \"task_tag\" WHERE \"task_id\"=@TaskId AND \"utc_disabled\" is null",
+                new { TaskId = taskId });
+
+            list.ForEach(x =>
+            {
+                x.TagCategory = Tagging.TagCategory.Get(x.TagCategory.Id);
+            });
+
+            return list;
         }
 
         public static Common.Models.Tasks.TaskTag Create(Common.Models.Tasks.TaskTag model,
             Common.Models.Security.User creator)
         {
-            return null;
-            //if (!model.Id.HasValue) model.Id = Guid.NewGuid();
-            //model.CreatedBy = model.ModifiedBy = creator;
-            //model.UtcCreated = model.UtcModified = DateTime.UtcNow;
-            //DbModels.TaskTag dbo = Mapper.Map<DbModels.TaskTag>(model);
-            //dbo.Insert();
-            //UpdateTagCategory(model, creator);
-            //return model;
+            if (!model.Id.HasValue) model.Id = Guid.NewGuid();
+            model.CreatedBy = model.ModifiedBy = creator;
+            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            DBOs.Tasks.TaskTag dbo = Mapper.Map<DBOs.Tasks.TaskTag>(model);
+
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                conn.Execute("INSERT INTO \"task_tag\" (\"id\", \"task_id\", \"tag_category_id\", \"tag\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                    "VALUES (@Id, @TaskId, @TagCategoryId, @Tag, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
+                    dbo);
+            }
+
+            model.TagCategory = UpdateTagCategory(model, creator);
+
+            return model;
         }
 
         public static Common.Models.Tasks.TaskTag Edit(Common.Models.Tasks.TaskTag model,
             Common.Models.Security.User modifier)
         {
-            return null;
-            //model.ModifiedBy = modifier;
-            //model.UtcModified = DateTime.UtcNow;
-            //DbModels.TaskTag dbo = Mapper.Map<DbModels.TaskTag>(model);
-            //dbo.Update(new string[] {
-            //    "utc_modified",
-            //    "modified_by_user_id",
-            //    "task_id",
-            //    "tag"
-            //});
-            //UpdateTagCategory(model, modifier);
-            //return model;
+            model.ModifiedBy = modifier;
+            model.UtcModified = DateTime.UtcNow;
+            DBOs.Tasks.TaskTag dbo = Mapper.Map<DBOs.Tasks.TaskTag>(model);
+
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                conn.Execute("UPDATE \"task_tag\" SET " +
+                    "\"task_id\"=@TaskId, \"tag\"=@Tag, \"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId " +
+                    "WHERE \"id\"=@Id", dbo);
+            }
+
+            model.TagCategory = UpdateTagCategory(model, modifier);
+
+            return model;
         }
 
         private static Common.Models.Tagging.TagCategory UpdateTagCategory(
             Common.Models.Tasks.TaskTag model,
             Common.Models.Security.User modifier)
         {
-            return null;
-            //DbModels.TaskTag currentTagDbo = DbModels.TaskTag.SingleOrDefault(model.Id.Value);
+            Common.Models.Tasks.TaskTag currentTag = Get(model.Id.Value);
 
-            //if (currentTagDbo.TagCategoryId.HasValue)
-            //{
-            //    if (model.TagCategory != null && !string.IsNullOrEmpty(model.TagCategory.Name))
-            //    { // If current has tag & new has tag                    
-            //        // Are they the same - ignore if so
-            //        if (currentTagDbo.Tag != model.Tag)
-            //        {
-            //            // Update - change tagcat
-            //            model.TagCategory = AddOrChangeTagCategory(model, modifier);
-            //        }
-            //    }
-            //    else
-            //    {
-            //        // If current has tag & new !has tag
-            //        // Update - drop tagcat
-            //        currentTagDbo.TagCategoryId = null;
-            //        currentTagDbo.Update(new string[] { "tag_category_id" });
-            //    }
-            //}
-            //else
-            //{
-            //    if (model.TagCategory != null && !string.IsNullOrEmpty(model.TagCategory.Name))
-            //    { // If current !has tag & new has tag
-            //        // Update - add tagcat
-            //        model.TagCategory = AddOrChangeTagCategory(model, modifier);
-            //    }
-            //    // If current !has tag & new !has tag - do nothing
-            //}
+            if (currentTag.TagCategory != null)
+            {
+                if (model.TagCategory != null && !string.IsNullOrEmpty(model.TagCategory.Name))
+                { // If current has tag & new has tag                    
+                    // Are they the same - ignore if so
+                    if (currentTag.Tag != model.Tag)
+                    {
+                        // Update - change tagcat
+                        model.TagCategory = AddOrChangeTagCategory(model, modifier);
+                    }
+                }
+                else
+                {
+                    // If current has tag & new !has tag
+                    // Update - drop tagcat
+                    currentTag.TagCategory = null;
 
-            //return model.TagCategory;
+                    using (IDbConnection conn = Database.Instance.GetConnection())
+                    {
+                        conn.Execute("UPDATE \"task_tag\" SET \"tag_category_id\"=null WHERE \"id\"=@Id",
+                            new { Id = model.Id.Value });
+                    }
+                }
+            }
+            else
+            {
+                if (model.TagCategory != null && !string.IsNullOrEmpty(model.TagCategory.Name))
+                { // If current !has tag & new has tag
+                    // Update - add tagcat
+                    model.TagCategory = AddOrChangeTagCategory(model, modifier);
+                }
+                // If current !has tag & new !has tag - do nothing
+            }
+
+            return model.TagCategory;
         }
 
         private static Common.Models.Tagging.TagCategory AddOrChangeTagCategory(
             Common.Models.Tasks.TaskTag tag,
             Common.Models.Security.User modifier)
         {
-            return null;
-            //DbModels.TagCategory newTagCat = null;
+            Common.Models.Tagging.TagCategory newTagCat = null;
 
-            //// Check for existing name
-            //if (tag.TagCategory != null && !string.IsNullOrEmpty(tag.TagCategory.Name))
-            //{
-            //    newTagCat = DbModels.TagCategory.FirstOrDefault("SELECT * FROM \"tag_category\" WHERE \"name\"=@0",
-            //        tag.TagCategory.Name);
-            //}
+            // Check for existing name
+            if (tag.TagCategory != null && !string.IsNullOrEmpty(tag.TagCategory.Name))
+            {
+                newTagCat = Tagging.TagCategory.Get(tag.TagCategory.Name);
+            }
 
-            //// Either need to use existing or create a new tag category
-            //if (newTagCat != null)
-            //{
-            //    // Can use existing
-            //    tag.TagCategory = Mapper.Map<Common.Models.Tagging.TagCategory>(newTagCat);
+            // Either need to use existing or create a new tag category
+            if (newTagCat != null)
+            {
+                // Can use existing
+                tag.TagCategory = newTagCat;
 
-            //    // If new tagcat was disabled, it needs enabled
-            //    if (newTagCat.UtcDisabled.HasValue)
-            //    {
-            //        tag.TagCategory = Tagging.TagCategory.Enable(tag.TagCategory, modifier);
-            //    }
-            //}
-            //else
-            //{
-            //    // Add one
-            //    tag.TagCategory = Tagging.TagCategory.Create(tag.TagCategory, modifier);
-            //}
+                // If new tagcat was disabled, it needs enabled
+                if (newTagCat.UtcDisabled.HasValue)
+                {
+                    tag.TagCategory = Tagging.TagCategory.Enable(tag.TagCategory, modifier);
+                }
+            }
+            else
+            {
+                // Add one
+                tag.TagCategory = Tagging.TagCategory.Create(tag.TagCategory, modifier);
+            }
 
-            //// Update TaskTag's TagCategoryId
-            //DbModels.TaskTag dboTag = Mapper.Map<DbModels.TaskTag>(tag);
-            //dboTag.Update(new string[] { "tag_category_id" });
+            // Update MatterTag's TagCategoryId
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                conn.Execute("UPDATE \"task_tag\" SET \"tag_category_id\"=@TagCategoryId WHERE \"id\"=@Id",
+                    new { Id = tag.Id.Value, TagCategoryId = tag.TagCategory.Id });
+            }
 
-            //return tag.TagCategory;
+            return tag.TagCategory;
         }
 
         public static Common.Models.Tasks.TaskTag Disable(Common.Models.Tasks.TaskTag model,
             Common.Models.Security.User disabler)
         {
-            return null;
-            //model.DisabledBy = disabler;
-            //model.UtcDisabled = DateTime.UtcNow;
-            //DbModels.TaskTag dbo = Mapper.Map<DbModels.TaskTag>(model);
-            //dbo.Update(new string[] {
-            //    "utc_disabled",
-            //    "disabled_by_user_id"
-            //});
-            //return model;
+            model.DisabledBy = disabler;
+            model.UtcDisabled = DateTime.UtcNow;
+
+            DataHelper.Disable<Common.Models.Matters.MatterContact,
+                DBOs.Matters.MatterContact>("task_tag", disabler.Id.Value);
+
+            return model;
         }
 
         public static Common.Models.Tasks.TaskTag Enable(Common.Models.Tasks.TaskTag model,
             Common.Models.Security.User enabler)
         {
-            return null;
-            //model.ModifiedBy = enabler;
-            //model.UtcModified = DateTime.UtcNow;
-            //model.DisabledBy = null;
-            //model.UtcDisabled = null;
-            //DbModels.TaskTag dbo = Mapper.Map<DbModels.TaskTag>(model);
-            //dbo.Update(new string[] {
-            //    "utc_modified",
-            //    "modified_by_user_id",
-            //    "utc_disabled",
-            //    "disabled_by_user_id"
-            //});
-            //return model;
+            model.ModifiedBy = enabler;
+            model.UtcModified = DateTime.UtcNow;
+            model.DisabledBy = null;
+            model.UtcDisabled = null;
+
+            DataHelper.Enable<Common.Models.Matters.MatterContact,
+                DBOs.Matters.MatterContact>("task_tag", enabler.Id.Value);
+
+            return model;
         }
     }
 }

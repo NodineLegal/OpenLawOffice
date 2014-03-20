@@ -26,6 +26,8 @@ namespace OpenLawOffice.Data.Timing
     using System.Linq;
     using System.Text;
     using AutoMapper;
+    using Dapper;
+    using System.Data;
 
     /// <summary>
     /// TODO: Update summary.
@@ -34,67 +36,60 @@ namespace OpenLawOffice.Data.Timing
     {
         public static Common.Models.Timing.Time Get(Guid id)
         {
-            return null;
-            //DbModels.Time dbo = DbModels.Time.FirstOrDefault(
-            //    "SELECT * FROM \"time\" WHERE \"id\"=@0 AND \"utc_disabled\" is null",
-            //    id);
-            //if (dbo == null) return null;
-            //return Mapper.Map<Common.Models.Timing.Time>(dbo);
+            return DataHelper.Get<Common.Models.Timing.Time, DBOs.Timing.Time>(
+                "SELECT * FROM \"time\" WHERE \"id\"=@id AND \"utc_disabled\" is null",
+                new { id = id });
         }
 
         public static List<Common.Models.Timing.Time> ListForTask(long taskId)
         {
-            return null;
-            //List<Common.Models.Timing.Time> list = new List<Common.Models.Timing.Time>();
-            //IEnumerable<DbModels.Time> ie = DbModels.Time.Query(
-            //    "SELECT * FROM \"time\" JOIN \"task_time\" ON \"time\".\"id\"=\"task_time\".\"time_id\" " +
-            //    "WHERE \"task_id\"=@0 AND \"utc_disabled\" is null", taskId);
-
-            //foreach (DbModels.Time dbo in ie)
-            //    list.Add(Mapper.Map<Common.Models.Timing.Time>(dbo));
-
-            //return list;
+            return DataHelper.List<Common.Models.Timing.Time, DBOs.Timing.Time>(
+                "SELECT * FROM \"time\" JOIN \"task_time\" ON \"time\".\"id\"=\"task_time\".\"time_id\" " +
+                "WHERE \"task_id\"=@TaskId AND \"utc_disabled\" is null",
+                new { TaskId = taskId });
         }
 
         public static Common.Models.Tasks.Task GetRelatedTask(Guid timeId)
         {
-            return null;
-            //DbModels.Task dbo = DbModels.Task.FirstOrDefault(
-            //    "SELECT* FROM \"task\" JOIN \"task_time\" ON \"task\".\"id\"=\"task_time\".\"task_id\" "+
-            //    "WHERE \"time_id\"=@0 AND \"utc_disabled\" is null",
-            //    timeId);
-            //if (dbo == null) return null;
-            //return Mapper.Map<Common.Models.Tasks.Task>(dbo);
+            return DataHelper.Get<Common.Models.Tasks.Task, DBOs.Tasks.Task>(
+                "SELECT* FROM \"task\" JOIN \"task_time\" ON \"task\".\"id\"=\"task_time\".\"task_id\" " +
+                "WHERE \"time_id\"=@TaskId AND \"utc_disabled\" is null",
+                new { TimeId = timeId });
         }
 
         public static Common.Models.Timing.Time Create(Common.Models.Timing.Time model,
             Common.Models.Security.User creator)
         {
-            return null;
-            //if (!model.Id.HasValue) model.Id = Guid.NewGuid();
-            //model.CreatedBy = model.ModifiedBy = creator;
-            //model.UtcCreated = model.UtcModified = DateTime.UtcNow;
-            //DbModels.Time dbo = Mapper.Map<DbModels.Time>(model);
-            //dbo.Insert();
-            //return model;
+            if (!model.Id.HasValue) model.Id = Guid.NewGuid();
+            model.CreatedBy = model.ModifiedBy = creator;
+            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            DBOs.Timing.Time dbo = Mapper.Map<DBOs.Timing.Time>(model);
+
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                conn.Execute("INSERT INTO \"time\" (\"id\", \"start\", \"stop\", \"worker_contact_id\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                    "VALUES (@Id, @Start, @Stop, @WorkerContactId, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
+                    dbo);
+            }
+
+            return model;
         }
 
         public static Common.Models.Timing.Time Edit(Common.Models.Timing.Time model,
             Common.Models.Security.User modifier)
         {
-            return null;
-            //model.ModifiedBy = modifier;
-            //model.UtcModified = DateTime.UtcNow;
-            //DbModels.Time dbo = Mapper.Map<DbModels.Time>(model);
-            //dbo.Update(new string[] {
-            //    "utc_modified",
-            //    "modified_by_user_id",
-            //    "start",
-            //    "stop",
-            //    "worker_contact_id"
-            //});
+            model.ModifiedBy = modifier;
+            model.UtcModified = DateTime.UtcNow;
+            DBOs.Timing.Time dbo = Mapper.Map<DBOs.Timing.Time>(model);
 
-            //return model;
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                conn.Execute("UPDATE \"time\" SET " +
+                    "\"start\"=@Start, \"stop\"=@Stop, \"worker_contact_id\"=@WorkerContactId, \"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId " +
+                    "WHERE \"id\"=@Id", dbo);
+            }
+
+            return model;
         }
     }
 }

@@ -26,6 +26,8 @@ namespace OpenLawOffice.Data.Tasks
     using System.Linq;
     using System.Text;
     using AutoMapper;
+    using Dapper;
+    using System.Data;
 
     /// <summary>
     /// TODO: Update summary.
@@ -34,34 +36,36 @@ namespace OpenLawOffice.Data.Tasks
     {
         public static Common.Models.Tasks.TaskTime Get(Guid id)
         {
-            return null;
-            //DbModels.TaskTime dbo = DbModels.TaskTime.FirstOrDefault(
-            //    "SELECT * FROM \"task_time\" WHERE \"id\"=@0 AND \"utc_disabled\" is null",
-            //    id);
-            //if (dbo == null) return null;
-            //return Mapper.Map<Common.Models.Tasks.TaskTime>(dbo);
+            return DataHelper.Get<Common.Models.Tasks.TaskTime, DBOs.Tasks.TaskTime>(
+                "SELECT * FROM \"task_time\" WHERE \"id\"=@id AND \"utc_disabled\" is null",
+                new { id = id });
         }
 
         public static Common.Models.Tasks.TaskTime Get(long taskId, Guid timeId)
         {
-            return null;
-            //DbModels.TaskTime dbo = DbModels.TaskTime.FirstOrDefault(
-            //    "SELECT * FROM \"task_time\" WHERE \"task_id\"=@0 AND \"time_id\"=@1 AND \"utc_disabled\" is null",
-            //    taskId, timeId);
-            //if (dbo == null) return null;
-            //return Mapper.Map<Common.Models.Tasks.TaskTime>(dbo);
+            return DataHelper.Get<Common.Models.Tasks.TaskTime, DBOs.Tasks.TaskTime>(
+                "SELECT * FROM \"task_time\" WHERE \"task_id\"=@TaskId AND \"time_id\"=@TimeId AND \"utc_disabled\" is null",
+                new { TaskId = taskId, TimeId = timeId });
         }
 
         public static Common.Models.Tasks.TaskTime Create(Common.Models.Tasks.TaskTime model,
             Common.Models.Security.User creator)
         {
-            return null;
-            //if (!model.Id.HasValue) model.Id = Guid.NewGuid();
-            //model.CreatedBy = model.ModifiedBy = creator;
-            //model.UtcCreated = model.UtcModified = DateTime.UtcNow;
-            //DbModels.TaskTime dbo = Mapper.Map<DbModels.TaskTime>(model);
-            //dbo.Insert();
-            //return model;
+            if (!model.Id.HasValue) model.Id = Guid.NewGuid();
+            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            model.CreatedBy = model.ModifiedBy = creator;
+
+            DBOs.Tasks.TaskTime dbo = Mapper.Map<DBOs.Tasks.TaskTime>(model);
+
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                conn.Execute("INSERT INTO \"task_time\" (\"id\", \"task_id\", \"time_id\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                    "VALUES (@Id, @TaskId, @TimeId, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
+                    dbo);
+                model.Id = conn.Query<DBOs.Tasks.TaskTime>("SELECT currval(pg_get_serial_sequence('task_time', 'id')) AS \"id\"").Single().Id;
+            }
+
+            return model;
         }
     }
 }

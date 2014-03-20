@@ -95,7 +95,7 @@ namespace OpenLawOffice.Data.Matters
         {
             model.ModifiedBy = modifier;
             model.UtcModified = DateTime.UtcNow;
-            DBOs.Matters.Matter dbo = Mapper.Map<DBOs.Matters.Matter>(model);
+            DBOs.Matters.MatterTag dbo = Mapper.Map<DBOs.Matters.MatterTag>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
