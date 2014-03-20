@@ -17,32 +17,15 @@
             Permission=Common.Models.PermissionType.List)]
         public ActionResult Index()
         {
-            string title = null;
-            string filterClause = "";
-            List<ViewModels.Matters.MatterViewModel> modelList = new List<ViewModels.Matters.MatterViewModel>();
+            List<ViewModels.Matters.MatterViewModel> viewModelList = new List<ViewModels.Matters.MatterViewModel>();
+            List<Common.Models.Matters.Matter> modelList = OpenLawOffice.Data.Matters.Matter.List();
 
-            //if (!string.IsNullOrEmpty(request.Title))
-            //    filterClause += " LOWER(\"title\") like '%' || LOWER(@Title) || '%' AND";
-            
-            using (IDbConnection db = Database.Instance.OpenConnection())
+            modelList.ForEach(x =>
             {
-                List<DBOs.Matters.Matter> list = db.SqlList<DBOs.Matters.Matter>(
-                    "SELECT * FROM \"matter\" JOIN \"secured_resource_acl\" ON " +
-                    "\"matter\".\"id\"=\"secured_resource_acl\".\"secured_resource_id\" " +
-                    "WHERE " + filterClause +
-                    "\"secured_resource_acl\".\"allow_flags\" & 2 > 0 " +
-                    "AND NOT \"secured_resource_acl\".\"deny_flags\" & 2 > 0 " +
-                    "AND \"matter\".\"utc_disabled\" is null  " +
-                    "AND \"secured_resource_acl\".\"utc_disabled\" is null",
-                    new { Title = title });
+                viewModelList.Add(Mapper.Map<ViewModels.Matters.MatterViewModel>(x));
+            });
 
-                list.ForEach(dbo =>
-                {
-                    modelList.Add(Mapper.Map<ViewModels.Matters.MatterViewModel>(dbo));
-                });
-            }
-
-            return View(modelList);
+            return View(viewModelList);
         }
 
         [SecurityFilter(SecurityAreaName = "Matters.Matter", IsSecuredResource = true,
@@ -104,39 +87,15 @@
 
         private List<ViewModels.Matters.MatterViewModel> GetChildrenList(Guid? id)
         {
-            List<ViewModels.Matters.MatterViewModel> modelList = new List<ViewModels.Matters.MatterViewModel>();
+            List<ViewModels.Matters.MatterViewModel> viewModelList = new List<ViewModels.Matters.MatterViewModel>();
+            List<Common.Models.Matters.Matter> modelList = OpenLawOffice.Data.Matters.Matter.ListChildren(id);
 
-            using (IDbConnection db = Database.Instance.OpenConnection())
+            modelList.ForEach(x =>
             {
-                List<DBOs.Matters.Matter> list = null;
+                viewModelList.Add(Mapper.Map<ViewModels.Matters.MatterViewModel>(x));
+            });
 
-                if (!id.HasValue)
-                    list = db.SqlList<DBOs.Matters.Matter>(
-                        "SELECT * FROM \"matter\" JOIN \"secured_resource_acl\" ON " +
-                        "\"matter\".\"id\"=\"secured_resource_acl\".\"secured_resource_id\" " +
-                        "WHERE \"secured_resource_acl\".\"allow_flags\" & 2 > 0 " +
-                        "AND NOT \"secured_resource_acl\".\"deny_flags\" & 2 > 0 " +
-                        "AND \"matter\".\"utc_disabled\" is null  " +
-                        "AND \"secured_resource_acl\".\"utc_disabled\" is null " +
-                        "AND \"matter\".\"parent_id\" is null");
-                else
-                    list = db.SqlList<DBOs.Matters.Matter>(
-                        "SELECT * FROM \"matter\" JOIN \"secured_resource_acl\" ON " +
-                        "\"matter\".\"id\"=\"secured_resource_acl\".\"secured_resource_id\" " +
-                        "WHERE \"secured_resource_acl\".\"allow_flags\" & 2 > 0 " +
-                        "AND NOT \"secured_resource_acl\".\"deny_flags\" & 2 > 0 " +
-                        "AND \"matter\".\"utc_disabled\" is null  " +
-                        "AND \"secured_resource_acl\".\"utc_disabled\" is null " +
-                        "AND \"matter\".\"parent_id\"=@ParentId",
-                        new { ParentId = id.Value });
-
-                list.ForEach(dbo =>
-                {
-                    modelList.Add(Mapper.Map<ViewModels.Matters.MatterViewModel>(dbo));
-                });
-            }
-
-            return modelList;
+            return viewModelList;
         }
 
         //
@@ -145,27 +104,11 @@
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(Guid id)
         {
-            ViewModels.Matters.MatterViewModel model = null;
-            using (IDbConnection db = Database.Instance.OpenConnection())
-            {
-                // Load base DBO
-                DBOs.Matters.Matter dbo = db.Single<DBOs.Matters.Matter>(
-                    "SELECT * FROM \"matter\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
-                    new { Id = id});
-                
-                model = Mapper.Map<ViewModels.Matters.MatterViewModel>(dbo);
-
-                if (dbo.ParentId.HasValue)
-                {
-                    DBOs.Matters.Matter parentDbo = db.SingleById<DBOs.Matters.Matter>(dbo.ParentId);
-                    model.Parent = Mapper.Map<ViewModels.Matters.MatterViewModel>(parentDbo);
-                }
-
-                // Core Details
-                PopulateCoreDetails(model);
-            }
-
-            return View(model);
+            ViewModels.Matters.MatterViewModel viewModel = null;
+            Common.Models.Matters.Matter model = OpenLawOffice.Data.Matters.Matter.Get(id);
+            viewModel = Mapper.Map<ViewModels.Matters.MatterViewModel>(model);
+            PopulateCoreDetails(viewModel);
+            return View(viewModel);
         }
 
         //
@@ -182,61 +125,18 @@
         [SecurityFilter(SecurityAreaName = "Matters.Matter", IsSecuredResource = true,
             Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
-        public ActionResult Create(ViewModels.Matters.MatterViewModel model)
+        public ActionResult Create(ViewModels.Matters.MatterViewModel viewModel)
         {
             try
             {
-                Common.Models.Security.User user = UserCache.Instance.Lookup(Request);
-                
-                DBOs.Matters.Matter dboMatter = Mapper.Map<DBOs.Matters.Matter>(model);
-                dboMatter.Id = Guid.NewGuid();
-                dboMatter.CreatedByUserId = dboMatter.ModifiedByUserId = user.Id.Value;
-                dboMatter.UtcCreated = dboMatter.UtcModified = DateTime.UtcNow;
-
-                DBOs.Security.SecuredResource dboSR = new DBOs.Security.SecuredResource()
-                {
-                    Id = dboMatter.Id, 
-                    CreatedByUserId = user.Id.Value,
-                    ModifiedByUserId = user.Id.Value,
-                    UtcCreated = DateTime.UtcNow,
-                    UtcModified = DateTime.UtcNow
-                };
-
-                DBOs.Security.SecuredResourceAcl dboSrAcl = new DBOs.Security.SecuredResourceAcl()
-                {
-                    Id = Guid.NewGuid(),
-                    CreatedByUserId = user.Id.Value,
-                    ModifiedByUserId = user.Id.Value,
-                    UtcCreated = DateTime.UtcNow,
-                    UtcModified = DateTime.UtcNow,
-                    UserId = user.Id.Value,
-                    SecuredResourceId = dboSR.Id,
-                    AllowFlags = (int)(Common.Models.PermissionType.AllAdmin | Common.Models.PermissionType.AllRead | Common.Models.PermissionType.AllWrite),
-                    DenyFlags = (int)Common.Models.PermissionType.None
-                };
-
-                using (IDbConnection db = Database.Instance.OpenConnection())
-                {
-                    using (IDbTransaction tran = db.BeginTransaction())
-                    {
-                        // Insert Matter
-                        db.Insert<DBOs.Matters.Matter>(dboMatter);
-
-                        // Insert SecuredResource
-                        db.Insert<DBOs.Security.SecuredResource>(dboSR);
-
-                        // Insert ACL
-                        db.Insert<DBOs.Security.SecuredResourceAcl>(dboSrAcl);
-
-                        tran.Commit();
-                    }
-                }
- 
+                Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
+                Common.Models.Matters.Matter model = Mapper.Map<Common.Models.Matters.Matter>(viewModel);
+                model = OpenLawOffice.Data.Matters.Matter.Create(model, currentUser);
                 return RedirectToAction("Index");
             }
             catch
             {
-                return View(model);
+                return View(viewModel);
             }
         }
         
@@ -246,19 +146,10 @@
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(Guid id)
         {
-            ViewModels.Matters.MatterViewModel model = null;
-            Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
-            using (IDbConnection db = Database.Instance.OpenConnection())
-            {
-                // Load base DBO
-                DBOs.Matters.Matter dbo = db.Single<DBOs.Matters.Matter>(
-                    "SELECT * FROM \"matter\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
-                    new { Id = id });
-
-                model = Mapper.Map<ViewModels.Matters.MatterViewModel>(dbo);
-            }
-
-            return View(model);
+            ViewModels.Matters.MatterViewModel viewModel = null;
+            Common.Models.Matters.Matter model = OpenLawOffice.Data.Matters.Matter.Get(id);
+            viewModel = Mapper.Map<ViewModels.Matters.MatterViewModel>(id);
+            return View(viewModel);
         }
 
         //
@@ -266,168 +157,73 @@
         [SecurityFilter(SecurityAreaName = "Matters.Matter", IsSecuredResource = true,
             Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
-        public ActionResult Edit(Guid id, ViewModels.Matters.MatterViewModel model)
+        public ActionResult Edit(Guid id, ViewModels.Matters.MatterViewModel viewModel)
         {
             try
             {
-                Common.Models.Security.User user = UserCache.Instance.Lookup(Request);
-
-                DBOs.Matters.Matter dbo = Mapper.Map<DBOs.Matters.Matter>(model);
-                dbo.UtcModified = DateTime.UtcNow;
-                dbo.ModifiedByUserId = user.Id.Value;
-
-                DBOs.Security.SecuredResource dboSR = new DBOs.Security.SecuredResource()
-                {
-                    Id = id,
-                    ModifiedByUserId = user.Id.Value,
-                    UtcModified = DateTime.UtcNow
-                };
-
-                using (IDbConnection db = Database.Instance.OpenConnection())
-                {
-                    using (IDbTransaction tran = db.BeginTransaction())
-                    {
-                        db.UpdateOnly(dbo,
-                            fields => new
-                            {
-                                fields.Title,
-                                fields.Synopsis,
-                                fields.ParentId,
-                                fields.ModifiedByUserId,
-                                fields.UtcModified
-                            },
-                            where => where.Id == dbo.Id);
-
-                        db.UpdateOnly(dboSR,
-                            fields => new
-                            {
-                                fields.ModifiedByUserId,
-                                fields.UtcModified
-                            },
-                            where => where.Id == dbo.Id);
-
-                        tran.Commit();
-                    }
-                }
- 
+                Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
+                Common.Models.Matters.Matter model = Mapper.Map<Common.Models.Matters.Matter>(viewModel);
+                model = OpenLawOffice.Data.Matters.Matter.Edit(model, currentUser);
                 return RedirectToAction("Index");
             }
             catch
             {
-                return View(model);
+                return View(viewModel);
             }
         }
 
         // A note on delete - https://github.com/NodineLegal/OpenLawOffice/wiki/Design-of-Disabling-a-Matter
 
-        //
-        // GET: /Matter/Delete/5
-        [SecurityFilter(SecurityAreaName = "Matters.Matter", IsSecuredResource = true,
-            Permission = Common.Models.PermissionType.Disable)]
-        public ActionResult Delete(int id)
-        {
-            throw new NotImplementedException();
-            return View();
-        }
-
-        //
-        // POST: /Matter/Delete/5
-        [SecurityFilter(SecurityAreaName = "Matters.Matter", IsSecuredResource = true,
-            Permission = Common.Models.PermissionType.Disable)]
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            throw new NotImplementedException();
-            try
-            {
-                // TODO: Add delete logic here
-
- 
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
 
         [SecurityFilter(SecurityAreaName = "Matters.MatterTag", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Tags(Guid id)
         {
-            List<ViewModels.Matters.MatterTagViewModel> modelList = new List<ViewModels.Matters.MatterTagViewModel>();
-            using (IDbConnection db = Database.Instance.OpenConnection())
+            List<ViewModels.Matters.MatterTagViewModel> viewModelList = new List<ViewModels.Matters.MatterTagViewModel>();
+            List<Common.Models.Matters.MatterTag> modelList = OpenLawOffice.Data.Matters.MatterTag.ListForMatter(id);
+
+            modelList.ForEach(x =>
             {
-                List<DBOs.Matters.MatterTag> list = db.SqlList<DBOs.Matters.MatterTag>(
-                    "SELECT * FROM \"matter_tag\" WHERE \"matter_id\"=@MatterId AND \"utc_disabled\" is null",
-                    new { MatterId = id });
+                viewModelList.Add(Mapper.Map<ViewModels.Matters.MatterTagViewModel>(x));
+            });
 
-                list.ForEach(dbo =>
-                {
-                    ViewModels.Matters.MatterTagViewModel tagModel = Mapper.Map<ViewModels.Matters.MatterTagViewModel>(dbo);
-
-                    DBOs.Tagging.TagCategory tagCatDbo = db.SingleById<DBOs.Tagging.TagCategory>(tagModel.TagCategory.Id);
-                    ViewModels.Tagging.TagCategoryViewModel tagCatVM = Mapper.Map<ViewModels.Tagging.TagCategoryViewModel>(tagCatDbo);
-                    tagModel.TagCategory = tagCatVM;
-
-                    modelList.Add(tagModel);
-                });
-            }
-
-            return View(modelList);
+            return View(viewModelList);
         }
 
         [SecurityFilter(SecurityAreaName = "Matters.ResponsibleUser", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult ResponsibleUsers(Guid id)
         {
-            List<ViewModels.Matters.ResponsibleUserViewModel> modelList = new List<ViewModels.Matters.ResponsibleUserViewModel>();
-            using (IDbConnection db = Database.Instance.OpenConnection())
+            List<ViewModels.Matters.ResponsibleUserViewModel> viewModelList = new List<ViewModels.Matters.ResponsibleUserViewModel>();
+            List<Common.Models.Matters.ResponsibleUser> modelList = OpenLawOffice.Data.Matters.ResponsibleUser.ListForMatter(id);
+
+            modelList.ForEach(x =>
             {
-                List<DBOs.Matters.ResponsibleUser> list = db.SqlList<DBOs.Matters.ResponsibleUser>(
-                    "SELECT * FROM \"responsible_user\" WHERE \"matter_id\"=@MatterId AND \"utc_disabled\" is null",
-                    new { MatterId = id });
+                Common.Models.Security.User user = OpenLawOffice.Data.Security.User.Get(x.User.Id.Value);
+                ViewModels.Matters.ResponsibleUserViewModel viewModel = Mapper.Map<ViewModels.Matters.ResponsibleUserViewModel>(x);
+                viewModel.User = Mapper.Map<ViewModels.Security.UserViewModel>(user);
+                viewModelList.Add(viewModel);
+            });
 
-                list.ForEach(dbo =>
-                {
-                    ViewModels.Matters.ResponsibleUserViewModel responsibleUser = Mapper.Map<ViewModels.Matters.ResponsibleUserViewModel>(dbo);
-
-                    //DBOs.Matters.Matter matterDbo = db.SingleById<DBOs.Matters.Matter>(dbo.MatterId);
-                    DBOs.Security.User userDbo = db.SingleById<DBOs.Security.User>(dbo.UserId);
-
-                    //responsibleUser.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(matterDbo);
-                    responsibleUser.User = Mapper.Map<ViewModels.Security.UserViewModel>(userDbo);
-
-                    modelList.Add(responsibleUser);
-                });
-            }
-
-            return View(modelList);
+            return View(viewModelList);
         }
 
         [SecurityFilter(SecurityAreaName = "Contacts.Contact", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Contacts(Guid id)
         {
-            List<ViewModels.Matters.MatterContactViewModel> modelList = new List<ViewModels.Matters.MatterContactViewModel>();
-            using (IDbConnection db = Database.Instance.OpenConnection())
+            List<ViewModels.Matters.MatterContactViewModel> viewModelList = new List<ViewModels.Matters.MatterContactViewModel>();
+            List<Common.Models.Matters.MatterContact> modelList = OpenLawOffice.Data.Matters.MatterContact.ListForMatter(id);
+
+            modelList.ForEach(x =>
             {
-                List<DBOs.Matters.MatterContact> list = db.SqlList<DBOs.Matters.MatterContact>(
-                    "SELECT * FROM \"matter_contact\" WHERE \"matter_id\"=@MatterId AND \"utc_disabled\" is null",
-                    new { MatterId = id });
+                ViewModels.Matters.MatterContactViewModel viewModel = Mapper.Map<ViewModels.Matters.MatterContactViewModel>(x);
+                Common.Models.Contacts.Contact contact = OpenLawOffice.Data.Contacts.Contact.Get(x.Contact.Id.Value);
+                viewModel.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contact);
+                viewModelList.Add(viewModel);
+            });
 
-                list.ForEach(dbo =>
-                {
-                    ViewModels.Matters.MatterContactViewModel vm = Mapper.Map<ViewModels.Matters.MatterContactViewModel>(dbo);
-
-                    DBOs.Contacts.Contact contactDbo = db.SingleById<DBOs.Contacts.Contact>(dbo.ContactId);
-
-                    vm.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contactDbo);
-                    modelList.Add(vm);
-                });
-            }
-
-            return View(modelList);
+            return View(viewModelList);
         }
 
         [SecurityFilter(SecurityAreaName = "Tasks.Task", IsSecuredResource = false,

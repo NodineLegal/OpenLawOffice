@@ -17,20 +17,15 @@
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Index()
         {
-            List<ViewModels.Security.UserViewModel> modelList = new List<ViewModels.Security.UserViewModel>();
-            using (IDbConnection db = Database.Instance.OpenConnection())
+            List<ViewModels.Security.UserViewModel> viewModelList = new List<ViewModels.Security.UserViewModel>();
+            List<Common.Models.Security.User> modelList = OpenLawOffice.Data.Security.User.List();
+
+            modelList.ForEach(x =>
             {
-                List<DBOs.Security.User> list = db.SqlList<DBOs.Security.User>(
-                    "SELECT * FROM \"user\" "+
-                    "WHERE \"utc_disabled\" is null");
+                viewModelList.Add(Mapper.Map<ViewModels.Security.UserViewModel>(x));
+            });
 
-                list.ForEach(dbo =>
-                {
-                    modelList.Add(Mapper.Map<ViewModels.Security.UserViewModel>(dbo));
-                });
-            }
-
-            return View(modelList);
+            return View(viewModelList);
         }
 
         //
@@ -39,18 +34,10 @@
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(int id)
         {
-            ViewModels.Security.UserViewModel model = null;
-            using (IDbConnection db = Database.Instance.OpenConnection())
-            {
-                // Load base DBO
-                DBOs.Security.User dbo = db.Single<DBOs.Security.User>(
-                    "SELECT * FROM \"user\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
-                    new { Id = id });
-
-                model = Mapper.Map<ViewModels.Security.UserViewModel>(dbo);
-            }
-
-            return View(model);
+            ViewModels.Security.UserViewModel viewModel = null;
+            Common.Models.Security.User model = OpenLawOffice.Data.Security.User.Get(id);
+            viewModel = Mapper.Map<ViewModels.Security.UserViewModel>(model);
+            return View(viewModel);
         }
 
         //
@@ -67,29 +54,23 @@
         [SecurityFilter(SecurityAreaName = "Security.User", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
-        public ActionResult Create(ViewModels.Security.UserViewModel model)
+        public ActionResult Create(ViewModels.Security.UserViewModel viewModel)
         {
             try
             {
-                DBOs.Security.User dboUser = Mapper.Map<DBOs.Security.User>(model);
-                dboUser.UtcCreated = dboUser.UtcModified = DateTime.UtcNow;
-                dboUser.PasswordSalt = GetRandomString(10);
+                Common.Models.Security.User model = Mapper.Map<Common.Models.Security.User>(viewModel);
+                model.PasswordSalt = GetRandomString(10);
                 // TODO : This will eventually be done in javascript on the browser
-                dboUser.Password = WebClient.Security.ClientHashPassword("12345");
-                dboUser.Password = WebClient.Security.ServerHashPassword(
-                    dboUser.Password, dboUser.PasswordSalt);
-                
-                using (IDbConnection db = Database.Instance.OpenConnection())
-                {
-                    // Insert User
-                    db.Insert<DBOs.Security.User>(dboUser);
-                }
+                model.Password = WebClient.Security.ClientHashPassword("12345");
+                model.Password = WebClient.Security.ServerHashPassword(
+                    model.Password, model.PasswordSalt);
+                model = OpenLawOffice.Data.Security.User.Create(model);
 
                 return RedirectToAction("Index");
             }
             catch
             {
-                return View(model);
+                return View(viewModel);
             }
         }
         
@@ -99,20 +80,11 @@
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(int id)
         {
-            ViewModels.Security.UserViewModel model = null;
-            using (IDbConnection db = Database.Instance.OpenConnection())
-            {
-                // Load base DBO
-                DBOs.Security.User dbo = db.Single<DBOs.Security.User>(
-                    "SELECT * FROM \"user\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
-                    new { Id = id });
-
-                model = Mapper.Map<ViewModels.Security.UserViewModel>(dbo);
-            }
-
-            model.Password = null;
-
-            return View(model);
+            ViewModels.Security.UserViewModel viewModel = null;
+            Common.Models.Security.User model = OpenLawOffice.Data.Security.User.Get(id);
+            viewModel = Mapper.Map<ViewModels.Security.UserViewModel>(model);
+            viewModel.Password = null;
+            return View(viewModel);
         }
 
         //
@@ -120,80 +92,26 @@
         [SecurityFilter(SecurityAreaName = "Security.User", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
-        public ActionResult Edit(int id, ViewModels.Security.UserViewModel model)
+        public ActionResult Edit(int id, ViewModels.Security.UserViewModel viewModel)
         {
             try
             {
-                DBOs.Security.User dbo = Mapper.Map<DBOs.Security.User>(model);
-                dbo.UtcModified = DateTime.UtcNow;
+                Common.Models.Security.User currentModel = OpenLawOffice.Data.Security.User.Get(id);
+                Common.Models.Security.User model = Mapper.Map<Common.Models.Security.User>(viewModel);
 
-                using (IDbConnection db = Database.Instance.OpenConnection())
-                {
-                    if (model.Password != null && model.Password.Length > 0)
-                    {
-                        DBOs.Security.User dboCurrent = db.SingleById<DBOs.Security.User>(id);
+                // TODO : This will eventually be done in javascript on the browser
+                model.Password = WebClient.Security.ClientHashPassword(viewModel.Password);
+                model.Password = WebClient.Security.ServerHashPassword(
+                    model.Password, model.PasswordSalt);
 
-                        // TODO : This will eventually be done in javascript on the browser
-                        dbo.Password = WebClient.Security.ClientHashPassword(model.Password);
-                        dbo.Password = WebClient.Security.ServerHashPassword(
-                        dbo.Password, dboCurrent.PasswordSalt);
-
-                        db.UpdateOnly(dbo,
-                            fields => new
-                            {
-                                fields.Username,
-                                fields.Password,
-                                fields.UtcModified
-                            },
-                            where => where.Id == dbo.Id);
-                    }
-                    else
-                    {
-                        db.UpdateOnly(dbo,
-                            fields => new
-                            {
-                                fields.Username,
-                                fields.UtcModified
-                            },
-                            where => where.Id == dbo.Id);
-                    }
-                }
+                model = OpenLawOffice.Data.Security.User.Edit(model);
+                model = OpenLawOffice.Data.Security.User.SetPassword(model);
  
                 return RedirectToAction("Index");
             }
             catch
             {
-                return View(model);
-            }
-        }
-
-        //
-        // GET: /User/Delete/5
-        [SecurityFilter(SecurityAreaName = "Security.User", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Disable)]
-        public ActionResult Delete(int id)
-        {
-            throw new NotImplementedException();
-            return View();
-        }
-
-        //
-        // POST: /User/Delete/5
-        [SecurityFilter(SecurityAreaName = "Security.User", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Disable)]
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            throw new NotImplementedException();
-            try
-            {
-                // TODO: Add delete logic here
- 
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
+                return View(viewModel);
             }
         }
 

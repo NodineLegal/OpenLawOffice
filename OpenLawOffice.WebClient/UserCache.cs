@@ -47,16 +47,7 @@
 
             if (_table.ContainsKey(authToken)) return _table[authToken];
 
-            using (IDbConnection db = Database.Instance.OpenConnection())
-            {
-                DBOs.Security.User dboUser = 
-                    db.Single<DBOs.Security.User>(
-                    new { UserAuthToken = authToken });
-
-                if (dboUser == null) return null;
-
-                Add(ret = Mapper.Map<Common.Models.Security.User>(dboUser));
-            }
+            Add(ret = Data.Security.User.Get(authToken));
 
             return ret;
         }

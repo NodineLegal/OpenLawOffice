@@ -2,11 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Web;
-    using System.Web.Mvc;
     using System.Data;
-    using ServiceStack.OrmLite;
+    using System.Web.Mvc;
     using AutoMapper;
 
     public class ContactsController : BaseController
@@ -54,16 +51,10 @@
         {
             List<ViewModels.Contacts.ContactViewModel> modelList = new List<ViewModels.Contacts.ContactViewModel>();
 
-            using (IDbConnection db = Database.Instance.OpenConnection())
+            OpenLawOffice.Data.Contacts.Contact.List().ForEach(x =>
             {
-                List<DBOs.Contacts.Contact> list = db.SqlList<DBOs.Contacts.Contact>(
-                    "SELECT * FROM \"contact\" WHERE \"utc_disabled\" is null");
-
-                list.ForEach(dbo =>
-                {
-                    modelList.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(dbo));
-                });
-            }
+                modelList.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(x));
+            });
 
             return modelList;
         }
@@ -74,20 +65,10 @@
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(int id)
         {
-            ViewModels.Contacts.ContactViewModel model = null;
-            using (IDbConnection db = Database.Instance.OpenConnection())
-            {
-                // Load base DBO
-                DBOs.Contacts.Contact dbo = db.Single<DBOs.Contacts.Contact>(
-                    "SELECT * FROM \"contact\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
-                    new { Id = id });
-
-                model = Mapper.Map<ViewModels.Contacts.ContactViewModel>(dbo);
-
-                // Core Details
-                PopulateCoreDetails(model);
-            }
-
+            Common.Models.Contacts.Contact contact = OpenLawOffice.Data.Contacts.Contact.Get(id);
+            if (contact == null) return null;
+            ViewModels.Contacts.ContactViewModel model = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contact);
+            PopulateCoreDetails(model);
             return View(model);
         }
 
@@ -98,54 +79,37 @@
         public ActionResult Create()
         {
             return View();
-        } 
+        }
 
         //
         // POST: /Contacts/Create
         [SecurityFilter(SecurityAreaName = "Contacts.Contact", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
-        public ActionResult Create(ViewModels.Contacts.ContactViewModel model)
+        public ActionResult Create(ViewModels.Contacts.ContactViewModel viewModel)
         {
             try
             {
-                Common.Models.Security.User user = UserCache.Instance.Lookup(Request);
-
-                DBOs.Contacts.Contact dbo = Mapper.Map<DBOs.Contacts.Contact>(model);
-                dbo.CreatedByUserId = dbo.ModifiedByUserId = user.Id.Value;
-                dbo.UtcCreated = dbo.UtcModified = DateTime.UtcNow;
-
-                using (IDbConnection db = Database.Instance.OpenConnection())
-                {
-                    // Insert Contact
-                    db.Insert<DBOs.Contacts.Contact>(dbo);
-                }
+                Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
+                Common.Models.Contacts.Contact model = Mapper.Map<Common.Models.Contacts.Contact>(viewModel);
+                model = OpenLawOffice.Data.Contacts.Contact.Create(model, currentUser);
 
                 return RedirectToAction("Index");
             }
             catch
             {
-                return View(model);
+                return View(viewModel);
             }
         }
-        
+
         //
         // GET: /Contacts/Edit/5
         [SecurityFilter(SecurityAreaName = "Contacts.Contact", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(int id)
         {
-            ViewModels.Contacts.ContactViewModel model = null;
-            using (IDbConnection db = Database.Instance.OpenConnection())
-            {
-                // Load base DBO
-                DBOs.Contacts.Contact dbo = db.Single<DBOs.Contacts.Contact>(
-                    "SELECT * FROM \"contact\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
-                    new { Id = id });
-
-                model = Mapper.Map<ViewModels.Contacts.ContactViewModel>(dbo);
-            }
-
+            Common.Models.Contacts.Contact model = OpenLawOffice.Data.Contacts.Contact.Get(id);
+            ViewModels.Contacts.ContactViewModel viewModel = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model);
             return View(model);
         }
 
@@ -154,69 +118,19 @@
         [SecurityFilter(SecurityAreaName = "Contacts.Contact", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
-        public ActionResult Edit(int id, ViewModels.Contacts.ContactViewModel model)
+        public ActionResult Edit(int id, ViewModels.Contacts.ContactViewModel viewModel)
         {
             try
             {
                 Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
-
-                DBOs.Contacts.Contact dbo = Mapper.Map<DBOs.Contacts.Contact>(model);
-                dbo.UtcModified = DateTime.UtcNow;
-                dbo.ModifiedByUserId = currentUser.Id.Value;
-
-                using (IDbConnection db = Database.Instance.OpenConnection())
-                {
-                    DBOs.Contacts.Contact currentDbo = db.SingleById<DBOs.Contacts.Contact>(id);
-
-                    // load existing, move over constant information and update the whole thing
-                    // we can change this to remove the db call to load the current object later
-                    // once all the fields are for sure.  However, while they might change, this 
-                    // will significantly decrease maintenance requirements as the object has
-                    // many properties.
-                    dbo.Id = currentDbo.Id;
-                    dbo.UtcCreated = currentDbo.UtcCreated;
-                    dbo.CreatedByUserId = currentDbo.CreatedByUserId;
-                    dbo.UtcDisabled = currentDbo.UtcDisabled;
-                    dbo.DisabledByUserId = currentDbo.DisabledByUserId;
-
-                    db.Update<DBOs.Contacts.Contact>(dbo);
-                }
+                Common.Models.Contacts.Contact model = Mapper.Map<Common.Models.Contacts.Contact>(viewModel);
+                model = OpenLawOffice.Data.Contacts.Contact.Edit(model, currentUser);
 
                 return RedirectToAction("Index");
             }
             catch
             {
-                return View(model);
-            }
-        }
-
-        //
-        // GET: /Contacts/Delete/5
-        [SecurityFilter(SecurityAreaName = "Contacts.Contact", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Disable)]
-        public ActionResult Delete(int id)
-        {
-            throw new NotImplementedException();
-            return View();
-        }
-
-        //
-        // POST: /Contacts/Delete/5
-        [SecurityFilter(SecurityAreaName = "Contacts.Contact", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Disable)]
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            throw new NotImplementedException();
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
+                return View(viewModel);
             }
         }
     }

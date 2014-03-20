@@ -17,25 +17,19 @@
         public ActionResult SelectContactToAssign(long id)
         {
             List<ViewModels.Contacts.SelectableContactViewModel> modelList = new List<ViewModels.Contacts.SelectableContactViewModel>();
+            List<Common.Models.Contacts.Contact> contactList = OpenLawOffice.Data.Contacts.Contact.List();
 
-            using (IDbConnection db = Database.Instance.OpenConnection())
+            contactList.ForEach(x =>
             {
-                List<DBOs.Contacts.Contact> contactsDbo = db.SqlList<DBOs.Contacts.Contact>(
-                    "SELECT * FROM \"contact\" WHERE \"utc_disabled\" is null");
-
-                contactsDbo.ForEach(x =>
-                {
-                    ViewModels.Contacts.SelectableContactViewModel vm = Mapper.Map<ViewModels.Contacts.SelectableContactViewModel>(x);
-                    modelList.Add(vm);
-                });
-            }
+                modelList.Add(Mapper.Map<ViewModels.Contacts.SelectableContactViewModel>(x));
+            });
 
             return View(modelList);
         }
 
         [SecurityFilter(SecurityAreaName = "Tasks.TaskAssignedContact", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
-        public ActionResult AssignContact(long id)
+        public ActionResult AssignContact(int id)
         {
             long taskId = 0;
 
@@ -47,18 +41,8 @@
 
             ViewModels.Tasks.TaskAssignedContactViewModel vm = new ViewModels.Tasks.TaskAssignedContactViewModel();
 
-            using (IDbConnection db = Database.Instance.OpenConnection())
-            {
-                DBOs.Tasks.Task taskDbo = db.Single<DBOs.Tasks.Task>(
-                    "SELECT * FROM \"task\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
-                    new { Id = taskId });
-                DBOs.Contacts.Contact contactDbo = db.Single<DBOs.Contacts.Contact>(
-                    "SELECT * FROM \"contact\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
-                    new { Id = id });
-
-                vm.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(taskDbo);
-                vm.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contactDbo);
-            }
+            vm.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(OpenLawOffice.Data.Tasks.Task.Get(taskId));
+            vm.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(OpenLawOffice.Data.Contacts.Contact.Get(id));
 
             return View(vm);
         }
@@ -71,66 +55,40 @@
             // We need to reset the Id of the model as it is picking up the id from the route, 
             // which is incorrect
             model.Id = null;
-            DBOs.Tasks.TaskAssignedContact dbo = null;
 
             Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
-            using (IDbConnection db = Database.Instance.OpenConnection())
-            {
-                dbo = db.Single<DBOs.Tasks.TaskAssignedContact>(
-                    "SELECT * FROM \"task_assigned_contact\" WHERE \"task_id\"=@TaskId AND \"contact_id\"=@ContactId",
-                    new { TaskId = model.Task.Id, ContactId = model.Contact.Id });
 
-                if (dbo == null)
-                {
-                    dbo = Mapper.Map<DBOs.Tasks.TaskAssignedContact>(model);
-                    dbo.Id = Guid.NewGuid();
-                    dbo.CreatedByUserId = dbo.ModifiedByUserId = currentUser.Id.Value;
-                    dbo.UtcCreated = dbo.UtcModified = DateTime.UtcNow;
-                    db.Insert<DBOs.Tasks.TaskAssignedContact>(dbo);
-                }
-                else
-                {
-                    dbo.DisabledByUserId = null;
-                    dbo.UtcDisabled = null;
-                    dbo.AssignmentType = (int)model.AssignmentType;
-                    dbo.UtcModified = DateTime.UtcNow;
-                    dbo.ModifiedByUserId = currentUser.Id.Value;
-                    db.UpdateOnly(dbo,
-                        fields => new
-                        {
-                            fields.AssignmentType,
-                            fields.UtcDisabled,
-                            fields.DisabledByUserId,
-                            fields.ModifiedByUserId,
-                            fields.UtcModified
-                        }, where => where.Id == dbo.Id);
-                }
+            Common.Models.Tasks.TaskAssignedContact taskContact =
+                OpenLawOffice.Data.Tasks.TaskAssignedContact.Get(model.Task.Id.Value, model.Contact.Id.Value);
 
-                dbo = db.SingleById<DBOs.Tasks.TaskAssignedContact>(dbo.Id);
+            if (taskContact == null)
+            { // Create
+                taskContact = Mapper.Map<Common.Models.Tasks.TaskAssignedContact>(model);
+                taskContact = OpenLawOffice.Data.Tasks.TaskAssignedContact.Create(taskContact, currentUser);
+            }
+            else
+            { // Enable
+                taskContact = Mapper.Map<Common.Models.Tasks.TaskAssignedContact>(model);
+                taskContact = OpenLawOffice.Data.Tasks.TaskAssignedContact.Enable(taskContact, currentUser);
             }
 
-            return RedirectToAction("Contacts", "Tasks", new { id = dbo.TaskId.ToString() });
+            return RedirectToAction("Contacts", "Tasks",
+                new { id = taskContact.Task.Id.Value.ToString() });
         }
 
         [SecurityFilter(SecurityAreaName = "Tasks.TaskAssignedContact", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(Guid id)
         {
-            ViewModels.Tasks.TaskAssignedContactViewModel model = null;
-            using (IDbConnection db = Database.Instance.OpenConnection())
-            {
-                // Load base DBO
-                DBOs.Tasks.TaskAssignedContact dbo = db.Single<DBOs.Tasks.TaskAssignedContact>(
-                    "SELECT * FROM \"task_assigned_contact\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
-                    new { Id = id });
+            ViewModels.Tasks.TaskAssignedContactViewModel viewModel = null;
 
-                DBOs.Tasks.Task taskDbo = db.SingleById<DBOs.Tasks.Task>(dbo.TaskId);
-                DBOs.Contacts.Contact contactDbo = db.SingleById<DBOs.Contacts.Contact>(dbo.ContactId);
+            Common.Models.Tasks.TaskAssignedContact model = OpenLawOffice.Data.Tasks.TaskAssignedContact.Get(id);
+            model.Task = OpenLawOffice.Data.Tasks.Task.Get(model.Task.Id.Value);
+            model.Contact = OpenLawOffice.Data.Contacts.Contact.Get(model.Contact.Id.Value);
 
-                model = Mapper.Map<ViewModels.Tasks.TaskAssignedContactViewModel>(dbo);
-                model.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contactDbo);
-                model.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(taskDbo);
-            }
+            viewModel = Mapper.Map<ViewModels.Tasks.TaskAssignedContactViewModel>(model);
+            viewModel.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(model.Task);
+            viewModel.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.Contact);
 
             return View(model);
         }
@@ -138,35 +96,20 @@
         [SecurityFilter(SecurityAreaName = "Tasks.TaskAssignedContact", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
-        public ActionResult Edit(Guid id, ViewModels.Tasks.TaskAssignedContactViewModel model)
+        public ActionResult Edit(Guid id, ViewModels.Tasks.TaskAssignedContactViewModel viewModel)
         {
             try
             {
-                Common.Models.Security.User user = UserCache.Instance.Lookup(Request);
+                Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
+                Common.Models.Tasks.TaskAssignedContact model = Mapper.Map<Common.Models.Tasks.TaskAssignedContact>(viewModel);
+                model = OpenLawOffice.Data.Tasks.TaskAssignedContact.Edit(model, currentUser);
 
-                DBOs.Tasks.TaskAssignedContact dbo = Mapper.Map<DBOs.Tasks.TaskAssignedContact>(model);
-                dbo.UtcModified = DateTime.UtcNow;
-                dbo.ModifiedByUserId = user.Id.Value;
-
-                using (IDbConnection db = Database.Instance.OpenConnection())
-                {
-                    db.UpdateOnly(dbo,
-                        fields => new
-                        {
-                            fields.AssignmentType,
-                            fields.ModifiedByUserId,
-                            fields.UtcModified
-                        },
-                        where => where.Id == dbo.Id);
-
-                    dbo = db.SingleById<DBOs.Tasks.TaskAssignedContact>(dbo.Id);
-                }
-
-                return RedirectToAction("Contacts", "Tasks", new { id = dbo.TaskId.ToString() });
+                return RedirectToAction("Contacts", "Tasks",
+                    new { id = model.Task.Id.Value.ToString() });
             }
             catch
             {
-                return View(model);
+                return View(viewModel);
             }
         }
         
@@ -174,24 +117,16 @@
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(Guid id)
         {
-            ViewModels.Tasks.TaskAssignedContactViewModel model = null;
-            using (IDbConnection db = Database.Instance.OpenConnection())
-            {
-                // Load base DBO
-                DBOs.Tasks.TaskAssignedContact dbo = db.Single<DBOs.Tasks.TaskAssignedContact>(
-                    "SELECT * FROM \"task_assigned_contact\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
-                    new { Id = id });
+            ViewModels.Tasks.TaskAssignedContactViewModel viewModel = null;
 
-                DBOs.Tasks.Task taskDbo = db.SingleById<DBOs.Tasks.Task>(dbo.TaskId);
-                DBOs.Contacts.Contact contactDbo = db.SingleById<DBOs.Contacts.Contact>(dbo.ContactId);
+            Common.Models.Tasks.TaskAssignedContact model = OpenLawOffice.Data.Tasks.TaskAssignedContact.Get(id);
+            model.Task = OpenLawOffice.Data.Tasks.Task.Get(model.Task.Id.Value);
+            model.Contact = OpenLawOffice.Data.Contacts.Contact.Get(model.Contact.Id.Value);
 
-                model = Mapper.Map<ViewModels.Tasks.TaskAssignedContactViewModel>(dbo);
-                model.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contactDbo);
-                model.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(taskDbo);
-
-                // Core Details
-                PopulateCoreDetails(model);
-            }
+            viewModel = Mapper.Map<ViewModels.Tasks.TaskAssignedContactViewModel>(model);
+            viewModel.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(model.Task);
+            viewModel.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.Contact);
+            PopulateCoreDetails(viewModel);
 
             return View(model);
         }
@@ -206,34 +141,20 @@
         [SecurityFilter(SecurityAreaName = "Tasks.TaskAssignedContact", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Disable)]
         [HttpPost]
-        public ActionResult Delete(Guid id, ViewModels.Tasks.TaskAssignedContactViewModel model)
+        public ActionResult Delete(Guid id, ViewModels.Tasks.TaskAssignedContactViewModel viewModel)
         {
             try
             {
-                Common.Models.Security.User user = UserCache.Instance.Lookup(Request);
+                Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
+                Common.Models.Tasks.TaskAssignedContact model = Mapper.Map<Common.Models.Tasks.TaskAssignedContact>(viewModel);
+                model = OpenLawOffice.Data.Tasks.TaskAssignedContact.Disable(model, currentUser);
 
-                DBOs.Tasks.TaskAssignedContact dbo = Mapper.Map<DBOs.Tasks.TaskAssignedContact>(model);
-                dbo.UtcDisabled = DateTime.UtcNow;
-                dbo.DisabledByUserId = user.Id.Value;
-
-                using (IDbConnection db = Database.Instance.OpenConnection())
-                {
-                    db.UpdateOnly(dbo,
-                        fields => new
-                        {
-                            fields.DisabledByUserId,
-                            fields.UtcDisabled
-                        },
-                        where => where.Id == dbo.Id);
-
-                    dbo = db.SingleById<DBOs.Tasks.TaskAssignedContact>(dbo.Id);
-                }
-
-                return RedirectToAction("Contacts", "Tasks", new { id = dbo.TaskId.ToString() });
+                return RedirectToAction("Contacts", "Tasks",
+                    new { id = model.Task.Id.Value.ToString() });
             }
             catch
             {
-                return View(model);
+                return View(viewModel);
             }
         }
     }

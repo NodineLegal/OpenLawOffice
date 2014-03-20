@@ -46,18 +46,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\OpenLawOffice.Server\packages\ServiceStack.3.9.71\lib\net35\ServiceStack.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.Common, Version=3.9.71.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\OpenLawOffice.Server\packages\ServiceStack.Common.3.9.71\lib\net35\ServiceStack.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Interfaces, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\OpenLawOffice.Server\packages\ServiceStack.Common.3.9.71\lib\net35\ServiceStack.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.OrmLite, Version=3.9.71.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\OpenLawOffice.Server\packages\ServiceStack.OrmLite.SqlServer.3.9.71\lib\net35\ServiceStack.OrmLite.dll</HintPath>
-    </Reference>
     <Reference Include="ServiceStack.OrmLite.SqlServer, Version=3.9.71.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\OpenLawOffice.Server\packages\ServiceStack.OrmLite.SqlServer.3.9.71\lib\net35\ServiceStack.OrmLite.SqlServer.dll</HintPath>
@@ -69,10 +57,6 @@
     <Reference Include="ServiceStack.ServiceInterface, Version=3.9.71.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\OpenLawOffice.Server\packages\ServiceStack.3.9.71\lib\net35\ServiceStack.ServiceInterface.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Text, Version=3.9.71.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\OpenLawOffice.Server\packages\ServiceStack.Text.3.9.71\lib\net35\ServiceStack.Text.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -110,6 +94,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ContactsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\InstallationController.cs" />
     <Compile Include="Controllers\MatterContactController.cs" />
     <Compile Include="Controllers\MattersController.cs" />
     <Compile Include="Controllers\MatterTagsController.cs" />
@@ -117,40 +102,14 @@
     <Compile Include="Controllers\SecurityAreaAclsController.cs" />
     <Compile Include="Controllers\SecurityFilterAttribute.cs" />
     <Compile Include="Controllers\SecurityAreasController.cs" />
-    <Compile Include="Controllers\TagCategoriesController.cs" />
     <Compile Include="Controllers\TaskAssignedContactController.cs" />
     <Compile Include="Controllers\TasksController.cs" />
     <Compile Include="Controllers\TimingController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
-    <Compile Include="Database.cs" />
-    <Compile Include="DBOs\Contacts\Contact.cs" />
-    <Compile Include="DBOs\Core.cs" />
-    <Compile Include="DBOs\DboBase.cs" />
-    <Compile Include="DBOs\DboWithDatesOnly.cs" />
-    <Compile Include="DBOs\Matters\Matter.cs" />
-    <Compile Include="DBOs\Matters\MatterContact.cs" />
-    <Compile Include="DBOs\Matters\MatterTag.cs" />
-    <Compile Include="DBOs\Matters\ResponsibleUser.cs" />
-    <Compile Include="DBOs\NullDbo.cs" />
-    <Compile Include="DBOs\Security\Area.cs" />
-    <Compile Include="DBOs\Security\AreaAcl.cs" />
-    <Compile Include="DBOs\Security\SecuredResource.cs" />
-    <Compile Include="DBOs\Security\SecuredResourceAcl.cs" />
-    <Compile Include="DBOs\Security\User.cs" />
-    <Compile Include="DBOs\Tagging\TagBase.cs" />
-    <Compile Include="DBOs\Tagging\TagCategory.cs" />
-    <Compile Include="DBOs\Tasks\Task.cs" />
-    <Compile Include="DBOs\Tasks\TaskAssignedContact.cs" />
-    <Compile Include="DBOs\Tasks\TaskMatter.cs" />
-    <Compile Include="DBOs\Tasks\TaskResponsibleUser.cs" />
-    <Compile Include="DBOs\Tasks\TaskTag.cs" />
-    <Compile Include="DBOs\Tasks\TaskTime.cs" />
-    <Compile Include="DBOs\Timing\Time.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\EnumDropDownListForHelper.cs" />
-    <Compile Include="Installation\Database.cs" />
     <Compile Include="Security.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="ViewModels\Account\LoginModel.cs" />
@@ -192,6 +151,8 @@
     <Content Include="Views\Contacts\Details.aspx" />
     <Content Include="Views\Contacts\Edit.aspx" />
     <Content Include="Views\Contacts\Index.aspx" />
+    <Content Include="Views\Installation\Index.aspx" />
+    <Content Include="Views\Installation\MissingDbInstallScript.aspx" />
     <Content Include="Views\MatterContact\AssignContact.aspx" />
     <Content Include="Views\MatterContact\Delete.aspx" />
     <Content Include="Views\MatterContact\Details.aspx" />
@@ -241,7 +202,9 @@
     <Content Include="Views\Users\Details.aspx" />
     <Content Include="Views\Users\Edit.aspx" />
     <Content Include="Views\Users\Index.aspx" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -263,6 +226,10 @@
     <ProjectReference Include="..\OpenLawOffice.Common\OpenLawOffice.Common.csproj">
       <Project>{042206B5-2D13-42E0-B1B9-30254952BACA}</Project>
       <Name>OpenLawOffice.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenLawOffice.Data\OpenLawOffice.Data.csproj">
+      <Project>{596A8BCB-2716-47BD-82C3-5B52F0082F10}</Project>
+      <Name>OpenLawOffice.Data</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

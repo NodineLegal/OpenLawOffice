@@ -18,28 +18,15 @@
         public ActionResult Index()
         {
             List<ViewModels.Security.AreaAclViewModel> modelList = new List<ViewModels.Security.AreaAclViewModel>();
-            using (IDbConnection db = Database.Instance.OpenConnection())
+            OpenLawOffice.Data.Security.AreaAcl.List().ForEach(x =>
             {
-                List<DBOs.Security.AreaAcl> list = db.SqlList<DBOs.Security.AreaAcl>(
-                    "SELECT * FROM \"area_acl\" WHERE \"utc_disabled\" is null");
-
-                list.ForEach(dbo =>
-                {
-                    // Get User
-                    DBOs.Security.User userDbo = db.LoadSingleById<DBOs.Security.User>(dbo.UserId);
-
-                    // Get Area
-                    DBOs.Security.Area areaDbo = db.LoadSingleById<DBOs.Security.Area>(dbo.SecurityAreaId);
-
-                    ViewModels.Security.AreaAclViewModel model = Mapper.Map<ViewModels.Security.AreaAclViewModel>(dbo);
-
-                    model.User = Mapper.Map<ViewModels.Security.UserViewModel>(userDbo);
-
-                    model.Area = Mapper.Map<ViewModels.Security.AreaViewModel>(areaDbo);
-
-                    modelList.Add(model);
-                });
-            }
+                x.User = OpenLawOffice.Data.Security.User.Get(x.User.Id.Value);
+                x.Area = OpenLawOffice.Data.Security.Area.Get(x.Area.Id.Value);
+                ViewModels.Security.AreaAclViewModel vm = Mapper.Map<ViewModels.Security.AreaAclViewModel>(x);
+                vm.User = Mapper.Map<ViewModels.Security.UserViewModel>(x.User);
+                vm.Area = Mapper.Map<ViewModels.Security.AreaViewModel>(x.Area);
+                modelList.Add(vm);
+            });
 
             return View(modelList);
         }
@@ -50,40 +37,17 @@
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(int id)
         {
-            List<ViewModels.Security.UserViewModel> userList = new List<ViewModels.Security.UserViewModel>();
-            ViewModels.Security.AreaAclViewModel model = null;
-            using (IDbConnection db = Database.Instance.OpenConnection())
-            {
-                List<DBOs.Security.User> list = db.SqlList<DBOs.Security.User>(
-                    "SELECT * FROM \"user\" " +
-                    "WHERE \"utc_disabled\" is null");
+            ViewModels.Security.AreaAclViewModel viewModel = null;
 
-                list.ForEach(dbo =>
-                {
-                    userList.Add(Mapper.Map<ViewModels.Security.UserViewModel>(dbo));
-                });
+            Common.Models.Security.AreaAcl model = OpenLawOffice.Data.Security.AreaAcl.Get(id);
+            model.User = OpenLawOffice.Data.Security.User.Get(model.User.Id.Value);
+            model.Area = OpenLawOffice.Data.Security.Area.Get(model.Area.Id.Value);
 
-                // Load base DBO
-                DBOs.Security.AreaAcl dboAcl = db.Single<DBOs.Security.AreaAcl>(
-                    "SELECT * FROM \"area_acl\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
-                    new { Id = id });
+            viewModel = Mapper.Map<ViewModels.Security.AreaAclViewModel>(model);
+            viewModel.User = Mapper.Map<ViewModels.Security.UserViewModel>(model.User);
+            viewModel.Area = Mapper.Map<ViewModels.Security.AreaViewModel>(model.Area);
+            PopulateCoreDetails(viewModel);
 
-                // Get User
-                DBOs.Security.User userDbo = db.SingleById<DBOs.Security.User>(dboAcl.UserId);
-
-                // Get Area
-                DBOs.Security.Area areaDbo = db.SingleById<DBOs.Security.Area>(dboAcl.SecurityAreaId);
-
-                model = Mapper.Map<ViewModels.Security.AreaAclViewModel>(dboAcl);
-
-                model.User = Mapper.Map<ViewModels.Security.UserViewModel>(userDbo);
-
-                model.Area = Mapper.Map<ViewModels.Security.AreaViewModel>(areaDbo);
-
-                PopulateCoreDetails(model);
-            }
-
-            ViewData["UserList"] = userList;
             return View(model);
         }
 
@@ -94,17 +58,10 @@
         public ActionResult Create()
         {
             List<ViewModels.Security.UserViewModel> userList = new List<ViewModels.Security.UserViewModel>();
-            using (IDbConnection db = Database.Instance.OpenConnection())
+            OpenLawOffice.Data.Security.User.List().ForEach(x =>
             {
-                List<DBOs.Security.User> list = db.SqlList<DBOs.Security.User>(
-                    "SELECT * FROM \"user\" " +
-                    "WHERE \"utc_disabled\" is null");
-
-                list.ForEach(dbo =>
-                {
-                    userList.Add(Mapper.Map<ViewModels.Security.UserViewModel>(dbo));
-                });
-            }
+                userList.Add(Mapper.Map<ViewModels.Security.UserViewModel>(x));
+            });
 
             ViewData["Readonly"] = false;
             ViewData["UserList"] = userList;
@@ -121,27 +78,27 @@
         [SecurityFilter(SecurityAreaName = "Security.AreaAcl", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
-        public ActionResult Create(Common.Models.Security.AreaAcl model)
+        public ActionResult Create(ViewModels.Security.AreaAclViewModel viewModel)
         {
             try
             {
-                Common.Models.Security.User user = UserCache.Instance.Lookup(Request);
-
-                DBOs.Security.AreaAcl dbo = Mapper.Map<DBOs.Security.AreaAcl>(model);
-                dbo.CreatedByUserId = dbo.ModifiedByUserId = user.Id.Value;
-                dbo.UtcCreated = dbo.UtcModified = DateTime.UtcNow;
-
-                using (IDbConnection db = Database.Instance.OpenConnection())
-                {
-                    // Insert User
-                    db.Insert<DBOs.Security.AreaAcl>(dbo);
-                }
-
+                Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
+                Common.Models.Security.AreaAcl model = Mapper.Map<Common.Models.Security.AreaAcl>(viewModel);
+                model = OpenLawOffice.Data.Security.AreaAcl.Create(model, currentUser);
                 return RedirectToAction("Index");
             }
             catch
             {
-                return View(model);
+                List<ViewModels.Security.UserViewModel> userList = new List<ViewModels.Security.UserViewModel>();
+                OpenLawOffice.Data.Security.User.List().ForEach(x =>
+                {
+                    userList.Add(Mapper.Map<ViewModels.Security.UserViewModel>(x));
+                });
+
+                ViewData["Readonly"] = false;
+                ViewData["UserList"] = userList;
+
+                return View(viewModel);
             }
         }
         
@@ -151,47 +108,26 @@
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(int id)
         {
-            ViewModels.Security.AreaAclViewModel model = null;
-            List<Common.Models.Security.User> userList = new List<Common.Models.Security.User>();
-            using (IDbConnection db = Database.Instance.OpenConnection())
-            {
-                // Load base DBO
-                DBOs.Security.AreaAcl dboAcl = db.Single<DBOs.Security.AreaAcl>(
-                    "SELECT * FROM \"area_acl\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
-                    new { Id = id });
+            ViewModels.Security.AreaAclViewModel viewModel = null;
 
-                List<DBOs.Security.User> list = db.SqlList<DBOs.Security.User>(
-                    "SELECT * FROM \"user\" " +
-                    "WHERE \"utc_disabled\" is null");
+            Common.Models.Security.AreaAcl model = OpenLawOffice.Data.Security.AreaAcl.Get(id);
+            model.User = OpenLawOffice.Data.Security.User.Get(model.User.Id.Value);
+            model.Area = OpenLawOffice.Data.Security.Area.Get(model.Area.Id.Value);
 
-                list.ForEach(dbo =>
-                {
-                    userList.Add(Mapper.Map<Common.Models.Security.User>(dbo));
-                });
-
-                // Get User
-                DBOs.Security.User userDbo = db.SingleById<DBOs.Security.User>(dboAcl.UserId);
-
-                // Get Area
-                DBOs.Security.Area areaDbo = db.SingleById<DBOs.Security.Area>(dboAcl.SecurityAreaId);
-
-                model = Mapper.Map<ViewModels.Security.AreaAclViewModel>(dboAcl);
-
-                model.User = Mapper.Map<ViewModels.Security.UserViewModel>(userDbo);
-
-                model.Area = Mapper.Map<ViewModels.Security.AreaViewModel>(areaDbo);
-            }
+            viewModel = Mapper.Map<ViewModels.Security.AreaAclViewModel>(model);
+            viewModel.User = Mapper.Map<ViewModels.Security.UserViewModel>(model.User);
+            viewModel.Area = Mapper.Map<ViewModels.Security.AreaViewModel>(model.Area);
 
             List<SelectListItem> selectList = new List<SelectListItem>();
-            
-            userList.ForEach(item =>
+
+            OpenLawOffice.Data.Security.User.List().ForEach(x =>
             {
                 SelectListItem slItem = new SelectListItem()
                 {
-                    Value = item.Id.Value.ToString(),
-                    Text = item.Username
+                    Value = x.Id.Value.ToString(),
+                    Text = x.Username
                 };
-                if (item.Id == model.User.Id.Value)
+                if (x.Id == model.User.Id.Value)
                     slItem.Selected = true;
                 selectList.Add(slItem);
             });
@@ -205,35 +141,18 @@
         [SecurityFilter(SecurityAreaName = "Security.AreaAcl", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
-        public ActionResult Edit(int id, Common.Models.Security.AreaAcl model)
+        public ActionResult Edit(int id, ViewModels.Security.AreaAclViewModel viewModel)
         {
             try
             {
                 Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
-
-                DBOs.Security.AreaAcl dbo = Mapper.Map<DBOs.Security.AreaAcl>(model);
-                dbo.ModifiedByUserId = currentUser.Id.Value;
-                dbo.UtcModified = DateTime.UtcNow;
-
-                using (IDbConnection db = Database.Instance.OpenConnection())
-                {
-                    db.UpdateOnly(dbo,
-                        fields => new
-                        {
-                            // Note - Only flags may be changed
-                            fields.AllowFlags,
-                            fields.DenyFlags,
-                            fields.ModifiedByUserId,
-                            fields.UtcModified
-                        },
-                        where => where.Id == dbo.Id);
-                }
-
+                Common.Models.Security.AreaAcl model = Mapper.Map<Common.Models.Security.AreaAcl>(viewModel);
+                model = OpenLawOffice.Data.Security.AreaAcl.Edit(model, currentUser);
                 return RedirectToAction("Index");
             }
             catch
             {
-                return View(model);
+                return View(viewModel);
             }
         }
     }

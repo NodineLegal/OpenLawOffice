@@ -17,18 +17,12 @@
         public ActionResult SelectContactToAssign(Guid id)
         {
             List<ViewModels.Contacts.SelectableContactViewModel> modelList = new List<ViewModels.Contacts.SelectableContactViewModel>();
+            List<Common.Models.Contacts.Contact> contactList = OpenLawOffice.Data.Contacts.Contact.List();
 
-            using (IDbConnection db = Database.Instance.OpenConnection())
+            contactList.ForEach(x =>
             {
-                List<DBOs.Contacts.Contact> contactsDbo = db.SqlList<DBOs.Contacts.Contact>(
-                    "SELECT * FROM \"contact\" WHERE \"utc_disabled\" is null");
-
-                contactsDbo.ForEach(x =>
-                {
-                    ViewModels.Contacts.SelectableContactViewModel vm = Mapper.Map<ViewModels.Contacts.SelectableContactViewModel>(x);
-                    modelList.Add(vm);
-                });
-            }
+                modelList.Add(Mapper.Map<ViewModels.Contacts.SelectableContactViewModel>(x));
+            });
 
             return View(modelList);
         }
@@ -47,18 +41,8 @@
 
             ViewModels.Matters.MatterContactViewModel vm = new ViewModels.Matters.MatterContactViewModel();
 
-            using (IDbConnection db = Database.Instance.OpenConnection())
-            {
-                DBOs.Matters.Matter matterDbo = db.Single<DBOs.Matters.Matter>(
-                    "SELECT * FROM \"matter\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
-                    new { Id = matterId });
-                DBOs.Contacts.Contact contactDbo = db.Single<DBOs.Contacts.Contact>(
-                    "SELECT * FROM \"contact\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
-                    new { Id = id });
-
-                vm.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(matterDbo);
-                vm.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contactDbo);
-            }
+            vm.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(OpenLawOffice.Data.Matters.Matter.Get(matterId));
+            vm.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(OpenLawOffice.Data.Contacts.Contact.Get(id));
 
             return View(vm);
         }
@@ -71,46 +55,25 @@
             // We need to reset the Id of the model as it is picking up the id from the route, 
             // which is incorrect
             model.Id = null;
-            DBOs.Matters.MatterContact dbo = null;
 
             Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
-            using (IDbConnection db = Database.Instance.OpenConnection())
-            {
 
-                dbo = db.Single<DBOs.Matters.MatterContact>(
-                    "SELECT * FROM \"matter_contact\" WHERE \"matter_id\"=@MatterId AND \"contact_id\"=@ContactId",
-                    new { MatterId = model.Matter.Id, ContactId = model.Contact.Id });
+            Common.Models.Matters.MatterContact matterContact = 
+                OpenLawOffice.Data.Matters.MatterContact.Get(model.Matter.Id.Value, model.Contact.Id.Value);
 
-                if (dbo == null)
-                {
-                    dbo = Mapper.Map<DBOs.Matters.MatterContact>(model);
-                    dbo.CreatedByUserId = dbo.ModifiedByUserId = currentUser.Id.Value;
-                    dbo.UtcCreated = dbo.UtcModified = DateTime.UtcNow;
-                    db.Insert<DBOs.Matters.MatterContact>(dbo);
-                    dbo.Id = (int)db.LastInsertId();
-                }
-                else
-                {
-                    dbo.DisabledByUserId = null;
-                    dbo.UtcDisabled = null;
-                    dbo.Role = model.Role;
-                    dbo.UtcModified = DateTime.UtcNow;
-                    dbo.ModifiedByUserId = currentUser.Id.Value;
-                    db.UpdateOnly(dbo,
-                        fields => new
-                        {
-                            fields.Role,
-                            fields.UtcDisabled,
-                            fields.DisabledByUserId,
-                            fields.ModifiedByUserId,
-                            fields.UtcModified
-                        }, where => where.Id == dbo.Id);
-                }
-
-                dbo = db.SingleById<DBOs.Matters.MatterContact>(dbo.Id);
+            if (matterContact == null)
+            { // Create
+                matterContact = Mapper.Map<Common.Models.Matters.MatterContact>(model);
+                matterContact = OpenLawOffice.Data.Matters.MatterContact.Create(matterContact, currentUser);
+            }
+            else
+            { // Enable
+                matterContact = Mapper.Map<Common.Models.Matters.MatterContact>(model);
+                matterContact = OpenLawOffice.Data.Matters.MatterContact.Enable(matterContact, currentUser);
             }
 
-            return RedirectToAction("Contacts", "Matters", new { id = dbo.MatterId.ToString() });
+            return RedirectToAction("Contacts", "Matters", 
+                new { id = matterContact.Matter.Id.Value.ToString() });
         }
 
         //
@@ -119,21 +82,15 @@
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(int id)
         {
-            ViewModels.Matters.MatterContactViewModel model = null;
-            using (IDbConnection db = Database.Instance.OpenConnection())
-            {
-                // Load base DBO
-                DBOs.Matters.MatterContact dbo = db.Single<DBOs.Matters.MatterContact>(
-                    "SELECT * FROM \"matter_contact\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
-                    new { Id = id });
+            ViewModels.Matters.MatterContactViewModel viewModel = null;
+            
+            Common.Models.Matters.MatterContact model = OpenLawOffice.Data.Matters.MatterContact.Get(id);
+            model.Matter = OpenLawOffice.Data.Matters.Matter.Get(model.Matter.Id.Value);
+            model.Contact = OpenLawOffice.Data.Contacts.Contact.Get(model.Contact.Id.Value);
 
-                DBOs.Matters.Matter matterDbo = db.SingleById<DBOs.Matters.Matter>(dbo.MatterId);
-                DBOs.Contacts.Contact contactDbo = db.SingleById<DBOs.Contacts.Contact>(dbo.ContactId);
-
-                model = Mapper.Map<ViewModels.Matters.MatterContactViewModel>(dbo);
-                model.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contactDbo);
-                model.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(matterDbo);
-            }
+            viewModel = Mapper.Map<ViewModels.Matters.MatterContactViewModel>(model);
+            viewModel.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(model.Matter);
+            viewModel.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.Contact);
 
             return View(model);
         }
@@ -143,35 +100,20 @@
         [SecurityFilter(SecurityAreaName = "Matters.MatterContact", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
-        public ActionResult Edit(int id, ViewModels.Matters.MatterContactViewModel model)
+        public ActionResult Edit(int id, ViewModels.Matters.MatterContactViewModel viewModel)
         {
             try
             {
-                Common.Models.Security.User user = UserCache.Instance.Lookup(Request);
+                Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
+                Common.Models.Matters.MatterContact model = Mapper.Map<Common.Models.Matters.MatterContact>(viewModel);
+                model = OpenLawOffice.Data.Matters.MatterContact.Edit(model, currentUser);
 
-                DBOs.Matters.MatterContact dbo = Mapper.Map<DBOs.Matters.MatterContact>(model);
-                dbo.UtcModified = DateTime.UtcNow;
-                dbo.ModifiedByUserId = user.Id.Value;
-
-                using (IDbConnection db = Database.Instance.OpenConnection())
-                {
-                    db.UpdateOnly(dbo,
-                        fields => new
-                        {
-                            fields.Role,
-                            fields.ModifiedByUserId,
-                            fields.UtcModified
-                        },
-                        where => where.Id == dbo.Id);
-
-                    dbo = db.SingleById<DBOs.Matters.MatterContact>(dbo.Id);
-                }
-
-                return RedirectToAction("Contacts", "Matters", new { id = dbo.MatterId.ToString() });
+                return RedirectToAction("Contacts", "Matters", 
+                    new { id = model.Matter.Id.Value.ToString() });
             }
             catch
             {
-                return View(model);
+                return View(viewModel);
             }
         }
 
@@ -181,24 +123,16 @@
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(int id)
         {
-            ViewModels.Matters.MatterContactViewModel model = null;
-            using (IDbConnection db = Database.Instance.OpenConnection())
-            {
-                // Load base DBO
-                DBOs.Matters.MatterContact dbo = db.Single<DBOs.Matters.MatterContact>(
-                    "SELECT * FROM \"matter_contact\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
-                    new { Id = id });
+            ViewModels.Matters.MatterContactViewModel viewModel = null;
 
-                DBOs.Matters.Matter matterDbo = db.SingleById<DBOs.Matters.Matter>(dbo.MatterId);
-                DBOs.Contacts.Contact contactDbo = db.SingleById<DBOs.Contacts.Contact>(dbo.ContactId);
+            Common.Models.Matters.MatterContact model = OpenLawOffice.Data.Matters.MatterContact.Get(id);
+            model.Matter = OpenLawOffice.Data.Matters.Matter.Get(model.Matter.Id.Value);
+            model.Contact = OpenLawOffice.Data.Contacts.Contact.Get(model.Contact.Id.Value);
 
-                model = Mapper.Map<ViewModels.Matters.MatterContactViewModel>(dbo);
-                model.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contactDbo);
-                model.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(matterDbo);
-
-                // Core Details
-                PopulateCoreDetails(model);
-            }
+            viewModel = Mapper.Map<ViewModels.Matters.MatterContactViewModel>(model);
+            viewModel.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(model.Matter);
+            viewModel.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.Contact);
+            PopulateCoreDetails(viewModel);
 
             return View(model);
         }
@@ -217,34 +151,20 @@
         [SecurityFilter(SecurityAreaName = "Matters.MatterContact", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Disable)]
         [HttpPost]
-        public ActionResult Delete(int id, ViewModels.Matters.MatterContactViewModel model)
+        public ActionResult Delete(int id, ViewModels.Matters.MatterContactViewModel viewModel)
         {
             try
             {
-                Common.Models.Security.User user = UserCache.Instance.Lookup(Request);
+                Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
+                Common.Models.Matters.MatterContact model = Mapper.Map<Common.Models.Matters.MatterContact>(viewModel);
+                model = OpenLawOffice.Data.Matters.MatterContact.Disable(model, currentUser);
 
-                DBOs.Matters.MatterContact dbo = Mapper.Map<DBOs.Matters.MatterContact>(model);
-                dbo.UtcDisabled = DateTime.UtcNow;
-                dbo.DisabledByUserId = user.Id.Value;
-
-                using (IDbConnection db = Database.Instance.OpenConnection())
-                {
-                    db.UpdateOnly(dbo,
-                        fields => new
-                        {
-                            fields.DisabledByUserId,
-                            fields.UtcDisabled
-                        },
-                        where => where.Id == dbo.Id);
-
-                    dbo = db.SingleById<DBOs.Matters.MatterContact>(dbo.Id);
-                }
-
-                return RedirectToAction("Contacts", "Matters", new { id = dbo.MatterId.ToString() });
+                return RedirectToAction("Contacts", "Matters", 
+                    new { id = model.Matter.Id.Value.ToString() });
             }
             catch
             {
-                return View(model);
+                return View(viewModel);
             }
         }
     }

@@ -10,3 +10,4 @@ obj
 *.user
 packages
 OpenLawOffice.WinClient
+OpenLawOffice.Server

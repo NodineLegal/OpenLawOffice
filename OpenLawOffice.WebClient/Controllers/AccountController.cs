@@ -1,13 +1,8 @@
 ﻿namespace OpenLawOffice.WebClient.Controllers
 {
-    using System;
-    using System.Data;
     using System.Web;
     using System.Web.Mvc;
-    using AutoMapper;
     using OpenLawOffice.WebClient.ViewModels.Account;
-    using ServiceStack.OrmLite;
-    using ServiceStack.OrmLite.PostgreSQL;
 
     [HandleError]
     public class AccountController : BaseController
@@ -22,47 +17,21 @@
         {
             if (ModelState.IsValid)
             {
-                using (IDbConnection db = Database.Instance.OpenConnection())
-                {
-                    DBOs.Security.User userDbo = db.Single<DBOs.Security.User>(new { Username = model.Username });
+                // Apply client hash (ideally this will be done on the client side in javascript eventually)
+                string hashedPassword = WebClient.Security.ClientHashPassword(model.Password);
 
-                    if (userDbo == null)
-                    {
-                        ModelState.AddModelError("", "The username or password provided is incorrect.");
-                        return View(model);
-                    }
+                OpenLawOffice.Data.Authentication.LoginResult result =
+                    OpenLawOffice.Data.Authentication.Login(model.Username, hashedPassword);
 
-                    // Apply client hash (ideally this will be done on the client side in javascript eventually)
-                    string hashedPassword = WebClient.Security.ClientHashPassword(model.Password);
+                HttpCookie cookie = new HttpCookie("UserAuthToken", result.UserAuthToken);
+                HttpContext.Response.AppendCookie(cookie);
+                HttpContext.Response.AppendCookie(new HttpCookie("Username", model.Username));
 
-                    // Apply server hash
-                    hashedPassword = WebClient.Security.ServerHashPassword(hashedPassword, userDbo.PasswordSalt);
+                UserCache.Instance.Add(result.User);
 
-                    if (hashedPassword != userDbo.Password)
-                    {
-                        ModelState.AddModelError("", "The username or password provided is incorrect.");
-                        return View(model);
-                    }
+                Response.Redirect("~/Home", false);
 
-                    Guid newAuthToken = Guid.NewGuid();
-
-                    HttpCookie cookie = new HttpCookie("UserAuthToken", newAuthToken.ToString());
-                    HttpContext.Response.AppendCookie(cookie);
-                    HttpContext.Response.AppendCookie(new HttpCookie("Username", userDbo.Username));
-
-                    userDbo.UserAuthToken = newAuthToken;
-                    userDbo.UserAuthTokenExpiry = DateTime.UtcNow.AddMinutes(15);
-
-                    db.UpdateOnly(userDbo,
-                        fields => new { fields.UserAuthToken, fields.UserAuthTokenExpiry },
-                        where => where.Id == userDbo.Id);
-
-                    UserCache.Instance.Add(Mapper.Map<Common.Models.Security.User>(userDbo));
-
-                    Response.Redirect("~/Home", false);
-
-                    return View();
-                }
+                return View();
             }
 
             // If we got this far, something failed, redisplay form

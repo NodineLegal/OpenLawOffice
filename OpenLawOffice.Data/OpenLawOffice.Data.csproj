@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{596A8BCB-2716-47BD-82C3-5B52F0082F10}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>OpenLawOffice.Data</RootNamespace>
+    <AssemblyName>OpenLawOffice.Data</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoMapper">
+      <HintPath>..\OpenLawOffice.Server\packages\AutoMapper.3.1.1\lib\net40\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper.Net4">
+      <HintPath>..\OpenLawOffice.Server\packages\AutoMapper.3.1.1\lib\net40\AutoMapper.Net4.dll</HintPath>
+    </Reference>
+    <Reference Include="Dapper">
+      <HintPath>..\OpenLawOffice.Server\packages\Dapper.1.13\lib\net40\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Security">
+      <HintPath>..\OpenLawOffice.Server\packages\Npgsql.2.0.14.3\lib\net40\Mono.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Npgsql">
+      <HintPath>..\OpenLawOffice.Server\packages\Npgsql.2.0.14.3\lib\net40\Npgsql.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Authorization.cs" />
+    <Compile Include="DataHelper.cs" />
+    <Compile Include="Contacts\Contact.cs" />
+    <Compile Include="Dapper\SqlMapperExtensions.cs" />
+    <Compile Include="Database.cs" />
+    <Compile Include="DBOs\Contacts\Contact.cs" />
+    <Compile Include="DBOs\Core.cs" />
+    <Compile Include="DBOs\DboBase.cs" />
+    <Compile Include="DBOs\DboWithDatesOnly.cs" />
+    <Compile Include="DBOs\Matters\Matter.cs" />
+    <Compile Include="DBOs\Matters\MatterContact.cs" />
+    <Compile Include="DBOs\Matters\MatterTag.cs" />
+    <Compile Include="DBOs\Matters\ResponsibleUser.cs" />
+    <Compile Include="DBOs\NullDbo.cs" />
+    <Compile Include="DBOs\Security\Area.cs" />
+    <Compile Include="DBOs\Security\AreaAcl.cs" />
+    <Compile Include="DBOs\Security\SecuredResource.cs" />
+    <Compile Include="DBOs\Security\SecuredResourceAcl.cs" />
+    <Compile Include="DBOs\Security\User.cs" />
+    <Compile Include="DBOs\Tagging\TagBase.cs" />
+    <Compile Include="DBOs\Tagging\TagCategory.cs" />
+    <Compile Include="DBOs\Tasks\Task.cs" />
+    <Compile Include="DBOs\Tasks\TaskAssignedContact.cs" />
+    <Compile Include="DBOs\Tasks\TaskMatter.cs" />
+    <Compile Include="DBOs\Tasks\TaskResponsibleUser.cs" />
+    <Compile Include="DBOs\Tasks\TaskTag.cs" />
+    <Compile Include="DBOs\Tasks\TaskTime.cs" />
+    <Compile Include="DBOs\Timing\Time.cs" />
+    <Compile Include="Installation\Setup.cs" />
+    <Compile Include="Matters\Matter.cs" />
+    <Compile Include="Matters\MatterContact.cs" />
+    <Compile Include="Matters\MatterTag.cs" />
+    <Compile Include="Matters\ResponsibleUser.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Authentication.cs" />
+    <Compile Include="Security\Area.cs" />
+    <Compile Include="Security\AreaAcl.cs" />
+    <Compile Include="Security\SecuredResource.cs" />
+    <Compile Include="Security\SecuredResourceAcl.cs" />
+    <Compile Include="Security\User.cs" />
+    <Compile Include="Tagging\TagCategory.cs" />
+    <Compile Include="Tasks\Task.cs" />
+    <Compile Include="Tasks\TaskAssignedContact.cs" />
+    <Compile Include="Tasks\TaskMatter.cs" />
+    <Compile Include="Tasks\TaskResponsibleUser.cs" />
+    <Compile Include="Tasks\TaskTag.cs" />
+    <Compile Include="Tasks\TaskTime.cs" />
+    <Compile Include="Timing\Time.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="InstallationNotes.txt" />
+    <Content Include="Installation\Install.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OpenLawOffice.Common\OpenLawOffice.Common.csproj">
+      <Project>{042206B5-2D13-42E0-B1B9-30254952BACA}</Project>
+      <Name>OpenLawOffice.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

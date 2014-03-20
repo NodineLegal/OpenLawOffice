@@ -14,7 +14,7 @@
 
         public void BuildMappings()
         {
-            Mapper.CreateMap<DBOs.Matters.ResponsibleUser, ResponsibleUserViewModel>()
+            Mapper.CreateMap<Common.Models.Matters.ResponsibleUser, ResponsibleUserViewModel>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
@@ -23,7 +23,7 @@
                 {
                     return new ViewModels.Security.UserViewModel()
                     {
-                        Id = db.CreatedByUserId,
+                        Id = db.CreatedBy.Id,
                         IsStub = true
                     };
                 }))
@@ -31,16 +31,16 @@
                 {
                     return new ViewModels.Security.UserViewModel()
                     {
-                        Id = db.ModifiedByUserId,
+                        Id = db.ModifiedBy.Id,
                         IsStub = true
                     };
                 }))
                 .ForMember(dst => dst.DisabledBy, opt => opt.ResolveUsing(db =>
                 {
-                    if (!db.DisabledByUserId.HasValue) return null;
+                    if (db.DisabledBy == null || !db.DisabledBy.Id.HasValue) return null;
                     return new ViewModels.Security.UserViewModel()
                     {
-                        Id = db.DisabledByUserId.Value,
+                        Id = db.DisabledBy.Id.Value,
                         IsStub = true
                     };
                 }))
@@ -49,7 +49,7 @@
                 {
                     return new ViewModels.Matters.MatterViewModel()
                     {
-                        Id = db.MatterId,
+                        Id = db.Matter.Id,
                         IsStub = true
                     };
                 }))
@@ -57,42 +57,63 @@
                 {
                     return new ViewModels.Security.UserViewModel()
                     {
-                        Id = db.UserId,
+                        Id = db.User.Id,
                         IsStub = true
                     };
                 }));
 
-            Mapper.CreateMap<ResponsibleUserViewModel, DBOs.Matters.ResponsibleUser>()
+            Mapper.CreateMap<ResponsibleUserViewModel, Common.Models.Matters.ResponsibleUser>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
                 .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
-                .ForMember(dst => dst.CreatedByUserId, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.CreatedBy, opt => opt.ResolveUsing(model =>
                 {
                     if (model.CreatedBy == null || !model.CreatedBy.Id.HasValue)
-                        return 0;
-                    return model.CreatedBy.Id.Value;
+                        return null;
+                    return new Common.Models.Security.User()
+                    {
+                        Id = model.CreatedBy.Id,
+                        IsStub = true
+                    };
                 }))
-                .ForMember(dst => dst.ModifiedByUserId, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.ModifiedBy, opt => opt.ResolveUsing(model =>
                 {
                     if (model.ModifiedBy == null || !model.ModifiedBy.Id.HasValue)
-                        return 0;
-                    return model.ModifiedBy.Id.Value;
+                        return null;
+                    return new Common.Models.Security.User()
+                    {
+                        Id = model.ModifiedBy.Id,
+                        IsStub = true
+                    };
                 }))
-                .ForMember(dst => dst.DisabledByUserId, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.DisabledBy, opt => opt.ResolveUsing(model =>
                 {
-                    if (model.DisabledBy == null) return null;
-                    return model.DisabledBy.Id;
+                    if (model.DisabledBy == null || !model.DisabledBy.Id.HasValue)
+                        return null;
+                    return new Common.Models.Security.User()
+                    {
+                        Id = model.DisabledBy.Id,
+                        IsStub = true
+                    };
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.MatterId, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.Matter, opt => opt.ResolveUsing(model =>
                 {
                     if (model.Matter == null) return null;
-                    return model.Matter.Id;
+                    return new Common.Models.Matters.Matter()
+                    {
+                        Id = model.Matter.Id,
+                        IsStub = true
+                    };
                 }))
-                .ForMember(dst => dst.UserId, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.User, opt => opt.ResolveUsing(model =>
                 {
                     if (model.User == null) return null;
-                    return model.User.Id;
+                    return new Common.Models.Security.User()
+                    {
+                        Id = model.User.Id,
+                        IsStub = true
+                    };
                 }));
         }
     }

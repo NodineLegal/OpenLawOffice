@@ -17,7 +17,7 @@
             Guid id = Guid.Empty;
             BaseController controller;
             HttpCookie cookie = null;
-            AuthorizeResult authResult;
+            Data.Authorization.AuthorizeResult authResult;
             
             cookie = filterContext.HttpContext.Request.Cookies["UserAuthToken"];
 
@@ -38,9 +38,9 @@
                 return;
             }
 
-            authResult = WebClient.Security.AreaAccess(
-                new ViewModels.Security.UserViewModel(),
-                new ViewModels.Security.AreaViewModel() { Name = SecurityAreaName },
+            authResult = Data.Authorization.AreaAccess(
+                new Common.Models.Security.User(),
+                new Common.Models.Security.Area() { Name = SecurityAreaName },
                 authToken,
                 Permission);
 
@@ -65,9 +65,9 @@
                         throw new Exception("Resource id could not be parsed.");
                 }
 
-                authResult = WebClient.Security.SecuredResourceAccess(
-                    new ViewModels.Security.UserViewModel(),
-                    new ViewModels.Security.SecuredResourceViewModel() { Id = id },
+                authResult = Data.Authorization.SecuredResourceAccess(
+                    new Common.Models.Security.User(),
+                    new Common.Models.Security.SecuredResource() { Id = id },
                     authToken,
                     Permission);
 

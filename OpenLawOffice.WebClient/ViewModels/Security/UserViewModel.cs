@@ -14,7 +14,7 @@
 
         public void BuildMappings()
         {
-            Mapper.CreateMap<DBOs.Security.User, UserViewModel>()
+            Mapper.CreateMap<Common.Models.Security.User, UserViewModel>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
@@ -24,7 +24,7 @@
                 .ForMember(dst => dst.Password, opt => opt.Ignore())
                 .ForMember(dst => dst.UserAuthToken, opt => opt.MapFrom(src => src.UserAuthToken));
 
-            Mapper.CreateMap<UserViewModel, DBOs.Security.User>()
+            Mapper.CreateMap<UserViewModel, Common.Models.Security.User>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
                 .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))

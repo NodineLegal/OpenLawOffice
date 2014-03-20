@@ -18,7 +18,14 @@
             </div>
               
             <div id="logindisplay">
-                Logged in as: <%= Request.Cookies["Username"].Value %>
+                <% if (Request.Cookies["Username"] != null)
+                   { %>
+                Logged in as: <%= Request.Cookies["Username"].Value%>
+                <% }
+                   else
+                   { %>
+                Not logged in
+                <% } %>
             </div>
         </div>
 

@@ -34,7 +34,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasks
 
         public void BuildMappings()
         {
-            Mapper.CreateMap<DBOs.Tasks.TaskMatter, TaskMatterViewModel>()
+            Mapper.CreateMap<Common.Models.Tasks.TaskMatter, TaskMatterViewModel>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
@@ -43,7 +43,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasks
                 {
                     return new ViewModels.Security.UserViewModel()
                     {
-                        Id = db.CreatedByUserId,
+                        Id = db.CreatedBy.Id,
                         IsStub = true
                     };
                 }))
@@ -51,16 +51,16 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasks
                 {
                     return new ViewModels.Security.UserViewModel()
                     {
-                        Id = db.ModifiedByUserId,
+                        Id = db.ModifiedBy.Id,
                         IsStub = true
                     };
                 }))
                 .ForMember(dst => dst.DisabledBy, opt => opt.ResolveUsing(db =>
                 {
-                    if (!db.DisabledByUserId.HasValue) return null;
+                    if (db.DisabledBy == null || !db.DisabledBy.Id.HasValue) return null;
                     return new ViewModels.Security.UserViewModel()
                     {
-                        Id = db.DisabledByUserId.Value,
+                        Id = db.DisabledBy.Id.Value,
                         IsStub = true
                     };
                 }))
@@ -69,7 +69,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasks
                 {
                     return new ViewModels.Tasks.TaskViewModel()
                     {
-                        Id = db.TaskId,
+                        Id = db.Task.Id,
                         IsStub = true
                     };
                 }))
@@ -77,46 +77,64 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasks
                 {
                     return new ViewModels.Matters.MatterViewModel()
                     {
-                        Id = db.MatterId,
+                        Id = db.Matter.Id,
                         IsStub = true
                     };
                 }));
 
-            Mapper.CreateMap<TaskMatterViewModel, DBOs.Tasks.TaskMatter>()
+            Mapper.CreateMap<TaskMatterViewModel, Common.Models.Tasks.TaskMatter>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
                 .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
-                .ForMember(dst => dst.CreatedByUserId, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.CreatedBy, opt => opt.ResolveUsing(model =>
                 {
                     if (model.CreatedBy == null || !model.CreatedBy.Id.HasValue)
-                        return 0;
-                    return model.CreatedBy.Id.Value;
+                        return null;
+                    return new Common.Models.Security.User()
+                    {
+                        Id = model.CreatedBy.Id,
+                        IsStub = true
+                    };
                 }))
-                .ForMember(dst => dst.ModifiedByUserId, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.ModifiedBy, opt => opt.ResolveUsing(model =>
                 {
                     if (model.ModifiedBy == null || !model.ModifiedBy.Id.HasValue)
-                        return 0;
-                    return model.ModifiedBy.Id.Value;
+                        return null;
+                    return new Common.Models.Security.User()
+                    {
+                        Id = model.ModifiedBy.Id,
+                        IsStub = true
+                    };
                 }))
-                .ForMember(dst => dst.DisabledByUserId, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.DisabledBy, opt => opt.ResolveUsing(model =>
                 {
-                    if (model.DisabledBy == null) return null;
-                    return model.DisabledBy.Id;
+                    if (model.DisabledBy == null || !model.DisabledBy.Id.HasValue)
+                        return null;
+                    return new Common.Models.Security.User()
+                    {
+                        Id = model.DisabledBy.Id,
+                        IsStub = true
+                    };
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.TaskId, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.Task, opt => opt.ResolveUsing(model =>
                 {
-                    if (model.Task != null)
-                        return model.Task.Id;
-                    else
+                    if (model.Task == null || !model.Task.Id.HasValue)
                         return null;
+                    return new Common.Models.Tasks.Task()
+                    {
+                        Id = model.Task.Id,
+                        IsStub = true
+                    };
                 }))
-                .ForMember(dst => dst.MatterId, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.Matter, opt => opt.ResolveUsing(model =>
                 {
-                    if (model.Matter != null)
-                        return model.Matter.Id;
-                    else
-                        return null;
+                    if (model.Matter == null) return null;
+                    return new Common.Models.Matters.Matter()
+                    {
+                        Id = model.Matter.Id,
+                        IsStub = true
+                    };
                 }));
         }
     }

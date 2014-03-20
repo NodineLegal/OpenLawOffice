@@ -35,7 +35,7 @@ namespace OpenLawOffice.Common
 
             if (ci == null)
             {
-                mapMeMethod = type.GetMethod("BuildMappings", BindingFlags.Public | BindingFlags.Static);
+                mapMeMethod = type.GetMethod("BuildMappings", BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);
                 if (mapMeMethod == null)
                     throw new TargetException("Must have a constructor with no parameters or a static implementation of " + mapMeAttribute.MapMethodName + "().");
 
@@ -43,7 +43,7 @@ namespace OpenLawOffice.Common
             }
             else
             {
-                mapMeMethod = type.GetMethod(mapMeAttribute.MapMethodName);
+                mapMeMethod = type.GetMethod(mapMeAttribute.MapMethodName, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
 
                 if (mapMeMethod == null) 
                     throw new TargetException("MapMe method could not be found.");

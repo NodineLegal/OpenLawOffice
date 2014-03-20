@@ -53,120 +53,62 @@
 
         public static List<ViewModels.Timing.TimeViewModel> GetTimesForTask(long id)
         {
-            List<ViewModels.Timing.TimeViewModel> modelList = new List<ViewModels.Timing.TimeViewModel>();
+            List<ViewModels.Timing.TimeViewModel> viewModelList = new List<ViewModels.Timing.TimeViewModel>();
+            List<Common.Models.Timing.Time> modelList = OpenLawOffice.Data.Timing.Time.ListForTask(id);
 
-            using (IDbConnection db = Database.Instance.OpenConnection())
+            modelList.ForEach(x =>
             {
-                List<DBOs.Timing.Time> list = db.SqlList<DBOs.Timing.Time>(
-                    "SELECT * FROM \"time\" WHERE \"id\" in (SELECT \"time_id\" FROM \"task_time\" WHERE \"task_id\"=@TaskId) AND " +
-                    "\"utc_disabled\" is null ORDER BY \"start\" DESC",
-                    new { TaskId = id });
+                ViewModels.Timing.TimeViewModel viewModel = Mapper.Map<ViewModels.Timing.TimeViewModel>(x);
+                Common.Models.Contacts.Contact contact = OpenLawOffice.Data.Contacts.Contact.Get(viewModel.Worker.Id.Value);
+                viewModel.Worker = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contact);
+                viewModel.WorkerDisplayName = viewModel.Worker.DisplayName;
+            });
 
-                list.ForEach(dbo =>
-                {
-                    DBOs.Contacts.Contact workerDbo = db.SingleById<DBOs.Contacts.Contact>(dbo.WorkerContactId);
-                    ViewModels.Timing.TimeViewModel model = Mapper.Map<ViewModels.Timing.TimeViewModel>(dbo);
-
-                    model.WorkerDisplayName = workerDbo.DisplayName;
-
-                    modelList.Add(model);
-                });
-            }
-
-            return modelList;
+            return viewModelList;
         }
 
         [SecurityFilter(SecurityAreaName = "Timing.Time", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(Guid id)
         {
-            ViewModels.Timing.TimeViewModel model = null;
-            using (IDbConnection db = Database.Instance.OpenConnection())
-            {
-                // Load base DBO
-                DBOs.Timing.Time dbo = db.Single<DBOs.Timing.Time>(
-                    "SELECT * FROM \"time\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
-                    new { Id = id });
-
-                DBOs.Contacts.Contact workerDbo = db.SingleById<DBOs.Contacts.Contact>(dbo.WorkerContactId);
-                    
-                model = Mapper.Map<ViewModels.Timing.TimeViewModel>(dbo);
-                model.Worker = Mapper.Map<ViewModels.Contacts.ContactViewModel>(workerDbo);
-
-                DBOs.Tasks.Task task = db.Single<DBOs.Tasks.Task>(
-                    "SELECT * FROM \"task\" WHERE \"id\" in (SELECT \"task_id\" FROM \"task_time\" WHERE \"time_id\"=@TimeId AND \"utc_disabled\" is null)",
-                    new { TimeId = id });
-
-                if (task != null)
-                    ViewData["TaskId"] = task.Id;
-
-                // Core Details
-                PopulateCoreDetails(model);
-            }
-
-            return View(model);
+            Common.Models.Timing.Time model = OpenLawOffice.Data.Timing.Time.Get(id);
+            ViewModels.Timing.TimeViewModel viewModel = Mapper.Map<ViewModels.Timing.TimeViewModel>(model);
+            Common.Models.Contacts.Contact contact = OpenLawOffice.Data.Contacts.Contact.Get(viewModel.Worker.Id.Value);
+            viewModel.Worker = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contact);
+            Common.Models.Tasks.Task task = OpenLawOffice.Data.Timing.Time.GetRelatedTask(model.Id.Value);
+            PopulateCoreDetails(viewModel);
+            ViewData["TaskId"] = task.Id.Value;
+            return View(viewModel);
         }
 
         [SecurityFilter(SecurityAreaName = "Timing.Time", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(Guid id)
         {
-            ViewModels.Timing.TimeViewModel model = null;
-            using (IDbConnection db = Database.Instance.OpenConnection())
-            {
-                // Load base DBO
-                DBOs.Timing.Time dbo = db.Single<DBOs.Timing.Time>(
-                    "SELECT * FROM \"time\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
-                    new { Id = id });
-
-                model = Mapper.Map<ViewModels.Timing.TimeViewModel>(dbo);
-
-                DBOs.Tasks.Task task = db.Single<DBOs.Tasks.Task>(
-                    "SELECT * FROM \"task\" WHERE \"id\" in (SELECT \"task_id\" FROM \"task_time\" WHERE \"time_id\"=@TimeId AND \"utc_disabled\" is null)",
-                    new { TimeId = id });
-
-                if (task != null)
-                    ViewData["TaskId"] = task.Id;
-
-                // Core Details
-                PopulateCoreDetails(model);
-            }
-
-            return View(model);
+            Common.Models.Timing.Time model = OpenLawOffice.Data.Timing.Time.Get(id);
+            ViewModels.Timing.TimeViewModel viewModel = Mapper.Map<ViewModels.Timing.TimeViewModel>(model);
+            Common.Models.Contacts.Contact contact = OpenLawOffice.Data.Contacts.Contact.Get(viewModel.Worker.Id.Value);
+            viewModel.Worker = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contact);
+            Common.Models.Tasks.Task task = OpenLawOffice.Data.Timing.Time.GetRelatedTask(model.Id.Value);
+            ViewData["TaskId"] = task.Id.Value;
+            return View(viewModel);
         }        
 
         [SecurityFilter(SecurityAreaName = "Timing.Time", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
-        public ActionResult Edit(Guid id, ViewModels.Timing.TimeViewModel model)
+        public ActionResult Edit(Guid id, ViewModels.Timing.TimeViewModel viewModel)
         {
             try
             {
-                Common.Models.Security.User user = UserCache.Instance.Lookup(Request);
-
-                DBOs.Timing.Time dbo = Mapper.Map<DBOs.Timing.Time>(model);
-                dbo.UtcModified = DateTime.UtcNow;
-                dbo.ModifiedByUserId = user.Id.Value;
-
-                using (IDbConnection db = Database.Instance.OpenConnection())
-                {
-                    db.UpdateOnly(dbo,
-                        fields => new
-                        {
-                            fields.Start,
-                            fields.Stop,
-                            fields.WorkerContactId,
-                            fields.ModifiedByUserId,
-                            fields.UtcModified
-                        },
-                        where => where.Id == dbo.Id);
-                }
-
+                Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
+                Common.Models.Timing.Time model = Mapper.Map<Common.Models.Timing.Time>(viewModel);
+                model = OpenLawOffice.Data.Timing.Time.Edit(model, currentUser);
                 return RedirectToAction("Details", new { Id = id });
             }
             catch
             {
-                return View(model);
+                return View(viewModel);
             }
         }
     }

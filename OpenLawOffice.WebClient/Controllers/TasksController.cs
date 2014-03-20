@@ -11,7 +11,6 @@
 
     public class TasksController : BaseController
     {
-
         [SecurityFilter(SecurityAreaName = "Tasks.Task", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         [HttpGet]
@@ -92,142 +91,63 @@
 
         public static List<ViewModels.Tasks.TaskViewModel> GetChildrenList(long id)
         {
-            List<ViewModels.Tasks.TaskViewModel> modelList = new List<ViewModels.Tasks.TaskViewModel>();
-
-            using (IDbConnection db = Database.Instance.OpenConnection())
+            List<ViewModels.Tasks.TaskViewModel> viewModelList = new List<ViewModels.Tasks.TaskViewModel>();
+            List<Common.Models.Tasks.Task> modelList = OpenLawOffice.Data.Tasks.Task.ListChildren(id);
+            
+            modelList.ForEach(x =>
             {
-                // Get the Matter Id - allows to test against task_matter
-                DBOs.Tasks.TaskMatter taskMatter = db.Single<DBOs.Tasks.TaskMatter>(new { TaskId = id });
-
-                if (taskMatter == null)
-                    throw new ArgumentException("No matter exists paired to the specified task id");
-
-                List<DBOs.Tasks.Task> list = db.SqlList<DBOs.Tasks.Task>(
-                    "SELECT * FROM \"task\" WHERE \"parent_id\"=@TaskId AND " +
-                    "\"id\" in (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId) AND " +
-                    "\"utc_disabled\" is null",
-                    new { TaskId = id, MatterId = taskMatter.MatterId });
-
-                list.ForEach(dbo =>
-                {
-                    ViewModels.Tasks.TaskViewModel model = Mapper.Map<ViewModels.Tasks.TaskViewModel>(dbo);
+                ViewModels.Tasks.TaskViewModel viewModel = Mapper.Map<ViewModels.Tasks.TaskViewModel>(x);
                     
-                    if (model.IsGroupingTask)
-                    {
-                        List<DBOs.Tasks.Task> seq = db.SqlList<DBOs.Tasks.Task>(
-                            "SELECT * FROM \"task\" WHERE \"sequential_predecessor_id\"=@TaskId",
-                            new { TaskId = model.Id.Value });
-
-                        if (seq != null && seq.Count > 0)
-                            model.Type = "Sequential Group";
-                        else
-                            model.Type = "Group";
-                    }
+                if (viewModel.IsGroupingTask)
+                {
+                    if (OpenLawOffice.Data.Tasks.Task.GetTaskForWhichIAmTheSequentialPredecessor(x.Id.Value) != null)
+                        viewModel.Type = "Sequential Group";
                     else
-                    {
-                        List<DBOs.Tasks.Task> seq = db.SqlList<DBOs.Tasks.Task>(
-                            "SELECT * FROM \"task\" WHERE \"id\"=@TaskId AND \"sequential_predecessor_id\" is not null",
-                            new { TaskId = model.Id.Value });
+                        viewModel.Type = "Group";
+                }
+                else
+                {
+                    if (x.SequentialPredecessor != null)
+                        viewModel.Type = "Sequential";
+                    else
+                        viewModel.Type = "Standard";
+                }
 
-                        if (seq != null && seq.Count > 0)
-                            model.Type = "Sequential";
-                        else
-                            model.Type = "Standard";
-                    }
+                viewModelList.Add(viewModel);
+            });
 
-                    modelList.Add(model);
-                });
-            }
-
-            return modelList;
+            return viewModelList;
         }
 
         public static List<ViewModels.Tasks.TaskViewModel> GetListForMatter(Guid matterid)
         {
-            List<ViewModels.Tasks.TaskViewModel> modelList = new List<ViewModels.Tasks.TaskViewModel>();
+            List<ViewModels.Tasks.TaskViewModel> viewModelList = new List<ViewModels.Tasks.TaskViewModel>();
+            List<Common.Models.Tasks.Task> modelList = OpenLawOffice.Data.Tasks.Task.ListForMatter(matterid);
 
-            using (IDbConnection db = Database.Instance.OpenConnection())
+            modelList.ForEach(x =>
             {
-                /* Standard Tasks are neither hierarchical or sequenced - not is_grouping_task, no parent_id
-                 *  We do not need to test for sequential followers as we can infer this from the fact that a
-                 *  parent_id must be set for any sequential member.  This is a design mechanism.
-                 *  
-                 * Grouping Tasks simply contain other tasks and their task properties should be caclulated, not stored.
-                 *  Grouping tasks contain standard tasks, sequenced tasks and other grouping tasks.  
-                 *  However, a grouping task containing a sequence may only contain members of the sequence,
-                 *  but nothing prevents a sequence member from being a grouping task.
-                 * 
-                 * Sequenced Tasks are members of a sequence and may be either standard tasks or
-                 *  grouping tasks.
-                 *  
-                 * Therefore, when loading the root tasks of a matter, we load standard and 
-                 * grouping tasks.  Note, this does not include loading of any task with a non-null
-                 * parent_id as that means they are grouped and therefore, not root.  However, this
-                 * also means that we may simply load tasks with null parent_id fields to select
-                 * all the root tasks.
-                 * 
-                 * 
-                 * Example:
-                 * ST1
-                 * ST2
-                 * GT1
-                 *  Seq1
-                 *  Seq2-GT
-                 *   ST3
-                 *   ST4
-                 *  Seq3
-                 *   GT2
-                 *    GT3
-                 *     Seq4
-                 *     Seq5
-                 *     Seq6
-                 *    ST5
-                 *    ST6
-                 *   ST7
-                 *  Seq4
-                 *  Seq5
-                 * ST8
-                 * 
-                 */
+                ViewModels.Tasks.TaskViewModel viewModel = Mapper.Map<ViewModels.Tasks.TaskViewModel>(x);
 
-                List<DBOs.Tasks.Task> list = db.SqlList<DBOs.Tasks.Task>(
-                    "SELECT * FROM \"task\" WHERE \"parent_id\" is null AND " +
-                    "\"id\" in (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId) AND " +
-                    "\"utc_disabled\" is null",
-                    new { MatterId = matterid });
-
-                list.ForEach(dbo =>
+                if (viewModel.IsGroupingTask)
                 {
-                    ViewModels.Tasks.TaskViewModel model = Mapper.Map<ViewModels.Tasks.TaskViewModel>(dbo);
-
-                    if (model.IsGroupingTask)
-                    {
-                        List<DBOs.Tasks.Task> seq = db.SqlList<DBOs.Tasks.Task>(
-                            "SELECT * FROM \"task\" WHERE \"sequential_predecessor_id\"=@TaskId",
-                            new { TaskId = model.Id.Value });
-
-                        if (seq != null && seq.Count > 0)
-                            model.Type = "Sequential Group";
-                        else
-                            model.Type = "Group";
-                    }
+                    if (OpenLawOffice.Data.Tasks.Task.GetTaskForWhichIAmTheSequentialPredecessor(x.Id.Value) 
+                        != null)
+                        viewModel.Type = "Sequential Group";
                     else
-                    {
-                        List<DBOs.Tasks.Task> seq = db.SqlList<DBOs.Tasks.Task>(
-                            "SELECT * FROM \"task\" WHERE \"id\"=@TaskId AND \"sequential_predecessor_id\" is not null",
-                            new { TaskId = model.Id.Value });
+                        viewModel.Type = "Group";
+                }
+                else
+                {
+                    if (x.SequentialPredecessor != null)
+                        viewModel.Type = "Sequential";
+                    else
+                        viewModel.Type = "Standard";
+                }
 
-                        if (seq != null && seq.Count > 0)
-                            model.Type = "Sequential";
-                        else
-                            model.Type = "Standard";
-                    }
+                viewModelList.Add(viewModel);
+            });
 
-                    modelList.Add(model);
-                });
-            }
-
-            return modelList;
+            return viewModelList;
         }
 
         //
@@ -236,438 +156,88 @@
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(long id)
         {
-            Guid matterid;
-            ViewModels.Tasks.TaskViewModel model = null;
-            using (IDbConnection db = Database.Instance.OpenConnection())
+            ViewModels.Tasks.TaskViewModel viewModel = null;
+            Common.Models.Tasks.Task model = OpenLawOffice.Data.Tasks.Task.Get(id);
+            viewModel = Mapper.Map<ViewModels.Tasks.TaskViewModel>(model);
+            PopulateCoreDetails(viewModel);
+
+            if (model.Parent != null && model.Parent.Id.HasValue)
             {
-
-                // Load base DBO
-                DBOs.Tasks.Task dbo = db.Single<DBOs.Tasks.Task>(
-                    "SELECT * FROM \"task\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
-                    new { Id = id });
-
-                DBOs.Tasks.TaskMatter dboTaskMatter = db.Single<DBOs.Tasks.TaskMatter>(
-                    "SELECT * FROM \"task_matter\" WHERE \"task_id\"=@TaskId",
-                    new { TaskId = dbo.Id });
-
-                model = Mapper.Map<ViewModels.Tasks.TaskViewModel>(dbo);
-                matterid = dboTaskMatter.MatterId;
-
-                if (dbo.ParentId.HasValue)
-                {
-                    DBOs.Tasks.Task parentDbo = db.SingleById<DBOs.Tasks.Task>(dbo.ParentId);
-                    model.Parent = Mapper.Map<ViewModels.Tasks.TaskViewModel>(parentDbo);
-                }
-
-                if (dbo.SequentialPredecessorId.HasValue)
-                {
-                    DBOs.Tasks.Task sequentialPredecessorDbo = db.SingleById<DBOs.Tasks.Task>(dbo.SequentialPredecessorId);
-                    model.SequentialPredecessor = Mapper.Map<ViewModels.Tasks.TaskViewModel>(sequentialPredecessorDbo);
-                }
-
-                // Core Details
-                PopulateCoreDetails(model);
+                model.Parent = OpenLawOffice.Data.Tasks.Task.Get(model.Parent.Id.Value);
+                viewModel.Parent = Mapper.Map<ViewModels.Tasks.TaskViewModel>(model.Parent);
             }
 
-            ViewData["MatterId"] = matterid;
+            if (model.SequentialPredecessor != null && model.SequentialPredecessor.Id.HasValue)
+            {
+                model.SequentialPredecessor = OpenLawOffice.Data.Tasks.Task.Get(model.SequentialPredecessor.Id.Value);
+                viewModel.SequentialPredecessor = Mapper.Map<ViewModels.Tasks.TaskViewModel>(model.SequentialPredecessor);
+            }
+
+            Common.Models.Matters.Matter matter = OpenLawOffice.Data.Tasks.Task.GetRelatedMatter(model.Id.Value);
+
+            ViewData["MatterId"] = matter.Id.Value;
 
             return View(model);
         }
-
-        public static void UpdateGroupingTaskProperties(DBOs.Tasks.Task groupingTaskDbo, IDbConnection db)
-        {
-            bool groupingTaskChanged = false;
-
-            // Projected Start - can probably clean this up into a single query
-            DBOs.Tasks.Task temp = db.Single<DBOs.Tasks.Task>(
-                "SELECT * FROM \"task\" WHERE \"parent_id\"=@ParentId AND \"utc_disabled\" is null ORDER BY \"projected_start\" DESC limit 1",
-                new { ParentId = groupingTaskDbo.Id });
-
-            // If temp.ProjectedStart has a value then we know that there are no rows
-            // with null value and so, we may update the grouping task to be the
-            // earliest projected start value.  However, if null, then we need to
-            // set the grouping task's projected start value to null.
-
-            if (temp.ProjectedStart.HasValue)
-            {
-                temp = db.Single<DBOs.Tasks.Task>(
-                    "SELECT * FROM \"task\" WHERE \"parent_id\"=@ParentId AND \"utc_disabled\" is null ORDER BY \"projected_start\" ASC limit 1",
-                    new { ParentId = groupingTaskDbo.Id });
-                if (groupingTaskDbo.ProjectedStart != temp.ProjectedStart)
-                {
-                    groupingTaskDbo.ProjectedStart = temp.ProjectedStart;
-                    groupingTaskChanged = true;
-                }
-            }
-            else
-            {
-                if (groupingTaskDbo.ProjectedStart.HasValue)
-                {
-                    groupingTaskDbo.ProjectedStart = null;
-                    groupingTaskChanged = true;
-                }
-            }
-
-            // Due Date
-            temp = db.Single<DBOs.Tasks.Task>(
-                "SELECT * FROM \"task\" WHERE \"parent_id\"=@ParentId AND \"utc_disabled\" is null ORDER BY \"due_date\" DESC limit 1",
-                new { ParentId = groupingTaskDbo.Id });
-            if (temp.DueDate != groupingTaskDbo.DueDate)
-            {
-                groupingTaskDbo.DueDate = temp.DueDate;
-                groupingTaskChanged = true;
-            }
-
-            // Projected End
-            temp = db.Single<DBOs.Tasks.Task>(
-                "SELECT * FROM \"task\" WHERE \"parent_id\"=@ParentId AND \"utc_disabled\" is null ORDER BY \"projected_end\" DESC limit 1",
-                new { ParentId = groupingTaskDbo.Id });
-            if (temp.ProjectedEnd != groupingTaskDbo.ProjectedEnd)
-            {
-                groupingTaskDbo.ProjectedEnd = temp.ProjectedEnd;
-                groupingTaskChanged = true;
-            }
-
-            // Actual End
-            temp = db.Single<DBOs.Tasks.Task>(
-                "SELECT * FROM \"task\" WHERE \"parent_id\"=@ParentId AND \"utc_disabled\" is null ORDER BY \"actual_end\" DESC limit 1",
-                new { ParentId = groupingTaskDbo.Id });
-            if (temp.ActualEnd != groupingTaskDbo.ActualEnd)
-            {
-                groupingTaskDbo.ActualEnd = temp.ActualEnd;
-                groupingTaskChanged = true;
-            }
-
-            // Update grouping task if needed
-            if (groupingTaskChanged)
-            {
-                db.UpdateOnly(groupingTaskDbo,
-                    fields => new
-                    {
-                        fields.ProjectedStart,
-                        fields.DueDate,
-                        fields.ProjectedEnd,
-                        fields.ActualEnd
-                    },
-                    where => where.Id == groupingTaskDbo.Id);
-            }
-        }
-
-        public static DBOs.Tasks.Task GetParentTask(long taskId, IDbConnection db)
-        {
-            return db.Single<DBOs.Tasks.Task>(
-                "SELECT * FROM \"task\" WHERE \"id\" in (SELECT \"parent_id\" FROM \"task\" WHERE \"id\"=@Id AND \"utc_disabled\" is null) AND \"utc_disabled\" is null",
-                new { Id = taskId });
-        }
-
-        public static DBOs.Tasks.Task GetParentTask(DBOs.Tasks.Task taskDbo, IDbConnection db)
-        {
-            if (!taskDbo.ParentId.HasValue)
-                return null;
-
-            return GetParentTask(taskDbo.Id, db);
-        }
-
+        
         [SecurityFilter(SecurityAreaName = "Tasks.Task", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(long id)
         {
-            Guid matterid;
-            ViewModels.Tasks.TaskViewModel model = null;
-            using (IDbConnection db = Database.Instance.OpenConnection())
+            ViewModels.Tasks.TaskViewModel viewModel = null;
+            Common.Models.Tasks.Task model = OpenLawOffice.Data.Tasks.Task.Get(id);
+            viewModel = Mapper.Map<ViewModels.Tasks.TaskViewModel>(model);
+
+            if (model.Parent != null && model.Parent.Id.HasValue)
             {
-
-                // Load base DBO
-                DBOs.Tasks.Task dbo = db.Single<DBOs.Tasks.Task>(
-                    "SELECT * FROM \"task\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
-                    new { Id = id });
-
-                DBOs.Tasks.TaskMatter dboTaskMatter = db.Single<DBOs.Tasks.TaskMatter>(
-                    "SELECT * FROM \"task_matter\" WHERE \"task_id\"=@TaskId",
-                    new { TaskId = dbo.Id });
-
-                model = Mapper.Map<ViewModels.Tasks.TaskViewModel>(dbo);
-                matterid = dboTaskMatter.MatterId;
-
-                if (dbo.ParentId.HasValue)
-                {
-                    DBOs.Tasks.Task parentDbo = db.SingleById<DBOs.Tasks.Task>(dbo.ParentId);
-                    model.Parent = Mapper.Map<ViewModels.Tasks.TaskViewModel>(parentDbo);
-                }
-
-                if (dbo.SequentialPredecessorId.HasValue)
-                {
-                    DBOs.Tasks.Task sequentialPredecessorDbo = db.SingleById<DBOs.Tasks.Task>(dbo.SequentialPredecessorId);
-                    model.SequentialPredecessor = Mapper.Map<ViewModels.Tasks.TaskViewModel>(sequentialPredecessorDbo);
-                }
-
-                // Core Details
-                PopulateCoreDetails(model);
+                model.Parent = OpenLawOffice.Data.Tasks.Task.Get(model.Parent.Id.Value);
+                viewModel.Parent = Mapper.Map<ViewModels.Tasks.TaskViewModel>(model.Parent);
             }
 
-            ViewData["MatterId"] = matterid;
+            if (model.SequentialPredecessor != null && model.SequentialPredecessor.Id.HasValue)
+            {
+                model.SequentialPredecessor = OpenLawOffice.Data.Tasks.Task.Get(model.SequentialPredecessor.Id.Value);
+                viewModel.SequentialPredecessor = Mapper.Map<ViewModels.Tasks.TaskViewModel>(model.SequentialPredecessor);
+            }
 
-            return View(model);
+            Common.Models.Matters.Matter matter = OpenLawOffice.Data.Tasks.Task.GetRelatedMatter(model.Id.Value);
+
+            ViewData["MatterId"] = matter.Id.Value;
+
+            return View(viewModel);
         }
 
         [SecurityFilter(SecurityAreaName = "Tasks.Task", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
-        public ActionResult Edit(long id, ViewModels.Tasks.TaskViewModel model)
+        public ActionResult Edit(long id, ViewModels.Tasks.TaskViewModel viewModel)
         {
-            /*
-             * We need to consider how to handle the relationship modifications
-             * 
-             * First, basic assumptions:
-             * 1) If a task has a sequential predecessor then it cannot independently specify its parent
-             * 
-             * 
-             * Parent - if the parent is modified
-             * 
-             * Sequential Predecessor
-             * 1) If changed, need to cascade changes to all subsequent sequence members
-             * 2) If removed from sequence, need to defer to user's parent selection
-             * 3) If added to sequence, need to override user's parent selection
-             * 
-             * 
-             * UI should be like:
-             * 
-             * If sequence member:
-             * [Remove from Sequence]
-             * 
-             * 
-             * If NOT sequence member:
-             * This task is not currently part of a task sequence.  If you would like to make this
-             * task part of a task sequence, click here.
-             * -- OnClick -->
-             * Please select the task you wish t
-             * 
-             */
             try
             {
-                Common.Models.Security.User user = UserCache.Instance.Lookup(Request);
+                Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
+                Common.Models.Tasks.Task model = Mapper.Map<Common.Models.Tasks.Task>(viewModel);
+                Common.Models.Matters.Matter matterModel = OpenLawOffice.Data.Tasks.Task.GetRelatedMatter(id);
 
-                DBOs.Tasks.Task dbo = Mapper.Map<DBOs.Tasks.Task>(model);
-                dbo.UtcModified = DateTime.UtcNow;
-                dbo.ModifiedByUserId = user.Id.Value;
+                Common.Models.Tasks.Task currentModel = OpenLawOffice.Data.Tasks.Task.Get(id);
 
-                /* From the submission point of view, we care about checking for a sequence predecessor first,
-                 * if it is not specified, then we can care about the user specified parent.
-                 */
-
-                using (IDbConnection db = Database.Instance.OpenConnection())
+                if (model.Parent != null && model.Parent.Id.HasValue)
                 {
-                    using (IDbTransaction tran = db.BeginTransaction())
+                    if (model.Parent.Id.Value == model.Id.Value)
                     {
-                        // We need to pull the current task for compairison
-                        DBOs.Tasks.Task currentTaskDbo = db.SingleById<DBOs.Tasks.Task>(id);
-
-
-                        // When we actually implement sequential lists, we need to remove the following lines
-                        // these currently prevent sequential lists
-
-                        model.SequentialPredecessor = null;
-
-                        // Need to test for parent being sequence (not allowed)
-                        if (dbo.ParentId.HasValue)
-                        {
-                            DBOs.Tasks.Task proposedParentTask = db.SingleById<DBOs.Tasks.Task>(dbo.ParentId);
-                            DBOs.Tasks.Task seqChild = db.Single<DBOs.Tasks.Task>(
-                                "SELECT * FROM \"task\" WHERE \"sequential_predecessor_id\"=@Id AND \"utc_disabled\" is null ORDER BY \"id\" ASC limit 1",
-                                new { Id = proposedParentTask.Id });
-                            DBOs.Tasks.TaskMatter dboTaskMatter = db.Single<DBOs.Tasks.TaskMatter>(
-                                "SELECT * FROM \"task_matter\" WHERE \"task_id\"=@TaskId",
-                                new { TaskId = dbo.Id });
-
-                            if (proposedParentTask.Id == dbo.Id)
-                            {
-                                //  Task is trying to set itself as its parent
-                                ModelState.AddModelError("Parent.Id", "Parent cannot be the task itself.");
-                                ViewData["MatterId"] = dboTaskMatter.MatterId;
-                                return View(model);
-                            }
-
-                            if (seqChild != null)
-                            {
-                                ModelState.AddModelError("Parent.Id", "Parent cannot be a sequential group.");
-                                ViewData["MatterId"] = dboTaskMatter.MatterId;
-                                return View(model);
-                            }
-
-                            db.UpdateOnly(dbo,
-                                fields => new
-                                {
-                                    fields.ActualEnd,
-                                    fields.Description,
-                                    fields.DueDate,
-                                    fields.ModifiedByUserId,
-                                    fields.ParentId,
-                                    fields.ProjectedEnd,
-                                    fields.ProjectedStart,
-                                    fields.Title,
-                                    fields.UtcModified
-                                },
-                                where => where.Id == dbo.Id);
-
-                            UpdateGroupingTaskProperties(proposedParentTask, db);
-                        }
-                        else
-                        {
-                            db.UpdateOnly(dbo,
-                                fields => new
-                                {
-                                    fields.ActualEnd,
-                                    fields.Description,
-                                    fields.DueDate,
-                                    fields.ModifiedByUserId,
-                                    fields.ParentId,
-                                    fields.ProjectedEnd,
-                                    fields.ProjectedStart,
-                                    fields.Title,
-                                    fields.UtcModified
-                                },
-                                where => where.Id == dbo.Id);
-                        }
-
-
-                        #region Commented Out Sequential Predecessor Code
-                        //if (model.SequentialPredecessor.Id.HasValue 
-                        //    && model.SequentialPredecessor.Id.Value > 0)
-                        //{
-                        //    // SeqPred exists in user request
-
-                        //    if (!currentTaskDbo.SequentialPredecessorId.HasValue)
-                        //    {
-                        //        // Did not have value, user adding value -> 
-                        //        // Overwrite prior parent with sequence parent
-                        //        // Cascade pred ids down
-                        //        // Calculate new projected start, due date, projected end and actual end
-
-                        //        // Get the sequential predecessor task
-                        //        DBOs.Tasks.Task seqPredTaskDbo = GetSequentialPredecessor(dbo, db);
-                                
-                        //        // Get the grouping task
-                        //        DBOs.Tasks.Task groupingTaskDbo = GetParentTask(seqPredTaskDbo, db);
-
-                        //        InsertTaskIntoSequence(dbo, seqPredTaskDbo.Id, db);
-                        //    }
-                        //    else
-                        //    {
-                        //        // Was a sequence, stays a sequence, just relocating, but may be relocating to a different sequence
-
-                        //        if (currentTaskDbo.SequentialPredecessorId.Value
-                        //            != model.SequentialPredecessor.Id.Value)
-                        //        {
-                        //            // Relocate
-                        //            RelocateTaskInSequence(dbo, dbo.SequentialPredecessorId.Value, db);
-                        //        }
-                        //        else
-                        //        {
-                        //             // Simply update the regular properties
-
-                        //            // Need to test for parent being sequence (not allowed)
-                        //            if (dbo.ParentId.HasValue)
-                        //            {
-                        //                DBOs.Tasks.Task proposedParentTask = db.SingleById<DBOs.Tasks.Task>(dbo.ParentId);
-                        //                DBOs.Tasks.Task seqChild = db.Single<DBOs.Tasks.Task>(
-                        //                    "SELECT * FROM \"task\" WHERE \"sequential_predecessor_id\"=@Id AND \"utc_disabled\" is null ORDER BY \"id\" ASC limit 1",
-                        //                    new { Id = proposedParentTask.Id });
-                        //                DBOs.Tasks.TaskMatter dboTaskMatter = db.Single<DBOs.Tasks.TaskMatter>(
-                        //                    "SELECT * FROM \"task_matter\" WHERE \"task_id\"=@TaskId",
-                        //                    new { TaskId = dbo.Id });
-                        //                ModelState.AddModelError("Parent.Id", "Parent cannot be set to a sequential group.");
-                        //                ViewData["MatterId"] = dboTaskMatter.MatterId;
-                        //                return View(model);
-                        //            }
-
-
-                        //            db.UpdateOnly(dbo,
-                        //                fields => new
-                        //                {
-                        //                    fields.ActualEnd,
-                        //                    fields.Description,
-                        //                    fields.DueDate,
-                        //                    fields.ModifiedByUserId,
-                        //                    fields.ParentId,
-                        //                    fields.ProjectedEnd,
-                        //                    fields.ProjectedStart,
-                        //                    fields.Title,
-                        //                    fields.UtcModified
-                        //                },
-                        //                where => where.Id == dbo.Id);
-                        //        }
-                        //    }
-                        //}
-                        //else
-                        //{
-                        //    // SeqPred does not exist in user request
-
-                        //    if (currentTaskDbo.SequentialPredecessorId.HasValue)
-                        //    {
-                        //        // Had a value, user removing value ->
-                        //        // Cascade pred ids down
-                        //        // Calculate new projected start, due date, projected end and actual end
-                        //        RemoveTaskFromSequence(dbo, db);
-                        //    }
-                        //    else
-                        //    {
-                        //        // Simply update the regular properties
-
-                        //        // Need to test for parent being sequence (not allowed)
-                        //        if (dbo.ParentId.HasValue)
-                        //        {
-                        //            DBOs.Tasks.Task proposedParentTask = db.SingleById<DBOs.Tasks.Task>(dbo.ParentId);
-                        //            DBOs.Tasks.Task seqChild = db.Single<DBOs.Tasks.Task>(
-                        //                "SELECT * FROM \"task\" WHERE \"sequential_predecessor_id\"=@Id AND \"utc_disabled\" is null ORDER BY \"id\" ASC limit 1",
-                        //                new { Id = proposedParentTask.Id });
-                        //            DBOs.Tasks.TaskMatter dboTaskMatter = db.Single<DBOs.Tasks.TaskMatter>(
-                        //                "SELECT * FROM \"task_matter\" WHERE \"task_id\"=@TaskId",
-                        //                new { TaskId = dbo.Id });
-
-                        //            if (proposedParentTask.Id == dbo.Id)
-                        //            {
-                        //                //  Task is trying to set itself as its parent
-                        //                ModelState.AddModelError("Parent.Id", "Parent cannot be the task itself.");
-                        //                ViewData["MatterId"] = dboTaskMatter.MatterId;
-                        //                return View(model);
-                        //            }
-
-                        //            if (seqChild != null)
-                        //            {
-                        //                ModelState.AddModelError("Parent.Id", "Parent cannot be a sequential group.");
-                        //                ViewData["MatterId"] = dboTaskMatter.MatterId;
-                        //                return View(model);
-                        //            }
-                        //        }
-
-                        //        db.UpdateOnly(dbo,
-                        //            fields => new
-                        //            {
-                        //                fields.ActualEnd,
-                        //                fields.Description,
-                        //                fields.DueDate,
-                        //                fields.ModifiedByUserId,
-                        //                fields.ParentId,
-                        //                fields.ProjectedEnd,
-                        //                fields.ProjectedStart,
-                        //                fields.Title,
-                        //                fields.UtcModified
-                        //            },
-                        //            where => where.Id == dbo.Id);
-                        //    }
-                        //}
-
-                        #endregion
-
-                        tran.Commit();
+                        //  Task is trying to set itself as its parent
+                        ModelState.AddModelError("Parent.Id", "Parent cannot be the task itself.");
+                        ViewData["MatterId"] = matterModel.Id.Value;
+                        return View(model);
                     }
                 }
+
+                model = OpenLawOffice.Data.Tasks.Task.Edit(model, currentUser);
 
                 return RedirectToAction("Details", new { Id = id });
             }
             catch
             {
-                return View(model);
+                return View(viewModel);
             }
         }
 
@@ -682,51 +252,23 @@
         [SecurityFilter(SecurityAreaName = "Tasks.Task", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
-        public ActionResult Create(ViewModels.Tasks.TaskViewModel model)
+        public ActionResult Create(ViewModels.Tasks.TaskViewModel viewModel)
         {
             Guid matterid = Guid.Empty;
 
             try
             {
-                Common.Models.Security.User user = UserCache.Instance.Lookup(Request);
-
-                // TODO : need to make this verify with DB
+                Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
+                Common.Models.Tasks.Task model = Mapper.Map<Common.Models.Tasks.Task>(viewModel);
+                model = OpenLawOffice.Data.Tasks.Task.Create(model, currentUser);
                 matterid = Guid.Parse(Request["MatterId"]);
-
-                using (IDbConnection db = Database.Instance.OpenConnection())
-                {
-                    using (IDbTransaction tran = db.BeginTransaction())
-                    {
-                        DBOs.Tasks.Task taskDbo = Mapper.Map<DBOs.Tasks.Task>(model);
-                        taskDbo.CreatedByUserId = taskDbo.ModifiedByUserId = user.Id.Value;
-                        taskDbo.UtcCreated = taskDbo.UtcModified = DateTime.UtcNow;
-
-                        db.Insert<DBOs.Tasks.Task>(taskDbo);
-                        taskDbo.Id = db.LastInsertId();
-
-                        DBOs.Tasks.TaskMatter taskMatterDbo = new DBOs.Tasks.TaskMatter()
-                        {
-                            Id = Guid.NewGuid(),
-                            MatterId = matterid,
-                            TaskId = taskDbo.Id,
-                            UtcCreated = DateTime.UtcNow,
-                            UtcModified = DateTime.UtcNow,
-                            CreatedByUserId = user.Id.Value,
-                            ModifiedByUserId = user.Id.Value
-                        };
-
-                        db.Insert<DBOs.Tasks.TaskMatter>(taskMatterDbo);
-
-                        tran.Commit();
-
-                        return RedirectToAction("Details", new { Id = taskDbo.Id });
-                    }
-                }
+                OpenLawOffice.Data.Tasks.Task.RelateMatter(model, matterid, currentUser);
+                return RedirectToAction("Details", new { Id = model.Id });
             }
             catch
             {
                 ViewData["MatterId"] = Request["MatterId"];
-                return View(model);
+                return View(viewModel);
             }
         }
         
@@ -741,25 +283,18 @@
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Contacts(long id)
         {
-            List<ViewModels.Tasks.TaskAssignedContactViewModel> modelList = new List<ViewModels.Tasks.TaskAssignedContactViewModel>();
-            using (IDbConnection db = Database.Instance.OpenConnection())
+            List<ViewModels.Tasks.TaskAssignedContactViewModel> viewModelList = new List<ViewModels.Tasks.TaskAssignedContactViewModel>();
+            List<Common.Models.Tasks.TaskAssignedContact> modelList = OpenLawOffice.Data.Tasks.TaskAssignedContact.ListForTask(id);
+
+            modelList.ForEach(x =>
             {
-                List<DBOs.Tasks.TaskAssignedContact> list = db.SqlList<DBOs.Tasks.TaskAssignedContact>(
-                    "SELECT * FROM \"task_assigned_contact\" WHERE \"task_id\"=@TaskId AND \"utc_disabled\" is null",
-                    new { TaskId = id });
+                ViewModels.Tasks.TaskAssignedContactViewModel viewModel = Mapper.Map<ViewModels.Tasks.TaskAssignedContactViewModel>(x);
+                Common.Models.Contacts.Contact contact = OpenLawOffice.Data.Contacts.Contact.Get(x.Contact.Id.Value);
+                viewModel.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contact);
+                viewModelList.Add(viewModel);
+            });
 
-                list.ForEach(dbo =>
-                {
-                    ViewModels.Tasks.TaskAssignedContactViewModel vm = Mapper.Map<ViewModels.Tasks.TaskAssignedContactViewModel>(dbo);
-
-                    DBOs.Contacts.Contact contactDbo = db.SingleById<DBOs.Contacts.Contact>(dbo.ContactId);
-
-                    vm.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contactDbo);
-                    modelList.Add(vm);
-                });
-            }
-
-            return View(modelList);
+            return View(viewModelList);
         }
 
         #region Commented Out Sequential Predecessor Code

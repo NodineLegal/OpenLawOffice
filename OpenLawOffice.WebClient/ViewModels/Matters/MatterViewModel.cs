@@ -14,7 +14,7 @@
 
         public void BuildMappings()
         {
-            Mapper.CreateMap<DBOs.Matters.Matter, MatterViewModel>()
+            Mapper.CreateMap<Common.Models.Matters.Matter, MatterViewModel>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
@@ -23,7 +23,7 @@
                 {
                     return new ViewModels.Security.UserViewModel()
                     {
-                        Id = db.CreatedByUserId,
+                        Id = db.CreatedBy.Id,
                         IsStub = true
                     };
                 }))
@@ -31,16 +31,16 @@
                 {
                     return new ViewModels.Security.UserViewModel()
                     {
-                        Id = db.ModifiedByUserId,
+                        Id = db.ModifiedBy.Id,
                         IsStub = true
                     };
                 }))
                 .ForMember(dst => dst.DisabledBy, opt => opt.ResolveUsing(db =>
                 {
-                    if (!db.DisabledByUserId.HasValue) return null;
+                    if (db.DisabledBy == null || !db.DisabledBy.Id.HasValue) return null;
                     return new ViewModels.Security.UserViewModel()
                     {
-                        Id = db.DisabledByUserId.Value,
+                        Id = db.DisabledBy.Id.Value,
                         IsStub = true
                     };
                 }))
@@ -57,26 +57,39 @@
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis));
 
-            Mapper.CreateMap<MatterViewModel, DBOs.Matters.Matter>()
+            Mapper.CreateMap<MatterViewModel, Common.Models.Matters.Matter>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
                 .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
-                .ForMember(dst => dst.CreatedByUserId, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.CreatedBy, opt => opt.ResolveUsing(model =>
                 {
                     if (model.CreatedBy == null || !model.CreatedBy.Id.HasValue)
-                        return 0;
-                    return model.CreatedBy.Id.Value;
+                        return null;
+                    return new Common.Models.Security.User()
+                    {
+                        Id = model.CreatedBy.Id,
+                        IsStub = true
+                    };
                 }))
-                .ForMember(dst => dst.ModifiedByUserId, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.ModifiedBy, opt => opt.ResolveUsing(model =>
                 {
                     if (model.ModifiedBy == null || !model.ModifiedBy.Id.HasValue)
-                        return 0;
-                    return model.ModifiedBy.Id.Value;
+                        return null;
+                    return new Common.Models.Security.User()
+                    {
+                        Id = model.ModifiedBy.Id,
+                        IsStub = true
+                    };
                 }))
-                .ForMember(dst => dst.DisabledByUserId, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.DisabledBy, opt => opt.ResolveUsing(model =>
                 {
-                    if (model.DisabledBy == null) return null;
-                    return model.DisabledBy.Id;
+                    if (model.DisabledBy == null || !model.DisabledBy.Id.HasValue)
+                        return null;
+                    return new Common.Models.Security.User()
+                    {
+                        Id = model.DisabledBy.Id,
+                        IsStub = true
+                    };
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.ParentId, opt => opt.ResolveUsing(model =>
@@ -86,7 +99,8 @@
                     return model.Parent.Id.Value;
                 }))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
-                .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis));
+                .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis))
+                .ForMember(dst => dst.SecuredResource, opt => opt.Ignore());
         }
     }
 }
