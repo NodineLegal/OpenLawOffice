@@ -65,8 +65,7 @@ namespace OpenLawOffice.Data.Contacts
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 model.Id = dbo.Id = conn.Execute("INSERT INTO \"contact\" (" +
-                    "\"utc_modified\", \"modified_by_user_id\", \"referred_by_name\", " +
-                    "\"gender\", \"business_home_page\", \"personal_home_page\", " +
+                    "\"referred_by_name\", \"gender\", \"business_home_page\", \"personal_home_page\", " +
                     "\"instant_messaging_address\", \"language\", \"spouse_name\", " +
                     "\"profession\", \"assistant_name\", \"manager_name\", \"office_location\", " +
                     "\"department_name\", \"company_name\", \"title\", \"wedding\", " +
@@ -90,8 +89,9 @@ namespace OpenLawOffice.Data.Contacts
                     "\"email3_email_address\", \"email3_display_name\", \"email2_email_address\", " +
                     "\"email2_display_name\", \"email1_email_address\", \"email1_display_name\", " +
                     "\"display_name\", \"initials\", \"given_name\", \"middle_name\", \"surname\", " +
-                    "\"display_name_prefix\", \"generation\", \"nickname\", \"is_organization\") VALUES (" +
-                    "@UtcModified, @ModifiedByUserId, @ReferredByName, @Gender, @BusinessHomePage, " + 
+                    "\"display_name_prefix\", \"generation\", \"nickname\", \"is_organization\", " +
+                    "\"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") VALUES (" +
+                    "@ReferredByName, @Gender, @BusinessHomePage, " + 
                     "@PersonalHomePage, @InstantMessagingAddress, @Language, @SpouseName, @Profession, " +
                     "@AssistantName, @ManagerName, @OfficeLocation, @DepartmentName, @CompanyName, " +
                     "@Title, @Wedding, @Birthday, @Telephone10TelephoneNumber, @Telephone10DisplayName, " +
@@ -112,7 +112,8 @@ namespace OpenLawOffice.Data.Contacts
                     "@Fax3FaxNumber, @Fax3DisplayName, @Fax2FaxNumber, @Fax2DisplayName, @Fax1FaxNumber, " +
                     "@Fax1DisplayName, @Email3EmailAddress, @Email3DisplayName, @Email2EmailAddress, @Email2DisplayName, " +
                     "@Email1EmailAddress, @Email1DisplayName, @DisplayName, @Initials, @GivenName, " +
-                    "@MiddleName, @Surname, @DisplayNamePrefix, @Generation, @Nickname, @IsOrganization)", dbo);
+                    "@MiddleName, @Surname, @DisplayNamePrefix, @Generation, @Nickname, @IsOrganization, " +
+                    "@UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)", dbo);
 
                 model.Id = conn.Query<DBOs.Contacts.Contact>("SELECT currval(pg_get_serial_sequence('contact', 'id')) AS \"id\"").Single().Id;
             }

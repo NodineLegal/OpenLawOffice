@@ -478,7 +478,7 @@ CREATE TABLE task (
     projected_end timestamp without time zone,
     actual_end timestamp without time zone,
     parent_id bigint,
-    is_grouping_task bit(1) NOT NULL,
+    is_grouping_task boolean NOT NULL,
     sequential_predecessor_id bigint,
     created_by_user_id integer NOT NULL,
     modified_by_user_id integer NOT NULL,

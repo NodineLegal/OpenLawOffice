@@ -7,10 +7,10 @@ namespace OpenLawOffice.Data.DBOs.Tagging
         //[Required]
         //public Guid Id { get; set; }
 
+        [ColumnMapping(Name = "tag_category_id")]
         public int? TagCategoryId { get; set; }
 
-        [Required]
-        [StringLength(100)]
+        [ColumnMapping(Name = "tag")]
         public string Tag { get; set; }
     }
 }

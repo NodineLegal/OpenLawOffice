@@ -6,10 +6,12 @@ namespace OpenLawOffice.Data.DBOs.Security
     [Common.Models.MapMe]
     public class SecuredResource : Core
     {
+        [ColumnMapping(Name = "id")]
         public Guid Id { get; set; }
 
         public void BuildMappings()
         {
+            Dapper.SqlMapper.SetTypeMap(typeof(SecuredResource), new ColumnAttributeTypeMapper<SecuredResource>());
             Mapper.CreateMap<DBOs.Security.SecuredResource, Common.Models.Security.SecuredResource>()
                    .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                    .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))

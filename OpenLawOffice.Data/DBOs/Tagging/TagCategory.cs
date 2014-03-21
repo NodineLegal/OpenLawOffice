@@ -6,14 +6,15 @@ namespace OpenLawOffice.Data.DBOs.Tagging
     [Common.Models.MapMe]
     public class TagCategory : Core
     {
+        [ColumnMapping(Name = "id")]
         public int Id { get; set; }
 
-        [Required]
-        [StringLength(150)]
+        [ColumnMapping(Name = "name")]
         public string Name { get; set; }
 
         public void BuildMappings()
         {
+            Dapper.SqlMapper.SetTypeMap(typeof(TagCategory), new ColumnAttributeTypeMapper<TagCategory>());
             Mapper.CreateMap<DBOs.Tagging.TagCategory, Common.Models.Tagging.TagCategory>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))

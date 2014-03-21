@@ -28,19 +28,21 @@ namespace OpenLawOffice.Data.DBOs.Tasks
     /// <summary>
     /// Relates a time entry to a task
     /// </summary>
+    [Common.Models.MapMe]
     public class TaskTime : Core
     {
-        [Required]
+        [ColumnMapping(Name = "id")]
         public Guid Id { get; set; }
 
-        [Required]
+        [ColumnMapping(Name = "task_id")]
         public long TaskId { get; set; }
 
-        [Required]
+        [ColumnMapping(Name = "time_id")]
         public Guid TimeId { get; set; }
 
         public void BuildMappings()
         {
+            Dapper.SqlMapper.SetTypeMap(typeof(TaskTime), new ColumnAttributeTypeMapper<TaskTime>());
             Mapper.CreateMap<DBOs.Tasks.TaskTime, Common.Models.Tasks.TaskTime>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))

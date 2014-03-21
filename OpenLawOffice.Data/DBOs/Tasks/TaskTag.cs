@@ -31,14 +31,15 @@ namespace OpenLawOffice.Data.DBOs.Tasks
     [Common.Models.MapMe]
     public class TaskTag : Tagging.TagBase
     {
-        [Required]
+        [ColumnMapping(Name = "id")]
         public Guid Id { get; set; }
 
-        [Required]
+        [ColumnMapping(Name = "task_id")]
         public long TaskId { get; set; }
 
         public void BuildMappings()
         {
+            Dapper.SqlMapper.SetTypeMap(typeof(TaskTag), new ColumnAttributeTypeMapper<TaskTag>());
             Mapper.CreateMap<DBOs.Tasks.TaskTag, Common.Models.Tasks.TaskTag>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))

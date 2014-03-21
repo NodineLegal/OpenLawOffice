@@ -31,11 +31,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoMapper">
-      <HintPath>..\OpenLawOffice.WebClient\packages\AutoMapper.3.1.1\lib\net40\AutoMapper.dll</HintPath>
+    <Reference Include="AutoMapper, Version=3.2.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\OpenLawOffice.WebClient\packages\AutoMapper.3.2.0-ci1011\lib\net40\AutoMapper.dll</HintPath>
     </Reference>
-    <Reference Include="AutoMapper.Net4">
-      <HintPath>..\OpenLawOffice.WebClient\packages\AutoMapper.3.1.1\lib\net40\AutoMapper.Net4.dll</HintPath>
+    <Reference Include="AutoMapper.Net4, Version=3.2.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\OpenLawOffice.WebClient\packages\AutoMapper.3.2.0-ci1011\lib\net40\AutoMapper.Net4.dll</HintPath>
     </Reference>
     <Reference Include="Dapper">
       <HintPath>..\OpenLawOffice.WebClient\packages\Dapper.1.13\lib\net40\Dapper.dll</HintPath>
@@ -61,6 +63,7 @@
     <Compile Include="DataHelper.cs" />
     <Compile Include="Contacts\Contact.cs" />
     <Compile Include="Database.cs" />
+    <Compile Include="DBOs\ColumnAttributeTypeMapper.cs" />
     <Compile Include="DBOs\Contacts\Contact.cs" />
     <Compile Include="DBOs\Core.cs" />
     <Compile Include="DBOs\DboBase.cs" />
@@ -125,6 +128,7 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\OpenLawOffice.WebClient\packages\AutoMapper.3.2.0-ci1011\tools\AutoMapper.targets" Condition="Exists('..\OpenLawOffice.WebClient\packages\AutoMapper.3.2.0-ci1011\tools\AutoMapper.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

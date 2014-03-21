@@ -31,21 +31,21 @@ namespace OpenLawOffice.Data.DBOs.Tasks
     [Common.Models.MapMe]
     public class TaskResponsibleUser : Core
     {
-        [Required]
+        [ColumnMapping(Name = "id")]
         public Guid Id { get; set; }
 
-        [Required]
+        [ColumnMapping(Name = "task_id")]
         public long TaskId { get; set; }
 
-        [Required]
+        [ColumnMapping(Name = "user_id")]
         public int UserId { get; set; }
 
-        [Required]
-        [StringLength(500)]
+        [ColumnMapping(Name = "responsibility")]
         public string Responsibility { get; set; }
 
         public void BuildMappings()
         {
+            Dapper.SqlMapper.SetTypeMap(typeof(TaskResponsibleUser), new ColumnAttributeTypeMapper<TaskResponsibleUser>());
             Mapper.CreateMap<DBOs.Tasks.TaskResponsibleUser, Common.Models.Tasks.TaskResponsibleUser>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))

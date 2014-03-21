@@ -32,6 +32,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
     [Common.Models.MapMe]
     public class Contact : Core
     {
+        [ColumnMapping(Name = "id")]
         public int Id { get; set; }
 
         /// <summary>
@@ -41,6 +42,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         ///   <c>true</c> if the contact is an organization; otherwise, <c>false</c>.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "is_organization")]
         public bool IsOrganization { get; set; }
 
         #region Contact Name
@@ -52,6 +54,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The nickname.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "nickname")]
         public string Nickname { get; set; }
 
         /// <summary>
@@ -61,6 +64,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The generation.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "generation")]
         public string Generation { get; set; }
 
         /// <summary>
@@ -70,6 +74,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The display name prefix.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "display_name_prefix")]
         public string DisplayNamePrefix { get; set; }
 
         /// <summary>
@@ -79,6 +84,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The surname.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "surname")]
         public string Surname { get; set; }
 
         /// <summary>
@@ -88,6 +94,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The middle name.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "middle_name")]
         public string MiddleName { get; set; }
 
         /// <summary>
@@ -97,6 +104,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The given name.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "given_name")]
         public string GivenName { get; set; }
 
         /// <summary>
@@ -106,6 +114,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The initials.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "initials")]
         public string Initials { get; set; }
 
         /// <summary>
@@ -115,7 +124,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The display name.
         /// </value>
         /// <author>Lucas Nodine</author>
-        [Required]
+        [ColumnMapping(Name = "display_name")]
         public string DisplayName { get; set; }
 
         #endregion Contact Name
@@ -129,6 +138,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The display name.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "email1_display_name")]
         public string Email1DisplayName { get; set; }
 
         /// <summary>
@@ -138,6 +148,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The email address.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "email1_email_address")]
         public string Email1EmailAddress { get; set; }
 
         /// <summary>
@@ -147,6 +158,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The display name.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "email2_display_name")]
         public string Email2DisplayName { get; set; }
 
         /// <summary>
@@ -156,6 +168,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The email address.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "email2_email_address")]
         public string Email2EmailAddress { get; set; }
 
         /// <summary>
@@ -165,6 +178,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The display name.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "email3_display_name")]
         public string Email3DisplayName { get; set; }
 
         /// <summary>
@@ -174,6 +188,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The email address.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "email3_email_address")]
         public string Email3EmailAddress { get; set; }
 
         /// <summary>
@@ -183,6 +198,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The display name.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "fax1_display_name")]
         public string Fax1DisplayName { get; set; }
 
         /// <summary>
@@ -192,6 +208,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The fax number.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "fax1_fax_number")]
         public string Fax1FaxNumber { get; set; }
 
         /// <summary>
@@ -201,6 +218,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The display name.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "fax2_display_name")]
         public string Fax2DisplayName { get; set; }
 
         /// <summary>
@@ -210,6 +228,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The fax number.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "fax2_fax_number")]
         public string Fax2FaxNumber { get; set; }
 
         /// <summary>
@@ -219,6 +238,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The display name.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "fax3_display_name")]
         public string Fax3DisplayName { get; set; }
 
         /// <summary>
@@ -228,6 +248,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The fax number.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "fax3_fax_number")]
         public string Fax3FaxNumber { get; set; }
 
         #endregion Electronic Address Properties
@@ -241,6 +262,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The display name.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "address1_display_name")]
         public string Address1DisplayName { get; set; }
 
         /// <summary>
@@ -250,6 +272,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The street.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "address1_address_street")]
         public string Address1AddressStreet { get; set; }
 
         /// <summary>
@@ -259,6 +282,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The city.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "address1_address_city")]
         public string Address1AddressCity { get; set; }
 
         /// <summary>
@@ -268,6 +292,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The state or province.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "address1_address_state_or_province")]
         public string Address1AddressStateOrProvince { get; set; }
 
         /// <summary>
@@ -277,6 +302,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The postal code.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "address1_address_postal_code")]
         public string Address1AddressPostalCode { get; set; }
 
         /// <summary>
@@ -286,6 +312,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The country.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "address1_address_country")]
         public string Address1AddressCountry { get; set; }
 
         /// <summary>
@@ -295,6 +322,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The country/region code.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "address1_address_country_code")]
         public string Address1AddressCountryCode { get; set; }
 
         /// <summary>
@@ -304,6 +332,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The post office box.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "address1_address_post_office_box")]
         public string Address1AddressPostOfficeBox { get; set; }
 
         /// <summary>
@@ -313,6 +342,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The display name.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "address2_display_name")]
         public string Address2DisplayName { get; set; }
 
         /// <summary>
@@ -322,6 +352,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The street.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "address2_address_street")]
         public string Address2AddressStreet { get; set; }
 
         /// <summary>
@@ -331,6 +362,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The city.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "address2_address_city")]
         public string Address2AddressCity { get; set; }
 
         /// <summary>
@@ -340,6 +372,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The state or province.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "address2_address_state_or_province")]
         public string Address2AddressStateOrProvince { get; set; }
 
         /// <summary>
@@ -349,6 +382,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The postal code.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "address2_address_postal_code")]
         public string Address2AddressPostalCode { get; set; }
 
         /// <summary>
@@ -358,6 +392,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The country.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "address2_address_country")]
         public string Address2AddressCountry { get; set; }
 
         /// <summary>
@@ -367,6 +402,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The country/region code.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "address2_address_country_code")]
         public string Address2AddressCountryCode { get; set; }
 
         /// <summary>
@@ -376,6 +412,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The post office box.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "address2_address_post_office_box")]
         public string Address2AddressPostOfficeBox { get; set; }
 
         /// <summary>
@@ -385,6 +422,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The display name.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "address3_display_name")]
         public string Address3DisplayName { get; set; }
 
         /// <summary>
@@ -394,6 +432,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The street.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "address3_address_street")]
         public string Address3AddressStreet { get; set; }
 
         /// <summary>
@@ -403,6 +442,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The city.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "address3_address_city")]
         public string Address3AddressCity { get; set; }
 
         /// <summary>
@@ -412,6 +452,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The state or province.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "address3_address_state_or_province")]
         public string Address3AddressStateOrProvince { get; set; }
 
         /// <summary>
@@ -421,6 +462,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The postal code.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "address3_address_postal_code")]
         public string Address3AddressPostalCode { get; set; }
 
         /// <summary>
@@ -430,6 +472,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The country.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "address3_address_country")]
         public string Address3AddressCountry { get; set; }
 
         /// <summary>
@@ -439,6 +482,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The country/region code.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "address3_address_country_code")]
         public string Address3AddressCountryCode { get; set; }
 
         /// <summary>
@@ -448,6 +492,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The post office box.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "address3_address_post_office_box")]
         public string Address3AddressPostOfficeBox { get; set; }
 
         #endregion Physical Address Properties
@@ -461,6 +506,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The display name.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "telephone1_display_name")]
         public string Telephone1DisplayName { get; set; }
 
         /// <summary>
@@ -470,6 +516,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The telephone number.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "telephone1_telephone_number")]
         public string Telephone1TelephoneNumber { get; set; }
 
         /// <summary>
@@ -479,6 +526,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The display name.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "telephone2_display_name")]
         public string Telephone2DisplayName { get; set; }
 
         /// <summary>
@@ -488,6 +536,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The telephone number.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "telephone2_telephone_number")]
         public string Telephone2TelephoneNumber { get; set; }
 
         /// <summary>
@@ -497,6 +546,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The display name.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "telephone3_display_name")]
         public string Telephone3DisplayName { get; set; }
 
         /// <summary>
@@ -506,6 +556,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The telephone number.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "telephone3_telephone_number")]
         public string Telephone3TelephoneNumber { get; set; }
 
         /// <summary>
@@ -515,6 +566,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The display name.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "telephone4_display_name")]
         public string Telephone4DisplayName { get; set; }
 
         /// <summary>
@@ -524,6 +576,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The telephone number.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "telephone4_telephone_number")]
         public string Telephone4TelephoneNumber { get; set; }
 
         /// <summary>
@@ -533,6 +586,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The display name.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "telephone5_display_name")]
         public string Telephone5DisplayName { get; set; }
 
         /// <summary>
@@ -542,6 +596,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The telephone number.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "telephone5_telephone_number")]
         public string Telephone5TelephoneNumber { get; set; }
 
         /// <summary>
@@ -551,6 +606,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The display name.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "telephone6_display_name")]
         public string Telephone6DisplayName { get; set; }
 
         /// <summary>
@@ -560,6 +616,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The telephone number.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "telephone6_telephone_number")]
         public string Telephone6TelephoneNumber { get; set; }
 
         /// <summary>
@@ -569,6 +626,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The display name.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "telephone7_display_name")]
         public string Telephone7DisplayName { get; set; }
 
         /// <summary>
@@ -578,6 +636,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The telephone number.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "telephone7_telephone_number")]
         public string Telephone7TelephoneNumber { get; set; }
 
         /// <summary>
@@ -587,6 +646,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The display name.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "telephone8_display_name")]
         public string Telephone8DisplayName { get; set; }
 
         /// <summary>
@@ -596,6 +656,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The telephone number.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "telephone_8_telephone_number")]
         public string Telephone8TelephoneNumber { get; set; }
 
         /// <summary>
@@ -605,6 +666,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The display name.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "telephone9_display_name")]
         public string Telephone9DisplayName { get; set; }
 
         /// <summary>
@@ -614,6 +676,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The telephone number.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "telephone9_telephone_number")]
         public string Telephone9TelephoneNumber { get; set; }
 
         /// <summary>
@@ -623,6 +686,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The display name.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "telephone10_display_name")]
         public string Telephone10DisplayName { get; set; }
 
         /// <summary>
@@ -632,6 +696,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The telephone number.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "telephone10_telephone_number")]
         public string Telephone10TelephoneNumber { get; set; }
 
         #endregion Telephone Properties
@@ -645,6 +710,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The birthday.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "birthday")]
         public DateTime? Birthday { get; set; }
 
         /// <summary>
@@ -654,6 +720,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The wedding anniversary.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "wedding")]
         public DateTime? Wedding { get; set; }
 
         #endregion Event Properties
@@ -667,6 +734,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The title.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "title")]
         public string Title { get; set; }
 
         /// <summary>
@@ -676,6 +744,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The name of the company.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "company_name")]
         public string CompanyName { get; set; }
 
         /// <summary>
@@ -685,6 +754,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The name of the department.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "department_name")]
         public string DepartmentName { get; set; }
 
         /// <summary>
@@ -694,6 +764,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The office location.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "office_location")]
         public string OfficeLocation { get; set; }
 
         /// <summary>
@@ -703,6 +774,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The name of the manager.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "manager_name")]
         public string ManagerName { get; set; }
 
         /// <summary>
@@ -712,6 +784,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The name of the assistant.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "assistant_name")]
         public string AssistantName { get; set; }
 
         /// <summary>
@@ -721,6 +794,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The profession.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "profession")]
         public string Profession { get; set; }
 
         #endregion Professional Properties
@@ -734,6 +808,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The name of the spouse/partner.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "spouse_name")]
         public string SpouseName { get; set; }
 
         /// <summary>
@@ -743,6 +818,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The language.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "language")]
         public string Language { get; set; }
 
         /// <summary>
@@ -752,6 +828,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The instant messaging address.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "instant_messaging_address")]
         public string InstantMessagingAddress { get; set; }
 
         /// <summary>
@@ -761,6 +838,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The personal home page.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "personal_home_page")]
         public string PersonalHomePage { get; set; }
 
         /// <summary>
@@ -770,6 +848,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The business home page.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "business_home_page")]
         public string BusinessHomePage { get; set; }
 
         /// <summary>
@@ -779,6 +858,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The gender.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "gender")]
         public string Gender { get; set; }
 
         /// <summary>
@@ -788,12 +868,14 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         /// The referrer.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "referred_by_name")]
         public string ReferredByName { get; set; }
 
         #endregion Other Contact Properties
 
         public void BuildMappings()
         {
+            Dapper.SqlMapper.SetTypeMap(typeof(Contact), new ColumnAttributeTypeMapper<Contact>());
             Mapper.CreateMap<DBOs.Contacts.Contact, Common.Models.Contacts.Contact>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))

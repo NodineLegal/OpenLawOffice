@@ -6,22 +6,24 @@ namespace OpenLawOffice.Data.DBOs.Security
     [Common.Models.MapMe]
     public class AreaAcl : Core
     {
+        [ColumnMapping(Name = "id")]
         public int Id { get; set; }
 
-        [Required]
+        [ColumnMapping(Name = "security_area_id")]
         public int SecurityAreaId { get; set; }
 
-        [Required]
+        [ColumnMapping(Name = "user_id")]
         public int UserId { get; set; }
 
-        [Required]
+        [ColumnMapping(Name = "allow_flags")]
         public int AllowFlags { get; set; }
 
-        [Required]
+        [ColumnMapping(Name = "deny_flags")]
         public int DenyFlags { get; set; }
 
         public void BuildMappings()
         {
+            Dapper.SqlMapper.SetTypeMap(typeof(AreaAcl), new ColumnAttributeTypeMapper<AreaAcl>());
             Mapper.CreateMap<DBOs.Security.AreaAcl, Common.Models.Security.AreaAcl>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))

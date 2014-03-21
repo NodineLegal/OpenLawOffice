@@ -33,7 +33,7 @@ namespace OpenLawOffice.Data.Installation
     {
         public static void CreateDb(string filepath, bool setupData = false)
         {
-            //ExecuteScript(filepath);
+            ExecuteScript(filepath);
             RequiredData(setupData);
         }
 

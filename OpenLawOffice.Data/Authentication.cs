@@ -41,48 +41,42 @@ namespace OpenLawOffice.Data
 
         public static LoginResult Login(string username, string clientHashedPassword)
         {
-            return null;
-            //DbModels.User dbo;
-            //string hashedPassword;
+            Common.Models.Security.User user;
+            string hashedPassword;
 
-            //dbo = DbModels.User.FirstOrDefault("SELECT * FROM \"user\" WHERE \"username\"=@0 AND \"utc_disabled\" is null",
-            //    username);
+            user = Security.User.Get(username);
 
-            //if (dbo == null)
-            //    return new LoginResult() 
-            //    { 
-            //        Success = false,
-            //        FailReason = "Invalid username and/or password."
-            //    };
+            if (user == null)
+            {
+                return new LoginResult()
+                {
+                    Success = false,
+                    FailReason = "Invalid username and/or password."
+                };
+            }
 
-            //// Apply server hash
-            //hashedPassword = ServerHashPassword(clientHashedPassword, dbo.PasswordSalt);
+            // Apply server hash
+            hashedPassword = ServerHashPassword(clientHashedPassword, user.PasswordSalt);
 
-            //if (hashedPassword != dbo.Password)
-            //    return new LoginResult()
-            //    {
-            //        Success = false,
-            //        FailReason = "Invalid username and/or password."
-            //    };
+            if (hashedPassword != user.Password)
+                return new LoginResult()
+                {
+                    Success = false,
+                    FailReason = "Invalid username and/or password."
+                };
 
-            //dbo.UserAuthToken = Guid.NewGuid().ToString();
-            //dbo.UserAuthTokenExpiry = DateTime.UtcNow.AddMinutes(15);
+            user.UserAuthToken = Guid.NewGuid();
+            user.UserAuthTokenExpiry = DateTime.UtcNow.AddMinutes(15);
 
-            //if (DbModels.User.Update("UPDATE \"user\" SET (\"user_auth_token\"=@0, \"user_auth_token_expiry\"=@1) WHERE \"id\"=@2",
-            //    dbo.UserAuthToken, dbo.UserAuthTokenExpiry.Value, dbo.Id) < 1)
-            //    return new LoginResult()
-            //    {
-            //        Success = false,
-            //        FailReason = "Failed to update the user within the database."
-            //    };
+            user = Security.User.SetAuthTokenAndExpiry(user);
 
-            //return new LoginResult()
-            //{
-            //    Success = true,
-            //    UserAuthToken = dbo.UserAuthToken,
-            //    Expiry = dbo.UserAuthTokenExpiry.Value,
-            //    User = Mapper.Map<Common.Models.Security.User>(dbo)
-            //};
+            return new LoginResult()
+            {
+                Success = true,
+                UserAuthToken = user.UserAuthToken.Value.ToString(),
+                Expiry = user.UserAuthTokenExpiry.Value,
+                User = Mapper.Map<Common.Models.Security.User>(user)
+            };
         }
 
         private static string ServerHashPassword(string plainTextPassword, string salt)

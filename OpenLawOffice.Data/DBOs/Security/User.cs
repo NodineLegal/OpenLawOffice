@@ -7,26 +7,27 @@ namespace OpenLawOffice.Data.DBOs.Security
     [Common.Models.MapMe]
     public class User : DboWithDatesOnly
     {
+        [ColumnMapping(Name = "id")]
         public int Id { get; set; }
 
-        [Required]
-        [StringLength(25)]
+        [ColumnMapping(Name = "username")]
         public string Username { get; set; }
 
-        [Required]
-        [StringLength(200)]
+        [ColumnMapping(Name = "password")]
         public string Password { get; set; }
 
-        [Required]
-        [StringLength(10)]
+        [ColumnMapping(Name = "password_salt")]
         public string PasswordSalt { get; set; }
 
+        [ColumnMapping(Name = "user_auth_token")]
         public Guid? UserAuthToken { get; set; }
 
+        [ColumnMapping(Name = "user_auth_token_expiry")]
         public DateTime? UserAuthTokenExpiry { get; set; }
 
         public void BuildMappings()
         {
+            Dapper.SqlMapper.SetTypeMap(typeof(User), new ColumnAttributeTypeMapper<User>());
             Mapper.CreateMap<DBOs.Security.User, Common.Models.Security.User>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))

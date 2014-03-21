@@ -7,20 +7,21 @@ namespace OpenLawOffice.Data.DBOs.Matters
     [Common.Models.MapMe]
     public class ResponsibleUser : Core
     {
+        [ColumnMapping(Name = "id")]
         public int Id { get; set; }
 
-        [Required]
+        [ColumnMapping(Name = "matter_id")]
         public Guid MatterId { get; set; }
 
-        [Required]
+        [ColumnMapping(Name = "user_id")]
         public int UserId { get; set; }
 
-        [Required]
-        [StringLength(500)]
+        [ColumnMapping(Name = "responsibility")]
         public string Responsibility { get; set; }
 
         public void BuildMappings()
         {
+            Dapper.SqlMapper.SetTypeMap(typeof(ResponsibleUser), new ColumnAttributeTypeMapper<ResponsibleUser>());
             Mapper.CreateMap<DBOs.Matters.ResponsibleUser, Common.Models.Matters.ResponsibleUser>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))

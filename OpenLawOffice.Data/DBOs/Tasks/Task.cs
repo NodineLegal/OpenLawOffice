@@ -30,28 +30,39 @@ namespace OpenLawOffice.Data.DBOs.Tasks
     [Common.Models.MapMe]
     public class Task : Core
     {
+        [ColumnMapping(Name = "id")]
         public long Id { get; set; }
 
+        [ColumnMapping(Name = "title")]
         public string Title { get; set; }
 
+        [ColumnMapping(Name = "description")]
         public string Description { get; set; }
 
+        [ColumnMapping(Name = "projected_start")]
         public DateTime? ProjectedStart { get; set; }
 
+        [ColumnMapping(Name = "due_date")]
         public DateTime? DueDate { get; set; }
 
+        [ColumnMapping(Name = "projected_end")]
         public DateTime? ProjectedEnd { get; set; }
 
+        [ColumnMapping(Name = "actual_end")]
         public DateTime? ActualEnd { get; set; }
 
+        [ColumnMapping(Name = "parent_id")]
         public long? ParentId { get; set; }
 
+        [ColumnMapping(Name = "is_grouping_task")]
         public bool IsGroupingTask { get; set; }
 
+        [ColumnMapping(Name = "sequential_predecessor_id")]
         public long? SequentialPredecessorId { get; set; }
 
         public void BuildMappings()
         {
+            Dapper.SqlMapper.SetTypeMap(typeof(Task), new ColumnAttributeTypeMapper<Task>());
             Mapper.CreateMap<DBOs.Tasks.Task, Common.Models.Tasks.Task>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))

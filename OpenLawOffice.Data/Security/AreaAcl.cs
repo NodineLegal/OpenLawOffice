@@ -44,7 +44,7 @@ namespace OpenLawOffice.Data.Security
         public static Common.Models.Security.AreaAcl Get(int userId, int areaId)
         {
             return DataHelper.Get<Common.Models.Security.AreaAcl, DBOs.Security.AreaAcl>(
-                "SELECT * FROM \"area_acl\" WHERE \"user_id\"=@UserId AND \"area_id\"=@AreaId AND \"utc_disabled\" is null",
+                "SELECT * FROM \"area_acl\" WHERE \"user_id\"=@UserId AND \"security_area_id\"=@AreaId AND \"utc_disabled\" is null",
                 new { UserId = userId, AreaId = areaId });
         }
 
@@ -57,7 +57,7 @@ namespace OpenLawOffice.Data.Security
         public static List<Common.Models.Security.AreaAcl> ListForArea(int areaId)
         {
             return DataHelper.List<Common.Models.Security.AreaAcl, DBOs.Security.AreaAcl>(
-                "SELECT * FROM \"area_acl\" WHERE \"area_id\"=@AreaId AND \"utc_disabled\" is null",
+                "SELECT * FROM \"area_acl\" WHERE \"security_area_id\"=@AreaId AND \"utc_disabled\" is null",
                 new { AreaId = areaId });
         }
 

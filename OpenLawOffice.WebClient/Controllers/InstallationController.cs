@@ -45,7 +45,7 @@ namespace OpenLawOffice.WebClient.Controllers
 
             OpenLawOffice.Data.Installation.Setup.CreateDb(fi.FullName);
 
-            return View();
+            return View("Complete");
         }
 
         public ActionResult InstallWithData()
@@ -57,7 +57,7 @@ namespace OpenLawOffice.WebClient.Controllers
 
             OpenLawOffice.Data.Installation.Setup.CreateDb(fi.FullName, true);
 
-            return View();
+            return View("Complete");
         }
 
         public ActionResult MissingDbInstallScript()

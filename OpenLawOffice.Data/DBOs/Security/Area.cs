@@ -6,20 +6,21 @@ namespace OpenLawOffice.Data.DBOs.Security
     [Common.Models.MapMe]
     public class Area : Core
     {
+        [ColumnMapping(Name = "id")]
         public int Id { get; set; }
 
+        [ColumnMapping(Name = "parent_id")]
         public int? ParentId { get; set; }
 
-        [Required]
-        [StringLength(150)]
+        [ColumnMapping(Name = "name")]
         public string Name { get; set; }
 
-        [Required]
-        [StringLength(500)]
+        [ColumnMapping(Name = "description")]
         public string Description { get; set; }
 
         public void BuildMappings()
         {
+            Dapper.SqlMapper.SetTypeMap(typeof(Area), new ColumnAttributeTypeMapper<Area>());
             Mapper.CreateMap<DBOs.Security.Area, Common.Models.Security.Area>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))

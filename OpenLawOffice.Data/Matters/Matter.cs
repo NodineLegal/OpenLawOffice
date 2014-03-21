@@ -55,7 +55,7 @@ namespace OpenLawOffice.Data.Matters
             {
                 if (parentId.HasValue)
                     ie = conn.Query<DBOs.Matters.Matter>(
-                        "SELECT * FROM \"matter\" JOIN \"secured_resource_acl\" ON " +
+                        "SELECT \"matter\".* FROM \"matter\" JOIN \"secured_resource_acl\" ON " +
                         "\"matter\".\"id\"=\"secured_resource_acl\".\"secured_resource_id\" " +
                         "WHERE \"secured_resource_acl\".\"allow_flags\" & 2 > 0 " +
                         "AND NOT \"secured_resource_acl\".\"deny_flags\" & 2 > 0 " +
@@ -64,7 +64,7 @@ namespace OpenLawOffice.Data.Matters
                         "AND \"matter\".\"parent_id\"=@ParentId", new { ParentId = parentId.Value });
                 else
                     ie = conn.Query<DBOs.Matters.Matter>(
-                        "SELECT * FROM \"matter\" JOIN \"secured_resource_acl\" ON " +
+                        "SELECT \"matter\".* FROM \"matter\" JOIN \"secured_resource_acl\" ON " +
                         "\"matter\".\"id\"=\"secured_resource_acl\".\"secured_resource_id\" " +
                         "WHERE \"secured_resource_acl\".\"allow_flags\" & 2 > 0 " +
                         "AND NOT \"secured_resource_acl\".\"deny_flags\" & 2 > 0 " +

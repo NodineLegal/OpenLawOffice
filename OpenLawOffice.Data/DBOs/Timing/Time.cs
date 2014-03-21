@@ -28,21 +28,24 @@ namespace OpenLawOffice.Data.DBOs.Timing
     /// <summary>
     /// Represents a quantity of time consumed by a specific contact
     /// </summary>
+    [Common.Models.MapMe]
     public class Time : Core
     {
-        [Required]
+        [ColumnMapping(Name = "id")]
         public Guid Id { get; set; }
 
-        [Required]
+        [ColumnMapping(Name = "start")]
         public DateTime Start { get; set; }
 
+        [ColumnMapping(Name = "stop")]
         public DateTime? Stop { get; set; }
 
-        [Required]
+        [ColumnMapping(Name = "worker_contact_id")]
         public int WorkerContactId { get; set; }
 
         public void BuildMappings()
         {
+            Dapper.SqlMapper.SetTypeMap(typeof(Time), new ColumnAttributeTypeMapper<Time>());
             Mapper.CreateMap<DBOs.Timing.Time, Common.Models.Timing.Time>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))

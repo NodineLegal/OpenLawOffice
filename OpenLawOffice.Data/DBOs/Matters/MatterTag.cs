@@ -7,14 +7,15 @@ namespace OpenLawOffice.Data.DBOs.Matters
     [Common.Models.MapMe]
     public class MatterTag : Tagging.TagBase
     {
-        [Required]
+        [ColumnMapping(Name = "id")]
         public Guid Id { get; set; }
 
-        [Required]
+        [ColumnMapping(Name = "matter_id")]
         public Guid MatterId { get; set; }
 
         public void BuildMappings()
         {
+            Dapper.SqlMapper.SetTypeMap(typeof(MatterTag), new ColumnAttributeTypeMapper<MatterTag>());
             Mapper.CreateMap<DBOs.Matters.MatterTag, Common.Models.Matters.MatterTag>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))

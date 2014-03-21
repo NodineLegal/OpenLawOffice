@@ -7,18 +7,18 @@ namespace OpenLawOffice.Data.DBOs.Matters
     [Common.Models.MapMe]
     public class Matter : Security.SecuredResource
     {
-        [Required]
-        [StringLength(250)]
+        [ColumnMapping(Name = "title")]
         public string Title { get; set; }
 
+        [ColumnMapping(Name = "parent_id")]
         public Guid? ParentId { get; set; }
 
-        [Required]
-        [StringLength(5000)]
+        [ColumnMapping(Name = "synopsis")]
         public string Synopsis { get; set; }
 
         public new void BuildMappings()
         {
+            Dapper.SqlMapper.SetTypeMap(typeof(Matter), new ColumnAttributeTypeMapper<Matter>());
             Mapper.CreateMap<DBOs.Matters.Matter, Common.Models.Matters.Matter>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))

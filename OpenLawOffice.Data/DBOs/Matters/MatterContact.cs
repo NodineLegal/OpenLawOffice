@@ -31,19 +31,21 @@ namespace OpenLawOffice.Data.DBOs.Matters
     [Common.Models.MapMe]
     public class MatterContact : Core
     {
+        [ColumnMapping(Name = "id")]
         public int Id { get; set; }
 
-        [Required]
+        [ColumnMapping(Name = "matter_id")]
         public Guid MatterId { get; set; }
 
-        [Required]
+        [ColumnMapping(Name = "contact_id")]
         public int ContactId { get; set; }
 
-        [Required]
+        [ColumnMapping(Name = "role")]
         public string Role { get; set; }
 
         public void BuildMappings()
         {
+            Dapper.SqlMapper.SetTypeMap(typeof(MatterContact), new ColumnAttributeTypeMapper<MatterContact>());
             Mapper.CreateMap<DBOs.Matters.MatterContact, Common.Models.Matters.MatterContact>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))

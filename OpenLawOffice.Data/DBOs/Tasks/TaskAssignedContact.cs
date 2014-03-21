@@ -31,20 +31,21 @@ namespace OpenLawOffice.Data.DBOs.Tasks
     [Common.Models.MapMe]
     public class TaskAssignedContact : Core
     {
-        [Required]
+        [ColumnMapping(Name = "id")]
         public Guid Id { get; set; }
 
-        [Required]
+        [ColumnMapping(Name = "task_id")]
         public long TaskId { get; set; }
 
-        [Required]
+        [ColumnMapping(Name = "contact_id")]
         public int ContactId { get; set; }
 
-        [Required]
+        [ColumnMapping(Name = "assignment_type")]
         public int AssignmentType { get; set; }
 
         public void BuildMappings()
         {
+            Dapper.SqlMapper.SetTypeMap(typeof(TaskAssignedContact), new ColumnAttributeTypeMapper<TaskAssignedContact>());
             Mapper.CreateMap<DBOs.Tasks.TaskAssignedContact, Common.Models.Tasks.TaskAssignedContact>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))

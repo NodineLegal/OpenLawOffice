@@ -3,12 +3,24 @@
     using System.Web;
     using System.Web.Mvc;
     using OpenLawOffice.WebClient.ViewModels.Account;
+    using System.Collections.Generic;
 
     [HandleError]
     public class AccountController : BaseController
     {
         public ActionResult Login()
         {
+            try
+            {
+                List<Common.Models.Security.User> users = Data.Security.User.List();
+                if (users == null || users.Count < 1)
+                    return RedirectToAction("Index", "Installation");
+            }
+            catch
+            {
+                return RedirectToAction("Index", "Installation");
+            }
+
             return View();
         }
 

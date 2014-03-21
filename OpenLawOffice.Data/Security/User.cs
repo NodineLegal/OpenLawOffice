@@ -92,6 +92,37 @@ namespace OpenLawOffice.Data.Security
             return model;
         }
 
+        public static Common.Models.Security.User SetAuthTokenAndExpiry(Common.Models.Security.User model)
+        {
+            model.UtcModified = DateTime.UtcNow;
+            DBOs.Security.User dbo = Mapper.Map<DBOs.Security.User>(model);
+
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                conn.Execute("UPDATE \"user\" SET " +
+                    "\"user_auth_token\"=@UserAuthToken, \"user_auth_token_expiry\"=@UserAuthTokenExpiry, \"utc_modified\"=@UtcModified " +
+                    "WHERE \"id\"=@Id", dbo);
+            }
+
+            return model;
+        }
+
+        public static Common.Models.Security.User RenewExpiry(Common.Models.Security.User model)
+        {
+            model.UserAuthTokenExpiry = DateTime.UtcNow.AddMinutes(15);
+            model.UtcModified = DateTime.UtcNow;
+            DBOs.Security.User dbo = Mapper.Map<DBOs.Security.User>(model);
+
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                conn.Execute("UPDATE \"user\" SET " +
+                    "\"user_auth_token_expiry\"=@UserAuthTokenExpiry, \"utc_modified\"=@UtcModified " +
+                    "WHERE \"id\"=@Id", dbo);
+            }
+
+            return model;
+        }
+
         public static Common.Models.Security.User SetPassword(Common.Models.Security.User model)
         {
             model.UtcModified = DateTime.UtcNow;

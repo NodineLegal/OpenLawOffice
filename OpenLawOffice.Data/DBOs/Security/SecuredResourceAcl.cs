@@ -7,22 +7,24 @@ namespace OpenLawOffice.Data.DBOs.Security
     [Common.Models.MapMe]
     public class SecuredResourceAcl : Core
     {
+        [ColumnMapping(Name = "id")]
         public Guid Id { get; set; }
 
-        [Required]
+        [ColumnMapping(Name = "secured_resource_id")]
         public Guid SecuredResourceId { get; set; }
 
-        [Required]
+        [ColumnMapping(Name = "user_id")]
         public int UserId { get; set; }
 
-        [Required]
+        [ColumnMapping(Name = "allow_flags")]
         public int AllowFlags { get; set; }
 
-        [Required]
+        [ColumnMapping(Name = "deny_flags")]
         public int DenyFlags { get; set; }
 
         public void BuildMappings()
         {
+            Dapper.SqlMapper.SetTypeMap(typeof(SecuredResourceAcl), new ColumnAttributeTypeMapper<SecuredResourceAcl>());
             Mapper.CreateMap<DBOs.Security.SecuredResourceAcl, Common.Models.Security.SecuredResourceAcl>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
