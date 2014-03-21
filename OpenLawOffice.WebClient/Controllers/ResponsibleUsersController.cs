@@ -27,7 +27,7 @@
             viewModel.User = Mapper.Map<ViewModels.Security.UserViewModel>(model.User);
             PopulateCoreDetails(viewModel);
 
-            return View(model);
+            return View(viewModel);
         }
 
         //
@@ -125,7 +125,7 @@
             });
 
             ViewData["UserList"] = userViewModelList;
-            return View(model);
+            return View(viewModel);
         }
         
         //

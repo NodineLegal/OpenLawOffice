@@ -128,8 +128,8 @@ namespace OpenLawOffice.Data.Tasks
         public static Common.Models.Matters.Matter GetRelatedMatter(long taskId)
         {
             return DataHelper.Get<Common.Models.Matters.Matter, DBOs.Matters.Matter>(
-                "SELECT * FROM \"matter\" JOIN \"task_matter\" ON \"matter\".\"id\"=\"task_matter\".\"matter_id\" " +
-                "WHERE \"task_id\"=@TaskId AND \"utc_disabled\" is null",
+                "SELECT \"matter\".* FROM \"matter\" JOIN \"task_matter\" ON \"matter\".\"id\"=\"task_matter\".\"matter_id\" " +
+                "WHERE \"task_id\"=@TaskId AND \"matter\".\"utc_disabled\" is null AND \"task_matter\".\"utc_disabled\" is null",
                 new { TaskId = taskId });
         }
 

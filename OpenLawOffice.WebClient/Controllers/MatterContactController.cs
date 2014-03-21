@@ -91,7 +91,7 @@
             viewModel.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(model.Matter);
             viewModel.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.Contact);
 
-            return View(model);
+            return View(viewModel);
         }
 
         //
@@ -133,7 +133,7 @@
             viewModel.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.Contact);
             PopulateCoreDetails(viewModel);
 
-            return View(model);
+            return View(viewModel);
         }
 
         //

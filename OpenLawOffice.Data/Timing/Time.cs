@@ -44,16 +44,16 @@ namespace OpenLawOffice.Data.Timing
         public static List<Common.Models.Timing.Time> ListForTask(long taskId)
         {
             return DataHelper.List<Common.Models.Timing.Time, DBOs.Timing.Time>(
-                "SELECT * FROM \"time\" JOIN \"task_time\" ON \"time\".\"id\"=\"task_time\".\"time_id\" " +
-                "WHERE \"task_id\"=@TaskId AND \"utc_disabled\" is null",
+                "SELECT \"time\".* FROM \"time\" JOIN \"task_time\" ON \"time\".\"id\"=\"task_time\".\"time_id\" " +
+                "WHERE \"task_id\"=@TaskId AND \"time\".\"utc_disabled\" is null AND \"task_time\".\"utc_disabled\" is null",
                 new { TaskId = taskId });
         }
 
         public static Common.Models.Tasks.Task GetRelatedTask(Guid timeId)
         {
             return DataHelper.Get<Common.Models.Tasks.Task, DBOs.Tasks.Task>(
-                "SELECT* FROM \"task\" JOIN \"task_time\" ON \"task\".\"id\"=\"task_time\".\"task_id\" " +
-                "WHERE \"time_id\"=@TaskId AND \"utc_disabled\" is null",
+                "SELECT \"time\".* FROM \"task\" JOIN \"task_time\" ON \"task\".\"id\"=\"task_time\".\"task_id\" " +
+                "WHERE \"time_id\"=@TaskId AND \"time\".\"utc_disabled\" is null AND \"task_time\".\"utc_disabled\" is null",
                 new { TimeId = timeId });
         }
 

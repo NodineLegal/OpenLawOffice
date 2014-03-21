@@ -61,6 +61,7 @@
                 Common.Models.Contacts.Contact contact = OpenLawOffice.Data.Contacts.Contact.Get(viewModel.Worker.Id.Value);
                 viewModel.Worker = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contact);
                 viewModel.WorkerDisplayName = viewModel.Worker.DisplayName;
+                viewModelList.Add(viewModel);
             });
 
             return viewModelList;

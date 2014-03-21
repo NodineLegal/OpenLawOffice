@@ -176,7 +176,7 @@
 
             ViewData["MatterId"] = matter.Id.Value;
 
-            return View(model);
+            return View(viewModel);
         }
         
         [SecurityFilter(SecurityAreaName = "Tasks.Task", IsSecuredResource = false,
@@ -226,7 +226,7 @@
                         //  Task is trying to set itself as its parent
                         ModelState.AddModelError("Parent.Id", "Parent cannot be the task itself.");
                         ViewData["MatterId"] = matterModel.Id.Value;
-                        return View(model);
+                        return View(viewModel);
                     }
                 }
 
