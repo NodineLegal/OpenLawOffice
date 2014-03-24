@@ -76,11 +76,9 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasks
                     if (db.TagCategory == null || db.TagCategory.Id < 1)
                         return null;
 
-                    return new ViewModels.Tagging.TagCategoryViewModel()
-                    {
-                        Id = db.TagCategory.Id,
-                        IsStub = true
-                    };
+                    Tagging.TagCategoryViewModel model = Mapper.Map<Tagging.TagCategoryViewModel>(db.TagCategory);
+                    model.IsStub = true;
+                    return model;
                 }))
                 .ForMember(dst => dst.Tag, opt => opt.MapFrom(src => src.Tag));
 

@@ -103,7 +103,7 @@ namespace OpenLawOffice.Data.Security
             model.UtcDisabled = DateTime.UtcNow;
 
             DataHelper.Disable<Common.Models.Security.AreaAcl,
-                DBOs.Security.AreaAcl>("area_acl", disabler.Id.Value);
+                DBOs.Security.AreaAcl>("area_acl", disabler.Id.Value, model.Id);
 
             return model;
         }
@@ -117,7 +117,7 @@ namespace OpenLawOffice.Data.Security
             model.UtcDisabled = null;
 
             DataHelper.Enable<Common.Models.Security.AreaAcl,
-                DBOs.Security.AreaAcl>("area_acl", enabler.Id.Value);
+                DBOs.Security.AreaAcl>("area_acl", enabler.Id.Value, model.Id);
 
             return model;
         }

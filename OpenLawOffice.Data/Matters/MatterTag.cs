@@ -199,7 +199,7 @@ namespace OpenLawOffice.Data.Matters
             model.UtcDisabled = DateTime.UtcNow;
 
             DataHelper.Disable<Common.Models.Matters.MatterContact,
-                DBOs.Matters.MatterContact>("matter_tag", disabler.Id.Value);
+                DBOs.Matters.MatterContact>("matter_tag", disabler.Id.Value, model.Id);
 
             return model;
         }
@@ -213,7 +213,7 @@ namespace OpenLawOffice.Data.Matters
             model.UtcDisabled = null;
 
             DataHelper.Enable<Common.Models.Matters.MatterContact,
-                DBOs.Matters.MatterContact>("matter_tag", enabler.Id.Value);
+                DBOs.Matters.MatterContact>("matter_tag", enabler.Id.Value, model.Id);
 
             return model;
         }

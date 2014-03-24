@@ -99,7 +99,7 @@ namespace OpenLawOffice.Data.Tasks
             model.UtcDisabled = DateTime.UtcNow;
 
             DataHelper.Disable<Common.Models.Tasks.TaskAssignedContact,
-                DBOs.Tasks.TaskAssignedContact>("task_assigned_contact", disabler.Id.Value);
+                DBOs.Tasks.TaskAssignedContact>("task_assigned_contact", disabler.Id.Value, model.Id);
 
             return model;
         }
@@ -113,7 +113,7 @@ namespace OpenLawOffice.Data.Tasks
             model.UtcDisabled = null;
 
             DataHelper.Enable<Common.Models.Tasks.TaskAssignedContact,
-                DBOs.Tasks.TaskAssignedContact>("task_assigned_contact", enabler.Id.Value);
+                DBOs.Tasks.TaskAssignedContact>("task_assigned_contact", enabler.Id.Value, model.Id);
 
             return model;
         }

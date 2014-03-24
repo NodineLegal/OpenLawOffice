@@ -72,7 +72,7 @@ namespace OpenLawOffice.Data
             return ret;
         }
 
-        internal static void Disable<TReturn, TDbo>(string tableName, int userId)
+        internal static void Disable<TReturn, TDbo>(string tableName, int userId, object id)
             where TReturn : class
             where TDbo : class
         {
@@ -83,11 +83,11 @@ namespace OpenLawOffice.Data
                 conn.Execute("UPDATE \"" + tableName + "\" SET " +
                     "\"utc_disabled\"=@Now, \"disabled_by_user_id\"=@UserId " +
                     "WHERE \"id\"=@Id",
-                    new { Now = Now, UserId = userId });
+                    new { Now = Now, UserId = userId, Id = id });
             }
         }
 
-        internal static void Enable<TReturn, TDbo>(string tableName, int userId)
+        internal static void Enable<TReturn, TDbo>(string tableName, int userId, object id)
             where TReturn : class
             where TDbo : class
         {
@@ -98,7 +98,7 @@ namespace OpenLawOffice.Data
                 conn.Execute("UPDATE \"" + tableName + "\" SET " +
                     "\"utc_modified\"=@Now, \"modified_by_user_id\"=@UserId, \"utc_disabled\"=@Now, \"disabled_by_user_id\"=@UserId " +
                     "WHERE \"id\"=@Id",
-                    new { Now = Now, UserId = userId });
+                    new { Now = Now, UserId = userId, Id = id });
             }
         }
     }

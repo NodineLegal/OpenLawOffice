@@ -278,7 +278,7 @@
             return View();
         }
 
-        [SecurityFilter(SecurityAreaName = "Contacts.Contact", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tasks.TaskAssignedContact", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Contacts(long id)
         {
@@ -290,6 +290,39 @@
                 ViewModels.Tasks.TaskAssignedContactViewModel viewModel = Mapper.Map<ViewModels.Tasks.TaskAssignedContactViewModel>(x);
                 Common.Models.Contacts.Contact contact = OpenLawOffice.Data.Contacts.Contact.Get(x.Contact.Id.Value);
                 viewModel.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contact);
+                viewModelList.Add(viewModel);
+            });
+
+            return View(viewModelList);
+        }
+
+        [SecurityFilter(SecurityAreaName = "Tasks.TaskTag", IsSecuredResource = false,
+            Permission = Common.Models.PermissionType.List)]
+        public ActionResult Tags(long id)
+        {
+            List<ViewModels.Tasks.TaskTagViewModel> viewModelList = new List<ViewModels.Tasks.TaskTagViewModel>();
+            List<Common.Models.Tasks.TaskTag> modelList = OpenLawOffice.Data.Tasks.TaskTag.ListForTask(id);
+
+            modelList.ForEach(x =>
+            {
+                viewModelList.Add(Mapper.Map<ViewModels.Tasks.TaskTagViewModel>(x));
+            });
+
+            return View(viewModelList);
+        }
+
+        [SecurityFilter(SecurityAreaName = "Tasks.TaskResponsibleUser", IsSecuredResource = false,
+            Permission = Common.Models.PermissionType.List)]
+        public ActionResult ResponsibleUsers(long id)
+        {
+            List<ViewModels.Tasks.TaskResponsibleUserViewModel> viewModelList = new List<ViewModels.Tasks.TaskResponsibleUserViewModel>();
+            List<Common.Models.Tasks.TaskResponsibleUser> modelList = OpenLawOffice.Data.Tasks.TaskResponsibleUser.ListForTask(id);
+
+            modelList.ForEach(x =>
+            {
+                Common.Models.Security.User user = OpenLawOffice.Data.Security.User.Get(x.User.Id.Value);
+                ViewModels.Tasks.TaskResponsibleUserViewModel viewModel = Mapper.Map<ViewModels.Tasks.TaskResponsibleUserViewModel>(x);
+                viewModel.User = Mapper.Map<ViewModels.Security.UserViewModel>(user);
                 viewModelList.Add(viewModel);
             });
 

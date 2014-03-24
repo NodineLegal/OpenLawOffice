@@ -35,6 +35,12 @@
                 OpenLawOffice.Data.Authentication.LoginResult result =
                     OpenLawOffice.Data.Authentication.Login(model.Username, hashedPassword);
 
+                if (!result.Success)
+                {
+                    ModelState.AddModelError(string.Empty, result.FailReason);
+                    return View(model);
+                }
+
                 HttpCookie cookie = new HttpCookie("UserAuthToken", result.UserAuthToken);
                 HttpContext.Response.AppendCookie(cookie);
                 HttpContext.Response.AppendCookie(new HttpCookie("Username", model.Username));

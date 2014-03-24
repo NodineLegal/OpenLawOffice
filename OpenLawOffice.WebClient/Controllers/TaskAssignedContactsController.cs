@@ -8,7 +8,7 @@
     using System.Data;
     using AutoMapper;
 
-    public class TaskAssignedContactController : BaseController
+    public class TaskAssignedContactsController : BaseController
     {
         // Selects link based on Guid of Matter
         [SecurityFilter(SecurityAreaName = "Tasks.TaskAssignedContact", IsSecuredResource = false,
@@ -89,7 +89,7 @@
             viewModel.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(model.Task);
             viewModel.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.Contact);
 
-            return View(model);
+            return View(viewModel);
         }
 
         [SecurityFilter(SecurityAreaName = "Tasks.TaskAssignedContact", IsSecuredResource = false,
@@ -100,7 +100,10 @@
             try
             {
                 Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
+                Common.Models.Tasks.TaskAssignedContact currentModel = Data.Tasks.TaskAssignedContact.Get(id);
                 Common.Models.Tasks.TaskAssignedContact model = Mapper.Map<Common.Models.Tasks.TaskAssignedContact>(viewModel);
+                model.Contact = currentModel.Contact;
+                model.Task = currentModel.Task;                
                 model = OpenLawOffice.Data.Tasks.TaskAssignedContact.Edit(model, currentUser);
 
                 return RedirectToAction("Contacts", "Tasks",
@@ -127,7 +130,7 @@
             viewModel.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.Contact);
             PopulateCoreDetails(viewModel);
 
-            return View(model);
+            return View(viewModel);
         }
 
         [SecurityFilter(SecurityAreaName = "Tasks.TaskAssignedContact", IsSecuredResource = false,
@@ -145,13 +148,16 @@
             try
             {
                 Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
+                Common.Models.Tasks.TaskAssignedContact currentModel = Data.Tasks.TaskAssignedContact.Get(id);
                 Common.Models.Tasks.TaskAssignedContact model = Mapper.Map<Common.Models.Tasks.TaskAssignedContact>(viewModel);
+                model.Contact = currentModel.Contact;
+                model.Task = currentModel.Task;                
                 model = OpenLawOffice.Data.Tasks.TaskAssignedContact.Disable(model, currentUser);
 
                 return RedirectToAction("Contacts", "Tasks",
                     new { id = model.Task.Id.Value.ToString() });
             }
-            catch
+            catch(Exception ex)
             {
                 return View(viewModel);
             }

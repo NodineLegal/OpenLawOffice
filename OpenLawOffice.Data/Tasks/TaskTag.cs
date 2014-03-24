@@ -55,7 +55,7 @@ namespace OpenLawOffice.Data.Tasks
                 "SELECT * FROM \"task_tag\" WHERE \"utc_disabled\" is null");
         }
 
-        public static List<Common.Models.Tasks.TaskTag> ListForTask(Guid taskId)
+        public static List<Common.Models.Tasks.TaskTag> ListForTask(long taskId)
         {
             List<Common.Models.Tasks.TaskTag> list =
                 DataHelper.List<Common.Models.Tasks.TaskTag, DBOs.Tasks.TaskTag>(
@@ -199,7 +199,7 @@ namespace OpenLawOffice.Data.Tasks
             model.UtcDisabled = DateTime.UtcNow;
 
             DataHelper.Disable<Common.Models.Matters.MatterContact,
-                DBOs.Matters.MatterContact>("task_tag", disabler.Id.Value);
+                DBOs.Matters.MatterContact>("task_tag", disabler.Id.Value, model.Id);
 
             return model;
         }
@@ -213,9 +213,24 @@ namespace OpenLawOffice.Data.Tasks
             model.UtcDisabled = null;
 
             DataHelper.Enable<Common.Models.Matters.MatterContact,
-                DBOs.Matters.MatterContact>("task_tag", enabler.Id.Value);
+                DBOs.Matters.MatterContact>("task_tag", enabler.Id.Value, model.Id);
 
             return model;
+        }
+
+        public static List<Common.Models.Tasks.TaskTag> ListForTask(Guid taskId)
+        {
+            List<Common.Models.Tasks.TaskTag> list =
+                DataHelper.List<Common.Models.Tasks.TaskTag, DBOs.Tasks.TaskTag>(
+                "SELECT * FROM \"matter_tag\" WHERE \"task_id\"=@TaskId AND \"utc_disabled\" is null",
+                new { TaskId = taskId });
+
+            list.ForEach(x =>
+            {
+                x.TagCategory = Tagging.TagCategory.Get(x.TagCategory.Id);
+            });
+
+            return list;
         }
     }
 }

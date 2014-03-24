@@ -40,4 +40,10 @@
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
+    <li>Navigation</li>
+    <ul style="list-style: none outside none; padding-left: 1em;">
+        <li><%: Html.ActionLink("Details", "Details", new { id = Model.Id })%></li>
+        <li><%: Html.ActionLink("Delete ", "Delete", new { id = Model.Id })%></li>
+        <li><%: Html.ActionLink("List", "Contacts", "Tasks", new { id = Model.Task.Id }, null)%></li>
+    </ul>
 </asp:Content>

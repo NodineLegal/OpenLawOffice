@@ -66,5 +66,20 @@ namespace OpenLawOffice.Data.Tasks
 
             return model;
         }
+
+        public static List<Common.Models.Tasks.TaskResponsibleUser> ListForTask(long taskId)
+        {
+            List<Common.Models.Tasks.TaskResponsibleUser> list =
+                DataHelper.List<Common.Models.Tasks.TaskResponsibleUser, DBOs.Tasks.TaskResponsibleUser>(
+                "SELECT * FROM \"task_responsible_user\" WHERE \"task_id\"=@TaskId AND \"utc_disabled\" is null",
+                new { TaskId = taskId });
+
+            list.ForEach(x =>
+            {
+                x.User = Security.User.Get(x.User.Id.Value);
+            });
+
+            return list;
+        }
     }
 }

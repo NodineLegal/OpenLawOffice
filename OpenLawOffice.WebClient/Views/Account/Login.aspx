@@ -7,12 +7,13 @@
     <title>Login</title>
 </head>
 <body>
-    <% using (Html.BeginForm()) {%>
-        <%: Html.ValidationSummary(true) %>
 
-        <fieldset>
-            <legend>User Login</legend>
+    <fieldset>
+        <legend>User Login</legend>
             
+        <% using (Html.BeginForm()) {%>
+            <%: Html.ValidationSummary(true) %>
+
             <div class="editor-label">
                 <%: Html.LabelFor(model => model.Username) %>
             </div>
@@ -32,9 +33,10 @@
             <p>
                 <input type="submit" value="Login" />
             </p>
-        </fieldset>
 
-    <% } %>
+        <% } %>
+
+    </fieldset>
 
 </body>
 </html>

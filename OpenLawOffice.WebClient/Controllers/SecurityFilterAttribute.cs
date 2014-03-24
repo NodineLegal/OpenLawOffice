@@ -46,7 +46,7 @@
 
             if (!authResult.IsAuthorized)
             {
-                filterContext.Result = controller.InsufficientRights();
+                filterContext.Result = new RedirectResult("~/Account/InsufficientRights");
                 return;
             }
 
@@ -73,7 +73,7 @@
 
                 if (!authResult.IsAuthorized)
                 {
-                    filterContext.Result = controller.InsufficientRights();
+                    filterContext.Result = new RedirectResult("~/Account/InsufficientRights");
                     return;
                 }
             }

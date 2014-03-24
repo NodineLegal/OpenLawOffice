@@ -73,7 +73,7 @@ namespace OpenLawOffice.Data.Tagging
             model.UtcDisabled = DateTime.UtcNow;
 
             DataHelper.Disable<Common.Models.Tagging.TagCategory,
-                DBOs.Tagging.TagCategory>("tag_category", disabler.Id.Value);
+                DBOs.Tagging.TagCategory>("tag_category", disabler.Id.Value, model.Id);
 
             return model;
         }
@@ -87,7 +87,7 @@ namespace OpenLawOffice.Data.Tagging
             model.UtcDisabled = null;
 
             DataHelper.Enable<Common.Models.Tagging.TagCategory,
-                DBOs.Tagging.TagCategory>("tag_category", enabler.Id.Value);
+                DBOs.Tagging.TagCategory>("tag_category", enabler.Id.Value, model.Id);
 
             return model;
         }
