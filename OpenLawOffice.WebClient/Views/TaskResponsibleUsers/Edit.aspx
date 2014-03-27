@@ -1,12 +1,12 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Tasks.TaskResponsibleUserViewModel>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-	Create
+	Edit
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
-    <h2>Create</h2>
+    <h2>Edit</h2>
 
     <% using (Html.BeginForm()) {%>
         <%: Html.ValidationSummary(true) %>
@@ -44,4 +44,10 @@
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
+    <li>Navigation</li>
+    <ul style="list-style: none outside none; padding-left: 1em;">
+        <li><%: Html.ActionLink("Add Resp. User", "Create", new { id = Model.Task.Id })%></li>
+        <li><%: Html.ActionLink("Details", "Details", new { id = Model.Id })%></li>
+        <li><%: Html.ActionLink("List", "ResponsibleUsers", "Matters", new { id = Model.Task.Id }, null)%></li>
+    </ul>
 </asp:Content>

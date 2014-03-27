@@ -47,6 +47,28 @@ namespace OpenLawOffice.Data.Tasks
                 new { TaskId = taskId, UserId = userId });
         }
 
+        public static Common.Models.Tasks.TaskResponsibleUser GetIgnoringDisable(long taskId, int userId)
+        {
+            return DataHelper.Get<Common.Models.Tasks.TaskResponsibleUser, DBOs.Tasks.TaskResponsibleUser>(
+                "SELECT * FROM \"task_responsible_user\" WHERE \"task_id\"=@TaskId AND \"user_id\"=@UserId",
+                new { TaskId = taskId, UserId = userId });
+        }
+
+        public static List<Common.Models.Tasks.TaskResponsibleUser> ListForTask(long taskId)
+        {
+            List<Common.Models.Tasks.TaskResponsibleUser> list =
+                DataHelper.List<Common.Models.Tasks.TaskResponsibleUser, DBOs.Tasks.TaskResponsibleUser>(
+                "SELECT * FROM \"task_responsible_user\" WHERE \"task_id\"=@TaskId AND \"utc_disabled\" is null",
+                new { TaskId = taskId });
+
+            list.ForEach(x =>
+            {
+                x.User = Security.User.Get(x.User.Id.Value);
+            });
+
+            return list;
+        }
+
         public static Common.Models.Tasks.TaskResponsibleUser Create(Common.Models.Tasks.TaskResponsibleUser model,
             Common.Models.Security.User creator)
         {
@@ -67,19 +89,49 @@ namespace OpenLawOffice.Data.Tasks
             return model;
         }
 
-        public static List<Common.Models.Tasks.TaskResponsibleUser> ListForTask(long taskId)
+        public static Common.Models.Tasks.TaskResponsibleUser Edit(Common.Models.Tasks.TaskResponsibleUser model,
+            Common.Models.Security.User modifier)
         {
-            List<Common.Models.Tasks.TaskResponsibleUser> list =
-                DataHelper.List<Common.Models.Tasks.TaskResponsibleUser, DBOs.Tasks.TaskResponsibleUser>(
-                "SELECT * FROM \"task_responsible_user\" WHERE \"task_id\"=@TaskId AND \"utc_disabled\" is null",
-                new { TaskId = taskId });
+            model.ModifiedBy = modifier;
+            model.UtcModified = DateTime.UtcNow;
+            Common.Models.Tasks.TaskResponsibleUser currentModel = Data.Tasks.TaskResponsibleUser.Get(model.Id.Value);
+            model.Task = currentModel.Task;
+            DBOs.Tasks.TaskResponsibleUser dbo = Mapper.Map<DBOs.Tasks.TaskResponsibleUser>(model);
 
-            list.ForEach(x =>
+            using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                x.User = Security.User.Get(x.User.Id.Value);
-            });
+                conn.Execute("UPDATE \"task_responsible_user\" SET " +
+                    "\"task_id\"=@TaskId, \"user_id\"=@UserId, \"responsibility\"=@Responsibility, \"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId " +
+                    "WHERE \"id\"=@Id", dbo);
+            }
 
-            return list;
+            return model;
+        }
+
+        public static Common.Models.Tasks.TaskResponsibleUser Disable(Common.Models.Tasks.TaskResponsibleUser model,
+            Common.Models.Security.User disabler)
+        {
+            model.DisabledBy = disabler;
+            model.UtcDisabled = DateTime.UtcNow;
+
+            DataHelper.Disable<Common.Models.Tasks.TaskResponsibleUser,
+                DBOs.Tasks.TaskResponsibleUser>("task_responsible_user", disabler.Id.Value, model.Id);
+
+            return model;
+        }
+
+        public static Common.Models.Tasks.TaskResponsibleUser Enable(Common.Models.Tasks.TaskResponsibleUser model,
+            Common.Models.Security.User enabler)
+        {
+            model.ModifiedBy = enabler;
+            model.UtcModified = DateTime.UtcNow;
+            model.DisabledBy = null;
+            model.UtcDisabled = null;
+
+            DataHelper.Enable<Common.Models.Tasks.TaskResponsibleUser,
+                DBOs.Tasks.TaskResponsibleUser>("task_responsible_user", enabler.Id.Value, model.Id);
+
+            return model;
         }
     }
 }

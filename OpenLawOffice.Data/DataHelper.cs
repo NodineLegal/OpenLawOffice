@@ -96,7 +96,7 @@ namespace OpenLawOffice.Data
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("UPDATE \"" + tableName + "\" SET " +
-                    "\"utc_modified\"=@Now, \"modified_by_user_id\"=@UserId, \"utc_disabled\"=@Now, \"disabled_by_user_id\"=@UserId " +
+                    "\"utc_modified\"=@Now, \"modified_by_user_id\"=@UserId, \"utc_disabled\"=null, \"disabled_by_user_id\"=null " +
                     "WHERE \"id\"=@Id",
                     new { Now = Now, UserId = userId, Id = id });
             }

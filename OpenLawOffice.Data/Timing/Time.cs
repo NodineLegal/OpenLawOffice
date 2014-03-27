@@ -91,5 +91,31 @@ namespace OpenLawOffice.Data.Timing
 
             return model;
         }
+
+        public static Common.Models.Tasks.TaskTime RelateTask(Common.Models.Timing.Time timeModel,
+            long taskId, Common.Models.Security.User creator)
+        {
+            Common.Models.Tasks.TaskTime taskTime = new Common.Models.Tasks.TaskTime()
+            {
+                Id = Guid.NewGuid(),
+                Task = new Common.Models.Tasks.Task() { Id = taskId, IsStub = true },
+                Time = timeModel,
+                UtcCreated = DateTime.UtcNow,
+                UtcModified = DateTime.UtcNow,
+                CreatedBy = creator,
+                ModifiedBy = creator
+            };
+
+            DBOs.Tasks.TaskTime dbo = Mapper.Map<DBOs.Tasks.TaskTime>(taskTime);
+
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                conn.Execute("INSERT INTO \"task_time\" (\"id\", \"task_id\", \"time_id\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                    "VALUES (@Id, @TaskId, @TimeId, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
+                    dbo);
+            }
+
+            return taskTime;
+        }
     }
 }

@@ -87,6 +87,7 @@
     <Compile Include="Controllers\SecurityFilterAttribute.cs" />
     <Compile Include="Controllers\SecurityAreasController.cs" />
     <Compile Include="Controllers\TaskAssignedContactsController.cs" />
+    <Compile Include="Controllers\TaskResponsibleUsersController.cs" />
     <Compile Include="Controllers\TasksController.cs" />
     <Compile Include="Controllers\TimingController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
@@ -176,6 +177,9 @@
     <Content Include="Views\TaskAssignedContacts\Edit.aspx" />
     <Content Include="Views\TaskAssignedContacts\SelectContactToAssign.aspx" />
     <Content Include="Views\TaskResponsibleUsers\Create.aspx" />
+    <Content Include="Views\TaskResponsibleUsers\Delete.aspx" />
+    <Content Include="Views\TaskResponsibleUsers\Details.aspx" />
+    <Content Include="Views\TaskResponsibleUsers\Edit.aspx" />
     <Content Include="Views\Tasks\Contacts.aspx" />
     <Content Include="Views\Tasks\Create.aspx" />
     <Content Include="Views\Tasks\Details.aspx" />
