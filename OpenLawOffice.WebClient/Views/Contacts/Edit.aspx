@@ -10,6 +10,30 @@
 
     <% using (Html.BeginForm()) {%>
         <%: Html.ValidationSummary(true) %>
+        
+        <table class="detail_table">
+            <thead style="font-weight: bold;">
+                <tr>
+                    <td colspan="2">Classification</td>
+                </tr>
+            </thead>
+            <tr>
+                <td class="display-label">Our Employee</td>
+                <td class="display-field">
+                    Check to indicate that this contact is employed by your company giving them rights to bill within this system.<br />
+                    <%: Html.CheckBoxFor(model => model.IsOurEmployee)%>
+                    <%: Html.ValidationMessageFor(model => model.IsOurEmployee)%>
+                </td>
+            </tr>
+            <tr>
+                <td class="display-label">Organization</td>
+                <td class="display-field">
+                    Check to indicate that this contact is for an organization, not an individual.<br />
+                    <%: Html.CheckBoxFor(model => model.IsOrganization)%>
+                    <%: Html.ValidationMessageFor(model => model.IsOrganization)%>
+                </td>
+            </tr>
+        </table>
 
         <table class="detail_table">
             <thead style="font-weight: bold;">

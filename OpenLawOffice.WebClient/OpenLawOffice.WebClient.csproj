@@ -82,6 +82,7 @@
     <Compile Include="Controllers\MatterContactController.cs" />
     <Compile Include="Controllers\MattersController.cs" />
     <Compile Include="Controllers\MatterTagsController.cs" />
+    <Compile Include="Controllers\NotesController.cs" />
     <Compile Include="Controllers\ResponsibleUsersController.cs" />
     <Compile Include="Controllers\SecurityAreaAclsController.cs" />
     <Compile Include="Controllers\SecurityFilterAttribute.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Controllers\TaskAssignedContactsController.cs" />
     <Compile Include="Controllers\TaskResponsibleUsersController.cs" />
     <Compile Include="Controllers\TasksController.cs" />
+    <Compile Include="Controllers\TaskTimeController.cs" />
     <Compile Include="Controllers\TimingController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Global.asax.cs">
@@ -110,6 +112,7 @@
     <Compile Include="ViewModels\Matters\MatterTagViewModel.cs" />
     <Compile Include="ViewModels\Matters\MatterViewModel.cs" />
     <Compile Include="ViewModels\Matters\ResponsibleUserViewModel.cs" />
+    <Compile Include="ViewModels\Notes\NoteViewModel.cs" />
     <Compile Include="ViewModels\PermissionsViewModel.cs" />
     <Compile Include="ViewModels\Security\AreaViewModel.cs" />
     <Compile Include="ViewModels\Security\AreaAclViewModel.cs" />
@@ -149,6 +152,7 @@
     <Content Include="Views\Matters\Details.aspx" />
     <Content Include="Views\Matters\Edit.aspx" />
     <Content Include="Views\Matters\Index.aspx" />
+    <Content Include="Views\Matters\Notes.aspx" />
     <Content Include="Views\Matters\ResponsibleUsers.aspx" />
     <Content Include="Views\Matters\Tags.aspx" />
     <Content Include="Views\Matters\Tasks.aspx" />
@@ -156,6 +160,9 @@
     <Content Include="Views\MatterTags\Delete.aspx" />
     <Content Include="Views\MatterTags\Details.aspx" />
     <Content Include="Views\MatterTags\Edit.aspx" />
+    <Content Include="Views\Notes\Create.aspx" />
+    <Content Include="Views\Notes\Details.aspx" />
+    <Content Include="Views\Notes\Edit.aspx" />
     <Content Include="Views\ResponsibleUsers\Create.aspx" />
     <Content Include="Views\ResponsibleUsers\Delete.aspx" />
     <Content Include="Views\ResponsibleUsers\Details.aspx" />
@@ -184,9 +191,13 @@
     <Content Include="Views\Tasks\Create.aspx" />
     <Content Include="Views\Tasks\Details.aspx" />
     <Content Include="Views\Tasks\Edit.aspx" />
+    <Content Include="Views\Tasks\Notes.aspx" />
     <Content Include="Views\Tasks\ResponsibleUsers.aspx" />
     <Content Include="Views\Tasks\Tags.aspx" />
     <Content Include="Views\Tasks\Time.aspx" />
+    <Content Include="Views\TaskTime\Create.aspx" />
+    <Content Include="Views\TaskTime\Details.aspx" />
+    <Content Include="Views\TaskTime\SelectContactToAssign.aspx" />
     <Content Include="Views\Timing\Details.aspx" />
     <Content Include="Views\Timing\Edit.aspx" />
     <Content Include="Views\Users\Create.aspx" />

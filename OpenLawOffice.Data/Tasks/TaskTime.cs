@@ -62,7 +62,6 @@ namespace OpenLawOffice.Data.Tasks
                 conn.Execute("INSERT INTO \"task_time\" (\"id\", \"task_id\", \"time_id\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
                     "VALUES (@Id, @TaskId, @TimeId, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);
-                model.Id = conn.Query<DBOs.Tasks.TaskTime>("SELECT currval(pg_get_serial_sequence('task_time', 'id')) AS \"id\"").Single().Id;
             }
 
             return model;

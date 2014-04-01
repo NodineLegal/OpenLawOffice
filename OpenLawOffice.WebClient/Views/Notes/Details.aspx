@@ -1,51 +1,25 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Matters.MatterViewModel>" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Notes.NoteViewModel>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
 	Details
 </asp:Content>
 
-<asp:Content ID="Content2" ContentPlaceHolderID="MenuContent" runat="server">
-    <li>Navigation</li>
-    <ul style="list-style: none outside none; padding-left: 1em;">
-        <li><%: Html.ActionLink("New Matter", "Create") %></li>
-        <li><%: Html.ActionLink("Edit", "Edit", new { id = Model.Id })%></li>
-        <li><%: Html.ActionLink("Delete ", "Delete", new { id = Model.Id })%></li>
-        <li><%: Html.ActionLink("List", "Index") %></li>
-    </ul>
-    <li><%: Html.ActionLink("Tags", "Tags", new { id = Model.Id })%></li>
-    <li><%: Html.ActionLink("Responsible Users", "ResponsibleUsers", new { id = Model.Id })%></li>
-    <li><%: Html.ActionLink("Contacts", "Contacts", new { id = Model.Id })%></li>
-    <li><%: Html.ActionLink("Tasks", "Tasks", "Matters", new { id = Model.Id }, null)%> (<%: Html.ActionLink("Add", "Create", "Tasks", new { controller = "Matters", MatterId = Model.Id }, null)%>)</li>
-    <li><%: Html.ActionLink("Notes", "Notes", "Matters", new { id = Model.Id }, null)%> (<%: Html.ActionLink("Add", "Create", "Notes", new { controller = "Matters", MatterId = Model.Id }, null)%>)</li>
-    <li><%: Html.ActionLink("Documents", "Documents", "Matters")%> (<%: Html.ActionLink("Add", "AddDocument", new { controller = "Matters", id = Model.Id }) %>)</li>
-    <li><%: Html.ActionLink("Time", "Time", "Matters")%> (<%: Html.ActionLink("Add", "AddTime", new { controller = "Matters", id = Model.Id }) %>)</li>
-    <li><%: Html.ActionLink("Permissions", "Acls", "Matters")%></li>
-</asp:Content>
-
-<asp:Content ID="Content3" ContentPlaceHolderID="MainContent" runat="server">
+<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
     <h2>Details</h2>
-
+    
     <table class="detail_table">
         <tr>
             <td class="display-label">Id</td>
             <td class="display-field"><%: Model.Id %></td>
         </tr>
         <tr>
-            <td class="display-label">Parent</td>
-            <td class="display-field">
-            <% if (Model.Parent != null)
-               { %>
-                <%: Model.Parent.Title%>
-            <% } %></td>
-        </tr>
-        <tr>
             <td class="display-label">Title</td>
             <td class="display-field"><%: Model.Title %></td>
         </tr>
         <tr>
-            <td class="display-label">Synopsis</td>
-            <td class="display-field"><%: Model.Synopsis %></td>
+            <td class="display-label">Body</td>
+            <td class="display-field"><%: Model.Body%></td>
         </tr>
     </table>
 
@@ -89,5 +63,25 @@
             <% } %>
         </tr>
     </table>
+
 </asp:Content>
 
+<asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
+    <li>Navigation</li>
+    <ul style="list-style: none outside none; padding-left: 1em;">
+        <li><%: Html.ActionLink("New Note", "Create", new { MatterId = ViewData["MatterId"], TaskId = ViewData["TaskId"] })%></li>        
+        <li><%: Html.ActionLink("Edit", "Edit", new { id = Model.Id })%></li>
+    
+    <% if (ViewData["MatterId"] != null)
+       { %>
+        <li><%: Html.ActionLink("Matter", "Details", "Matters", new { id = ViewData["MatterId"] }, null)%></li>
+    </ul>
+    <li><%: Html.ActionLink("Notes", "Notes", "Matters", new { id = ViewData["MatterId"] }, null)%></li>
+    <% }
+       else if (ViewData["TaskId"] != null)
+       { %>
+        <li><%: Html.ActionLink("Task", "Details", "Tasks", new { id = ViewData["TaskId"] }, null)%></li>
+    </ul>
+    <li><%: Html.ActionLink("Notes", "Notes", "Tasks", new { id = ViewData["TaskId"] }, null)%></li>
+    <% } %>
+</asp:Content>

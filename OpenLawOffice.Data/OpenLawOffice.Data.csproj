@@ -72,6 +72,9 @@
     <Compile Include="DBOs\Matters\MatterContact.cs" />
     <Compile Include="DBOs\Matters\MatterTag.cs" />
     <Compile Include="DBOs\Matters\ResponsibleUser.cs" />
+    <Compile Include="DBOs\Notes\Note.cs" />
+    <Compile Include="DBOs\Notes\NoteMatter.cs" />
+    <Compile Include="DBOs\Notes\NoteTask.cs" />
     <Compile Include="DBOs\NullDbo.cs" />
     <Compile Include="DBOs\Security\Area.cs" />
     <Compile Include="DBOs\Security\AreaAcl.cs" />
@@ -92,6 +95,9 @@
     <Compile Include="Matters\MatterContact.cs" />
     <Compile Include="Matters\MatterTag.cs" />
     <Compile Include="Matters\ResponsibleUser.cs" />
+    <Compile Include="Notes\Note.cs" />
+    <Compile Include="Notes\NoteMatter.cs" />
+    <Compile Include="Notes\NoteTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Authentication.cs" />
     <Compile Include="Security\Area.cs" />

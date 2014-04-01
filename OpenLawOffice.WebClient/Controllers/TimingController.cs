@@ -111,37 +111,5 @@
                 return View(viewModel);
             }
         }
-
-        [SecurityFilter(SecurityAreaName = "Timing.Time", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Create)]
-        public ActionResult Create()
-        {
-            long taskId = long.Parse(Request["TaskId"]);
-            ViewData["TaskId"] = taskId;
-            return View();
-        }
-
-        [SecurityFilter(SecurityAreaName = "Timing.Time", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Create)]
-        [HttpPost]
-        public ActionResult Create(ViewModels.Timing.TimeViewModel viewModel)
-        {
-            long taskId = 0;
-
-            try
-            {
-                Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
-                Common.Models.Timing.Time model = Mapper.Map<Common.Models.Timing.Time>(viewModel);
-                taskId = (long)ViewData["TaskId"];
-                model = Data.Timing.Time.Create(model, currentUser);
-                Data.Timing.Time.RelateTask(model, taskId, currentUser);
-                return RedirectToAction("Details", new { Id = model.Id });
-            }
-            catch
-            {
-                ViewData["TaskId"] = long.Parse(Request["TaskId"]);
-                return View(viewModel);
-            }
-        }
     }
 }

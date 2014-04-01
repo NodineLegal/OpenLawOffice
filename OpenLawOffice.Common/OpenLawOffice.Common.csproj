@@ -81,6 +81,9 @@
     <Compile Include="Models\Matters\ResponsibleUser.cs" />
     <Compile Include="Models\ModelBase.cs" />
     <Compile Include="Models\ModelWithDatesOnly.cs" />
+    <Compile Include="Models\Notes\Note.cs" />
+    <Compile Include="Models\Notes\NoteMatter.cs" />
+    <Compile Include="Models\Notes\NoteTask.cs" />
     <Compile Include="Models\PermissionType.cs" />
     <Compile Include="Models\Security\Area.cs" />
     <Compile Include="Models\Security\AreaAcl.cs" />

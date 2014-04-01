@@ -89,7 +89,7 @@ namespace OpenLawOffice.Data.Contacts
                     "\"email3_email_address\", \"email3_display_name\", \"email2_email_address\", " +
                     "\"email2_display_name\", \"email1_email_address\", \"email1_display_name\", " +
                     "\"display_name\", \"initials\", \"given_name\", \"middle_name\", \"surname\", " +
-                    "\"display_name_prefix\", \"generation\", \"nickname\", \"is_organization\", " +
+                    "\"display_name_prefix\", \"generation\", \"nickname\", \"is_organization\", \"is_our_employee\", " +
                     "\"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") VALUES (" +
                     "@ReferredByName, @Gender, @BusinessHomePage, " + 
                     "@PersonalHomePage, @InstantMessagingAddress, @Language, @SpouseName, @Profession, " +
@@ -112,7 +112,7 @@ namespace OpenLawOffice.Data.Contacts
                     "@Fax3FaxNumber, @Fax3DisplayName, @Fax2FaxNumber, @Fax2DisplayName, @Fax1FaxNumber, " +
                     "@Fax1DisplayName, @Email3EmailAddress, @Email3DisplayName, @Email2EmailAddress, @Email2DisplayName, " +
                     "@Email1EmailAddress, @Email1DisplayName, @DisplayName, @Initials, @GivenName, " +
-                    "@MiddleName, @Surname, @DisplayNamePrefix, @Generation, @Nickname, @IsOrganization, " +
+                    "@MiddleName, @Surname, @DisplayNamePrefix, @Generation, @Nickname, @IsOrganization, @IsOurEmployee, " +
                     "@UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)", dbo);
 
                 model.Id = conn.Query<DBOs.Contacts.Contact>("SELECT currval(pg_get_serial_sequence('contact', 'id')) AS \"id\"").Single().Id;
@@ -156,7 +156,7 @@ namespace OpenLawOffice.Data.Contacts
                     "\"email3_email_address\"=@Email3EmailAddress, \"email3_display_name\"=@Email3DisplayName, \"email2_email_address\"=@Email2EmailAddress, " +
                     "\"email2_display_name\"=@Email2DisplayName, \"email1_email_address\"=@Email1EmailAddress, \"email1_display_name\"=@Email1DisplayName, " +
                     "\"display_name\"=@DisplayName, \"initials\"=@Initials, \"given_name\"=@GivenName, \"middle_name\"=@MiddleName, \"surname\"=@Surname, " +
-                    "\"display_name_prefix\"=@DisplayNamePrefix, \"generation\"=@Generation, \"nickname\"=@Nickname, \"is_organization\"=@IsOrganization) " +
+                    "\"display_name_prefix\"=@DisplayNamePrefix, \"generation\"=@Generation, \"nickname\"=@Nickname, \"is_organization\"=@IsOrganization, \"is_our_employee=\"@IsOurEmployee) " +
                     "WHERE \"id\"=@Id", dbo);
             }
 

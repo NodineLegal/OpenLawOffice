@@ -64,7 +64,7 @@
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
     <li>Navigation</li>
     <ul style="list-style: none outside none; padding-left: 1em;">
-        <li><%: Html.ActionLink("New Entry", "Create", "Timing", new { TaskId = RouteData.Values["Id"].ToString() }, null)%></li>
+        <li><%: Html.ActionLink("New Entry", "SelectContactToAssign", "TaskTime", new { TaskId = RouteData.Values["Id"].ToString() }, null)%></li>
     <li><%: Html.ActionLink("Task", "Details", "Tasks", new { Id = RouteData.Values["Id"].ToString() }, null)%></li>
     </ul>
 </asp:Content>

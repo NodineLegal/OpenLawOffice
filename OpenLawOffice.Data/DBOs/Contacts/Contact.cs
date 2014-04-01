@@ -45,6 +45,16 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         [ColumnMapping(Name = "is_organization")]
         public bool IsOrganization { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the contact is an employee of the firm, this
+        /// allows for booking of time.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if a firm employee; otherwise, <c>false</c>.
+        /// </value>
+        /// <author>Lucas Nodine</author>
+        public bool IsOurEmployee { get; set; }
+
         #region Contact Name
 
         /// <summary>
@@ -908,6 +918,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.IsOrganization, opt => opt.MapFrom(src => src.IsOrganization))
+                .ForMember(dst => dst.IsOurEmployee, opt => opt.MapFrom(src => src.IsOurEmployee))
                 .ForMember(dst => dst.Nickname, opt => opt.MapFrom(src => src.Nickname))
                 .ForMember(dst => dst.Generation, opt => opt.MapFrom(src => src.Generation))
                 .ForMember(dst => dst.DisplayNamePrefix, opt => opt.MapFrom(src => src.DisplayNamePrefix))
@@ -1011,6 +1022,7 @@ namespace OpenLawOffice.Data.DBOs.Contacts
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.IsOrganization, opt => opt.MapFrom(src => src.IsOrganization))
+                .ForMember(dst => dst.IsOurEmployee, opt => opt.MapFrom(src => src.IsOurEmployee))
                 .ForMember(dst => dst.Nickname, opt => opt.MapFrom(src => src.Nickname))
                 .ForMember(dst => dst.Generation, opt => opt.MapFrom(src => src.Generation))
                 .ForMember(dst => dst.DisplayNamePrefix, opt => opt.MapFrom(src => src.DisplayNamePrefix))

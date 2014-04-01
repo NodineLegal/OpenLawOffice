@@ -233,5 +233,21 @@
 
             return View(modelList);
         }
+
+        [SecurityFilter(SecurityAreaName = "Notes.Note", IsSecuredResource = false,
+            Permission = Common.Models.PermissionType.List)]
+        public ActionResult Notes(Guid id)
+        {
+            List<ViewModels.Notes.NoteViewModel> viewModelList = new List<ViewModels.Notes.NoteViewModel>();
+            List<Common.Models.Notes.Note> modelList = Data.Notes.Note.ListForMatter(id);
+
+            modelList.ForEach(x =>
+            {
+                ViewModels.Notes.NoteViewModel viewModel = Mapper.Map<ViewModels.Notes.NoteViewModel>(x);
+                viewModelList.Add(viewModel);
+            });
+
+            return View(viewModelList);
+        }
     }
 }

@@ -52,8 +52,8 @@ namespace OpenLawOffice.Data.Timing
         public static Common.Models.Tasks.Task GetRelatedTask(Guid timeId)
         {
             return DataHelper.Get<Common.Models.Tasks.Task, DBOs.Tasks.Task>(
-                "SELECT \"time\".* FROM \"task\" JOIN \"task_time\" ON \"task\".\"id\"=\"task_time\".\"task_id\" " +
-                "WHERE \"time_id\"=@TaskId AND \"time\".\"utc_disabled\" is null AND \"task_time\".\"utc_disabled\" is null",
+                "SELECT \"task\".* FROM \"task\" JOIN \"task_time\" ON \"task\".\"id\"=\"task_time\".\"task_id\" " +
+                "WHERE \"time_id\"=@TimeId AND \"task\".\"utc_disabled\" is null AND \"task_time\".\"utc_disabled\" is null",
                 new { TimeId = timeId });
         }
 

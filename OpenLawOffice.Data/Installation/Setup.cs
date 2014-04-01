@@ -73,7 +73,7 @@ namespace OpenLawOffice.Data.Installation
                 areaMatters, areaMatter, areaMatterTag, areaResponsibleUser, areaMatterContact,
                 areaContacts, areaContact, areaTasks, areaTask, areaTaskAssignedContact,
                 areaTaskMatter, areaTaskResponsibleUser, areaTaskTag, areaTaskTime, areaTiming,
-                areaTime;
+                areaTime, areaNotes, areaNote, areaNoteMatter, areaNoteTask;
 
             areaSecurity = SetupSecurityArea("Security", null, user);
             areaUser = SetupSecurityArea("Security.User", areaSecurity.Id, user);
@@ -99,6 +99,10 @@ namespace OpenLawOffice.Data.Installation
             areaTaskTime = SetupSecurityArea("Tasks.TaskTime", areaTasks.Id, user);
             areaTiming = SetupSecurityArea("Timing", null, user);
             areaTime = SetupSecurityArea("Timing.Time", areaTiming.Id, user);
+            areaNotes = SetupSecurityArea("Notes", null, user);
+            areaNote = SetupSecurityArea("Notes.Note", areaNotes.Id, user);
+            areaNoteMatter = SetupSecurityArea("Notes.NoteMatter", areaNotes.Id, user);
+            areaNoteTask = SetupSecurityArea("Notes.NoteTask", areaNotes.Id, user);
 
             // Area Acls
             SetupAreaAcl(areaSecurity, user);
@@ -125,6 +129,10 @@ namespace OpenLawOffice.Data.Installation
             SetupAreaAcl(areaTaskTime, user);
             SetupAreaAcl(areaTiming, user);
             SetupAreaAcl(areaTime, user);
+            SetupAreaAcl(areaNotes, user);
+            SetupAreaAcl(areaNote, user);
+            SetupAreaAcl(areaNoteMatter, user);
+            SetupAreaAcl(areaNoteTask, user);
 
             if (runOptionalData)
                 OptionalData(user);
@@ -138,6 +146,7 @@ namespace OpenLawOffice.Data.Installation
                 contact = new Common.Models.Contacts.Contact()
                 {
                     IsOrganization = false,
+                    IsOurEmployee = true,
                     Nickname = "Luke",
                     DisplayNamePrefix = "Mr.",
                     Surname = "Nodine",
@@ -334,6 +343,32 @@ namespace OpenLawOffice.Data.Installation
                     Time = time
                 };
                 taskTime = Tasks.TaskTime.Create(taskTime, user);
+            }
+
+            Common.Models.Notes.Note note1 = Notes.Note.Get(Guid.Parse("62425f5b-b818-4d67-8730-3441a171d98f"));
+            if (note1 == null)
+            {
+                note1 = new Common.Models.Notes.Note()
+                {
+                    Id = Guid.Parse("62425f5b-b818-4d67-8730-3441a171d98f"),
+                    Title = "Test Note 1",
+                    Body = "This is the note for a matter"
+                };
+                note1 = Notes.Note.Create(note1, user);
+                Notes.Note.RelateMatter(note1, matter.Id.Value, user);
+            }
+
+            Common.Models.Notes.Note note2 = Notes.Note.Get(Guid.Parse("62425f5b-b118-4d67-8730-3441a171d98f"));
+            if (note2 == null)
+            {
+                note2 = new Common.Models.Notes.Note()
+                {
+                    Id = Guid.Parse("62425f5b-b118-4d67-8730-3441a171d98f"),
+                    Title = "Test Note 2",
+                    Body = "This is the note for a task"
+                };
+                note2 = Notes.Note.Create(note2, user);
+                Notes.Note.RelateTask(note2, task.Id.Value, user);
             }
         }
 
