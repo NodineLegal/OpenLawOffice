@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="MatterContact.cs" company="Nodine Legal, LLC">
+// <copyright file="Version.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -7,9 +7,9 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-//
+// 
 //  http://www.apache.org/licenses/LICENSE-2.0
-//
+// 
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -19,7 +19,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.Data.DBOs.Matters
+namespace OpenLawOffice.Data.DBOs.Documents
 {
     using System;
     using AutoMapper;
@@ -28,24 +28,33 @@ namespace OpenLawOffice.Data.DBOs.Matters
     /// TODO: Update summary.
     /// </summary>
     [Common.Models.MapMe]
-    public class MatterContact : Core
+    public class Version : Core
     {
         [ColumnMapping(Name = "id")]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
-        [ColumnMapping(Name = "matter_id")]
-        public Guid MatterId { get; set; }
+        [ColumnMapping(Name = "version_number")]
+        public int VersionNumber { get; set; }
 
-        [ColumnMapping(Name = "contact_id")]
-        public int ContactId { get; set; }
+        [ColumnMapping(Name = "mime")]
+        public string Mime { get; set; }
 
-        [ColumnMapping(Name = "role")]
-        public string Role { get; set; }
+        [ColumnMapping(Name = "filename")]
+        public string Filename { get; set; }
+
+        [ColumnMapping(Name = "extension")]
+        public string Extension { get; set; }
+
+        [ColumnMapping(Name = "size")]
+        public ulong Size { get; set; }
+
+        [ColumnMapping(Name = "md5")]
+        public string Md5 { get; set; }
 
         public void BuildMappings()
         {
-            Dapper.SqlMapper.SetTypeMap(typeof(MatterContact), new ColumnAttributeTypeMapper<MatterContact>());
-            Mapper.CreateMap<DBOs.Matters.MatterContact, Common.Models.Matters.MatterContact>()
+            Dapper.SqlMapper.SetTypeMap(typeof(Version), new ColumnAttributeTypeMapper<Version>());
+            Mapper.CreateMap<DBOs.Documents.Version, Common.Models.Documents.Version>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
@@ -76,25 +85,14 @@ namespace OpenLawOffice.Data.DBOs.Matters
                     };
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.Matter, opt => opt.ResolveUsing(db =>
-                {
-                    return new Common.Models.Matters.Matter()
-                    {
-                        Id = db.MatterId,
-                        IsStub = true
-                    };
-                }))
-                .ForMember(dst => dst.Contact, opt => opt.ResolveUsing(db =>
-                {
-                    return new Common.Models.Contacts.Contact()
-                    {
-                        Id = db.ContactId,
-                        IsStub = true
-                    };
-                }))
-                .ForMember(dst => dst.Role, opt => opt.MapFrom(src => src.Role));
+                .ForMember(dst => dst.VersionNumber, opt => opt.MapFrom(src => src.VersionNumber))
+                .ForMember(dst => dst.Mime, opt => opt.MapFrom(src => src.Mime))
+                .ForMember(dst => dst.Filename, opt => opt.MapFrom(src => src.Filename))
+                .ForMember(dst => dst.Extension, opt => opt.MapFrom(src => src.Extension))
+                .ForMember(dst => dst.Size, opt => opt.MapFrom(src => src.Size))
+                .ForMember(dst => dst.Md5, opt => opt.MapFrom(src => src.Md5));
 
-            Mapper.CreateMap<Common.Models.Matters.MatterContact, DBOs.Matters.MatterContact>()
+            Mapper.CreateMap<Common.Models.Documents.Version, DBOs.Documents.Version>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
                 .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
@@ -116,19 +114,12 @@ namespace OpenLawOffice.Data.DBOs.Matters
                     return model.DisabledBy.Id;
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.MatterId, opt => opt.ResolveUsing(model =>
-                {
-                    if (model.Matter == null || !model.Matter.Id.HasValue)
-                        throw new Exception("Matter cannot be null");
-                    return model.Matter.Id.Value;
-                }))
-                .ForMember(dst => dst.ContactId, opt => opt.ResolveUsing(model =>
-                {
-                    if (model.Contact == null)
-                        return null;
-                    return model.Contact.Id;
-                }))
-                .ForMember(dst => dst.Role, opt => opt.MapFrom(src => src.Role));
+                .ForMember(dst => dst.VersionNumber, opt => opt.MapFrom(src => src.VersionNumber))
+                .ForMember(dst => dst.Mime, opt => opt.MapFrom(src => src.Mime))
+                .ForMember(dst => dst.Filename, opt => opt.MapFrom(src => src.Filename))
+                .ForMember(dst => dst.Extension, opt => opt.MapFrom(src => src.Extension))
+                .ForMember(dst => dst.Size, opt => opt.MapFrom(src => src.Size))
+                .ForMember(dst => dst.Md5, opt => opt.MapFrom(src => src.Md5));
         }
     }
 }

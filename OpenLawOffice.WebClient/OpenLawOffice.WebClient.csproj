@@ -107,6 +107,9 @@
     <Compile Include="ViewModels\Contacts\SelectableContactViewModel.cs" />
     <Compile Include="ViewModels\CoreViewModel.cs" />
     <Compile Include="ViewModels\DateOnlyViewModelBase.cs" />
+    <Compile Include="ViewModels\Documents\DocumentVersionViewModel.cs" />
+    <Compile Include="ViewModels\Documents\DocumentViewModel.cs" />
+    <Compile Include="ViewModels\Documents\VersionViewModel.cs" />
     <Compile Include="ViewModels\JqGridObject.cs" />
     <Compile Include="ViewModels\Matters\MatterContactViewModel.cs" />
     <Compile Include="ViewModels\Matters\MatterTagViewModel.cs" />

@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="MatterContact.cs" company="Nodine Legal, LLC">
+// <copyright file="Document.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -7,9 +7,9 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-//
+// 
 //  http://www.apache.org/licenses/LICENSE-2.0
-//
+// 
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -19,7 +19,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.Data.DBOs.Matters
+namespace OpenLawOffice.Data.DBOs.Documents
 {
     using System;
     using AutoMapper;
@@ -28,24 +28,18 @@ namespace OpenLawOffice.Data.DBOs.Matters
     /// TODO: Update summary.
     /// </summary>
     [Common.Models.MapMe]
-    public class MatterContact : Core
+    public class Document : Core
     {
         [ColumnMapping(Name = "id")]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
-        [ColumnMapping(Name = "matter_id")]
-        public Guid MatterId { get; set; }
-
-        [ColumnMapping(Name = "contact_id")]
-        public int ContactId { get; set; }
-
-        [ColumnMapping(Name = "role")]
-        public string Role { get; set; }
+        [ColumnMapping(Name = "title")]
+        public string Title { get; set; }
 
         public void BuildMappings()
         {
-            Dapper.SqlMapper.SetTypeMap(typeof(MatterContact), new ColumnAttributeTypeMapper<MatterContact>());
-            Mapper.CreateMap<DBOs.Matters.MatterContact, Common.Models.Matters.MatterContact>()
+            Dapper.SqlMapper.SetTypeMap(typeof(Document), new ColumnAttributeTypeMapper<Document>());
+            Mapper.CreateMap<DBOs.Documents.Document, Common.Models.Documents.Document>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
@@ -76,25 +70,9 @@ namespace OpenLawOffice.Data.DBOs.Matters
                     };
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.Matter, opt => opt.ResolveUsing(db =>
-                {
-                    return new Common.Models.Matters.Matter()
-                    {
-                        Id = db.MatterId,
-                        IsStub = true
-                    };
-                }))
-                .ForMember(dst => dst.Contact, opt => opt.ResolveUsing(db =>
-                {
-                    return new Common.Models.Contacts.Contact()
-                    {
-                        Id = db.ContactId,
-                        IsStub = true
-                    };
-                }))
-                .ForMember(dst => dst.Role, opt => opt.MapFrom(src => src.Role));
+                .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title));
 
-            Mapper.CreateMap<Common.Models.Matters.MatterContact, DBOs.Matters.MatterContact>()
+            Mapper.CreateMap<Common.Models.Documents.Document, DBOs.Documents.Document>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
                 .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
                 .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
@@ -116,19 +94,7 @@ namespace OpenLawOffice.Data.DBOs.Matters
                     return model.DisabledBy.Id;
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.MatterId, opt => opt.ResolveUsing(model =>
-                {
-                    if (model.Matter == null || !model.Matter.Id.HasValue)
-                        throw new Exception("Matter cannot be null");
-                    return model.Matter.Id.Value;
-                }))
-                .ForMember(dst => dst.ContactId, opt => opt.ResolveUsing(model =>
-                {
-                    if (model.Contact == null)
-                        return null;
-                    return model.Contact.Id;
-                }))
-                .ForMember(dst => dst.Role, opt => opt.MapFrom(src => src.Role));
+                .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title));
         }
     }
 }

@@ -69,6 +69,9 @@
     <Compile Include="Models\Contacts\Contact.cs" />
     <Compile Include="Models\Core.cs" />
     <Compile Include="Models\DefaultPopulationType.cs" />
+    <Compile Include="Models\Documents\Document.cs" />
+    <Compile Include="Models\Documents\DocumentVersion.cs" />
+    <Compile Include="Models\Documents\Version.cs" />
     <Compile Include="Models\IHasGuidId.cs" />
     <Compile Include="Models\IHasId.cs" />
     <Compile Include="Models\IHasIntId.cs" />
@@ -169,6 +172,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\OpenLawOffice.WebClient\packages\AutoMapper.3.2.0-ci1011\tools\AutoMapper.targets" Condition="Exists('..\OpenLawOffice.WebClient\packages\AutoMapper.3.2.0-ci1011\tools\AutoMapper.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

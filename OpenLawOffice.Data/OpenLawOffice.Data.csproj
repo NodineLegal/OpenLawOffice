@@ -68,6 +68,9 @@
     <Compile Include="DBOs\Core.cs" />
     <Compile Include="DBOs\DboBase.cs" />
     <Compile Include="DBOs\DboWithDatesOnly.cs" />
+    <Compile Include="DBOs\Documents\Document.cs" />
+    <Compile Include="DBOs\Documents\DocumentVersion.cs" />
+    <Compile Include="DBOs\Documents\Version.cs" />
     <Compile Include="DBOs\Matters\Matter.cs" />
     <Compile Include="DBOs\Matters\MatterContact.cs" />
     <Compile Include="DBOs\Matters\MatterTag.cs" />
