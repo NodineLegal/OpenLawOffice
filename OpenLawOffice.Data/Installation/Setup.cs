@@ -370,6 +370,30 @@ namespace OpenLawOffice.Data.Installation
                 note2 = Notes.Note.Create(note2, user);
                 Notes.Note.RelateTask(note2, task.Id.Value, user);
             }
+
+            Common.Models.Documents.Document document1 = Documents.Document.Get(Guid.Parse("d88165ea-ffa9-4bcd-b9ed-950157fac2cf"));
+            if (document1 == null)
+            {
+                document1 = new Common.Models.Documents.Document()
+                {
+                    Id = Guid.Parse("d88165ea-ffa9-4bcd-b9ed-950157fac2cf"),
+                    Title = "Test Document 1"
+                };
+                document1 = Documents.Document.Create(document1, user);
+                Documents.Document.RelateMatter(document1, matter.Id.Value, user);
+            }
+
+            Common.Models.Documents.Document document2 = Documents.Document.Get(Guid.Parse("d861cfa7-f446-44d1-8ed1-e7a3f8a495e1"));
+            if (document2 == null)
+            {
+                document2 = new Common.Models.Documents.Document()
+                {
+                    Id = Guid.Parse("d861cfa7-f446-44d1-8ed1-e7a3f8a495e1"),
+                    Title = "Test Document 2"
+                };
+                document2 = Documents.Document.Create(document2, user);
+                Documents.Document.RelateTask(document2, task.Id.Value, user);
+            }
         }
 
         private static Common.Models.Security.Area SetupSecurityArea(string name, int? parentId, 

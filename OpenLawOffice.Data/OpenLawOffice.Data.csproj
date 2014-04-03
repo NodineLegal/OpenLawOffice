@@ -69,6 +69,8 @@
     <Compile Include="DBOs\DboBase.cs" />
     <Compile Include="DBOs\DboWithDatesOnly.cs" />
     <Compile Include="DBOs\Documents\Document.cs" />
+    <Compile Include="DBOs\Documents\DocumentMatter.cs" />
+    <Compile Include="DBOs\Documents\DocumentTask.cs" />
     <Compile Include="DBOs\Documents\DocumentVersion.cs" />
     <Compile Include="DBOs\Documents\Version.cs" />
     <Compile Include="DBOs\Matters\Matter.cs" />
@@ -93,6 +95,9 @@
     <Compile Include="DBOs\Tasks\TaskTag.cs" />
     <Compile Include="DBOs\Tasks\TaskTime.cs" />
     <Compile Include="DBOs\Timing\Time.cs" />
+    <Compile Include="Documents\Document.cs" />
+    <Compile Include="Documents\DocumentMatter.cs" />
+    <Compile Include="Documents\DocumentTask.cs" />
     <Compile Include="Installation\Setup.cs" />
     <Compile Include="Matters\Matter.cs" />
     <Compile Include="Matters\MatterContact.cs" />

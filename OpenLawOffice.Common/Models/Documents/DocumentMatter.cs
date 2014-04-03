@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="Document.cs" company="Nodine Legal, LLC">
+// <copyright file="DocumentMatter.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -22,23 +22,21 @@
 namespace OpenLawOffice.Common.Models.Documents
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
+    using AutoMapper;
 
     /// <summary>
     /// TODO: Update summary.
     /// </summary>
-    [MapMe]
-    public class Document : Core
+    public class DocumentMatter : Core
     {
         public Guid? Id { get; set; }
-        public string Title { get; set; }
+        public Matters.Matter Matter { get; set; }
+        public Document Document { get; set; }
 
-        public Document()
+        public DocumentMatter()
         {
         }
-        
+
         public override void BuildMappings()
         {
         }

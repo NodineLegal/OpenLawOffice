@@ -345,6 +345,22 @@
             return View(viewModelList);
         }
 
+        [SecurityFilter(SecurityAreaName = "Documents.Document", IsSecuredResource = false,
+            Permission = Common.Models.PermissionType.List)]
+        public ActionResult Documents(long id)
+        {
+            List<ViewModels.Documents.DocumentViewModel> viewModelList = new List<ViewModels.Documents.DocumentViewModel>();
+            List<Common.Models.Documents.Document> modelList = Data.Documents.Document.ListForTask(id);
+
+            modelList.ForEach(x =>
+            {
+                ViewModels.Documents.DocumentViewModel viewModel = Mapper.Map<ViewModels.Documents.DocumentViewModel>(x);
+                viewModelList.Add(viewModel);
+            });
+
+            return View(viewModelList);
+        }
+
         #region Commented Out Sequential Predecessor Code
 
         //public static DBOs.Tasks.Task GetSequentialPredecessor(DBOs.Tasks.Task taskDbo, IDbConnection db)

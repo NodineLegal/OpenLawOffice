@@ -77,6 +77,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ContactsController.cs" />
+    <Compile Include="Controllers\DocumentsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InstallationController.cs" />
     <Compile Include="Controllers\MatterContactController.cs" />
@@ -153,6 +154,7 @@
     <Content Include="Views\Matters\Contacts.aspx" />
     <Content Include="Views\Matters\Create.aspx" />
     <Content Include="Views\Matters\Details.aspx" />
+    <Content Include="Views\Matters\Documents.aspx" />
     <Content Include="Views\Matters\Edit.aspx" />
     <Content Include="Views\Matters\Index.aspx" />
     <Content Include="Views\Matters\Notes.aspx" />
@@ -193,6 +195,7 @@
     <Content Include="Views\Tasks\Contacts.aspx" />
     <Content Include="Views\Tasks\Create.aspx" />
     <Content Include="Views\Tasks\Details.aspx" />
+    <Content Include="Views\Tasks\Documents.aspx" />
     <Content Include="Views\Tasks\Edit.aspx" />
     <Content Include="Views\Tasks\Notes.aspx" />
     <Content Include="Views\Tasks\ResponsibleUsers.aspx" />
@@ -226,6 +229,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Scripts\" />
+    <Folder Include="Views\Documents\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenLawOffice.Common\OpenLawOffice.Common.csproj">

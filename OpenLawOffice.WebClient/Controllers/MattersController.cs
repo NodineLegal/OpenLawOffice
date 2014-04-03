@@ -249,5 +249,21 @@
 
             return View(viewModelList);
         }
+
+        [SecurityFilter(SecurityAreaName = "Documents.Document", IsSecuredResource = false,
+            Permission = Common.Models.PermissionType.List)]
+        public ActionResult Documents(Guid id)
+        {
+            List<ViewModels.Documents.DocumentViewModel> viewModelList = new List<ViewModels.Documents.DocumentViewModel>();
+            List<Common.Models.Documents.Document> modelList = Data.Documents.Document.ListForMatter(id);
+
+            modelList.ForEach(x =>
+            {
+                ViewModels.Documents.DocumentViewModel viewModel = Mapper.Map<ViewModels.Documents.DocumentViewModel>(x);
+                viewModelList.Add(viewModel);
+            });
+
+            return View(viewModelList);
+        }
     }
 }
