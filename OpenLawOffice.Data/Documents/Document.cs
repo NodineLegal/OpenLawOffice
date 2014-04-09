@@ -37,8 +37,30 @@ namespace OpenLawOffice.Data.Documents
         public static Common.Models.Documents.Document Get(Guid id)
         {
             return DataHelper.Get<Common.Models.Documents.Document, DBOs.Documents.Document>(
-                "SELECT * FROM \"document\" JOIN \"WHERE \"utc_disabled\" is null",
-                new { id = id });
+                "SELECT * FROM \"document\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
+                new { Id = id });
+        }
+
+        public static Common.Models.Matters.Matter GetMatter(Guid documentId)
+        {
+            return DataHelper.Get<Common.Models.Matters.Matter, DBOs.Matters.Matter>(
+                "SELECT \"matter\".* FROM \"matter\" JOIN \"document_matter\" ON " +
+                "\"matter\".\"id\"=\"document_matter\".\"matter_id\" " +
+                "WHERE \"document_matter\".\"document_id\"=@DocumentId " +
+                "AND \"matter\".\"utc_disabled\" is null " +
+                "AND \"document_matter\".\"utc_disabled\" is null",
+                new { DocumentId = documentId });
+        }
+
+        public static Common.Models.Tasks.Task GetTask(Guid documentId)
+        {
+            return DataHelper.Get<Common.Models.Tasks.Task, DBOs.Tasks.Task>(
+                "SELECT \"task\".* FROM \"task\" JOIN \"document_task\" ON " +
+                "\"task\".\"id\"=\"document_task\".\"task_id\" " +
+                "WHERE \"document_task\".\"document_id\"=@DocumentId " +
+                "AND \"task\".\"utc_disabled\" is null " +
+                "AND \"document_task\".\"utc_disabled\" is null",
+                new { DocumentId = documentId });
         }
 
         public static List<Common.Models.Documents.Document> ListForMatter(Guid matterId)
@@ -46,7 +68,9 @@ namespace OpenLawOffice.Data.Documents
             return DataHelper.List<Common.Models.Documents.Document, DBOs.Documents.Document>(
                 "SELECT \"document\".* FROM \"document\" JOIN \"document_matter\" ON " +
                 "\"document\".\"id\"=\"document_matter\".\"document_id\" " +
-                "WHERE \"document_matter\".\"matter_id\"=@MatterId AND \"utc_disabled\" is null",
+                "WHERE \"document_matter\".\"matter_id\"=@MatterId " +
+                "AND \"document\".\"utc_disabled\" is null " +
+                "AND \"document_matter\".\"utc_disabled\" is null",
                 new { MatterId = matterId });
         }
 
@@ -55,7 +79,9 @@ namespace OpenLawOffice.Data.Documents
             return DataHelper.List<Common.Models.Documents.Document, DBOs.Documents.Document>(
                 "SELECT \"document\".* FROM \"document\" JOIN \"document_task\" ON " +
                 "\"document\".\"id\"=\"document_task\".\"document_id\" " +
-                "WHERE \"document_task\".\"task_id\"=@TaskId AND \"utc_disabled\" is null",
+                "WHERE \"document_task\".\"task_id\"=@TaskId " +
+                "AND \"document\".\"utc_disabled\" is null " +
+                "AND \"document_task\".\"utc_disabled\" is null",
                 new { TaskId = taskId });
         }
 
@@ -65,7 +91,7 @@ namespace OpenLawOffice.Data.Documents
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
             model.CreatedBy = model.ModifiedBy = creator;
             model.UtcCreated = model.UtcModified = DateTime.UtcNow;
-            DBOs.Notes.Note dbo = Mapper.Map<DBOs.Notes.Note>(model);
+            DBOs.Documents.Document dbo = Mapper.Map<DBOs.Documents.Document>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
@@ -119,6 +145,47 @@ namespace OpenLawOffice.Data.Documents
                 conn.Execute("UPDATE \"document\" SET " +
                     "\"title\"=@Title, \"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId " +
                     "WHERE \"id\"=@Id", dbo);
+            }
+
+            return model;
+        }
+
+        public static Common.Models.Documents.Version GetCurrentVersion(Guid documentId)
+        {
+            return DataHelper.Get<Common.Models.Documents.Version, DBOs.Documents.Version>(
+                "SELECT * FROM \"version\" WHERE \"document_id\"=@DocumentId AND \"utc_disabled\" is null ORDER BY \"version_number\" DESC LIMIT 1",
+                new { DocumentId = documentId });
+        }
+
+        public static List<Common.Models.Documents.Version> GetVersions(Guid documentId)
+        {
+            return DataHelper.List<Common.Models.Documents.Version, DBOs.Documents.Version>(
+                "SELECT * FROM \"version\" WHERE \"document_id\"=@DocumentId AND \"utc_disabled\" is null ORDER BY \"version_number\" DESC",
+                new { DocumentId = documentId });
+        }
+
+        public static Common.Models.Documents.Version CreateNewVersion(Guid documentId,
+            Common.Models.Documents.Version model, Common.Models.Security.User creator)
+        {
+            if (!model.Id.HasValue) model.Id = Guid.NewGuid();
+            model.CreatedBy = model.ModifiedBy = creator;
+            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+
+            Common.Models.Documents.Version currentVersion = GetCurrentVersion(documentId);
+            if (currentVersion == null)
+                model.VersionNumber = 1;
+            else
+                model.VersionNumber = currentVersion.VersionNumber + 1;
+
+            DBOs.Documents.Version dbo = Mapper.Map<DBOs.Documents.Version>(model);
+
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                conn.Execute("INSERT INTO \"version\" (\"id\", \"document_id\", \"version_number\", \"mime\", \"filename\", " + 
+                    "\"extension\", \"size\", \"md5\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                    "VALUES (@Id, @DocumentId, @VersionNumber, @Mime, @Filename, @Extension, @Size, @Md5, " +
+                    "@UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
+                    dbo);
             }
 
             return model;

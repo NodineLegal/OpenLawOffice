@@ -33,6 +33,9 @@ namespace OpenLawOffice.Data.DBOs.Documents
         [ColumnMapping(Name = "id")]
         public Guid Id { get; set; }
 
+        [ColumnMapping(Name = "document_id")]
+        public Guid DocumentId { get; set; }
+
         [ColumnMapping(Name = "version_number")]
         public int VersionNumber { get; set; }
 
@@ -46,7 +49,7 @@ namespace OpenLawOffice.Data.DBOs.Documents
         public string Extension { get; set; }
 
         [ColumnMapping(Name = "size")]
-        public ulong Size { get; set; }
+        public long Size { get; set; }
 
         [ColumnMapping(Name = "md5")]
         public string Md5 { get; set; }
@@ -85,6 +88,14 @@ namespace OpenLawOffice.Data.DBOs.Documents
                     };
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dst => dst.Document, opt => opt.ResolveUsing(db =>
+                {
+                    return new Common.Models.Documents.Document()
+                    {
+                        Id = db.DocumentId,
+                        IsStub = true
+                    };
+                }))
                 .ForMember(dst => dst.VersionNumber, opt => opt.MapFrom(src => src.VersionNumber))
                 .ForMember(dst => dst.Mime, opt => opt.MapFrom(src => src.Mime))
                 .ForMember(dst => dst.Filename, opt => opt.MapFrom(src => src.Filename))
@@ -114,6 +125,12 @@ namespace OpenLawOffice.Data.DBOs.Documents
                     return model.DisabledBy.Id;
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dst => dst.DocumentId, opt => opt.ResolveUsing(model =>
+                {
+                    if (model.Document == null || !model.Document.Id.HasValue)
+                        return 0;
+                    return model.Document.Id.Value;
+                }))
                 .ForMember(dst => dst.VersionNumber, opt => opt.MapFrom(src => src.VersionNumber))
                 .ForMember(dst => dst.Mime, opt => opt.MapFrom(src => src.Mime))
                 .ForMember(dst => dst.Filename, opt => opt.MapFrom(src => src.Filename))

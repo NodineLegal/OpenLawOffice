@@ -25,7 +25,7 @@
             <td class="display-field">
                 <%: Html.TextBoxFor(model => model.Title) %>
                 <%: Html.ValidationMessageFor(model => model.Title) %>
-                </td>
+            </td>
         </tr>
         <tr>
             <td class="display-label">Description</td>

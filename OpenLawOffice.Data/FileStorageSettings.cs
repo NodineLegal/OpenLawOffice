@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="Version.cs" company="Nodine Legal, LLC">
+// <copyright file="FileStorageSettings.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -7,9 +7,9 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //  http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -19,34 +19,33 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.Common.Models.Documents
+namespace OpenLawOffice.Data
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
+    using System.Configuration;
 
     /// <summary>
     /// TODO: Update summary.
     /// </summary>
-    [MapMe]
-    public class Version : Core
+    public class FileStorageSettings : ConfigurationSection
     {
-        public Guid? Id { get; set; }
-        public Document Document { get; set; }
-        public int VersionNumber { get; set; }
-        public string Mime { get; set; }
-        public string Filename { get; set; }
-        public string Extension { get; set; }
-        public long Size { get; set; }
-        public string Md5 { get; set; }
-
-        public Version()
+        [ConfigurationProperty("currentVersionPath", IsRequired = true)]
+        public string CurrentVersionPath
         {
+            get { return (string)this["currentVersionPath"]; }
+            set { this["currentVersionPath"] = value; }
         }
-        
-        public override void BuildMappings()
+
+        [ConfigurationProperty("previousVersionsPath", IsRequired = true)]
+        public string PreviousVersionsPath
         {
+            get { return (string)this["previousVersionsPath"]; }
+            set { this["previousVersionsPath"] = value; }
+        }
+
+        public static FileStorageSettings Load()
+        {
+            return (FileStorageSettings)System.Configuration.ConfigurationManager.GetSection("fileStorageSettings");
         }
     }
 }

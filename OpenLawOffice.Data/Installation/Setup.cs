@@ -33,8 +33,14 @@ namespace OpenLawOffice.Data.Installation
     {
         public static void CreateDb(string filepath, bool setupData = false)
         {
+            FileInfo fi = new FileInfo(filepath);
+            string dirName = fi.DirectoryName;
+
+            if (!dirName.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
+                dirName += System.IO.Path.DirectorySeparatorChar;
+
             ExecuteScript(filepath);
-            RequiredData(setupData);
+            RequiredData(dirName, setupData);
         }
 
         private static void ExecuteScript(string filepath)
@@ -49,7 +55,7 @@ namespace OpenLawOffice.Data.Installation
             conn.Dispose();
         }
 
-        private static void RequiredData(bool runOptionalData = false)
+        private static void RequiredData(string installDirPath, bool runOptionalData = false)
         {
             Common.Models.Security.User user = Security.User.Get("Administrator");
             if (user == null)
@@ -73,7 +79,9 @@ namespace OpenLawOffice.Data.Installation
                 areaMatters, areaMatter, areaMatterTag, areaResponsibleUser, areaMatterContact,
                 areaContacts, areaContact, areaTasks, areaTask, areaTaskAssignedContact,
                 areaTaskMatter, areaTaskResponsibleUser, areaTaskTag, areaTaskTime, areaTiming,
-                areaTime, areaNotes, areaNote, areaNoteMatter, areaNoteTask;
+                areaTime, areaNotes, areaNote, areaNoteMatter, areaNoteTask,
+                areaDocuments, areaDocument, areaDocumentMatter, areaDocumentTask, 
+                areaDocumentVersion, areaVersion;
 
             areaSecurity = SetupSecurityArea("Security", null, user);
             areaUser = SetupSecurityArea("Security.User", areaSecurity.Id, user);
@@ -103,6 +111,12 @@ namespace OpenLawOffice.Data.Installation
             areaNote = SetupSecurityArea("Notes.Note", areaNotes.Id, user);
             areaNoteMatter = SetupSecurityArea("Notes.NoteMatter", areaNotes.Id, user);
             areaNoteTask = SetupSecurityArea("Notes.NoteTask", areaNotes.Id, user);
+            areaDocuments = SetupSecurityArea("Documents", null, user);
+            areaDocument = SetupSecurityArea("Documents.Document", areaDocuments.Id, user);
+            areaDocumentMatter = SetupSecurityArea("Documents.DocumentMatter", areaDocuments.Id, user);
+            areaDocumentTask = SetupSecurityArea("Documents.DocumentTask", areaDocuments.Id, user);
+            areaDocumentVersion = SetupSecurityArea("Documents.DocumentVersion", areaDocuments.Id, user);
+            areaVersion = SetupSecurityArea("Documents.Version", areaDocuments.Id, user);
 
             // Area Acls
             SetupAreaAcl(areaSecurity, user);
@@ -133,12 +147,18 @@ namespace OpenLawOffice.Data.Installation
             SetupAreaAcl(areaNote, user);
             SetupAreaAcl(areaNoteMatter, user);
             SetupAreaAcl(areaNoteTask, user);
+            SetupAreaAcl(areaDocuments, user);
+            SetupAreaAcl(areaDocument, user);
+            SetupAreaAcl(areaDocumentMatter, user);
+            SetupAreaAcl(areaDocumentTask, user);
+            SetupAreaAcl(areaDocumentVersion, user);
+            SetupAreaAcl(areaVersion, user);
 
             if (runOptionalData)
-                OptionalData(user);
+                OptionalData(installDirPath, user);
         }
 
-        private static void OptionalData(Common.Models.Security.User user)
+        private static void OptionalData(string installDirPath, Common.Models.Security.User user)
         {
             Common.Models.Contacts.Contact contact = Contacts.Contact.Get("Lucas Nodine");
             if (contact == null)
@@ -381,6 +401,21 @@ namespace OpenLawOffice.Data.Installation
                 };
                 document1 = Documents.Document.Create(document1, user);
                 Documents.Document.RelateMatter(document1, matter.Id.Value, user);
+
+                Common.Models.Documents.Version version1 = new Common.Models.Documents.Version()
+                {
+                    Id = Guid.Parse("59879231-2db4-45f2-8b8d-850079bb11fa"),
+                    Document = document1,
+                    VersionNumber = 1,
+                    Mime = "application/pdf",
+                    Filename = "fw4",
+                    Extension = "pdf",
+                    Size = 113881,
+                    Md5 = "C68A7AEE32C45AE945F4DA680347B382"
+                };
+
+                Documents.Document.CreateNewVersion(document1.Id.Value, version1, user);
+                System.IO.File.Copy(installDirPath + "fw4.pdf", FileStorage.Instance.CurrentVersionPath + version1.Id.Value.ToString() + "." + version1.Extension);
             }
 
             Common.Models.Documents.Document document2 = Documents.Document.Get(Guid.Parse("d861cfa7-f446-44d1-8ed1-e7a3f8a495e1"));
@@ -393,6 +428,21 @@ namespace OpenLawOffice.Data.Installation
                 };
                 document2 = Documents.Document.Create(document2, user);
                 Documents.Document.RelateTask(document2, task.Id.Value, user);
+
+                Common.Models.Documents.Version version2 = new Common.Models.Documents.Version()
+                {
+                    Id = Guid.Parse("1955238c-52e1-4f8c-8e14-2b502aa5b492"),
+                    Document = document2,
+                    VersionNumber = 1,
+                    Mime = "application/pdf",
+                    Filename = "bitcoin",
+                    Extension = "pdf",
+                    Size = 184292,
+                    Md5 = "D56D71ECADF2137BE09D8B1D35C6C042"
+                };
+
+                Documents.Document.CreateNewVersion(document2.Id.Value, version2, user);
+                System.IO.File.Copy(installDirPath + "bitcoin.pdf", FileStorage.Instance.CurrentVersionPath + version2.Id.Value.ToString() + "." + version2.Extension);
             }
         }
 

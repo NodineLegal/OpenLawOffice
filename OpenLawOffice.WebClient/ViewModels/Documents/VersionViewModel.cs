@@ -8,6 +8,7 @@
     public class VersionViewModel : CoreViewModel
     {
         public Guid? Id { get; set; }
+        public DocumentViewModel Document { get; set; }
         public int VersionNumber { get; set; }
         public string Mime { get; set; }
         public string Filename { get; set; }
@@ -48,6 +49,14 @@
                     };
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dst => dst.Document, opt => opt.ResolveUsing(db =>
+                {
+                    return new ViewModels.Documents.DocumentViewModel()
+                    {
+                        Id = db.Document.Id,
+                        IsStub = true
+                    };
+                }))
                 .ForMember(dst => dst.VersionNumber, opt => opt.MapFrom(src => src.VersionNumber))
                 .ForMember(dst => dst.Mime, opt => opt.MapFrom(src => src.Mime))
                 .ForMember(dst => dst.Filename, opt => opt.MapFrom(src => src.Filename))
@@ -90,6 +99,16 @@
                     };
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dst => dst.Document, opt => opt.ResolveUsing(model =>
+                {
+                    if (model.Document == null || !model.Document.Id.HasValue)
+                        return null;
+                    return new Common.Models.Documents.Document()
+                    {
+                        Id = model.Document.Id,
+                        IsStub = true
+                    };
+                }))
                 .ForMember(dst => dst.VersionNumber, opt => opt.MapFrom(src => src.VersionNumber))
                 .ForMember(dst => dst.Mime, opt => opt.MapFrom(src => src.Mime))
                 .ForMember(dst => dst.Filename, opt => opt.MapFrom(src => src.Filename))

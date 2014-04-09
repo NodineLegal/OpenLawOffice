@@ -71,7 +71,6 @@
     <Compile Include="DBOs\Documents\Document.cs" />
     <Compile Include="DBOs\Documents\DocumentMatter.cs" />
     <Compile Include="DBOs\Documents\DocumentTask.cs" />
-    <Compile Include="DBOs\Documents\DocumentVersion.cs" />
     <Compile Include="DBOs\Documents\Version.cs" />
     <Compile Include="DBOs\Matters\Matter.cs" />
     <Compile Include="DBOs\Matters\MatterContact.cs" />
@@ -98,6 +97,9 @@
     <Compile Include="Documents\Document.cs" />
     <Compile Include="Documents\DocumentMatter.cs" />
     <Compile Include="Documents\DocumentTask.cs" />
+    <Compile Include="Documents\Version.cs" />
+    <Compile Include="FileStorage.cs" />
+    <Compile Include="FileStorageSettings.cs" />
     <Compile Include="Installation\Setup.cs" />
     <Compile Include="Matters\Matter.cs" />
     <Compile Include="Matters\MatterContact.cs" />
@@ -123,6 +125,12 @@
     <Compile Include="Timing\Time.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Installation\bitcoin.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Installation\fw4.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

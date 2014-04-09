@@ -3,12 +3,16 @@
     using System;
     using AutoMapper;
     using OpenLawOffice.Common.Models;
+    using System.Web;
+    using System.Collections.Generic;
 
     [MapMe]
     public class DocumentViewModel : CoreViewModel
     {
         public Guid? Id { get; set; }
         public string Title { get; set; }
+
+        public List<VersionViewModel> Versions { get; set; }
 
         public void BuildMappings()
         {
@@ -43,7 +47,8 @@
                     };
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title));
+                .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
+                .ForMember(dst => dst.Versions, opt => opt.Ignore());
 
             Mapper.CreateMap<DocumentViewModel, Common.Models.Documents.Document>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))

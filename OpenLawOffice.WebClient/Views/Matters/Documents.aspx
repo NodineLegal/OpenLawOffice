@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<IEnumerable<OpenLawOffice.WebClient.ViewModels.Documents.Document>>" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<IEnumerable<OpenLawOffice.WebClient.ViewModels.Documents.DocumentViewModel>>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
 	Documents
@@ -24,7 +24,8 @@
             </td>
             <td>
                 <%: Html.ActionLink("Edit", "Edit", "Documents", new { id = item.Id }, null) %> |
-                <%: Html.ActionLink("Details", "Details", "Documents", new { id = item.Id }, null)%>
+                <%: Html.ActionLink("Details", "Details", "Documents", new { id = item.Id }, null)%> |
+                <%: Html.ActionLink("Download", "Download", "Documents", new { id = item.Id }, null) %>
             </td>
         </tr>
     

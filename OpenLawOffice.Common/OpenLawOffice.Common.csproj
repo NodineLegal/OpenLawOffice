@@ -72,7 +72,6 @@
     <Compile Include="Models\Documents\Document.cs" />
     <Compile Include="Models\Documents\DocumentMatter.cs" />
     <Compile Include="Models\Documents\DocumentTask.cs" />
-    <Compile Include="Models\Documents\DocumentVersion.cs" />
     <Compile Include="Models\Documents\Version.cs" />
     <Compile Include="Models\IHasGuidId.cs" />
     <Compile Include="Models\IHasId.cs" />

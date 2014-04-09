@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="DocumentVersion.cs" company="Nodine Legal, LLC">
+// <copyright file="Version.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -7,9 +7,9 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //  http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -19,29 +19,26 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.Common.Models.Documents
+namespace OpenLawOffice.Data.Documents
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
+    using AutoMapper;
+    using Dapper;
+    using System.Data;
 
     /// <summary>
     /// TODO: Update summary.
     /// </summary>
-    [MapMe]
-    public class DocumentVersion : Core
+    public static class Version
     {
-        public Guid Id { get; set; }
-        public Document Document { get; set; }
-        public Version Version { get; set; }
-
-        public DocumentVersion()
+        public static Common.Models.Documents.Version Get(Guid id)
         {
-        }
-        
-        public override void BuildMappings()
-        {
+            return DataHelper.Get<Common.Models.Documents.Version, DBOs.Documents.Version>(
+                "SELECT * FROM \"version\" WHERE \"id\"=@Id AND \"utc_disabled\" is null",
+                new { Id = id });
         }
     }
 }

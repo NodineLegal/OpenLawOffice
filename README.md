@@ -21,3 +21,22 @@ Contributions and value added services.  For instance, who better to perform you
 
 ## Can We (I) Help?
 Absolutely!  There is much to be done.  If you would like to assist, simply contact Lucas Nodine [github](https://github.com/lucasnodine) or [linkedin](http://www.linkedin.com/profile/view?id=15557533) or if you prefer non-social media sites, please visit the [Nodine Legal](http://www.nodinelegal.com/) website for multiple direct contact methods.  Please only contact us if you are serious about contributing to the project.
+
+## Installation
+### Step 1 - Prerequisites
+The below are currently considered the prerequisites and this software is only tested within the Visual Studio (R) 2010 IDE with Postgres 9.2 all on windows 7.
+
+*.NET Framework v4
+*MVC2
+*Postgresql
+
+### Step 2 - Database
+Create a database within your postgresql server.  It doesn't matter what you call it, you can change the name in the web.config disucssed later.
+
+### Step 3 - Webapp
+* Modify the "fileStorageSettings" to point to existing locations.  This will be where your documents are stored, so make sure you have ample space.
+* Modify your connection string
+* Modify the DbProviderFactories as needed.  I have it commented out as I have Npgsql installed on my system (See 2.2 http://npgsql.projects.pgfoundry.org/docs/manual/UserManual.html for details on installing).
+
+### Step 4 - Let me know
+If you find problems with installation, file an issue and let me know.
