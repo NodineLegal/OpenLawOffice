@@ -451,5 +451,6 @@
         <li><%: Html.ActionLink("Disable ", "Disable", new { id = Model.Id })%></li>
         <li><%: Html.ActionLink("List", "Index") %></li>
     </ul>
+    <li><%: Html.ActionLink("Check Conflicts", "Conflicts", new { id = Model.Id }) %></li>
 </asp:Content>
 

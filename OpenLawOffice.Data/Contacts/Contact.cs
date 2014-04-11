@@ -48,6 +48,68 @@ namespace OpenLawOffice.Data.Contacts
                 new { displayName = displayName });
         }
 
+        public static List<Common.Models.Matters.Matter> ListMattersForContact(int contactId)
+        {
+            List<DBOs.Matters.Matter> dbo = null;
+            List<Common.Models.Matters.Matter> modelList = new List<Common.Models.Matters.Matter>();
+
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                dbo = conn.Query<DBOs.Matters.Matter>
+                    ("SELECT \"matter\".* FROM \"task_assigned_contact\" " +
+                    "JOIN \"task_matter\" ON \"task_assigned_contact\".\"task_id\"=\"task_matter\".\"task_id\" " +
+                    "JOIN \"matter\" ON \"task_matter\".\"matter_id\"=\"matter\".\"id\" " +
+                    "WHERE \"task_assigned_contact\".\"contact_id\"=@ContactId " +
+                    "UNION " +
+                    "SELECT \"matter\".* FROM \"matter_contact\" " +
+                    "JOIN \"matter\" ON \"matter_contact\".\"matter_id\"=\"matter\".\"id\" " +
+                    "WHERE \"matter_contact\".\"contact_id\"=@ContactId",
+                    new { ContactId = contactId }).ToList();
+            }
+
+            dbo.ForEach(x =>
+            {
+                modelList.Add(Mapper.Map<Common.Models.Matters.Matter>(x));
+            });
+
+            return modelList;
+        }
+
+        public static List<Tuple<Common.Models.Matters.Matter, Common.Models.Matters.MatterContact, Common.Models.Contacts.Contact>>
+            ListMatterRelationshipsForContact(int contactId, Guid matterId)
+        {
+            List<Tuple<DBOs.Matters.Matter, DBOs.Matters.MatterContact, DBOs.Contacts.Contact>> dbo = null;
+            List<Tuple<Common.Models.Matters.Matter, Common.Models.Matters.MatterContact, Common.Models.Contacts.Contact>> modelList =
+                new List<Tuple<Common.Models.Matters.Matter, Common.Models.Matters.MatterContact, Common.Models.Contacts.Contact>>();
+
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                conn.Open();
+                dbo = conn.Query<DBOs.Matters.Matter, DBOs.Matters.MatterContact, DBOs.Contacts.Contact,
+                    Tuple<DBOs.Matters.Matter, DBOs.Matters.MatterContact, DBOs.Contacts.Contact>>
+                    ("SELECT * FROM \"matter\" " +
+	                "JOIN \"matter_contact\" ON \"matter\".\"id\"=\"matter_contact\".\"matter_id\" " +
+	                "JOIN \"contact\" ON \"matter_contact\".\"contact_id\"=\"contact\".\"id\" " +
+	                "WHERE \"matter\".\"id\"=@MatterId " +
+	                "AND \"contact\".\"id\"!=@ContactId",
+                    (mtr, matterContact, contact) =>
+                    {
+                        return new Tuple<DBOs.Matters.Matter, DBOs.Matters.MatterContact, DBOs.Contacts.Contact>(mtr, matterContact, contact);
+                    },
+                    new { MatterId = matterId, ContactId = contactId }).ToList();
+            }
+
+            dbo.ForEach(x =>
+            {
+                Common.Models.Matters.Matter m = Mapper.Map<Common.Models.Matters.Matter>(x.Item1);
+                Common.Models.Matters.MatterContact mc = Mapper.Map<Common.Models.Matters.MatterContact>(x.Item2);
+                Common.Models.Contacts.Contact c = Mapper.Map<Common.Models.Contacts.Contact>(x.Item3);
+                modelList.Add(new Tuple<Common.Models.Matters.Matter, Common.Models.Matters.MatterContact, Common.Models.Contacts.Contact>(m, mc, c));
+            });
+
+            return modelList;
+        }
+
         public static List<Common.Models.Contacts.Contact> List()
         {
             return DataHelper.List<Common.Models.Contacts.Contact, DBOs.Contacts.Contact>(

@@ -133,5 +133,34 @@
                 return View(viewModel);
             }
         }
+
+        [SecurityFilter(SecurityAreaName = "Contacts.Contact", IsSecuredResource = false,
+            Permission = Common.Models.PermissionType.Read)]
+        public ActionResult Conflicts(int id)
+        {
+            ViewModels.Contacts.ConflictViewModel viewModel = new ViewModels.Contacts.ConflictViewModel();
+
+            viewModel.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(Data.Contacts.Contact.Get(id));
+
+            viewModel.Matters = new List<ViewModels.Contacts.ConflictViewModel.MatterRelationship>();
+            Data.Contacts.Contact.ListMattersForContact(id).ForEach(x =>
+            {
+                ViewModels.Contacts.ConflictViewModel.MatterRelationship mr = new ViewModels.Contacts.ConflictViewModel.MatterRelationship();
+                mr.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(x);
+
+                mr.MatterContacts = new List<ViewModels.Matters.MatterContactViewModel>();
+                Data.Contacts.Contact.ListMatterRelationshipsForContact(id, x.Id.Value).ForEach(y =>
+                {
+                    ViewModels.Matters.MatterContactViewModel mc = Mapper.Map<ViewModels.Matters.MatterContactViewModel>(y.Item2);
+                    mc.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(y.Item3);
+                    mc.Matter = mr.Matter;
+                    mr.MatterContacts.Add(mc);
+                });
+
+                viewModel.Matters.Add(mr);
+            });
+            
+            return View(viewModel);
+        }
     }
 }
