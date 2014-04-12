@@ -114,6 +114,7 @@
     <Compile Include="ViewModels\JqGridObject.cs" />
     <Compile Include="ViewModels\Matters\MatterContactViewModel.cs" />
     <Compile Include="ViewModels\Matters\MatterTagViewModel.cs" />
+    <Compile Include="ViewModels\Matters\MatterTimeViewModel.cs" />
     <Compile Include="ViewModels\Matters\MatterViewModel.cs" />
     <Compile Include="ViewModels\Matters\ResponsibleUserViewModel.cs" />
     <Compile Include="ViewModels\Notes\NoteViewModel.cs" />
@@ -166,6 +167,7 @@
     <Content Include="Views\Matters\ResponsibleUsers.aspx" />
     <Content Include="Views\Matters\Tags.aspx" />
     <Content Include="Views\Matters\Tasks.aspx" />
+    <Content Include="Views\Matters\Time.aspx" />
     <Content Include="Views\MatterTags\Create.aspx" />
     <Content Include="Views\MatterTags\Delete.aspx" />
     <Content Include="Views\MatterTags\Details.aspx" />

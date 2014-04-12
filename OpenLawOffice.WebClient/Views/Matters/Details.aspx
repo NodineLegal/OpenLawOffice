@@ -18,7 +18,7 @@
     <li><%: Html.ActionLink("Tasks", "Tasks", "Matters", new { id = Model.Id }, null)%> (<%: Html.ActionLink("Add", "Create", "Tasks", new { controller = "Matters", MatterId = Model.Id }, null)%>)</li>
     <li><%: Html.ActionLink("Notes", "Notes", "Matters", new { id = Model.Id }, null)%> (<%: Html.ActionLink("Add", "Create", "Notes", new { controller = "Matters", MatterId = Model.Id }, null)%>)</li>
     <li><%: Html.ActionLink("Documents", "Documents", "Matters", new { id = Model.Id }, null)%> (<%: Html.ActionLink("Add", "AddDocument", new { controller = "Matters", id = Model.Id }) %>)</li>
-    <li><%: Html.ActionLink("Time", "Time", "Matters")%> (<%: Html.ActionLink("Add", "AddTime", new { controller = "Matters", id = Model.Id }) %>)</li>
+    <li><%: Html.ActionLink("Times", "Time", "Matters", new { id = Model.Id }, null)%> (<%: Html.ActionLink("Add", "AddTime", new { controller = "Matters", id = Model.Id }) %>)</li>
     <li><%: Html.ActionLink("Permissions", "Acls", "Matters")%></li>
 </asp:Content>
 

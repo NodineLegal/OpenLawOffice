@@ -270,19 +270,33 @@
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Time(Guid id)
         {
-            List<ViewModels.Timing.TimeViewModel> viewModelList = new List<ViewModels.Timing.TimeViewModel>();
-            List<Common.Models.Timing.Time> modelList = OpenLawOffice.Data.Timing.Time.ListForTask(id);
+            ViewModels.Matters.MatterTimeViewModel viewModel = new ViewModels.Matters.MatterTimeViewModel();
+            viewModel.Tasks = new List<ViewModels.Matters.MatterTimeViewModel.Task>();
 
-            modelList.ForEach(x =>
+            Data.Tasks.Task.ListForMatter(id).ForEach(x =>
             {
-                ViewModels.Timing.TimeViewModel viewModel = Mapper.Map<ViewModels.Timing.TimeViewModel>(x);
-                Common.Models.Contacts.Contact contact = OpenLawOffice.Data.Contacts.Contact.Get(viewModel.Worker.Id.Value);
-                viewModel.Worker = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contact);
-                viewModel.WorkerDisplayName = viewModel.Worker.DisplayName;
-                viewModelList.Add(viewModel);
+                List<Common.Models.Timing.Time> times = Data.Timing.Time.ListForTask(x.Id.Value);
+                if (times != null && times.Count > 0)
+                {
+                    ViewModels.Matters.MatterTimeViewModel.Task task = new ViewModels.Matters.MatterTimeViewModel.Task()
+                    {
+                        Id = x.Id.Value,
+                        Title = x.Title
+                    };
+                    task.Times = new List<ViewModels.Timing.TimeViewModel>();
+                    times.ForEach(y =>
+                    {
+                        ViewModels.Timing.TimeViewModel timeViewModel = Mapper.Map<ViewModels.Timing.TimeViewModel>(y);
+                        Common.Models.Contacts.Contact contact = OpenLawOffice.Data.Contacts.Contact.Get(timeViewModel.Worker.Id.Value);
+                        timeViewModel.Worker = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contact);
+                        timeViewModel.WorkerDisplayName = timeViewModel.Worker.DisplayName;
+                        task.Times.Add(timeViewModel);
+                    });
+                    viewModel.Tasks.Add(task);
+                }
             });
 
-            return View(viewModelList);
+            return View(viewModel);
         }
     }
 }
