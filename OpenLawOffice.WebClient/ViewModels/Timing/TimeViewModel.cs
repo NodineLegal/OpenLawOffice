@@ -10,6 +10,7 @@
         public Guid? Id { get; set; }
         public DateTime Start { get; set; }
         public DateTime? Stop { get; set; }
+        public TimeSpan Duration { get; set; }
         public Contacts.ContactViewModel Worker { get; set; }
         public string WorkerDisplayName { get; set; }
 
@@ -48,6 +49,10 @@
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Start, opt => opt.MapFrom(src => src.Start))
                 .ForMember(dst => dst.Stop, opt => opt.MapFrom(src => src.Stop))
+                .ForMember(dst => dst.Duration, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Stop - db.Start;
+                }))
                 .ForMember(dst => dst.Worker, opt => opt.ResolveUsing(db =>
                 {
                     return new ViewModels.Contacts.ContactViewModel()

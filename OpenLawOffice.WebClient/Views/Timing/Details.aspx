@@ -15,7 +15,7 @@
         </tr>
         <tr>
             <td class="display-label">Duration</td>
-            <td class="display-field"><%: ((TimeSpan)(Model.Stop - Model.Start)).TotalMinutes %> min.</td>
+            <td class="display-field"><%: Math.Round(((TimeSpan)(Model.Stop - Model.Start)).TotalMinutes, 0) %> min.</td>
         </tr>
         <tr>
             <td class="display-label">Start</td>

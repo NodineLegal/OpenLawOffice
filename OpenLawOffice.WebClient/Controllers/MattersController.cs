@@ -265,5 +265,24 @@
 
             return View(viewModelList);
         }
+
+        [SecurityFilter(SecurityAreaName = "Timing.Time", IsSecuredResource = false,
+            Permission = Common.Models.PermissionType.List)]
+        public ActionResult Time(Guid id)
+        {
+            List<ViewModels.Timing.TimeViewModel> viewModelList = new List<ViewModels.Timing.TimeViewModel>();
+            List<Common.Models.Timing.Time> modelList = OpenLawOffice.Data.Timing.Time.ListForTask(id);
+
+            modelList.ForEach(x =>
+            {
+                ViewModels.Timing.TimeViewModel viewModel = Mapper.Map<ViewModels.Timing.TimeViewModel>(x);
+                Common.Models.Contacts.Contact contact = OpenLawOffice.Data.Contacts.Contact.Get(viewModel.Worker.Id.Value);
+                viewModel.Worker = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contact);
+                viewModel.WorkerDisplayName = viewModel.Worker.DisplayName;
+                viewModelList.Add(viewModel);
+            });
+
+            return View(viewModelList);
+        }
     }
 }

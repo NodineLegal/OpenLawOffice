@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Timing.TimeViewModel>" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<IEnumerable<OpenLawOffice.WebClient.ViewModels.Timing.TimeViewModel>>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
 	Time
@@ -6,58 +6,57 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
-    <script type="text/javascript" src="/Scripts/jqGrid-4.5.4/jquery-1.9.0.min.js"></script>
-    <script type="text/javascript" src="/Scripts/jqGrid-4.5.4/grid.locale-en.js"></script>
-    <script type="text/javascript" src="/Scripts/jqGrid-4.5.4/jquery.jqGrid.min.js"></script>
-    
-    <style type="text/css">
-    div.ui-jqgrid-titlebar 
-    {
-        height: 16px;
-    }
-    </style>
-
     <h2>Time</h2>
+    <% double totalMinutes = 0; %>
+
+    <table class="listing_table">
+        <tr>
+            <th style="text-align: center;">
+                Start
+            </th>
+            <th style="text-align: center;">
+                Stop
+            </th>
+            <th style="text-align: center;">
+                Duration
+            </th>
+            <th style="text-align: center;">
+                Worker
+            </th>
+            <th style="width: 100px;"></th>
+        </tr>
+
+    <% foreach (var item in Model) { %>
+        <% totalMinutes += item.Duration.TotalMinutes; %>
     
-    <table id="list"></table>
-    <div id="pager"></div>
+        <tr>
+            <td>
+                <%: item.Start %>
+            </td>
+            <td>
+                <%: item.Stop %>
+            </td>
+            <td>
+                <%: Math.Round(item.Duration.TotalMinutes, 0) %> min.
+            </td>
+            <td>
+                <%: item.Worker.DisplayName %>
+            </td>
+            <td>
+                <%: Html.ActionLink("Edit", "Edit", "Timing", new { id = item.Id.Value }, null)%> |
+                <%: Html.ActionLink("Details", "Details", "Timing", new { id = item.Id.Value }, null)%>
+            </td>
+        </tr>
     
-    <script language="javascript">
-        $(function () {
-            $("#list").jqGrid({
-                autowidth: true,
-                url: '/Timing/ListChildrenJqGrid?TaskId=<%: RouteData.Values["Id"].ToString() %>',
-                datatype: 'json',
-                jsonReader: {
-                    root: 'Rows',
-                    page: 'CurrentPage',
-                    total: 'TotalRecords',
-                    id: 'Id',
-                    rows: 'Rows'
-                },
-                colNames: ['id', 'Start', 'Stop', 'Worker', 'Actions'],
-                colModel: [
-                    { name: 'Id', width: 1, hidden: true, key: true },
-                    { name: 'Start', width: 200, formatter: 'date', formatoptions: { newformat: 'm/d/Y H:i:s'} },
-                    { name: 'Stop', width: 200, formatter: 'date', formatoptions: { newformat: 'm/d/Y H:i:s'} },
-                    { name: 'Worker', width: 200 },
-                    { name: 'act', width: 120 }
-                ],
-                pager: '#pager',
-                gridview: true,
-                caption: 'Tasks',
-                gridComplete: function () {
-                    var ids = jQuery("#list").jqGrid('getDataIDs');
-                    for (var i = 0; i < ids.length; i++) {
-                        id = ids[i];
-                        detailButton = "<a href=\"/Timing/Details/" + ids[i] + "\">Details</a>";
-                        editButton = "<a href=\"/Timing/Edit/" + ids[i] + "\">Edit</a>";
-                        jQuery("#list").jqGrid('setRowData', ids[i], { act: detailButton + " | " + editButton });
-                    }
-                }
-            });
-        });
-    </script>
+    <% } %>
+
+        <tr>
+            <td colspan="2" style="text-align: right; font-weight: bold;">Total Time:</td>
+            <td style="text-align: center; font-weight: bold;"><%: Math.Round(totalMinutes, 0) %> min.</td>
+            <td colspan="2"></td>
+        </tr>
+
+    </table>
 
 </asp:Content>
 
