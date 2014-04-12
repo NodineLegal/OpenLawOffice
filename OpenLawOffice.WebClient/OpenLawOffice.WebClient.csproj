@@ -73,7 +73,6 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AuthorizeResult.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ContactsController.cs" />
@@ -85,6 +84,7 @@
     <Compile Include="Controllers\MatterTagsController.cs" />
     <Compile Include="Controllers\NotesController.cs" />
     <Compile Include="Controllers\ResponsibleUsersController.cs" />
+    <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\SecurityAreaAclsController.cs" />
     <Compile Include="Controllers\SecurityFilterAttribute.cs" />
     <Compile Include="Controllers\SecurityAreasController.cs" />
@@ -118,6 +118,7 @@
     <Compile Include="ViewModels\Matters\ResponsibleUserViewModel.cs" />
     <Compile Include="ViewModels\Notes\NoteViewModel.cs" />
     <Compile Include="ViewModels\PermissionsViewModel.cs" />
+    <Compile Include="ViewModels\Search\TagSearchViewModel.cs" />
     <Compile Include="ViewModels\Security\AreaViewModel.cs" />
     <Compile Include="ViewModels\Security\AreaAclViewModel.cs" />
     <Compile Include="ViewModels\Security\SecuredResourceAclViewModel.cs" />
@@ -176,6 +177,7 @@
     <Content Include="Views\ResponsibleUsers\Delete.aspx" />
     <Content Include="Views\ResponsibleUsers\Details.aspx" />
     <Content Include="Views\ResponsibleUsers\Edit.aspx" />
+    <Content Include="Views\Search\Tags.aspx" />
     <Content Include="Views\SecurityAreaAcls\Create.aspx" />
     <Content Include="Views\SecurityAreaAcls\Details.aspx" />
     <Content Include="Views\SecurityAreaAcls\Edit.aspx" />

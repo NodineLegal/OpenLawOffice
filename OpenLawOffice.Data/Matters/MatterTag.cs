@@ -217,5 +217,28 @@ namespace OpenLawOffice.Data.Matters
 
             return model;
         }
+
+        public static List<Common.Models.Matters.MatterTag> Search(string text)
+        {
+            List<Common.Models.Matters.MatterTag> list = new List<Common.Models.Matters.MatterTag>();
+            List<DBOs.Matters.MatterTag> dbo = null;
+
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                dbo = conn.Query<DBOs.Matters.MatterTag>(
+                    "SELECT * FROM \"matter_tag\" WHERE LOWER(\"tag\") LIKE '%' || @Query || '%'",
+                    new { Query = text }).ToList();
+            }
+
+            dbo.ForEach(x =>
+            {
+                Common.Models.Matters.MatterTag mt = Mapper.Map<Common.Models.Matters.MatterTag>(x);
+                mt.TagCategory = Tagging.TagCategory.Get(mt.TagCategory.Id);
+                mt.Matter = Matter.Get(mt.Matter.Id.Value);
+                list.Add(mt);
+            });
+
+            return list;
+        }
     }
 }

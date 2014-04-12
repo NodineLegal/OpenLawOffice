@@ -232,5 +232,28 @@ namespace OpenLawOffice.Data.Tasks
 
             return list;
         }
+
+        public static List<Common.Models.Tasks.TaskTag> Search(string text)
+        {
+            List<Common.Models.Tasks.TaskTag> list = new List<Common.Models.Tasks.TaskTag>();
+            List<DBOs.Tasks.TaskTag> dbo = null;
+
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                dbo = conn.Query<DBOs.Tasks.TaskTag>(
+                    "SELECT * FROM \"task_tag\" WHERE LOWER(\"tag\") LIKE '%' || @Query || '%'",
+                    new { Query = text }).ToList();
+            }
+
+            dbo.ForEach(x =>
+            {
+                Common.Models.Tasks.TaskTag tt = Mapper.Map<Common.Models.Tasks.TaskTag>(x);
+                tt.TagCategory = Tagging.TagCategory.Get(tt.TagCategory.Id);
+                tt.Task = Task.Get(tt.Task.Id.Value);
+                list.Add(tt);
+            });
+
+            return list;
+        }
     }
 }

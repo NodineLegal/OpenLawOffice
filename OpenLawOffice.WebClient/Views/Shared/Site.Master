@@ -31,17 +31,21 @@
 
         <div id="nav">
             <ul>
+                <li><%: Html.ActionLink("Dashboard", "Index", "Home") %></li>
+                <ul></ul>
+                <li>Search</li>
+                <ul>
+                    <li><%: Html.ActionLink("Tags", "Tags", "Search") %></li>
+                    <li>Document Text</li>
+                </ul>
                 <li><%: Html.ActionLink("Matters", "", "Matters") %></li>
                 <ul>
                     <li><%: Html.ActionLink("New Matter", "Create", "Matters") %></li>
                 </ul>
                 <li><%: Html.ActionLink("Contacts", "", "Contacts")%></li>
-                <ul></ul>
-                <li>Tasking</li>
-                <ul></ul>
-                <li>Notes</li>
-                <ul></ul>
-                <li>Documents</li>
+                <ul>
+                    <li><%: Html.ActionLink("New Contact", "Create", "Contacts") %></li>
+                </ul>
                 <ul></ul>
                 <li>Billing</li>
                 <ul></ul>
