@@ -10,7 +10,7 @@
 
     public class TaskResponsibleUsersController : BaseController
     {
-        [SecurityFilter(SecurityAreaName = "Tasks.TaskResponsibleUser", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(Guid id)
         {
@@ -28,7 +28,7 @@
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks.TaskResponsibleUser", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         public ActionResult Create(long id)
         {
@@ -44,7 +44,7 @@
             return View(new ViewModels.Tasks.TaskResponsibleUserViewModel() { Task = taskViewModel });
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks.TaskResponsibleUser", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
         public ActionResult Create(ViewModels.Tasks.TaskResponsibleUserViewModel viewModel)
@@ -100,7 +100,7 @@
 
         //
         // GET: /ResponsibleUsers/Edit/5
-        [SecurityFilter(SecurityAreaName = "Tasks.TaskResponsibleUser", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(Guid id)
         {
@@ -124,7 +124,7 @@
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks.TaskResponsibleUser", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
         public ActionResult Edit(Guid id, ViewModels.Tasks.TaskResponsibleUserViewModel viewModel)
@@ -143,14 +143,14 @@
             }
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks.TaskResponsibleUser", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Disable)]
         public ActionResult Delete(Guid id)
         {
             return Details(id);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks.TaskResponsibleUser", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Disable)]
         [HttpPost]
         public ActionResult Delete(Guid id, ViewModels.Tasks.TaskResponsibleUserViewModel viewModel)

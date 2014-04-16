@@ -11,7 +11,7 @@
     public class MatterContactController : BaseController
     {
         // Selects link based on Guid of Matter
-        [SecurityFilter(SecurityAreaName = "Matters.MatterContact", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Contacts", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         public ActionResult SelectContactToAssign(Guid id)
         {
@@ -26,7 +26,7 @@
             return View(modelList);
         }
 
-        [SecurityFilter(SecurityAreaName = "Matters.MatterContact", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Contacts", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         public ActionResult AssignContact(int id)
         {
@@ -46,7 +46,7 @@
             return View(vm);
         }
 
-        [SecurityFilter(SecurityAreaName = "Matters.MatterContact", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Contacts", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
         public ActionResult AssignContact(ViewModels.Matters.MatterContactViewModel model)
@@ -77,7 +77,7 @@
 
         //
         // GET: /MatterContact/Edit/5
-        [SecurityFilter(SecurityAreaName = "Matters.MatterContact", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Contacts", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(int id)
         {
@@ -96,7 +96,7 @@
 
         //
         // POST: /MatterContact/Edit/5
-        [SecurityFilter(SecurityAreaName = "Matters.MatterContact", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Contacts", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
         public ActionResult Edit(int id, ViewModels.Matters.MatterContactViewModel viewModel)
@@ -118,7 +118,7 @@
 
         //
         // GET: /MatterContact/Details/5
-        [SecurityFilter(SecurityAreaName = "Matters.MatterContact", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Contacts", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(int id)
         {
@@ -138,7 +138,7 @@
 
         //
         // GET: /MatterContact/Delete/5
-        [SecurityFilter(SecurityAreaName = "Matters.MatterContact", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Contacts", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Disable)]
         public ActionResult Delete(int id)
         {
@@ -147,7 +147,7 @@
 
         //
         // POST: /MatterContact/Delete/5
-        [SecurityFilter(SecurityAreaName = "Matters.MatterContact", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Contacts", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Disable)]
         [HttpPost]
         public ActionResult Delete(int id, ViewModels.Matters.MatterContactViewModel viewModel)

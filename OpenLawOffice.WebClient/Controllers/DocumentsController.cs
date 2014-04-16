@@ -9,7 +9,7 @@ namespace OpenLawOffice.WebClient.Controllers
 {
     public class DocumentsController : BaseController
     {
-        [SecurityFilter(SecurityAreaName = "Documents.Document", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Documents", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Read)]
         public FileResult Download(Guid id)
         {
@@ -18,7 +18,7 @@ namespace OpenLawOffice.WebClient.Controllers
                 version.Mime, version.Filename + "." + version.Extension);
         }
 
-        [SecurityFilter(SecurityAreaName = "Documents.Document", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Documents", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(Guid id)
         {
@@ -38,14 +38,14 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Documents.Document", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Documents", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         public ActionResult Create()
         {
             return View();
         }
 
-        [SecurityFilter(SecurityAreaName = "Documents.Document", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Documents", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
         public ActionResult Create(ViewModels.Documents.DocumentViewModel viewModel, HttpPostedFileBase file)
@@ -97,7 +97,7 @@ namespace OpenLawOffice.WebClient.Controllers
             }
         }
 
-        [SecurityFilter(SecurityAreaName = "Documents.Document", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Documents", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(Guid id)
         {
@@ -108,7 +108,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Documents.Document", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Documents", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
         public ActionResult Edit(Guid id, ViewModels.Documents.DocumentViewModel viewModel)

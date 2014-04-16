@@ -10,7 +10,7 @@
 
     public class TimingController : BaseController
     {
-        [SecurityFilter(SecurityAreaName = "Timing.Time", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Timing", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(Guid id)
         {
@@ -24,7 +24,7 @@
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Timing.Time", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Timing", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(Guid id)
         {
@@ -37,7 +37,7 @@
             return View(viewModel);
         }        
 
-        [SecurityFilter(SecurityAreaName = "Timing.Time", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Timing", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
         public ActionResult Edit(Guid id, ViewModels.Timing.TimeViewModel viewModel)

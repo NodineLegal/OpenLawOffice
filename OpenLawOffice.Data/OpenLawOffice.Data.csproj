@@ -85,6 +85,7 @@
     <Compile Include="DBOs\Security\SecuredResource.cs" />
     <Compile Include="DBOs\Security\SecuredResourceAcl.cs" />
     <Compile Include="DBOs\Security\User.cs" />
+    <Compile Include="DBOs\Settings\UserSettings.cs" />
     <Compile Include="DBOs\Tagging\TagBase.cs" />
     <Compile Include="DBOs\Tagging\TagCategory.cs" />
     <Compile Include="DBOs\Tasks\Task.cs" />

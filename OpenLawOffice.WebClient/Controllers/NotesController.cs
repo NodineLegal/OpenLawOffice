@@ -10,7 +10,7 @@
 
     public class NotesController : BaseController
     {
-        [SecurityFilter(SecurityAreaName = "Notes.Note", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Notes", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(Guid id)
         {
@@ -36,7 +36,7 @@
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Notes.Note", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Notes", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(Guid id)
         {
@@ -46,7 +46,7 @@
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Notes.Note", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Notes", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
         public ActionResult Edit(Guid id, ViewModels.Notes.NoteViewModel viewModel)
@@ -57,14 +57,14 @@
             return RedirectToAction("Details", new { Id = id });
         }
 
-        [SecurityFilter(SecurityAreaName = "Notes.Note", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Notes", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         public ActionResult Create()
         {
             return View();
         }
 
-        [SecurityFilter(SecurityAreaName = "Notes.Note", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Notes", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
         public ActionResult Create(ViewModels.Notes.NoteViewModel viewModel)

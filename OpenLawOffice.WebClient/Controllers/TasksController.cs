@@ -10,7 +10,7 @@
 
     public class TasksController : BaseController
     {
-        [SecurityFilter(SecurityAreaName = "Tasks.Task", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         [HttpGet]
         public ActionResult ListChildrenJqGrid(long? id)
@@ -151,7 +151,7 @@
 
         //
         // GET: /Matter/Details/9acb1b4f-0442-4c9b-a550-ad7478e36fb2
-        [SecurityFilter(SecurityAreaName = "Tasks.Task", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(long id)
         {
@@ -179,7 +179,7 @@
             return View(viewModel);
         }
         
-        [SecurityFilter(SecurityAreaName = "Tasks.Task", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(long id)
         {
@@ -206,7 +206,7 @@
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks.Task", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
         public ActionResult Edit(long id, ViewModels.Tasks.TaskViewModel viewModel)
@@ -240,7 +240,7 @@
             }
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks.Task", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         public ActionResult Create()
         {
@@ -248,7 +248,7 @@
             return View();
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks.Task", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
         public ActionResult Create(ViewModels.Tasks.TaskViewModel viewModel)
@@ -271,7 +271,7 @@
             }
         }
         
-        [SecurityFilter(SecurityAreaName = "Timing.Time", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Timing", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Time(long id)
         {
@@ -290,7 +290,7 @@
             return View(viewModelList);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks.TaskAssignedContact", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Contacts", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Contacts(long id)
         {
@@ -308,7 +308,7 @@
             return View(viewModelList);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks.TaskTag", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Tags(long id)
         {
@@ -323,7 +323,7 @@
             return View(viewModelList);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks.TaskResponsibleUser", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult ResponsibleUsers(long id)
         {
@@ -341,7 +341,7 @@
             return View(viewModelList);
         }
 
-        [SecurityFilter(SecurityAreaName = "Notes.Note", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Notes", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Notes(long id)
         {
@@ -357,7 +357,7 @@
             return View(viewModelList);
         }
 
-        [SecurityFilter(SecurityAreaName = "Documents.Document", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Documents", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Documents(long id)
         {

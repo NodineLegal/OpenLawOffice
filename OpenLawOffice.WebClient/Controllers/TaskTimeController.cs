@@ -9,7 +9,7 @@ namespace OpenLawOffice.WebClient.Controllers
 {
     public class TaskTimeController : BaseController
     {
-        [SecurityFilter(SecurityAreaName = "Tasks.TaskTime", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         public ActionResult SelectContactToAssign()
         {
@@ -24,7 +24,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(modelList);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks.TaskTime", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         public ActionResult Create()
         {
@@ -51,7 +51,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks.TaskTime", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
         public ActionResult Create(ViewModels.Tasks.TaskTimeViewModel viewModel)
@@ -73,7 +73,7 @@ namespace OpenLawOffice.WebClient.Controllers
             }
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks.TaskTime", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         public ActionResult Details(Guid id)
         {

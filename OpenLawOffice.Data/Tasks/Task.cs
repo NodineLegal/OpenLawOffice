@@ -97,23 +97,109 @@ namespace OpenLawOffice.Data.Tasks
                 new { MatterId = matterId });
         }
 
-        public static List<Common.Models.Tasks.Task> ListChildren(long? parentId)
+        public static List<Common.Models.Tasks.Task> ListChildren(long? parentId, List<Tuple<string, string>> filter = null)
         {
             List<Common.Models.Tasks.Task> list = new List<Common.Models.Tasks.Task>();
             IEnumerable<DBOs.Tasks.Task> ie = null;
-            using (IDbConnection conn = Database.Instance.GetConnection())
-            {
-                if (parentId.HasValue)
-                    ie = conn.Query<DBOs.Tasks.Task>(
-                        "SELECT * FROM \"task\" WHERE \"parent_id\"=@ParentId AND \"utc_disabled\" is null",
-                        new { ParentId = parentId.Value });
-                else
-                    ie = conn.Query<DBOs.Tasks.Task>(
-                        "SELECT * FROM \"task\" WHERE \"parent_id\" is null AND \"utc_disabled\" is null");
-            }
 
-            foreach (DBOs.Tasks.Task dbo in ie)
-                list.Add(Mapper.Map<Common.Models.Tasks.Task>(dbo));
+            //filter = new List<Tuple<string, string>>();
+            //filter.Add(new Tuple<string, string>("status", "pending"));
+
+            if (filter != null)
+            {
+                string filterStr = null;
+
+                List<string> cats = new List<string>();
+                List<string> tags = new List<string>();
+                List<Npgsql.NpgsqlParameter> parms = new List<Npgsql.NpgsqlParameter>();
+
+                filter.ForEach(x =>
+                {
+                    if (!string.IsNullOrWhiteSpace(x.Item1))
+                        cats.Add(x.Item1.ToLower());
+                    if (!string.IsNullOrWhiteSpace(x.Item2))
+                        tags.Add(x.Item2.ToLower());
+                });
+
+                filterStr = "SELECT * FROM \"task\" WHERE \"id\" IN (SELECT \"task_id\" FROM \"task_tag\" WHERE \"tag_category_id\" " +
+                    "IN (SELECT \"id\" FROM \"tag_category\" WHERE LOWER(\"name\") IN (";
+
+                cats.ForEach(x =>
+                {
+                    string parmName = parms.Count.ToString();
+                    parms.Add(new Npgsql.NpgsqlParameter(parmName, NpgsqlTypes.NpgsqlDbType.Text) { Value = x });
+                    filterStr += ":" + parmName + ",";
+                });
+
+                filterStr = filterStr.TrimEnd(',');
+                filterStr += ")) AND LOWER(\"tag\") IN (";
+
+                tags.ForEach(x =>
+                {
+                    string parmName = parms.Count.ToString();
+                    parms.Add(new Npgsql.NpgsqlParameter(parmName, NpgsqlTypes.NpgsqlDbType.Text) { Value = x });
+                    filterStr += ":" + parmName + ",";
+                });
+
+                filterStr = filterStr.TrimEnd(',');
+                filterStr += ")) AND \"parent_id\"";
+
+                if (parentId.HasValue && parentId.Value > 0)
+                {
+                    filterStr += "=:parentid ";
+                    parms.Add(new Npgsql.NpgsqlParameter("parentid", DbType.Int64) { Value = parentId.Value.ToString() });
+                }
+                else
+                    filterStr += " is null ";
+
+                filterStr += "AND \"utc_disabled\" is null";
+
+                using (Npgsql.NpgsqlConnection conn = (Npgsql.NpgsqlConnection)Database.Instance.GetConnection())
+                {
+                    conn.Open();
+                    using (Npgsql.NpgsqlCommand cmd = new Npgsql.NpgsqlCommand(filterStr, conn))
+                    {
+                        parms.ForEach(x => cmd.Parameters.Add(x));
+                        using (Npgsql.NpgsqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                DBOs.Tasks.Task dbo = new DBOs.Tasks.Task();
+
+                                dbo.Id = Database.GetDbColumnValue<long>("id", reader);
+                                dbo.Title = Database.GetDbColumnValue<string>("title", reader);
+                                dbo.Description = Database.GetDbColumnValue<string>("description", reader);
+                                dbo.ProjectedStart = Database.GetDbColumnValue<DateTime?>("projected_start", reader);
+                                dbo.DueDate = Database.GetDbColumnValue<DateTime?>("due_date", reader);
+                                dbo.ProjectedEnd = Database.GetDbColumnValue<DateTime?>("projected_end", reader);
+                                dbo.ActualEnd = Database.GetDbColumnValue<DateTime?>("actual_end", reader);
+                                dbo.ParentId = Database.GetDbColumnValue<long?>("parent_id", reader);
+                                dbo.IsGroupingTask = Database.GetDbColumnValue<bool>("is_grouping_task", reader);
+                                dbo.SequentialPredecessorId = Database.GetDbColumnValue<long?>("sequential_predecessor_id", reader);
+
+                                list.Add(Mapper.Map<Common.Models.Tasks.Task>(dbo));
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+
+                using (IDbConnection conn = Database.Instance.GetConnection())
+                {
+                    if (parentId.HasValue)
+                        ie = conn.Query<DBOs.Tasks.Task>(
+                            "SELECT * FROM \"task\" WHERE \"parent_id\"=@ParentId AND \"utc_disabled\" is null",
+                            new { ParentId = parentId.Value });
+                    else
+                        ie = conn.Query<DBOs.Tasks.Task>(
+                            "SELECT * FROM \"task\" WHERE \"parent_id\" is null AND \"utc_disabled\" is null");
+                }
+
+                foreach (DBOs.Tasks.Task dbo in ie)
+                    list.Add(Mapper.Map<Common.Models.Tasks.Task>(dbo));
+            }
 
             return list;
         }

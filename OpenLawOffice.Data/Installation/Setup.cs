@@ -74,85 +74,27 @@ namespace OpenLawOffice.Data.Installation
 
             // Areas
 
-            Common.Models.Security.Area areaSecurity, areaUser, areaArea, areaAreaAcl,
-                areaSecuredResource, areaSecuredResourceAcl, areaTagging, areaTagCategory,
-                areaMatters, areaMatter, areaMatterTag, areaResponsibleUser, areaMatterContact,
-                areaContacts, areaContact, areaTasks, areaTask, areaTaskAssignedContact,
-                areaTaskMatter, areaTaskResponsibleUser, areaTaskTag, areaTaskTime, areaTiming,
-                areaTime, areaNotes, areaNote, areaNoteMatter, areaNoteTask,
-                areaDocuments, areaDocument, areaDocumentMatter, areaDocumentTask, 
-                areaDocumentVersion, areaVersion;
+            Common.Models.Security.Area areaSecurity, areaTagging, areaMatters, 
+                areaContacts, areaTasks, areaTiming, areaNotes, areaDocuments;
 
             areaSecurity = SetupSecurityArea("Security", null, user);
-            areaUser = SetupSecurityArea("Security.User", areaSecurity.Id, user);
-            areaArea = SetupSecurityArea("Security.Area", areaSecurity.Id, user);
-            areaAreaAcl = SetupSecurityArea("Security.AreaAcl", areaSecurity.Id, user);
-            areaSecuredResource = SetupSecurityArea("Security.SecuredResource", areaSecurity.Id, user);
-            areaSecuredResourceAcl = SetupSecurityArea("Security.SecuredResourceAcl", areaSecurity.Id, user);
             areaTagging = SetupSecurityArea("Tagging", null, user);
-            areaTagCategory = SetupSecurityArea("Tagging.TagCategory", areaTagging.Id, user);
             areaMatters = SetupSecurityArea("Matters", null, user);
-            areaMatter = SetupSecurityArea("Matters.Matter", areaMatters.Id, user);
-            areaMatterTag = SetupSecurityArea("Matters.MatterTag", areaMatters.Id, user);
-            areaResponsibleUser = SetupSecurityArea("Matters.ResponsibleUser", areaMatters.Id, user);
-            areaMatterContact = SetupSecurityArea("Matters.MatterContact", areaMatters.Id, user);
             areaContacts = SetupSecurityArea("Contacts", null, user);
-            areaContact = SetupSecurityArea("Contacts.Contact", areaContacts.Id, user);
             areaTasks = SetupSecurityArea("Tasks", null, user);
-            areaTask = SetupSecurityArea("Tasks.Task", areaTasks.Id, user);
-            areaTaskAssignedContact = SetupSecurityArea("Tasks.TaskAssignedContact", areaTasks.Id, user);
-            areaTaskMatter = SetupSecurityArea("Tasks.TaskMatter", areaTasks.Id, user);
-            areaTaskResponsibleUser = SetupSecurityArea("Tasks.TaskResponsibleUser", areaTasks.Id, user);
-            areaTaskTag = SetupSecurityArea("Tasks.TaskTag", areaTasks.Id, user);
-            areaTaskTime = SetupSecurityArea("Tasks.TaskTime", areaTasks.Id, user);
             areaTiming = SetupSecurityArea("Timing", null, user);
-            areaTime = SetupSecurityArea("Timing.Time", areaTiming.Id, user);
             areaNotes = SetupSecurityArea("Notes", null, user);
-            areaNote = SetupSecurityArea("Notes.Note", areaNotes.Id, user);
-            areaNoteMatter = SetupSecurityArea("Notes.NoteMatter", areaNotes.Id, user);
-            areaNoteTask = SetupSecurityArea("Notes.NoteTask", areaNotes.Id, user);
             areaDocuments = SetupSecurityArea("Documents", null, user);
-            areaDocument = SetupSecurityArea("Documents.Document", areaDocuments.Id, user);
-            areaDocumentMatter = SetupSecurityArea("Documents.DocumentMatter", areaDocuments.Id, user);
-            areaDocumentTask = SetupSecurityArea("Documents.DocumentTask", areaDocuments.Id, user);
-            areaDocumentVersion = SetupSecurityArea("Documents.DocumentVersion", areaDocuments.Id, user);
-            areaVersion = SetupSecurityArea("Documents.Version", areaDocuments.Id, user);
 
             // Area Acls
             SetupAreaAcl(areaSecurity, user);
-            SetupAreaAcl(areaUser, user);
-            SetupAreaAcl(areaArea, user);
-            SetupAreaAcl(areaAreaAcl, user);
-            SetupAreaAcl(areaSecuredResource, user);
-            SetupAreaAcl(areaSecuredResourceAcl, user);
             SetupAreaAcl(areaTagging, user);
-            SetupAreaAcl(areaTagCategory, user);
             SetupAreaAcl(areaMatters, user);
-            SetupAreaAcl(areaMatter, user);
-            SetupAreaAcl(areaMatterTag, user);
-            SetupAreaAcl(areaResponsibleUser, user);
-            SetupAreaAcl(areaMatterContact, user);
             SetupAreaAcl(areaContacts, user);
-            SetupAreaAcl(areaContact, user);
             SetupAreaAcl(areaTasks, user);
-            SetupAreaAcl(areaTask, user);
-            SetupAreaAcl(areaTaskAssignedContact, user);
-            SetupAreaAcl(areaTaskMatter, user);
-            SetupAreaAcl(areaTaskResponsibleUser, user);
-            SetupAreaAcl(areaTaskTag, user);
-            SetupAreaAcl(areaTaskTime, user);
             SetupAreaAcl(areaTiming, user);
-            SetupAreaAcl(areaTime, user);
             SetupAreaAcl(areaNotes, user);
-            SetupAreaAcl(areaNote, user);
-            SetupAreaAcl(areaNoteMatter, user);
-            SetupAreaAcl(areaNoteTask, user);
             SetupAreaAcl(areaDocuments, user);
-            SetupAreaAcl(areaDocument, user);
-            SetupAreaAcl(areaDocumentMatter, user);
-            SetupAreaAcl(areaDocumentTask, user);
-            SetupAreaAcl(areaDocumentVersion, user);
-            SetupAreaAcl(areaVersion, user);
 
             if (runOptionalData)
                 OptionalData(installDirPath, user);
@@ -200,7 +142,7 @@ namespace OpenLawOffice.Data.Installation
                 contact = Contacts.Contact.Create(contact, user);
             }
 
-            Common.Models.Tagging.TagCategory tagCat1, tagCat2;
+            Common.Models.Tagging.TagCategory tagCat1, tagCat2, tagCat3;
 
             tagCat1 = Tagging.TagCategory.Get("Status");
             if (tagCat1 == null)

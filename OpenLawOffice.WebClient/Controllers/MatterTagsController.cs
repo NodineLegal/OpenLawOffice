@@ -12,7 +12,7 @@
     {
         //
         // GET: /MatterTags/Details/{Guid}
-        [SecurityFilter(SecurityAreaName = "Matters.MatterTag", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(Guid id)
         {
@@ -25,7 +25,7 @@
 
         //
         // GET: /MatterTags/Create/{Guid}
-        [SecurityFilter(SecurityAreaName = "Matters.MatterTag", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         public ActionResult Create(Guid id)
         {
@@ -39,7 +39,7 @@
 
         //
         // POST: /MatterTags/Create/{Guid}
-        [SecurityFilter(SecurityAreaName = "Matters.MatterTag", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
         public ActionResult Create(ViewModels.Matters.MatterTagViewModel viewModel)
@@ -48,6 +48,8 @@
             {
                 Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
                 Common.Models.Matters.MatterTag model = Mapper.Map<Common.Models.Matters.MatterTag>(viewModel);
+                model.Matter = new Common.Models.Matters.Matter() { Id = Guid.Parse(RouteData.Values["Id"].ToString()) };
+                model.TagCategory = Mapper.Map<Common.Models.Tagging.TagCategory>(viewModel.TagCategory);
                 model = OpenLawOffice.Data.Matters.MatterTag.Create(model, currentUser);
                 return RedirectToAction("Tags", "Matters", new { Id = model.Matter.Id.Value.ToString() });
             }
@@ -65,20 +67,22 @@
         
         //
         // GET: /MatterTags/Edit/{Guid}
-        [SecurityFilter(SecurityAreaName = "Matters.MatterTag", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(Guid id)
         {
             ViewModels.Matters.MatterTagViewModel viewModel = null;
             Common.Models.Matters.MatterTag model = OpenLawOffice.Data.Matters.MatterTag.Get(id);
+            model.Matter = Data.Matters.Matter.Get(model.Matter.Id.Value);
             viewModel = Mapper.Map<ViewModels.Matters.MatterTagViewModel>(model);
+            viewModel.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(model.Matter);
             PopulateCoreDetails(viewModel);
             return View(viewModel);
         }
 
         //
         // POST: /MatterTags/Edit/{Guid}
-        [SecurityFilter(SecurityAreaName = "Matters.MatterTag", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
         public ActionResult Edit(Guid id, ViewModels.Matters.MatterTagViewModel viewModel)
@@ -87,6 +91,8 @@
             {
                 Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
                 Common.Models.Matters.MatterTag model = Mapper.Map<Common.Models.Matters.MatterTag>(viewModel);
+                model.TagCategory = Mapper.Map<Common.Models.Tagging.TagCategory>(viewModel.TagCategory);
+                model.Matter = Data.Matters.MatterTag.Get(id).Matter;
                 model = OpenLawOffice.Data.Matters.MatterTag.Edit(model, currentUser);
                 return RedirectToAction("Tags", "Matters", new { Id = model.Matter.Id.Value.ToString() });
             }
@@ -98,7 +104,7 @@
 
         //
         // GET: /MatterTags/Delete/{Guid}
-        [SecurityFilter(SecurityAreaName = "Matters.MatterTag", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Disable)]
         public ActionResult Delete(Guid id)
         {
@@ -107,7 +113,7 @@
 
         //
         // POST: /MatterTags/Delete/{Guid}
-        [SecurityFilter(SecurityAreaName = "Matters.MatterTag", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Disable)]
         [HttpPost]
         public ActionResult Delete(Guid id, ViewModels.Matters.MatterTagViewModel viewModel)

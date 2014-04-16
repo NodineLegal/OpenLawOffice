@@ -12,7 +12,7 @@
     {
         //
         // GET: /User/
-        [SecurityFilter(SecurityAreaName = "Security.User", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Index()
         {
@@ -29,7 +29,7 @@
 
         //
         // GET: /User/Details/5
-        [SecurityFilter(SecurityAreaName = "Security.User", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(int id)
         {
@@ -41,7 +41,7 @@
 
         //
         // GET: /User/Create
-        [SecurityFilter(SecurityAreaName = "Security.User", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         public ActionResult Create()
         {
@@ -50,7 +50,7 @@
 
         //
         // POST: /User/Create
-        [SecurityFilter(SecurityAreaName = "Security.User", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
         public ActionResult Create(ViewModels.Security.UserViewModel viewModel)
@@ -75,7 +75,7 @@
         
         //
         // GET: /User/Edit/5
-        [SecurityFilter(SecurityAreaName = "Security.User", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(int id)
         {
@@ -88,7 +88,7 @@
 
         //
         // POST: /User/Edit/5
-        [SecurityFilter(SecurityAreaName = "Security.User", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
         public ActionResult Edit(int id, ViewModels.Security.UserViewModel viewModel)

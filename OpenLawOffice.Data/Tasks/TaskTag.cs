@@ -76,6 +76,15 @@ namespace OpenLawOffice.Data.Tasks
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
             model.CreatedBy = model.ModifiedBy = creator;
             model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            
+            Common.Models.Tagging.TagCategory existingTagCat = Tagging.TagCategory.Get(model.TagCategory.Name);
+
+            if (existingTagCat == null)
+            {
+                existingTagCat = Tagging.TagCategory.Create(model.TagCategory, creator);
+            }
+
+            model.TagCategory = existingTagCat;
             DBOs.Tasks.TaskTag dbo = Mapper.Map<DBOs.Tasks.TaskTag>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
@@ -84,8 +93,6 @@ namespace OpenLawOffice.Data.Tasks
                     "VALUES (@Id, @TaskId, @TagCategoryId, @Tag, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);
             }
-
-            model.TagCategory = UpdateTagCategory(model, creator);
 
             return model;
         }
@@ -120,7 +127,7 @@ namespace OpenLawOffice.Data.Tasks
                 if (model.TagCategory != null && !string.IsNullOrEmpty(model.TagCategory.Name))
                 { // If current has tag & new has tag                    
                     // Are they the same - ignore if so
-                    if (currentTag.Tag != model.Tag)
+                    if (currentTag.TagCategory.Name != model.TagCategory.Name)
                     {
                         // Update - change tagcat
                         model.TagCategory = AddOrChangeTagCategory(model, modifier);

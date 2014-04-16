@@ -76,6 +76,15 @@ namespace OpenLawOffice.Data.Matters
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
             model.CreatedBy = model.ModifiedBy = creator;
             model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+
+            Common.Models.Tagging.TagCategory existingTagCat = Tagging.TagCategory.Get(model.TagCategory.Name);
+
+            if (existingTagCat == null)
+            {
+                existingTagCat = Tagging.TagCategory.Create(model.TagCategory, creator);
+            }
+
+            model.TagCategory = existingTagCat;
             DBOs.Matters.MatterTag dbo = Mapper.Map<DBOs.Matters.MatterTag>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
@@ -84,8 +93,6 @@ namespace OpenLawOffice.Data.Matters
                     "VALUES (@Id, @MatterId, @TagCategoryId, @Tag, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);
             }
-
-            model.TagCategory = UpdateTagCategory(model, creator);
             
             return model;
         }

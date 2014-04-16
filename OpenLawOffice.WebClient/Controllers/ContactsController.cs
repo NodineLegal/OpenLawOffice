@@ -10,14 +10,14 @@
     {
         //
         // GET: /Contacts/
-        [SecurityFilter(SecurityAreaName = "Contacts.Contact", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Contacts", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Index()
         {
             return View(GetList());
         }
 
-        [SecurityFilter(SecurityAreaName = "Contacts.Contact", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Contacts", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult ListJqGrid()
         {
@@ -61,7 +61,7 @@
 
         //
         // GET: /Contacts/Details/5
-        [SecurityFilter(SecurityAreaName = "Contacts.Contact", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Contacts", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(int id)
         {
@@ -74,7 +74,7 @@
 
         //
         // GET: /Contacts/Create
-        [SecurityFilter(SecurityAreaName = "Contacts.Contact", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Contacts", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         public ActionResult Create()
         {
@@ -83,7 +83,7 @@
 
         //
         // POST: /Contacts/Create
-        [SecurityFilter(SecurityAreaName = "Contacts.Contact", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Contacts", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
         public ActionResult Create(ViewModels.Contacts.ContactViewModel viewModel)
@@ -104,7 +104,7 @@
 
         //
         // GET: /Contacts/Edit/5
-        [SecurityFilter(SecurityAreaName = "Contacts.Contact", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Contacts", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(int id)
         {
@@ -115,7 +115,7 @@
 
         //
         // POST: /Contacts/Edit/5
-        [SecurityFilter(SecurityAreaName = "Contacts.Contact", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Contacts", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
         public ActionResult Edit(int id, ViewModels.Contacts.ContactViewModel viewModel)
@@ -134,7 +134,7 @@
             }
         }
 
-        [SecurityFilter(SecurityAreaName = "Contacts.Contact", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Contacts", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Conflicts(int id)
         {

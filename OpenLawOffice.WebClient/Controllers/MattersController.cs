@@ -12,7 +12,7 @@
     {
         //
         // GET: /Matter/
-        [SecurityFilter(SecurityAreaName="Matters.Matter", IsSecuredResource=true, 
+        [SecurityFilter(SecurityAreaName="Matters", IsSecuredResource=true, 
             Permission=Common.Models.PermissionType.List)]
         public ActionResult Index()
         {
@@ -27,7 +27,7 @@
             return View(viewModelList);
         }
 
-        [SecurityFilter(SecurityAreaName = "Matters.Matter", IsSecuredResource = true,
+        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = true,
             Permission = Common.Models.PermissionType.List)]
         [HttpGet]
         public ActionResult ListChildrenJqGrid(Guid? id)
@@ -99,7 +99,7 @@
 
         //
         // GET: /Matter/Details/9acb1b4f-0442-4c9b-a550-ad7478e36fb2
-        [SecurityFilter(SecurityAreaName = "Matters.Matter", IsSecuredResource = true,
+        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = true,
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(Guid id)
         {
@@ -112,7 +112,7 @@
 
         //
         // GET: /Matter/Create
-        [SecurityFilter(SecurityAreaName = "Matters.Matter", IsSecuredResource = true,
+        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = true,
             Permission = Common.Models.PermissionType.Create)]
         public ActionResult Create()
         {
@@ -121,7 +121,7 @@
 
         //
         // POST: /Matter/CreateE:\Projects\OpenLawOffice\OpenLawOffice.WebClient\Controllers\HomeController.cs
-        [SecurityFilter(SecurityAreaName = "Matters.Matter", IsSecuredResource = true,
+        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = true,
             Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
         public ActionResult Create(ViewModels.Matters.MatterViewModel viewModel)
@@ -141,7 +141,7 @@
         
         //
         // GET: /Matter/Edit/5
-        [SecurityFilter(SecurityAreaName = "Matters.Matter", IsSecuredResource = true,
+        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = true,
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(Guid id)
         {
@@ -153,7 +153,7 @@
 
         //
         // POST: /Matter/Edit/5
-        [SecurityFilter(SecurityAreaName = "Matters.Matter", IsSecuredResource = true,
+        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = true,
             Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
         public ActionResult Edit(Guid id, ViewModels.Matters.MatterViewModel viewModel)
@@ -174,7 +174,7 @@
         // A note on delete - https://github.com/NodineLegal/OpenLawOffice/wiki/Design-of-Disabling-a-Matter
 
 
-        [SecurityFilter(SecurityAreaName = "Matters.MatterTag", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tagging", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Tags(Guid id)
         {
@@ -189,7 +189,7 @@
             return View(viewModelList);
         }
 
-        [SecurityFilter(SecurityAreaName = "Matters.ResponsibleUser", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult ResponsibleUsers(Guid id)
         {
@@ -207,7 +207,7 @@
             return View(viewModelList);
         }
 
-        [SecurityFilter(SecurityAreaName = "Contacts.Contact", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Contacts", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Contacts(Guid id)
         {
@@ -225,7 +225,7 @@
             return View(viewModelList);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks.Task", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Tasks(Guid id)
         {
@@ -234,7 +234,7 @@
             return View(modelList);
         }
 
-        [SecurityFilter(SecurityAreaName = "Notes.Note", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Notes", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Notes(Guid id)
         {
@@ -250,7 +250,7 @@
             return View(viewModelList);
         }
 
-        [SecurityFilter(SecurityAreaName = "Documents.Document", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Documents", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Documents(Guid id)
         {
@@ -266,7 +266,7 @@
             return View(viewModelList);
         }
 
-        [SecurityFilter(SecurityAreaName = "Timing.Time", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Timing", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Time(Guid id)
         {

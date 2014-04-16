@@ -12,14 +12,14 @@
     {
         //
         // GET: /Area/
-        [SecurityFilter(SecurityAreaName = "Security.Area", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Index()
         {
             return View();
         }
 
-        [SecurityFilter(SecurityAreaName = "Security.Area", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         [HttpGet]
         public ActionResult ListChildrenJqGrid(int? id)
@@ -92,7 +92,7 @@
 
         //
         // GET: /Area/Details/5
-        [SecurityFilter(SecurityAreaName = "Security.Area", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(int id)
         {
@@ -103,7 +103,7 @@
             return View(model);
         }
         
-        [SecurityFilter(SecurityAreaName = "Security.AreaAcl", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Permissions(int id)
         {

@@ -48,6 +48,13 @@ namespace OpenLawOffice.Data.Tagging
                 new { name = name });
         }
 
+        public static List<Common.Models.Tagging.TagCategory> List(string name)
+        {
+            return DataHelper.List<Common.Models.Tagging.TagCategory, DBOs.Tagging.TagCategory>(
+                "SELECT * FROM \"tag_category\" WHERE LOWER(\"name\") LIKE '%' || @Query || '%' AND \"utc_disabled\" is null",
+                new { Query = name.ToLower() });
+        }
+
         public static Common.Models.Tagging.TagCategory Create(Common.Models.Tagging.TagCategory model,
             Common.Models.Security.User creator)
         {

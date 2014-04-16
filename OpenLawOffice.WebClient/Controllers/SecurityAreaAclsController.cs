@@ -12,7 +12,7 @@
     {
         //
         // GET: /SecurityAreaAcls/
-        [SecurityFilter(SecurityAreaName = "Security.AreaAcl", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Index()
         {
@@ -32,7 +32,7 @@
 
         //
         // GET: /SecurityAreaAcls/Details/5
-        [SecurityFilter(SecurityAreaName = "Security.AreaAcl", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(int id)
         {
@@ -52,7 +52,7 @@
 
         //
         // GET: /SecurityAreaAcls/Create
-        [SecurityFilter(SecurityAreaName = "Security.AreaAcl", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         public ActionResult Create()
         {
@@ -74,7 +74,7 @@
 
         //
         // POST: /SecurityAreaAcls/Create
-        [SecurityFilter(SecurityAreaName = "Security.AreaAcl", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
         public ActionResult Create(ViewModels.Security.AreaAclViewModel viewModel)
@@ -103,7 +103,7 @@
         
         //
         // GET: /SecurityAreaAcls/Edit/5
-        [SecurityFilter(SecurityAreaName = "Security.AreaAcl", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(int id)
         {
@@ -137,7 +137,7 @@
 
         //
         // POST: /SecurityAreaAcls/Edit/5
-        [SecurityFilter(SecurityAreaName = "Security.AreaAcl", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
         public ActionResult Edit(int id, ViewModels.Security.AreaAclViewModel viewModel)

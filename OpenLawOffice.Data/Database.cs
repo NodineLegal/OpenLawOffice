@@ -29,5 +29,12 @@ namespace OpenLawOffice.Data
             conn.ConnectionString = ConfigurationManager.ConnectionStrings["Postgres"].ConnectionString;
             return conn;
         }
+
+        public static T GetDbColumnValue<T>(string columnName, Npgsql.NpgsqlDataReader reader)
+        {
+            var val = reader[columnName];
+            if (val == null) return default(T);
+            return (T)reader[columnName];
+        }
     }
 }

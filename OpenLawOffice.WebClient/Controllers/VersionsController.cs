@@ -9,7 +9,7 @@ namespace OpenLawOffice.WebClient.Controllers
 {
     public class VersionsController : BaseController
     {
-        [SecurityFilter(SecurityAreaName = "Documents.Version", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Documents", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(Guid id)
         {
@@ -23,7 +23,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Documents.Version", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Documents", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Read)]
         public FileResult Download(Guid id)
         {
@@ -42,7 +42,7 @@ namespace OpenLawOffice.WebClient.Controllers
             }
         }
 
-        [SecurityFilter(SecurityAreaName = "Documents.Version", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Documents", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         public ActionResult Create()
         {
@@ -65,7 +65,7 @@ namespace OpenLawOffice.WebClient.Controllers
                 });
         }
 
-        [SecurityFilter(SecurityAreaName = "Documents.Version", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Documents", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
         public ActionResult Create(ViewModels.Documents.VersionViewModel viewModel, HttpPostedFileBase file)

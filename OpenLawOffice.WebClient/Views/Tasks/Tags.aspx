@@ -30,7 +30,7 @@
             </td>
             <td>
                 <%: Html.ActionLink("Edit", "Edit", "TaskTags", new { id = item.Id.Value }, null)%> |
-                <%: Html.ActionLink("Details", "Details", "MatTaskTagsterTags", new { id = item.Id.Value }, null)%> |
+                <%: Html.ActionLink("Details", "Details", "TaskTags", new { id = item.Id.Value }, null)%> |
                 <%: Html.ActionLink("Delete", "Delete", "TaskTags", new { id = item.Id.Value }, null)%>
             </td>
         </tr>

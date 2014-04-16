@@ -12,7 +12,7 @@
     {
         //
         // GET: /ResponsibleUsers/Details/5
-        [SecurityFilter(SecurityAreaName = "Matters.ResponsibleUser", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(int id)
         {
@@ -32,7 +32,7 @@
 
         //
         // GET: /ResponsibleUsers/Create/{Guid}
-        [SecurityFilter(SecurityAreaName = "Matters.ResponsibleUser", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         public ActionResult Create(Guid id)
         {
@@ -50,7 +50,7 @@
 
         //
         // POST: /ResponsibleUsers/Create/{Guid}
-        [SecurityFilter(SecurityAreaName = "Matters.ResponsibleUser", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
         public ActionResult Create(ViewModels.Matters.ResponsibleUserViewModel viewModel)
@@ -104,7 +104,7 @@
         
         //
         // GET: /ResponsibleUsers/Edit/5
-        [SecurityFilter(SecurityAreaName = "Matters.ResponsibleUser", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(int id)
         {
@@ -130,7 +130,7 @@
         
         //
         // POST: /ResponsibleUsers/Edit/5
-        [SecurityFilter(SecurityAreaName = "Matters.ResponsibleUser", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
         public ActionResult Edit(int id, ViewModels.Matters.ResponsibleUserViewModel viewModel)
@@ -151,7 +151,7 @@
 
         //
         // GET: /ResponsibleUsers/Delete/{Guid}
-        [SecurityFilter(SecurityAreaName = "Matters.ResponsibleUser", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Disable)]
         public ActionResult Delete(int id)
         {
@@ -160,7 +160,7 @@
 
         //
         // POST: /ResponsibleUsers/Delete/{Guid}
-        [SecurityFilter(SecurityAreaName = "Matters.ResponsibleUser", IsSecuredResource = false,
+        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Disable)]
         [HttpPost]
         public ActionResult Delete(int id, ViewModels.Matters.ResponsibleUserViewModel viewModel)
