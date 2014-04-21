@@ -23,17 +23,11 @@ namespace OpenLawOffice.Data.DBOs.Settings
 {
     using System;
     using AutoMapper;
-    using OpenLawOffice.Common.Models;
 
     [Common.Models.MapMe]
     public class UserSettings : Core
     {
         [ColumnMapping(Name = "id")]
         public int Id { get; set; }
-
-
-        public override void BuildMappings()
-        {
-        }
     }
 }

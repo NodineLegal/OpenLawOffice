@@ -7,9 +7,9 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //  http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -22,31 +22,26 @@
 namespace OpenLawOffice.Common.Models.Documents
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
 
     /// <summary>
     /// TODO: Update summary.
     /// </summary>
-    [MapMe]
     public class Version : Core
     {
         public Guid? Id { get; set; }
-        public Document Document { get; set; }
-        public int VersionNumber { get; set; }
-        public string Mime { get; set; }
-        public string Filename { get; set; }
-        public string Extension { get; set; }
-        public long Size { get; set; }
-        public string Md5 { get; set; }
 
-        public Version()
-        {
-        }
-        
-        public override void BuildMappings()
-        {
-        }
+        public Document Document { get; set; }
+
+        public int VersionNumber { get; set; }
+
+        public string Mime { get; set; }
+
+        public string Filename { get; set; }
+
+        public string Extension { get; set; }
+
+        public long Size { get; set; }
+
+        public string Md5 { get; set; }
     }
 }

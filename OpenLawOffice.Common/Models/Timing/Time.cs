@@ -7,9 +7,9 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //  http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -22,22 +22,18 @@
 namespace OpenLawOffice.Common.Models.Timing
 {
     using System;
-    using AutoMapper;
 
     /// <summary>
     /// TODO: Update summary.
     /// </summary>
-    [MapMe]
-    [Can(CanFlags.Get | CanFlags.Create | CanFlags.Update | CanFlags.Delete)]
-    public class Time : Core, IHasGuidId
+    public class Time : Core
     {
         public Guid? Id { get; set; }
-        public DateTime Start { get; set; }
-        public DateTime? Stop { get; set; }
-        public Contacts.Contact Worker { get; set; }
 
-        public override void BuildMappings()
-        {
-        }
+        public DateTime Start { get; set; }
+
+        public DateTime? Stop { get; set; }
+
+        public Contacts.Contact Worker { get; set; }
     }
 }

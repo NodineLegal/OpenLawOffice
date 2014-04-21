@@ -54,6 +54,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\OpenLawOffice.WebClient\packages\AutoMapper.3.2.0-ci1011\lib\net40\AutoMapper.Net4.dll</HintPath>
     </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\OpenLawOffice.WebClient\packages\NLog.2.1.0\lib\net40\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -64,20 +67,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Error.cs" />
-    <Compile Include="Models\CanAttribute.cs" />
-    <Compile Include="Models\CanFlags.cs" />
     <Compile Include="Models\Contacts\Contact.cs" />
     <Compile Include="Models\Core.cs" />
-    <Compile Include="Models\DefaultPopulationType.cs" />
     <Compile Include="Models\Documents\Document.cs" />
     <Compile Include="Models\Documents\DocumentMatter.cs" />
     <Compile Include="Models\Documents\DocumentTask.cs" />
     <Compile Include="Models\Documents\Version.cs" />
-    <Compile Include="Models\IHasGuidId.cs" />
-    <Compile Include="Models\IHasId.cs" />
-    <Compile Include="Models\IHasIntId.cs" />
-    <Compile Include="Models\IHasLongId.cs" />
-    <Compile Include="Models\IHierarchicalModel.cs" />
     <Compile Include="Models\MapMeAttribute.cs" />
     <Compile Include="Models\Matters\Matter.cs" />
     <Compile Include="Models\Matters\MatterContact.cs" />
@@ -97,7 +92,6 @@
     <Compile Include="Models\Security\SecuredResourceAcl.cs" />
     <Compile Include="Models\Security\User.cs" />
     <Compile Include="Models\Settings\TagFilter.cs" />
-    <Compile Include="Models\ShowInListAttribute.cs" />
     <Compile Include="Models\Tagging\TagBase.cs" />
     <Compile Include="Models\Tagging\TagCategory.cs" />
     <Compile Include="Models\Tasks\AssignmentType.cs" />
@@ -110,41 +104,7 @@
     <Compile Include="Models\Timing\Time.cs" />
     <Compile Include="ObjectMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rest\Requests\IHasGuidId.cs" />
-    <Compile Include="Rest\Requests\IHasId.cs" />
-    <Compile Include="Rest\Requests\IHasIntId.cs" />
-    <Compile Include="Rest\Requests\IHasLongId.cs" />
-    <Compile Include="Rest\Requests\Matters\Matter.cs" />
-    <Compile Include="Rest\Requests\Matters\MatterTag.cs" />
-    <Compile Include="Rest\Requests\Matters\ResponsibleUser.cs" />
-    <Compile Include="Rest\Requests\RequestBase.cs" />
-    <Compile Include="Rest\Requests\Security\Area.cs" />
-    <Compile Include="Rest\Requests\Security\AreaAcl.cs" />
-    <Compile Include="Rest\Requests\Security\Authentication.cs" />
-    <Compile Include="Rest\Requests\Security\SecuredResource.cs" />
-    <Compile Include="Rest\Requests\Security\SecuredResourceAcl.cs" />
-    <Compile Include="Rest\Requests\Security\User.cs" />
-    <Compile Include="Rest\Requests\SortDirectionType.cs" />
-    <Compile Include="Rest\Requests\Tagging\TagBase.cs" />
-    <Compile Include="Rest\Requests\Tagging\TagCategory.cs" />
-    <Compile Include="Rest\Responses\Core.cs" />
-    <Compile Include="Rest\Responses\ListResponseContainer.cs" />
-    <Compile Include="Rest\Responses\Matters\Matter.cs" />
-    <Compile Include="Rest\Responses\Matters\MatterTag.cs" />
-    <Compile Include="Rest\Responses\Matters\ResponsibleUser.cs" />
-    <Compile Include="Rest\Responses\ResponseBase.cs" />
-    <Compile Include="Rest\Responses\ResponseBaseWithDatesOnly.cs" />
-    <Compile Include="Rest\Responses\ResponseContainer.cs" />
-    <Compile Include="Rest\Responses\Security\Area.cs" />
-    <Compile Include="Rest\Responses\Security\AreaAcl.cs" />
-    <Compile Include="Rest\Responses\Security\Authentication.cs" />
-    <Compile Include="Rest\Responses\Security\SecuredResource.cs" />
-    <Compile Include="Rest\Responses\Security\SecuredResourceAcl.cs" />
-    <Compile Include="Rest\Responses\Security\User.cs" />
-    <Compile Include="Rest\Responses\Tagging\TagBase.cs" />
-    <Compile Include="Rest\Responses\Tagging\TagCategory.cs" />
     <Compile Include="Singleton.cs" />
-    <Compile Include="Statistics.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">

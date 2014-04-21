@@ -7,9 +7,9 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //  http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -22,15 +22,12 @@
 namespace OpenLawOffice.Common.Models.Contacts
 {
     using System;
-    using AutoMapper;
 
     /// <summary>
     /// Represents a system contact, loosely based on MS-OXONTC's message syntax for contact object properties
     /// http://msdn.microsoft.com/en-us/library/ee179200(v=exchg.80).aspx
     /// </summary>
-    [MapMe]
-    [Can(CanFlags.Get | CanFlags.Create | CanFlags.Update | CanFlags.Delete)]
-    public class Contact : Core, IHasIntId
+    public class Contact : Core
     {
         public int? Id { get; set; }
 
@@ -127,7 +124,7 @@ namespace OpenLawOffice.Common.Models.Contacts
         /// <author>Lucas Nodine</author>
         public string DisplayName { get; set; }
 
-        #endregion
+        #endregion Contact Name
 
         #region Electronic Address Properties
 
@@ -239,7 +236,7 @@ namespace OpenLawOffice.Common.Models.Contacts
         /// <author>Lucas Nodine</author>
         public string Fax3FaxNumber { get; set; }
 
-        #endregion
+        #endregion Electronic Address Properties
 
         #region Physical Address Properties
 
@@ -459,7 +456,7 @@ namespace OpenLawOffice.Common.Models.Contacts
         /// <author>Lucas Nodine</author>
         public string Address3AddressPostOfficeBox { get; set; }
 
-        #endregion
+        #endregion Physical Address Properties
 
         #region Telephone Properties
 
@@ -643,7 +640,7 @@ namespace OpenLawOffice.Common.Models.Contacts
         /// <author>Lucas Nodine</author>
         public string Telephone10TelephoneNumber { get; set; }
 
-        #endregion
+        #endregion Telephone Properties
 
         #region Event Properties
 
@@ -665,7 +662,7 @@ namespace OpenLawOffice.Common.Models.Contacts
         /// <author>Lucas Nodine</author>
         public DateTime? Wedding { get; set; }
 
-        #endregion
+        #endregion Event Properties
 
         #region Professional Properties
 
@@ -732,7 +729,7 @@ namespace OpenLawOffice.Common.Models.Contacts
         /// <author>Lucas Nodine</author>
         public string Profession { get; set; }
 
-        #endregion
+        #endregion Professional Properties
 
         #region Other Contact Properties
 
@@ -799,14 +796,6 @@ namespace OpenLawOffice.Common.Models.Contacts
         /// <author>Lucas Nodine</author>
         public string ReferredByName { get; set; }
 
-        #endregion
-
-        public Contact()
-        {
-        }
-        
-        public override void BuildMappings()
-        {
-        }
+        #endregion Other Contact Properties
     }
 }

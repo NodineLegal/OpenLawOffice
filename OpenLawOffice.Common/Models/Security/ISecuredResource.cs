@@ -5,6 +5,7 @@
     public interface ISecuredResource
     {
         Guid? Id { get; set; }
+
         SecuredResource SecuredResource { get; set; }
     }
 }

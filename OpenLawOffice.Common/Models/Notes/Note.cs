@@ -22,24 +22,16 @@
 namespace OpenLawOffice.Common.Models.Notes
 {
     using System;
-    using AutoMapper;
 
     /// <summary>
     /// TODO: Update summary.
     /// </summary>
-    [MapMe]
     public class Note : Core
     {
         public Guid? Id { get; set; }
-        public string Title { get; set; }
-        public string Body { get; set; }
 
-        public Note()
-        {
-        }
-        
-        public override void BuildMappings()
-        {
-        }
+        public string Title { get; set; }
+
+        public string Body { get; set; }
     }
 }

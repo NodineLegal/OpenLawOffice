@@ -9,16 +9,19 @@ namespace OpenLawOffice.Common.Models
 
         // Reading
         Read = 1,
+
         List = 2,
         AllRead = Read | List,
 
         // Writing
         Create = 16384,
+
         Modify = 32768,
         AllWrite = Create | Modify,
 
         // Adminstration
         Disable = 4194304,
+
         Delete = 8388608,
         AllAdmin = Disable | Delete,
     }

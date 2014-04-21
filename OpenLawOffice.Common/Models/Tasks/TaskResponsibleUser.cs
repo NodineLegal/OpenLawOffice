@@ -7,9 +7,9 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //  http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -22,21 +22,18 @@
 namespace OpenLawOffice.Common.Models.Tasks
 {
     using System;
-    using AutoMapper;
 
     /// <summary>
     /// Relates a user to a task
     /// </summary>
-    [MapMe]
-    public class TaskResponsibleUser : Core, IHasGuidId
+    public class TaskResponsibleUser : Core
     {
         public Guid? Id { get; set; }
-        public Task Task { get; set; }
-        public Security.User User { get; set; }
-        public string Responsibility { get; set; }
 
-        public override void BuildMappings()
-        {
-        }
+        public Task Task { get; set; }
+
+        public Security.User User { get; set; }
+
+        public string Responsibility { get; set; }
     }
 }
