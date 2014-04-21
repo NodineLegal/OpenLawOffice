@@ -11,6 +11,8 @@
     <% using (Html.BeginForm()) {%>
         <%: Html.ValidationSummary(true) %>
 
+        <%: Html.HiddenFor(x => x.Task.Id) %>
+
     <table class="detail_table">
         <tr>
             <td class="display-label">Id</td>

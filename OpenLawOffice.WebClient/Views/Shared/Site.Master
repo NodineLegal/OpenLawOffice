@@ -55,6 +55,11 @@
                     <li><%: Html.ActionLink("Area Access", "", "SecurityAreaAcls") %></li>
                     <li><%: Html.ActionLink("Users", "", "Users") %></li>
                 </ul>
+                <ul></ul>
+                <li>Settings</li>
+                <ul>
+                    <li><%: Html.ActionLink("Tasks", "Index", "UserTaskSettings")%></li>
+                </ul>
             </ul>
         </div>
         

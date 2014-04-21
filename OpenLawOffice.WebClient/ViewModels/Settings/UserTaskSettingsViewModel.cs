@@ -24,8 +24,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Settings
     using System;
     using System.Collections.Generic;
 
-    public class UserSettings
+    public class UserTaskSettingsViewModel
     {
-        public List<Tuple<string, string>> ActiveTaskFilters { get; set; }
+        public List<TagFilterViewModel> MyTasksFilter { get; set; }
     }
 }

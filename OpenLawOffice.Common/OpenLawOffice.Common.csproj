@@ -96,6 +96,7 @@
     <Compile Include="Models\Security\SecuredResource.cs" />
     <Compile Include="Models\Security\SecuredResourceAcl.cs" />
     <Compile Include="Models\Security\User.cs" />
+    <Compile Include="Models\Settings\TagFilter.cs" />
     <Compile Include="Models\ShowInListAttribute.cs" />
     <Compile Include="Models\Tagging\TagBase.cs" />
     <Compile Include="Models\Tagging\TagCategory.cs" />

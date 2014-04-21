@@ -31,8 +31,6 @@ namespace OpenLawOffice.Data.DBOs.Settings
         [ColumnMapping(Name = "id")]
         public int Id { get; set; }
 
-        [ColumnMapping(Name = "active_task_filters")]
-        public string ActiveTaskFilters { get; set; }
 
         public override void BuildMappings()
         {

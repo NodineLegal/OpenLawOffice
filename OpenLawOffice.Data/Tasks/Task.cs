@@ -97,6 +97,14 @@ namespace OpenLawOffice.Data.Tasks
                 new { MatterId = matterId });
         }
 
+        public static List<Common.Models.Tasks.Task> GetTodoListFor(Common.Models.Security.User user)
+        {
+            return DataHelper.List<Common.Models.Tasks.Task, DBOs.Tasks.Task>(
+                   "SELECT * FROM \"task\" WHERE \"id\" IN (SELECT \"task_id\" FROM \"task_responsible_user\" WHERE \"user_id\"=@UserId) " +
+                   "AND \"utc_disabled\" is null ORDER BY \"due_date\" ASC",
+                   new { UserId = user.Id });
+        }
+
         public static List<Common.Models.Tasks.Task> ListChildren(long? parentId, List<Tuple<string, string>> filter = null)
         {
             List<Common.Models.Tasks.Task> list = new List<Common.Models.Tasks.Task>();

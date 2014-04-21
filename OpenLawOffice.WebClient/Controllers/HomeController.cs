@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using AutoMapper;
 
 namespace OpenLawOffice.WebClient.Controllers
 {
@@ -12,9 +13,16 @@ namespace OpenLawOffice.WebClient.Controllers
         [SecurityFilter]
         public ActionResult Index()
         {
-            ViewData["Message"] = "Welcome to ASP.NET MVC!";
+            ViewModels.Home.DashboardViewModel viewModel = new ViewModels.Home.DashboardViewModel();
+            Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
+            viewModel.MyTodoList = new List<ViewModels.Tasks.TaskViewModel>();
 
-            return View();
+            Data.Tasks.Task.GetTodoListFor(currentUser).ForEach(x =>
+            {
+                viewModel.MyTodoList.Add(Mapper.Map<ViewModels.Tasks.TaskViewModel>(x));
+            });
+
+            return View(viewModel);
         }
 
         [SecurityFilter]

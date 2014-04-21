@@ -85,6 +85,7 @@
     <Compile Include="DBOs\Security\SecuredResource.cs" />
     <Compile Include="DBOs\Security\SecuredResourceAcl.cs" />
     <Compile Include="DBOs\Security\User.cs" />
+    <Compile Include="DBOs\Settings\TagFilter.cs" />
     <Compile Include="DBOs\Settings\UserSettings.cs" />
     <Compile Include="DBOs\Tagging\TagBase.cs" />
     <Compile Include="DBOs\Tagging\TagCategory.cs" />
@@ -116,6 +117,7 @@
     <Compile Include="Security\SecuredResource.cs" />
     <Compile Include="Security\SecuredResourceAcl.cs" />
     <Compile Include="Security\User.cs" />
+    <Compile Include="Settings\UserTaskSettings.cs" />
     <Compile Include="Tagging\TagCategory.cs" />
     <Compile Include="Tasks\Task.cs" />
     <Compile Include="Tasks\TaskAssignedContact.cs" />

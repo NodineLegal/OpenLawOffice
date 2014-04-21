@@ -96,7 +96,7 @@
     <Compile Include="Controllers\TaskTimeController.cs" />
     <Compile Include="Controllers\TimingController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
-    <Compile Include="Controllers\UserSettingsController.cs" />
+    <Compile Include="Controllers\UserTaskSettingsController.cs" />
     <Compile Include="Controllers\VersionsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -114,6 +114,7 @@
     <Compile Include="ViewModels\DateOnlyViewModelBase.cs" />
     <Compile Include="ViewModels\Documents\DocumentViewModel.cs" />
     <Compile Include="ViewModels\Documents\VersionViewModel.cs" />
+    <Compile Include="ViewModels\Home\DashboardViewModel.cs" />
     <Compile Include="ViewModels\JqGridObject.cs" />
     <Compile Include="ViewModels\Matters\MatterContactViewModel.cs" />
     <Compile Include="ViewModels\Matters\MatterTagViewModel.cs" />
@@ -128,7 +129,8 @@
     <Compile Include="ViewModels\Security\SecuredResourceAclViewModel.cs" />
     <Compile Include="ViewModels\Security\SecuredResourceViewModel.cs" />
     <Compile Include="ViewModels\Security\UserViewModel.cs" />
-    <Compile Include="ViewModels\Settings\UserSettings.cs" />
+    <Compile Include="ViewModels\Settings\TagFilterViewModel.cs" />
+    <Compile Include="ViewModels\Settings\UserTaskSettingsViewModel.cs" />
     <Compile Include="ViewModels\Tagging\TagBaseViewModel.cs" />
     <Compile Include="ViewModels\Tagging\TagCategoryViewModel.cs" />
     <Compile Include="ViewModels\Tasks\TaskAssignedContactViewModel.cs" />
@@ -226,6 +228,11 @@
     <Content Include="Views\Users\Details.aspx" />
     <Content Include="Views\Users\Edit.aspx" />
     <Content Include="Views\Users\Index.aspx" />
+    <Content Include="Views\UserTaskSettings\CreateFilter.aspx" />
+    <Content Include="Views\UserTaskSettings\DeleteFilter.aspx" />
+    <Content Include="Views\UserTaskSettings\DetailsFilter.aspx" />
+    <Content Include="Views\UserTaskSettings\EditFilter.aspx" />
+    <Content Include="Views\UserTaskSettings\Index.aspx" />
     <Content Include="Views\Versions\Create.aspx" />
     <Content Include="Views\Versions\Details.aspx" />
     <Content Include="Web.config">
@@ -250,7 +257,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Scripts\" />
-    <Folder Include="Views\UserSettings\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenLawOffice.Common\OpenLawOffice.Common.csproj">
