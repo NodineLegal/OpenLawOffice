@@ -2,10 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Web;
     using System.Web.Mvc;
-    using System.Data;
     using AutoMapper;
 
     public class UserTaskSettingsController : BaseController
@@ -13,18 +10,18 @@
         public ActionResult Index()
         {
             ViewModels.Settings.UserTaskSettingsViewModel viewModel = new ViewModels.Settings.UserTaskSettingsViewModel();
-            
+
             Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
             List<Common.Models.Settings.TagFilter> taskTagFilterList =
                 Data.Settings.UserTaskSettings.ListTagFiltersFor(currentUser);
 
             viewModel.MyTasksFilter = new List<ViewModels.Settings.TagFilterViewModel>();
 
-            taskTagFilterList.ForEach(x => 
+            taskTagFilterList.ForEach(x =>
             {
                 viewModel.MyTasksFilter.Add(Mapper.Map<ViewModels.Settings.TagFilterViewModel>(x));
             });
-            
+
             return View(viewModel);
         }
 

@@ -7,9 +7,9 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //  http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -21,7 +21,6 @@
 
 namespace OpenLawOffice.WebClient.ViewModels.Settings
 {
-    using System;
     using AutoMapper;
     using OpenLawOffice.Common.Models;
 
@@ -29,8 +28,11 @@ namespace OpenLawOffice.WebClient.ViewModels.Settings
     public class TagFilterViewModel : CoreViewModel
     {
         public long? Id { get; set; }
+
         public Security.UserViewModel User { get; set; }
+
         public string Category { get; set; }
+
         public string Tag { get; set; }
 
         public void BuildMappings()

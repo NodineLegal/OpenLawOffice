@@ -1,11 +1,7 @@
 ﻿namespace OpenLawOffice.WebClient.Controllers
 {
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Web;
     using System.Web.Mvc;
-    using System.Data;
     using AutoMapper;
 
     public class UsersController : BaseController
@@ -46,7 +42,7 @@
         public ActionResult Create()
         {
             return View();
-        } 
+        }
 
         //
         // POST: /User/Create
@@ -59,6 +55,7 @@
             {
                 Common.Models.Security.User model = Mapper.Map<Common.Models.Security.User>(viewModel);
                 model.PasswordSalt = GetRandomString(10);
+
                 // TODO : This will eventually be done in javascript on the browser
                 model.Password = WebClient.Security.ClientHashPassword("12345");
                 model.Password = WebClient.Security.ServerHashPassword(
@@ -72,7 +69,7 @@
                 return View(viewModel);
             }
         }
-        
+
         //
         // GET: /User/Edit/5
         [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
@@ -105,7 +102,7 @@
 
                 model = OpenLawOffice.Data.Security.User.Edit(model);
                 model = OpenLawOffice.Data.Security.User.SetPassword(model);
- 
+
                 return RedirectToAction("Index");
             }
             catch

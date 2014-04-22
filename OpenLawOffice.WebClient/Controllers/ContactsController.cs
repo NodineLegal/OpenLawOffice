@@ -1,8 +1,6 @@
 ﻿namespace OpenLawOffice.WebClient.Controllers
 {
-    using System;
     using System.Collections.Generic;
-    using System.Data;
     using System.Web.Mvc;
     using AutoMapper;
 
@@ -159,7 +157,7 @@
 
                 viewModel.Matters.Add(mr);
             });
-            
+
             return View(viewModel);
         }
     }

@@ -1,123 +1,139 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Tasks.TaskViewModel>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-	Edit
+    Edit
 </asp:Content>
-
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-
     <script type="text/javascript" src="/Scripts/jqGrid-4.5.4/jquery-1.9.0.min.js"></script>
     <script type="text/javascript" src="/Scripts/jqGrid-4.5.4/grid.locale-en.js"></script>
     <script type="text/javascript" src="/Scripts/jqGrid-4.5.4/jquery.jqGrid.min.js"></script>
-
-    <h2>Edit</h2>
-
-    <% using (Html.BeginForm()) {%>
-        <%: Html.ValidationSummary(true) %>
-    
+    <h2>
+        Edit</h2>
+    <% using (Html.BeginForm())
+       {%>
+    <%: Html.ValidationSummary(true) %>
     <table class="detail_table">
         <tr>
-            <td class="display-label">Id</td>
-            <td class="display-field"><%: Model.Id %></td>
+            <td class="display-label">
+                Id
+            </td>
+            <td class="display-field">
+                <%: Model.Id %>
+            </td>
         </tr>
         <tr>
-            <td class="display-label">Title</td>
+            <td class="display-label">
+                Title
+            </td>
             <td class="display-field">
                 <%: Html.TextBoxFor(model => model.Title) %>
                 <%: Html.ValidationMessageFor(model => model.Title) %>
             </td>
         </tr>
         <tr>
-            <td class="display-label">Description</td>
+            <td class="display-label">
+                Description
+            </td>
             <td class="display-field">
                 <%: Html.TextBoxFor(model => model.Description)%>
                 <%: Html.ValidationMessageFor(model => model.Description)%>
             </td>
         </tr>
         <tr>
-            <td class="display-label">Projected Start</td>
+            <td class="display-label">
+                Projected Start
+            </td>
             <td class="display-field">
                 <%: Html.EditorFor(model => model.ProjectedStart)%>
                 <%: Html.ValidationMessageFor(model => model.ProjectedStart)%>
             </td>
         </tr>
         <tr>
-            <td class="display-label">Due Date</td>
+            <td class="display-label">
+                Due Date
+            </td>
             <td class="display-field">
                 <%: Html.EditorFor(model => model.DueDate)%>
                 <%: Html.ValidationMessageFor(model => model.DueDate)%>
             </td>
         </tr>
         <tr>
-            <td class="display-label">Projected End</td>
+            <td class="display-label">
+                Projected End
+            </td>
             <td class="display-field">
                 <%: Html.EditorFor(model => model.ProjectedEnd)%>
                 <%: Html.ValidationMessageFor(model => model.ProjectedEnd)%>
             </td>
         </tr>
         <tr>
-            <td class="display-label">Actual End</td>
+            <td class="display-label">
+                Actual End
+            </td>
             <td class="display-field">
                 <%: Html.EditorFor(model => model.ActualEnd)%>
                 <%: Html.ValidationMessageFor(model => model.ActualEnd)%>
             </td>
         </tr>
         <tr>
-            <td class="display-label">Parent</td>
+            <td class="display-label">
+                Parent
+            </td>
             <td class="display-field">
-
-            <div id="ParentDiv">
-                Parent: <%: Html.TextBoxFor(model => model.Parent.Id, new { @readonly = true })%>
-                <%: Html.ValidationMessageFor(model => model.Parent.Id)%>
-                    
-                <br /><br /> 
-                <table id="parentlist"></table>
-                <div id="parentpager"></div>
-                <input id="parentclear" type="button" style="width:200px;" value="clear" />
-
-                <script language="javascript">
-                    $(function () {
-                        $("#parentlist").jqGrid({
-                            treeGrid: true,
-                            autowidth: true,
-                            url: '/Tasks/ListChildrenJqGrid?MatterId=<%: ViewData["MatterId"].ToString() %>',
-                            datatype: 'json',
-                            jsonReader: {
-                                root: 'Rows',
-                                page: 'CurrentPage',
-                                total: 'TotalRecords',
-                                id: 'Id',
-                                rows: 'Rows'
-                            },
-                            colNames: ['id', 'Title', 'Type', 'Due'],
-                            colModel: [
+                <div id="ParentDiv">
+                    Parent:
+                    <%: Html.TextBoxFor(model => model.Parent.Id, new { @readonly = true })%>
+                    <%: Html.ValidationMessageFor(model => model.Parent.Id)%>
+                    <br />
+                    <br />
+                    <table id="parentlist">
+                    </table>
+                    <div id="parentpager">
+                    </div>
+                    <input id="parentclear" type="button" style="width: 200px;" value="clear" />
+                    <script language="javascript">
+                        $(function () {
+                            $("#parentlist").jqGrid({
+                                treeGrid: true,
+                                autowidth: true,
+                                url: '/Tasks/ListChildrenJqGrid?MatterId=<%: ViewData["MatterId"].ToString() %>',
+                                datatype: 'json',
+                                jsonReader: {
+                                    root: 'Rows',
+                                    page: 'CurrentPage',
+                                    total: 'TotalRecords',
+                                    id: 'Id',
+                                    rows: 'Rows'
+                                },
+                                colNames: ['id', 'Title', 'Type', 'Due'],
+                                colModel: [
                                 { name: 'Id', width: 1, hidden: true, key: true },
                                 { name: 'Title', width: 350 },
                                 { name: 'Type', width: 250 },
                                 { name: 'DueDate', width: 120, formatter: 'date' }
                             ],
-                            pager: '#parentpager',
-                            gridview: true,
-                            treedatatype: 'json',
-                            treeGridModel: 'adjacency',
-                            ExpandColumn: 'Title',
-                            caption: 'Parent Task',
-                            onSelectRow: function (id) {
-                                $("#Parent_Id").val(id);
-                            }
+                                pager: '#parentpager',
+                                gridview: true,
+                                treedatatype: 'json',
+                                treeGridModel: 'adjacency',
+                                ExpandColumn: 'Title',
+                                caption: 'Parent Task',
+                                onSelectRow: function (id) {
+                                    $("#Parent_Id").val(id);
+                                }
+                            });
                         });
-                    });
 
-                    $("#parentclear").click(function () {
-                        $("#parentlist").jqGrid('resetSelection');
-                        $("#Parent_Id").val(null);
-                    });
-                </script>
-
-            </div>
-            <div id="ParentDivHidden">
-                This task's parent cannot be modified as it is part of a sequence.  Task sequence members automatically have their parent task managed.
-            </div>
+                        $("#parentclear").click(function () {
+                            $("#parentlist").jqGrid('resetSelection');
+                            $("#Parent_Id").val(null);
+                        });
+                    </script>
+                </div>
+                <div id="ParentDivHidden">
+                    This task's parent cannot be modified as it is part of a sequence. Task sequence
+                    members automatically have their parent task managed.
+                </div>
             </td>
         </tr>
         <%--<tr>
@@ -126,22 +142,22 @@
 
             <div id="SeqDiv">
                 This task is a member of a sequence.
-                
+
                 <br /><br />
 
                 <input id="spclear" type="button" style="width:200px;" value="Remove from Sequence" />
-                
+
                 <br /><br />
 
                 If you would like to change this task's position in the sequence, you may do so by
                 selecting it's new predecessor below.
 
                 <br /><br />
-            
+
                 Sequential Predecessor: <%: Html.TextBoxFor(model => model.SequentialPredecessor.Id, new { @readonly = true })%>
                 <%: Html.ValidationMessageFor(model => model.SequentialPredecessor.Id)%>
-                    
-                <br /><br /> 
+
+                <br /><br />
                 <table id="splist"></table>
                 <div id="sppager"></div>
 
@@ -190,9 +206,9 @@
             </div>
             <div id="SeqDivHidden">
                 This task's is not part of a sequence.  To make this task a sequence member click the button.
-                <br />                
+                <br />
                 <input id="makeSeqMember" type="button" style="width:200px;" value="Add to Sequence" />
-                
+
                 <script language="javascript">
                     $("#makeSeqMember").click(function () {
                         $("#splist").jqGrid('resetSelection');
@@ -202,20 +218,15 @@
                         $("#SeqDiv").show();
                         $("#SeqDivHidden").hide();
                     });
-        
                 </script>
-
             </div>
             </td>
         </tr>--%>
     </table>
-            
-        <p>
-            <input type="submit" value="Save" />
-        </p>
-
+    <p>
+        <input type="submit" value="Save" />
+    </p>
     <% } %>
-
     <script language="javascript">
         $(function () {
             var seqPredId = $("#SequentialPredecessor_Id").val();
@@ -234,23 +245,33 @@
                 //$("#SeqDivHidden").hide();
             }
         });
-        
     </script>
-
 </asp:Content>
-
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
     <li>Navigation</li>
     <ul style="list-style: none outside none; padding-left: 1em;">
-        <li><%: Html.ActionLink("New Task", "Create", new { MatterId = ViewData["MatterId"] })%></li>
-        <li><%: Html.ActionLink("Details", "Details", new { id = Model.Id })%></li>
-        <li><%: Html.ActionLink("Delete ", "Delete", new { id = Model.Id })%></li>
-        <li><%: Html.ActionLink("Matter ", "Details", "Matters", new { id = ViewData["MatterId"] }, null)%></li>
+        <li>
+            <%: Html.ActionLink("New Task", "Create", new { MatterId = ViewData["MatterId"] })%></li>
+        <li>
+            <%: Html.ActionLink("Details", "Details", new { id = Model.Id })%></li>
+        <li>
+            <%: Html.ActionLink("Delete ", "Delete", new { id = Model.Id })%></li>
+        <li>
+            <%: Html.ActionLink("Matter ", "Details", "Matters", new { id = ViewData["MatterId"] }, null)%></li>
     </ul>
-    <li><%: Html.ActionLink("Tags", "Tags", "Tasks", new { id = Model.Id }, null)%></li>
-    <li><%: Html.ActionLink("Responsible Users", "ResponsibleUsers", "Tasks", new { id = Model.Id }, null)%></li>
-    <li><%: Html.ActionLink("Contacts", "Contacts", "Tasks", new { id = Model.Id }, null)%></li>
-    <li><%: Html.ActionLink("Notes", "Notes", "Tasks", new { id = Model.Id }, null)%> (<%: Html.ActionLink("Add", "Create", "Notes", new { controller = "Tasks", TaskId = Model.Id }) %>)</li>
-    <li><%: Html.ActionLink("Documents", "Documents", "Tasks", new { id = Model.Id }, null)%> (<%: Html.ActionLink("Add", "Create", "Documents", new { controller = "Tasks", TaskId = Model.Id })%>)</li>
-    <li><%: Html.ActionLink("Time", "Time", "Tasks", new { id = Model.Id }, null)%> (<%: Html.ActionLink("Add", "Create", "Times", new { controller = "Tasks", TaskId = Model.Id })%>)</li>
+    <li>
+        <%: Html.ActionLink("Tags", "Tags", "Tasks", new { id = Model.Id }, null)%></li>
+    <li>
+        <%: Html.ActionLink("Responsible Users", "ResponsibleUsers", "Tasks", new { id = Model.Id }, null)%></li>
+    <li>
+        <%: Html.ActionLink("Contacts", "Contacts", "Tasks", new { id = Model.Id }, null)%></li>
+    <li>
+        <%: Html.ActionLink("Notes", "Notes", "Tasks", new { id = Model.Id }, null)%>
+        (<%: Html.ActionLink("Add", "Create", "Notes", new { controller = "Tasks", TaskId = Model.Id }) %>)</li>
+    <li>
+        <%: Html.ActionLink("Documents", "Documents", "Tasks", new { id = Model.Id }, null)%>
+        (<%: Html.ActionLink("Add", "Create", "Documents", new { controller = "Tasks", TaskId = Model.Id })%>)</li>
+    <li>
+        <%: Html.ActionLink("Time", "Time", "Tasks", new { id = Model.Id }, null)%>
+        (<%: Html.ActionLink("Add", "Create", "Times", new { controller = "Tasks", TaskId = Model.Id })%>)</li>
 </asp:Content>

@@ -3,24 +3,26 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title><asp:ContentPlaceHolder ID="TitleContent" runat="server" /></title>
+    <title>
+        <asp:ContentPlaceHolder ID="TitleContent" runat="server" />
+    </title>
     <link href="../../Content/Site.css" rel="stylesheet" type="text/css" />
     <link href="../../Content/jquery-ui-1.10.4.custom.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../../Scripts/jqGrid-4.5.4/ui.jqgrid.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="../../Scripts/jqGrid-4.5.4/ui.jqgrid.css"
+        media="all" />
 </head>
-
 <body>
     <div class="page">
-
         <div id="header">
             <div id="title">
-                <h1>OpenLawOffice</h1>
+                <h1>
+                    OpenLawOffice</h1>
             </div>
-              
             <div id="logindisplay">
                 <% if (Request.Cookies["Username"] != null)
                    { %>
-                Logged in as: <%= Request.Cookies["Username"].Value%>
+                Logged in as:
+                <%= Request.Cookies["Username"].Value%>
                 <% }
                    else
                    { %>
@@ -28,54 +30,63 @@
                 <% } %>
             </div>
         </div>
-
         <div id="nav">
             <ul>
-                <li><%: Html.ActionLink("Dashboard", "Index", "Home") %></li>
-                <ul></ul>
+                <li>
+                    <%: Html.ActionLink("Dashboard", "Index", "Home") %></li>
+                <ul>
+                </ul>
                 <li>Search</li>
                 <ul>
-                    <li><%: Html.ActionLink("Tags", "Tags", "Search") %></li>
+                    <li>
+                        <%: Html.ActionLink("Tags", "Tags", "Search") %></li>
                     <li>Document Text</li>
                 </ul>
-                <li><%: Html.ActionLink("Matters", "", "Matters") %></li>
+                <li>
+                    <%: Html.ActionLink("Matters", "", "Matters") %></li>
                 <ul>
-                    <li><%: Html.ActionLink("New Matter", "Create", "Matters") %></li>
+                    <li>
+                        <%: Html.ActionLink("New Matter", "Create", "Matters") %></li>
                 </ul>
-                <li><%: Html.ActionLink("Contacts", "", "Contacts")%></li>
+                <li>
+                    <%: Html.ActionLink("Contacts", "", "Contacts")%></li>
                 <ul>
-                    <li><%: Html.ActionLink("New Contact", "Create", "Contacts") %></li>
+                    <li>
+                        <%: Html.ActionLink("New Contact", "Create", "Contacts") %></li>
                 </ul>
-                <ul></ul>
+                <ul>
+                </ul>
                 <li>Billing</li>
-                <ul></ul>
+                <ul>
+                </ul>
                 <li>Security</li>
                 <ul>
-                    <li><%: Html.ActionLink("Areas", "", "SecurityAreas") %></li>
-                    <li><%: Html.ActionLink("Area Access", "", "SecurityAreaAcls") %></li>
-                    <li><%: Html.ActionLink("Users", "", "Users") %></li>
+                    <li>
+                        <%: Html.ActionLink("Areas", "", "SecurityAreas") %></li>
+                    <li>
+                        <%: Html.ActionLink("Area Access", "", "SecurityAreaAcls") %></li>
+                    <li>
+                        <%: Html.ActionLink("Users", "", "Users") %></li>
                 </ul>
-                <ul></ul>
+                <ul>
+                </ul>
                 <li>Settings</li>
                 <ul>
-                    <li><%: Html.ActionLink("Tasks", "Index", "UserTaskSettings")%></li>
+                    <li>
+                        <%: Html.ActionLink("Tasks", "Index", "UserTaskSettings")%></li>
                 </ul>
             </ul>
         </div>
-        
-        <div id="menucontainer">            
-            <ul id="menu">      
+        <div id="menucontainer">
+            <ul id="menu">
                 <asp:ContentPlaceHolder ID="MenuContent" runat="server" />
             </ul>
         </div>
-
         <div id="main">
             <asp:ContentPlaceHolder ID="MainContent" runat="server" />
-
             <div id="footer">
             </div>
         </div>
-
     </div>
 </body>
 </html>

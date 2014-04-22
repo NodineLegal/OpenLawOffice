@@ -1,53 +1,64 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Tasks.TaskResponsibleUserViewModel>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-	Edit
+    Edit
 </asp:Content>
-
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-
-    <h2>Edit</h2>
-
-    <% using (Html.BeginForm()) {%>
-        <%: Html.ValidationSummary(true) %>
-
+    <h2>
+        Edit</h2>
+    <% using (Html.BeginForm())
+       {%>
+    <%: Html.ValidationSummary(true) %>
     <table class="detail_table">
         <tr>
-            <td class="display-label">Id</td>
-            <td class="display-field"><%: Model.Id %></td>
+            <td class="display-label">
+                Id
+            </td>
+            <td class="display-field">
+                <%: Model.Id %>
+            </td>
         </tr>
         <tr>
-            <td class="display-label">Matter</td>
-            <td class="display-field"><%: Model.Task.Title %></td>
+            <td class="display-label">
+                Matter
+            </td>
+            <td class="display-field">
+                <%: Model.Task.Title %>
+            </td>
         </tr>
         <tr>
-            <td class="display-label">User</td>
-            <td class="display-field"><%: Html.DropDownListFor(x => x.User.Id,
+            <td class="display-label">
+                User
+            </td>
+            <td class="display-field">
+                <%: Html.DropDownListFor(x => x.User.Id,
                                 new SelectList((IList)ViewData["UserList"], "Id", "Username")) %>
                 <%: Html.ValidationMessageFor(x => x.User) %>
             </td>
         </tr>
         <tr>
-            <td class="display-label">Responsiblity</td>
-            <td class="display-field"><%: Html.TextBoxFor(x => x.Responsibility) %>
+            <td class="display-label">
+                Responsiblity
+            </td>
+            <td class="display-field">
+                <%: Html.TextBoxFor(x => x.Responsibility) %>
                 <%: Html.ValidationMessageFor(x => x.Responsibility) %>
             </td>
         </tr>
     </table>
-            
     <p>
         <input type="submit" value="Save" />
     </p>
-
     <% } %>
-
 </asp:Content>
-
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
     <li>Navigation</li>
     <ul style="list-style: none outside none; padding-left: 1em;">
-        <li><%: Html.ActionLink("Add Resp. User", "Create", new { id = Model.Task.Id })%></li>
-        <li><%: Html.ActionLink("Details", "Details", new { id = Model.Id })%></li>
-        <li><%: Html.ActionLink("List", "ResponsibleUsers", "Matters", new { id = Model.Task.Id }, null)%></li>
+        <li>
+            <%: Html.ActionLink("Add Resp. User", "Create", new { id = Model.Task.Id })%></li>
+        <li>
+            <%: Html.ActionLink("Details", "Details", new { id = Model.Id })%></li>
+        <li>
+            <%: Html.ActionLink("List", "ResponsibleUsers", "Matters", new { id = Model.Task.Id }, null)%></li>
     </ul>
 </asp:Content>

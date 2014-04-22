@@ -1,27 +1,24 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Security.AreaViewModel>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-	Index
+    Index
 </asp:Content>
-
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-
     <script type="text/javascript" src="../../Scripts/jqGrid-4.5.4/jquery-1.9.0.min.js"></script>
     <script type="text/javascript" src="../../Scripts/jqGrid-4.5.4/grid.locale-en.js"></script>
     <script type="text/javascript" src="../../Scripts/jqGrid-4.5.4/jquery.jqGrid.min.js"></script>
-
     <style type="text/css">
-    div.ui-jqgrid-titlebar 
-    {
-        height: 16px;
-    }
+        div.ui-jqgrid-titlebar
+        {
+            height: 16px;
+        }
     </style>
-
-    <h2>Index</h2>
-
-    <table id="list"></table>
-    <div id="pager"></div>
-
+    <h2>
+        Index</h2>
+    <table id="list">
+    </table>
+    <div id="pager">
+    </div>
     <script language="javascript">
         $(function () {
             $("#list").jqGrid({
@@ -61,8 +58,6 @@
             });
         });
     </script>
-
 </asp:Content>
-
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
 </asp:Content>

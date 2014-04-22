@@ -1,9 +1,6 @@
 ﻿namespace OpenLawOffice.WebClient.Controllers
 {
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Web;
     using System.Web.Mvc;
     using AutoMapper;
 
@@ -20,7 +17,7 @@
 
         [HttpPost]
         public ActionResult Tags(ViewModels.Search.TagSearchViewModel viewModel)
-        {            
+        {
             List<Common.Models.Matters.MatterTag> matterTags = Data.Matters.MatterTag.Search(viewModel.Query.ToLower());
             List<Common.Models.Tasks.TaskTag> taskTags = Data.Tasks.TaskTag.Search(viewModel.Query.ToLower());
 

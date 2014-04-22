@@ -7,9 +7,9 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //  http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -22,9 +22,9 @@
 namespace OpenLawOffice.WebClient.ViewModels.Contacts
 {
     using System;
+    using System.ComponentModel.DataAnnotations;
     using AutoMapper;
     using OpenLawOffice.Common.Models;
-    using System.ComponentModel.DataAnnotations;
 
     [MapMe]
     public class ContactViewModel : CoreViewModel
@@ -124,7 +124,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Contacts
         /// <author>Lucas Nodine</author>
         public string DisplayName { get; set; }
 
-        #endregion
+        #endregion Contact Name
 
         #region Electronic Address Properties
 
@@ -236,7 +236,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Contacts
         /// <author>Lucas Nodine</author>
         public string Fax3FaxNumber { get; set; }
 
-        #endregion
+        #endregion Electronic Address Properties
 
         #region Physical Address Properties
 
@@ -456,7 +456,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Contacts
         /// <author>Lucas Nodine</author>
         public string Address3AddressPostOfficeBox { get; set; }
 
-        #endregion
+        #endregion Physical Address Properties
 
         #region Telephone Properties
 
@@ -640,7 +640,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Contacts
         /// <author>Lucas Nodine</author>
         public string Telephone10TelephoneNumber { get; set; }
 
-        #endregion
+        #endregion Telephone Properties
 
         #region Event Properties
 
@@ -664,7 +664,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Contacts
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime? Wedding { get; set; }
 
-        #endregion
+        #endregion Event Properties
 
         #region Professional Properties
 
@@ -731,7 +731,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Contacts
         /// <author>Lucas Nodine</author>
         public string Profession { get; set; }
 
-        #endregion
+        #endregion Professional Properties
 
         #region Other Contact Properties
 
@@ -798,8 +798,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Contacts
         /// <author>Lucas Nodine</author>
         public string ReferredByName { get; set; }
 
-        #endregion
-
+        #endregion Other Contact Properties
 
         public void BuildMappings()
         {
@@ -915,7 +914,6 @@ namespace OpenLawOffice.WebClient.ViewModels.Contacts
                 .ForMember(dst => dst.BusinessHomePage, opt => opt.MapFrom(src => src.BusinessHomePage))
                 .ForMember(dst => dst.Gender, opt => opt.MapFrom(src => src.Gender))
                 .ForMember(dst => dst.ReferredByName, opt => opt.MapFrom(src => src.ReferredByName));
-
 
             Mapper.CreateMap<ContactViewModel, Common.Models.Contacts.Contact>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))

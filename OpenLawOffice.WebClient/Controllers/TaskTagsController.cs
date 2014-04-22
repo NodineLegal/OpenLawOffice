@@ -1,11 +1,7 @@
 ﻿namespace OpenLawOffice.WebClient.Controllers
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Web;
     using System.Web.Mvc;
-    using System.Data;
     using AutoMapper;
 
     public class TaskTagsController : BaseController
@@ -45,7 +41,7 @@
                 model.Task = new Common.Models.Tasks.Task() { Id = long.Parse(RouteData.Values["Id"].ToString()) };
                 model.TagCategory = Mapper.Map<Common.Models.Tagging.TagCategory>(viewModel.TagCategory);
                 model = OpenLawOffice.Data.Tasks.TaskTag.Create(model, currentUser);
-                
+
                 return RedirectToAction("Tags", "Tasks", new { Id = model.Task.Id.Value.ToString() });
             }
             catch (Exception)

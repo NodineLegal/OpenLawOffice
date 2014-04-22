@@ -1,14 +1,15 @@
 ﻿namespace OpenLawOffice.WebClient.Controllers
 {
     using System;
-    using System.Web.Mvc;
     using System.Web;
-    using System.Data;
+    using System.Web.Mvc;
 
     public class SecurityFilterAttribute : ActionFilterAttribute
     {
         public string SecurityAreaName { get; set; }
+
         public bool IsSecuredResource { get; set; }
+
         public Common.Models.PermissionType Permission { get; set; }
 
         public override void OnActionExecuting(ActionExecutingContext filterContext)
@@ -18,7 +19,7 @@
             BaseController controller;
             HttpCookie cookie = null;
             Data.Authorization.AuthorizeResult authResult;
-            
+
             cookie = filterContext.HttpContext.Request.Cookies["UserAuthToken"];
 
             if (cookie == null)
@@ -56,7 +57,7 @@
                 return;
             }
 
-            if (!Permission.HasFlag(Common.Models.PermissionType.List) && 
+            if (!Permission.HasFlag(Common.Models.PermissionType.List) &&
                 !Permission.HasFlag(Common.Models.PermissionType.Create))
             {
                 if (filterContext.RouteData.Values["id"] != null)

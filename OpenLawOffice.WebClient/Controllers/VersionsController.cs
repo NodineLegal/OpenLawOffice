@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
@@ -77,7 +75,7 @@ namespace OpenLawOffice.WebClient.Controllers
                 Common.Models.Documents.Version currentVersion = Data.Documents.Document.GetCurrentVersion(viewModel.Document.Id.Value);
                 Common.Models.Matters.Matter matter = Data.Documents.Document.GetMatter(docModel.Id.Value);
                 Common.Models.Tasks.Task task = Data.Documents.Document.GetTask(docModel.Id.Value);
-                                        
+
                 Common.Models.Documents.Version version = new Common.Models.Documents.Version()
                 {
                     Id = Guid.NewGuid(),
@@ -86,9 +84,10 @@ namespace OpenLawOffice.WebClient.Controllers
                     Filename = file.FileName.Split('.')[0],
                     Extension = file.FileName.Split('.')[1],
                     Size = (long)file.ContentLength,
+
                     // Md5 = md5
                 };
-                    
+
                 if (currentVersion == null)
                 {
                     // Save file
@@ -106,7 +105,7 @@ namespace OpenLawOffice.WebClient.Controllers
                 // Calculate the MD5 checksum
                 version.Md5 = Data.FileStorage.CalculateMd5(
                     Data.FileStorage.Instance.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
-                    
+
                 //Version
                 Data.Documents.Document.CreateNewVersion(docModel.Id.Value, version, currentUser);
 
@@ -127,6 +126,5 @@ namespace OpenLawOffice.WebClient.Controllers
                 return View(viewModel);
             }
         }
-
     }
 }

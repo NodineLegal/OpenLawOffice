@@ -1,9 +1,9 @@
 ﻿namespace OpenLawOffice.WebClient.Controllers
 {
+    using System.Collections.Generic;
     using System.Web;
     using System.Web.Mvc;
     using OpenLawOffice.WebClient.ViewModels.Account;
-    using System.Collections.Generic;
 
     [HandleError]
     public class AccountController : BaseController
