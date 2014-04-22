@@ -33,6 +33,7 @@ namespace OpenLawOffice.Data
         private FileStorageSettings _settings;
 
         public string CurrentVersionPath { get { return _settings.CurrentVersionPath; } }
+
         public string PreviousVersionsPath { get { return _settings.PreviousVersionsPath; } }
 
         public FileStorage()

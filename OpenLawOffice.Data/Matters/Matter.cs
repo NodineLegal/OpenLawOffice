@@ -23,11 +23,9 @@ namespace OpenLawOffice.Data.Matters
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
+    using System.Data;
     using AutoMapper;
     using Dapper;
-    using System.Data;
 
     /// <summary>
     /// TODO: Update summary.

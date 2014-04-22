@@ -23,18 +23,17 @@ namespace OpenLawOffice.Data
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
     using System.Data;
-    using Dapper;
+    using System.Linq;
     using AutoMapper;
+    using Dapper;
 
     /// <summary>
     /// TODO: Update summary.
     /// </summary>
     internal static class DataHelper
     {
-        internal static TReturn Get<TReturn, TDbo>(string sql, object anon = null) 
+        internal static TReturn Get<TReturn, TDbo>(string sql, object anon = null)
             where TReturn : class
             where TDbo : class
         {

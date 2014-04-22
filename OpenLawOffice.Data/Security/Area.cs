@@ -23,11 +23,10 @@ namespace OpenLawOffice.Data.Security
 {
     using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.Linq;
-    using System.Text;
     using AutoMapper;
     using Dapper;
-    using System.Data;
 
     /// <summary>
     /// TODO: Update summary.
@@ -89,7 +88,7 @@ namespace OpenLawOffice.Data.Security
                     dbo);
                 model.Id = conn.Query<DBOs.Security.Area>("SELECT currval(pg_get_serial_sequence('area', 'id')) AS \"id\"").Single().Id;
             }
-            
+
             return model;
         }
 
@@ -106,7 +105,7 @@ namespace OpenLawOffice.Data.Security
                     "\"parent_id\"=@ParentId, \"name\"=@Name, \"description\"=@Description, \"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId " +
                     "WHERE \"id\"=@Id", dbo);
             }
-            
+
             return model;
         }
     }

@@ -21,10 +21,10 @@
 
 namespace OpenLawOffice.Data.Installation
 {
+    using System;
     using System.Configuration;
     using System.IO;
     using Npgsql;
-    using System;
 
     /// <summary>
     /// TODO: Update summary.
@@ -74,7 +74,7 @@ namespace OpenLawOffice.Data.Installation
 
             // Areas
 
-            Common.Models.Security.Area areaSecurity, areaTagging, areaMatters, 
+            Common.Models.Security.Area areaSecurity, areaTagging, areaMatters,
                 areaContacts, areaTasks, areaTiming, areaNotes, areaDocuments;
 
             areaSecurity = SetupSecurityArea("Security", null, user);
@@ -388,7 +388,7 @@ namespace OpenLawOffice.Data.Installation
             }
         }
 
-        private static Common.Models.Security.Area SetupSecurityArea(string name, int? parentId, 
+        private static Common.Models.Security.Area SetupSecurityArea(string name, int? parentId,
             Common.Models.Security.User user)
         {
             Common.Models.Security.Area area = Security.Area.Get(name);

@@ -21,7 +21,6 @@
 
 namespace OpenLawOffice.Data.DBOs.Settings
 {
-    using System;
     using AutoMapper;
 
     /// <summary>
@@ -41,6 +40,7 @@ namespace OpenLawOffice.Data.DBOs.Settings
 
         [ColumnMapping(Name = "tag")]
         public string Tag { get; set; }
+
         public void BuildMappings()
         {
             Dapper.SqlMapper.SetTypeMap(typeof(TagFilter), new ColumnAttributeTypeMapper<TagFilter>());

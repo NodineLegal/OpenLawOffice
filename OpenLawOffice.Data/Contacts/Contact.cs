@@ -22,12 +22,11 @@
 namespace OpenLawOffice.Data.Contacts
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
-    using AutoMapper;
     using System.Data;
-    using Dapper;
     using System.Linq;
+    using AutoMapper;
+    using Dapper;
 
     /// <summary>
     /// TODO: Update summary.
@@ -88,10 +87,10 @@ namespace OpenLawOffice.Data.Contacts
                 dbo = conn.Query<DBOs.Matters.Matter, DBOs.Matters.MatterContact, DBOs.Contacts.Contact,
                     Tuple<DBOs.Matters.Matter, DBOs.Matters.MatterContact, DBOs.Contacts.Contact>>
                     ("SELECT * FROM \"matter\" " +
-	                "JOIN \"matter_contact\" ON \"matter\".\"id\"=\"matter_contact\".\"matter_id\" " +
-	                "JOIN \"contact\" ON \"matter_contact\".\"contact_id\"=\"contact\".\"id\" " +
-	                "WHERE \"matter\".\"id\"=@MatterId " +
-	                "AND \"contact\".\"id\"!=@ContactId",
+                    "JOIN \"matter_contact\" ON \"matter\".\"id\"=\"matter_contact\".\"matter_id\" " +
+                    "JOIN \"contact\" ON \"matter_contact\".\"contact_id\"=\"contact\".\"id\" " +
+                    "WHERE \"matter\".\"id\"=@MatterId " +
+                    "AND \"contact\".\"id\"!=@ContactId",
                     (mtr, matterContact, contact) =>
                     {
                         return new Tuple<DBOs.Matters.Matter, DBOs.Matters.MatterContact, DBOs.Contacts.Contact>(mtr, matterContact, contact);
@@ -153,7 +152,7 @@ namespace OpenLawOffice.Data.Contacts
                     "\"display_name\", \"initials\", \"given_name\", \"middle_name\", \"surname\", " +
                     "\"display_name_prefix\", \"generation\", \"nickname\", \"is_organization\", \"is_our_employee\", " +
                     "\"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") VALUES (" +
-                    "@ReferredByName, @Gender, @BusinessHomePage, " + 
+                    "@ReferredByName, @Gender, @BusinessHomePage, " +
                     "@PersonalHomePage, @InstantMessagingAddress, @Language, @SpouseName, @Profession, " +
                     "@AssistantName, @ManagerName, @OfficeLocation, @DepartmentName, @CompanyName, " +
                     "@Title, @Wedding, @Birthday, @Telephone10TelephoneNumber, @Telephone10DisplayName, " +
@@ -168,9 +167,9 @@ namespace OpenLawOffice.Data.Contacts
                     "@Address3AddressStreet, @Address3DisplayName, @Address2AddressPostOfficeBox, " +
                     "@Address2AddressCountryCode, @Address2AddressCountry, @Address2AddressPostalCode, " +
                     "@Address2AddressStateOrProvince, @Address2AddressCity, @Address2AddressStreet, " +
-                    "@Address2DisplayName, @Address1AddressPostOfficeBox, @Address1AddressCountryCode, " + 
+                    "@Address2DisplayName, @Address1AddressPostOfficeBox, @Address1AddressCountryCode, " +
                     "@Address1AddressCountry, @Address1AddressPostalCode, @Address1AddressStateOrProvince, " +
-                    "@Address1AddressCity, @Address1AddressStreet, @Address1DisplayName, " + 
+                    "@Address1AddressCity, @Address1AddressStreet, @Address1DisplayName, " +
                     "@Fax3FaxNumber, @Fax3DisplayName, @Fax2FaxNumber, @Fax2DisplayName, @Fax1FaxNumber, " +
                     "@Fax1DisplayName, @Email3EmailAddress, @Email3DisplayName, @Email2EmailAddress, @Email2DisplayName, " +
                     "@Email1EmailAddress, @Email1DisplayName, @DisplayName, @Initials, @GivenName, " +

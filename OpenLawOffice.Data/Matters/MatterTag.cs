@@ -23,11 +23,10 @@ namespace OpenLawOffice.Data.Matters
 {
     using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.Linq;
-    using System.Text;
     using AutoMapper;
     using Dapper;
-    using System.Data;
 
     /// <summary>
     /// TODO: Update summary.
@@ -45,7 +44,7 @@ namespace OpenLawOffice.Data.Matters
 
             if (model.TagCategory != null)
                 model.TagCategory = Tagging.TagCategory.Get(model.TagCategory.Id);
-                
+
             return model;
         }
 
@@ -66,7 +65,7 @@ namespace OpenLawOffice.Data.Matters
             {
                 x.TagCategory = Tagging.TagCategory.Get(x.TagCategory.Id);
             });
-            
+
             return list;
         }
 
@@ -93,7 +92,7 @@ namespace OpenLawOffice.Data.Matters
                     "VALUES (@Id, @MatterId, @TagCategoryId, @Tag, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);
             }
-            
+
             return model;
         }
 
@@ -112,7 +111,7 @@ namespace OpenLawOffice.Data.Matters
             }
 
             model.TagCategory = UpdateTagCategory(model, modifier);
-            
+
             return model;
         }
 
@@ -125,7 +124,7 @@ namespace OpenLawOffice.Data.Matters
             if (currentTag.TagCategory != null)
             {
                 if (model.TagCategory != null && !string.IsNullOrEmpty(model.TagCategory.Name))
-                { // If current has tag & new has tag                    
+                { // If current has tag & new has tag
                     // Are they the same - ignore if so
                     if (currentTag.Tag != model.Tag)
                     {
@@ -153,6 +152,7 @@ namespace OpenLawOffice.Data.Matters
                     // Update - add tagcat
                     model.TagCategory = AddOrChangeTagCategory(model, modifier);
                 }
+
                 // If current !has tag & new !has tag - do nothing
             }
 

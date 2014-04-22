@@ -22,11 +22,8 @@
 namespace OpenLawOffice.Data.Notes
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using AutoMapper;
     using System.Data;
+    using AutoMapper;
     using Dapper;
 
     /// <summary>
@@ -65,7 +62,7 @@ namespace OpenLawOffice.Data.Notes
                 new { NoteId = noteId });
         }
 
-        public static Common.Models.Notes.NoteMatter Create(Common.Models.Notes.NoteMatter model, 
+        public static Common.Models.Notes.NoteMatter Create(Common.Models.Notes.NoteMatter model,
             Common.Models.Security.User creator)
         {
             model.UtcCreated = model.UtcModified = DateTime.UtcNow;

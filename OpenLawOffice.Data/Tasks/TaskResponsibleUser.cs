@@ -1,4 +1,5 @@
-﻿// <copyright file="TaskResponsibleUser.cs" company="Nodine Legal, LLC">
+﻿// -----------------------------------------------------------------------
+// <copyright file="TaskResponsibleUser.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -22,11 +23,10 @@ namespace OpenLawOffice.Data.Tasks
 {
     using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.Linq;
-    using System.Text;
     using AutoMapper;
     using Dapper;
-    using System.Data;
 
     /// <summary>
     /// TODO: Update summary.

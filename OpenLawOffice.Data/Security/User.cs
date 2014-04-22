@@ -23,10 +23,10 @@ namespace OpenLawOffice.Data.Security
 {
     using System;
     using System.Collections.Generic;
-    using AutoMapper;
     using System.Data;
-    using Dapper;
     using System.Linq;
+    using AutoMapper;
+    using Dapper;
 
     /// <summary>
     /// TODO: Update summary.
@@ -73,7 +73,7 @@ namespace OpenLawOffice.Data.Security
                     dbo);
                 model.Id = conn.Query<DBOs.Security.User>("SELECT currval(pg_get_serial_sequence('user', 'id')) AS \"id\"").Single().Id;
             }
-            
+
             return model;
         }
 

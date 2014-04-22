@@ -21,7 +21,6 @@
 
 namespace OpenLawOffice.Data
 {
-    using System;
     using System.Configuration;
 
     /// <summary>

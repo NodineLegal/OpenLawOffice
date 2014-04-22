@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="Security.cs" company="Nodine Legal, LLC">
+// <copyright file="Authentication.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -22,7 +22,6 @@
 namespace OpenLawOffice.Data
 {
     using System;
-    using System.Data;
     using AutoMapper;
 
     /// <summary>
@@ -33,9 +32,13 @@ namespace OpenLawOffice.Data
         public class LoginResult
         {
             public bool Success { get; set; }
-            public string UserAuthToken { get; set; }        
+
+            public string UserAuthToken { get; set; }
+
             public DateTime Expiry { get; set; }
+
             public string FailReason { get; set; }
+
             public Common.Models.Security.User User { get; set; }
         }
 

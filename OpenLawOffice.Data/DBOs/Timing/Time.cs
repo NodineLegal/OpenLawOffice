@@ -22,7 +22,6 @@
 namespace OpenLawOffice.Data.DBOs.Timing
 {
     using System;
-    using System.ComponentModel.DataAnnotations;
     using AutoMapper;
 
     /// <summary>

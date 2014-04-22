@@ -23,11 +23,10 @@ namespace OpenLawOffice.Data.Tasks
 {
     using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.Linq;
-    using System.Text;
     using AutoMapper;
     using Dapper;
-    using System.Data;
 
     /// <summary>
     /// TODO: Update summary.
@@ -76,7 +75,7 @@ namespace OpenLawOffice.Data.Tasks
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
             model.CreatedBy = model.ModifiedBy = creator;
             model.UtcCreated = model.UtcModified = DateTime.UtcNow;
-            
+
             Common.Models.Tagging.TagCategory existingTagCat = Tagging.TagCategory.Get(model.TagCategory.Name);
 
             if (existingTagCat == null)
@@ -125,7 +124,7 @@ namespace OpenLawOffice.Data.Tasks
             if (currentTag.TagCategory != null)
             {
                 if (model.TagCategory != null && !string.IsNullOrEmpty(model.TagCategory.Name))
-                { // If current has tag & new has tag                    
+                { // If current has tag & new has tag
                     // Are they the same - ignore if so
                     if (currentTag.TagCategory.Name != model.TagCategory.Name)
                     {
@@ -153,6 +152,7 @@ namespace OpenLawOffice.Data.Tasks
                     // Update - add tagcat
                     model.TagCategory = AddOrChangeTagCategory(model, modifier);
                 }
+
                 // If current !has tag & new !has tag - do nothing
             }
 

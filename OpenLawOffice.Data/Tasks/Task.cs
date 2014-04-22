@@ -23,11 +23,10 @@ namespace OpenLawOffice.Data.Tasks
 {
     using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.Linq;
-    using System.Text;
     using AutoMapper;
     using Dapper;
-    using System.Data;
 
     /// <summary>
     /// TODO: Update summary.
@@ -52,22 +51,22 @@ namespace OpenLawOffice.Data.Tasks
             /* Standard Tasks are neither hierarchical or sequenced - not is_grouping_task, no parent_id
              *  We do not need to test for sequential followers as we can infer this from the fact that a
              *  parent_id must be set for any sequential member.  This is a design mechanism.
-             *  
+             *
              * Grouping Tasks simply contain other tasks and their task properties should be caclulated, not stored.
-             *  Grouping tasks contain standard tasks, sequenced tasks and other grouping tasks.  
+             *  Grouping tasks contain standard tasks, sequenced tasks and other grouping tasks.
              *  However, a grouping task containing a sequence may only contain members of the sequence,
              *  but nothing prevents a sequence member from being a grouping task.
-             * 
+             *
              * Sequenced Tasks are members of a sequence and may be either standard tasks or
              *  grouping tasks.
-             *  
-             * Therefore, when loading the root tasks of a matter, we load standard and 
+             *
+             * Therefore, when loading the root tasks of a matter, we load standard and
              * grouping tasks.  Note, this does not include loading of any task with a non-null
              * parent_id as that means they are grouped and therefore, not root.  However, this
              * also means that we may simply load tasks with null parent_id fields to select
              * all the root tasks.
-             * 
-             * 
+             *
+             *
              * Example:
              * ST1
              * ST2
@@ -88,7 +87,7 @@ namespace OpenLawOffice.Data.Tasks
              *  Seq4
              *  Seq5
              * ST8
-             * 
+             *
              */
             return DataHelper.List<Common.Models.Tasks.Task, DBOs.Tasks.Task>(
                 "SELECT * FROM \"task\" WHERE \"parent_id\" is null AND " +
@@ -193,7 +192,6 @@ namespace OpenLawOffice.Data.Tasks
             }
             else
             {
-
                 using (IDbConnection conn = Database.Instance.GetConnection())
                 {
                     if (parentId.HasValue)
@@ -276,31 +274,31 @@ namespace OpenLawOffice.Data.Tasks
         {
             /*
              * We need to consider how to handle the relationship modifications
-             * 
+             *
              * First, basic assumptions:
              * 1) If a task has a sequential predecessor then it cannot independently specify its parent
-             * 
-             * 
+             *
+             *
              * Parent - if the parent is modified
-             * 
+             *
              * Sequential Predecessor
              * 1) If changed, need to cascade changes to all subsequent sequence members
              * 2) If removed from sequence, need to defer to user's parent selection
              * 3) If added to sequence, need to override user's parent selection
-             * 
-             * 
+             *
+             *
              * UI should be like:
-             * 
+             *
              * If sequence member:
              * [Remove from Sequence]
-             * 
-             * 
+             *
+             *
              * If NOT sequence member:
              * This task is not currently part of a task sequence.  If you would like to make this
              * task part of a task sequence, click here.
              * -- OnClick -->
              * Please select the task you wish t
-             * 
+             *
              */
 
             if (model.Parent != null && model.Parent.Id.HasValue)

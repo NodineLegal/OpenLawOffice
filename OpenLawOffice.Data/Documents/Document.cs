@@ -23,11 +23,9 @@ namespace OpenLawOffice.Data.Documents
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
+    using System.Data;
     using AutoMapper;
     using Dapper;
-    using System.Data;
 
     /// <summary>
     /// TODO: Update summary.
@@ -85,7 +83,7 @@ namespace OpenLawOffice.Data.Documents
                 new { TaskId = taskId });
         }
 
-        public static Common.Models.Documents.Document Create(Common.Models.Documents.Document model, 
+        public static Common.Models.Documents.Document Create(Common.Models.Documents.Document model,
             Common.Models.Security.User creator)
         {
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
@@ -181,7 +179,7 @@ namespace OpenLawOffice.Data.Documents
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("INSERT INTO \"version\" (\"id\", \"document_id\", \"version_number\", \"mime\", \"filename\", " + 
+                conn.Execute("INSERT INTO \"version\" (\"id\", \"document_id\", \"version_number\", \"mime\", \"filename\", " +
                     "\"extension\", \"size\", \"md5\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
                     "VALUES (@Id, @DocumentId, @VersionNumber, @Mime, @Filename, @Extension, @Size, @Md5, " +
                     "@UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",

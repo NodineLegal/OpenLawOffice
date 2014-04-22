@@ -22,7 +22,6 @@
 namespace OpenLawOffice.Data
 {
     using System;
-    using AutoMapper;
 
     /// <summary>
     /// TODO: Update summary.
@@ -32,13 +31,16 @@ namespace OpenLawOffice.Data
         public class AuthorizeResult
         {
             public bool HasError { get; set; }
+
             public bool IsAuthorized { get; set; }
+
             public string ErrorMessage { get; set; }
+
             public Common.Models.Security.User RequestingUser { get; set; }
         }
 
         public static AuthorizeResult AreaAccess(Common.Models.Security.User user,
-            Common.Models.Security.Area area, Guid? authToken, 
+            Common.Models.Security.Area area, Guid? authToken,
             Common.Models.PermissionType permissionRequired)
         {
             Common.Models.Security.AreaAcl areaAcl = null;
@@ -231,12 +233,12 @@ namespace OpenLawOffice.Data
                     IsAuthorized = false,
                     ErrorMessage = "Could not find User."
                 };
-            
+
             // Database models are now stuffed with at least the mandatory Id information
 
             // Load the Secured Resource Acl model
             securedResourceAcl = Data.Security.SecuredResourceAcl.Get(user.Id.Value, securedResource.Id.Value);
-            
+
             // Ensure flags have values - security precautions
             if (!securedResourceAcl.DenyFlags.HasValue)
                 return new AuthorizeResult()
