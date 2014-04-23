@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="HomeController.cs" company="Nodine Legal, LLC">
+// <copyright file="HandleError.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -21,37 +21,19 @@
 
 namespace OpenLawOffice.WebClient.Controllers
 {
-    using System.Collections.Generic;
     using System.Web.Mvc;
-    using AutoMapper;
+    using Elmah;
 
-    [HandleError(View = "Errors/", Order = 10)]
-    public class HomeController : BaseController
+    // Credit: http://stackoverflow.com/questions/766610/how-to-get-elmah-to-work-with-asp-net-mvc-handleerror-attribute
+    public class HandleErrorAttribute : System.Web.Mvc.HandleErrorAttribute
     {
-        [SecurityFilter]
-        public ActionResult Index()
+        public override void OnException(ExceptionContext context)
         {
-            ViewModels.Home.DashboardViewModel viewModel;
-            Common.Models.Security.User currentUser;
-
-            viewModel = new ViewModels.Home.DashboardViewModel();
-            
-            currentUser = UserCache.Instance.Lookup(Request);
-            
-            viewModel.MyTodoList = new List<ViewModels.Tasks.TaskViewModel>();
-
-            Data.Tasks.Task.GetTodoListFor(currentUser).ForEach(x =>
-            {
-                viewModel.MyTodoList.Add(Mapper.Map<ViewModels.Tasks.TaskViewModel>(x));
-            });
-
-            return View(viewModel);
-        }
-
-        [SecurityFilter]
-        public ActionResult About()
-        {
-            return View();
+            base.OnException(context);
+            if (!context.ExceptionHandled)
+                return;
+            var httpContext = context.HttpContext.ApplicationInstance.Context;
+            ErrorSignal.FromContext(httpContext).Raise(context.Exception, httpContext);
         }
     }
 }

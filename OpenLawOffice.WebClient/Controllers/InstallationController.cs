@@ -24,11 +24,9 @@ namespace OpenLawOffice.WebClient.Controllers
     using System.IO;
     using System.Web.Mvc;
 
+    [HandleError(View = "Errors/", Order = 10)]
     public class InstallationController : Controller
     {
-        //
-        // GET: /Installation/
-
         public ActionResult Index()
         {
             return View();
@@ -36,9 +34,12 @@ namespace OpenLawOffice.WebClient.Controllers
 
         private FileInfo GetScriptPath()
         {
-            string path = Request.PhysicalApplicationPath;
+            FileInfo fi;
+            string path;
+            
+            path = Request.PhysicalApplicationPath;
 
-            FileInfo fi = new FileInfo(path + Path.DirectorySeparatorChar + "Install.sql");
+            fi = new FileInfo(path + Path.DirectorySeparatorChar + "Install.sql");
             if (!fi.Exists)
             {
                 fi = new FileInfo(path + Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar + "Install.sql");
@@ -55,7 +56,9 @@ namespace OpenLawOffice.WebClient.Controllers
 
         public ActionResult Install()
         {
-            FileInfo fi = GetScriptPath();
+            FileInfo fi;
+            
+            fi = GetScriptPath();
 
             if (!fi.Exists)
                 return RedirectToAction("MissingDbInstallScript");
@@ -67,7 +70,9 @@ namespace OpenLawOffice.WebClient.Controllers
 
         public ActionResult InstallWithData()
         {
-            FileInfo fi = GetScriptPath();
+            FileInfo fi;
+            
+            fi = GetScriptPath();
 
             if (!fi.Exists)
                 return RedirectToAction("MissingDbInstallScript");

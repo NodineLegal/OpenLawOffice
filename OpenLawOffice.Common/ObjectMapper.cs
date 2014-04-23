@@ -92,7 +92,7 @@ namespace OpenLawOffice.Common
             }
             catch (Exception ex)
             {
-                logger.FatalException("An unexpected exception occured while attempting to map the type '" + type.FullName + "'", ex);
+                logger.FatalException("An unexpected exception occurred while attempting to map the type '" + type.FullName + "'", ex);
                 throw ex;
             }
         }

@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="HomeController.cs" company="Nodine Legal, LLC">
+// <copyright file="ErrorController.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -21,37 +21,19 @@
 
 namespace OpenLawOffice.WebClient.Controllers
 {
-    using System.Collections.Generic;
     using System.Web.Mvc;
-    using AutoMapper;
 
-    [HandleError(View = "Errors/", Order = 10)]
-    public class HomeController : BaseController
+    // Credit: http://www.codeproject.com/Articles/422572/Exception-Handling-in-ASP-NET-MVC
+    public class ErrorsController : BaseController
     {
-        [SecurityFilter]
         public ActionResult Index()
         {
-            ViewModels.Home.DashboardViewModel viewModel;
-            Common.Models.Security.User currentUser;
-
-            viewModel = new ViewModels.Home.DashboardViewModel();
-            
-            currentUser = UserCache.Instance.Lookup(Request);
-            
-            viewModel.MyTodoList = new List<ViewModels.Tasks.TaskViewModel>();
-
-            Data.Tasks.Task.GetTodoListFor(currentUser).ForEach(x =>
-            {
-                viewModel.MyTodoList.Add(Mapper.Map<ViewModels.Tasks.TaskViewModel>(x));
-            });
-
-            return View(viewModel);
+            return View("Errors/");
         }
 
-        [SecurityFilter]
-        public ActionResult About()
+        public ActionResult NotFound()
         {
-            return View();
+            return View("Errors/NotFound");
         }
     }
 }

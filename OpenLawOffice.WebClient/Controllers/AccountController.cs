@@ -26,45 +26,44 @@ namespace OpenLawOffice.WebClient.Controllers
     using System.Web.Mvc;
     using OpenLawOffice.WebClient.ViewModels.Account;
 
-    [HandleError]
+    [HandleError(View = "Errors/", Order = 10)]
     public class AccountController : BaseController
     {
         public ActionResult Login()
         {
-            try
-            {
-                List<Common.Models.Security.User> users = Data.Security.User.List();
-                if (users == null || users.Count < 1)
-                    return RedirectToAction("Index", "Installation");
-            }
-            catch
-            {
+            List<Common.Models.Security.User> users = null;
+
+            users = Data.Security.User.List();
+
+            if (users == null || users.Count < 1)
                 return RedirectToAction("Index", "Installation");
-            }
 
             return View();
         }
 
         [HttpPost]
-        public ActionResult Login(LoginModel model)
+        public ActionResult Login(LoginModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                // Apply client hash (ideally this will be done on the client side in javascript eventually)
-                string hashedPassword = WebClient.Security.ClientHashPassword(model.Password);
+                string hashedPassword;
+                OpenLawOffice.Data.Authentication.LoginResult result;
+                HttpCookie cookie;
 
-                OpenLawOffice.Data.Authentication.LoginResult result =
-                    OpenLawOffice.Data.Authentication.Login(model.Username, hashedPassword);
+                // Apply client hash (ideally this will be done on the client side in javascript eventually)
+                hashedPassword = WebClient.Security.ClientHashPassword(viewModel.Password);
+
+                result = OpenLawOffice.Data.Authentication.Login(viewModel.Username, hashedPassword);
 
                 if (!result.Success)
                 {
                     ModelState.AddModelError(string.Empty, result.FailReason);
-                    return View(model);
+                    return View(viewModel);
                 }
 
-                HttpCookie cookie = new HttpCookie("UserAuthToken", result.UserAuthToken);
+                cookie = new HttpCookie("UserAuthToken", result.UserAuthToken);
                 HttpContext.Response.AppendCookie(cookie);
-                HttpContext.Response.AppendCookie(new HttpCookie("Username", model.Username));
+                HttpContext.Response.AppendCookie(new HttpCookie("Username", viewModel.Username));
 
                 UserCache.Instance.Add(result.User);
 
@@ -73,8 +72,7 @@ namespace OpenLawOffice.WebClient.Controllers
                 return View();
             }
 
-            // If we got this far, something failed, redisplay form
-            return View(model);
+            return View(viewModel);
         }
     }
 }

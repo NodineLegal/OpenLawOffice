@@ -23,19 +23,22 @@ namespace OpenLawOffice.WebClient.Controllers
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Web;
     using System.Web.Mvc;
     using AutoMapper;
 
+    [HandleError(View = "Errors/", Order = 10)]
     public class DocumentsController : BaseController
     {
         [SecurityFilter(SecurityAreaName = "Documents", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Read)]
         public FileResult Download(Guid id)
         {
-            Common.Models.Documents.Version version = Data.Documents.Document.GetCurrentVersion(id);
-            return File(Data.FileStorage.Instance.CurrentVersionPath + version.Id.ToString() + "." + version.Extension, 
+            Common.Models.Documents.Version version = null;
+
+            version = Data.Documents.Document.GetCurrentVersion(id);
+
+            return File(Data.FileStorage.Instance.CurrentVersionPath + version.Id.ToString() + "." + version.Extension,
                 version.Mime, version.Filename + "." + version.Extension);
         }
 
@@ -43,11 +46,16 @@ namespace OpenLawOffice.WebClient.Controllers
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(Guid id)
         {
-            ViewModels.Documents.DocumentViewModel viewModel = null;
-            Common.Models.Documents.Document model = Data.Documents.Document.Get(id);
-            List<Common.Models.Documents.Version> versionList = Data.Documents.Document.GetVersions(id);
+            Common.Models.Documents.Document model;
+            List<Common.Models.Documents.Version> versionList;
+            ViewModels.Documents.DocumentViewModel viewModel;
+
+            model = Data.Documents.Document.Get(id);
+
             viewModel = Mapper.Map<ViewModels.Documents.DocumentViewModel>(model);
             viewModel.Versions = new List<ViewModels.Documents.VersionViewModel>();
+
+            versionList = Data.Documents.Document.GetVersions(id);
 
             versionList.ForEach(x =>
             {
@@ -71,59 +79,62 @@ namespace OpenLawOffice.WebClient.Controllers
         [HttpPost]
         public ActionResult Create(ViewModels.Documents.DocumentViewModel viewModel, HttpPostedFileBase file)
         {
-            try
+            Common.Models.Security.User currentUser;
+            Common.Models.Documents.Document model;
+            Common.Models.Documents.Version version;
+
+            currentUser = UserCache.Instance.Lookup(Request);
+
+            model = Mapper.Map<Common.Models.Documents.Document>(viewModel);
+
+            model = Data.Documents.Document.Create(model, currentUser);
+
+            version = new Common.Models.Documents.Version()
             {
-                Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
-                Common.Models.Documents.Document model = Mapper.Map<Common.Models.Documents.Document>(viewModel);
-                model = Data.Documents.Document.Create(model, currentUser);
+                Id = Guid.NewGuid(),
+                Document = model,
+                Mime = file.ContentType,
+                Filename = file.FileName.Split('.')[0],
+                Extension = file.FileName.Split('.')[1],
+                Size = (long)file.ContentLength,
 
-                Common.Models.Documents.Version version = new Common.Models.Documents.Version()
-                {
-                    Id = Guid.NewGuid(),
-                    Document = model,
-                    Mime = file.ContentType,
-                    Filename = file.FileName.Split('.')[0],
-                    Extension = file.FileName.Split('.')[1],
-                    Size = (long)file.ContentLength,
-                   // Md5 = md5
-                };
+                // Md5 = md5
+            };
 
-                // Save file
-                file.SaveAs(Data.FileStorage.Instance.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
+            // Save file
+            file.SaveAs(Data.FileStorage.Instance.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
 
-                // Calculate the MD5 checksum
-                version.Md5 = Data.FileStorage.CalculateMd5(
-                    Data.FileStorage.Instance.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
+            // Calculate the MD5 checksum
+            version.Md5 = Data.FileStorage.CalculateMd5(
+                Data.FileStorage.Instance.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
 
-                //Version
-                Data.Documents.Document.CreateNewVersion(model.Id.Value, version, currentUser);
+            // Version
+            Data.Documents.Document.CreateNewVersion(model.Id.Value, version, currentUser);
 
-                // Matter or Task
-                if (Request["MatterId"] != null)
-                {
-                    Data.Documents.Document.RelateMatter(model, Guid.Parse(Request["MatterId"]), currentUser);
-                    return RedirectToAction("Documents", "Matters", new { Id = Request["MatterId"] });
-                }
-                else if (Request["TaskId"] != null)
-                {
-                    Data.Documents.Document.RelateTask(model, long.Parse(Request["TaskId"]), currentUser);
-                    return RedirectToAction("Documents", "Tasks", new { Id = Request["TaskId"] });
-                }
-                else
-                    throw new Exception("Must have a matter or task id.");
-            }
-            catch
+            // Matter or Task
+            if (Request["MatterId"] != null)
             {
-                return View(viewModel);
+                Data.Documents.Document.RelateMatter(model, Guid.Parse(Request["MatterId"]), currentUser);
+                return RedirectToAction("Documents", "Matters", new { Id = Request["MatterId"] });
             }
+            else if (Request["TaskId"] != null)
+            {
+                Data.Documents.Document.RelateTask(model, long.Parse(Request["TaskId"]), currentUser);
+                return RedirectToAction("Documents", "Tasks", new { Id = Request["TaskId"] });
+            }
+            else
+                throw new Exception("Must have a matter or task id.");
         }
 
         [SecurityFilter(SecurityAreaName = "Documents", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(Guid id)
         {
-            ViewModels.Documents.DocumentViewModel viewModel = null;
-            Common.Models.Documents.Document model = OpenLawOffice.Data.Documents.Document.Get(id);
+            ViewModels.Documents.DocumentViewModel viewModel;
+            Common.Models.Documents.Document model;
+
+            model = OpenLawOffice.Data.Documents.Document.Get(id);
+
             viewModel = Mapper.Map<ViewModels.Documents.DocumentViewModel>(model);
 
             return View(viewModel);
@@ -134,20 +145,16 @@ namespace OpenLawOffice.WebClient.Controllers
         [HttpPost]
         public ActionResult Edit(Guid id, ViewModels.Documents.DocumentViewModel viewModel)
         {
-            try
-            {
-                Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
-                Common.Models.Documents.Document model = Mapper.Map<Common.Models.Documents.Document>(viewModel);
+            Common.Models.Security.User currentUser;
+            Common.Models.Documents.Document model;
 
-                model = OpenLawOffice.Data.Documents.Document.Edit(model, currentUser);
+            currentUser = UserCache.Instance.Lookup(Request);
 
-                return RedirectToAction("Details", new { Id = id });
-            }
-            catch
-            {
-                return View(viewModel);
-            }
+            model = Mapper.Map<Common.Models.Documents.Document>(viewModel);
+
+            model = OpenLawOffice.Data.Documents.Document.Edit(model, currentUser);
+
+            return RedirectToAction("Details", new { Id = id });
         }
-
     }
 }
