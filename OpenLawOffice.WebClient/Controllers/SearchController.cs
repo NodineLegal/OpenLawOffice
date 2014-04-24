@@ -25,6 +25,7 @@ namespace OpenLawOffice.WebClient.Controllers
     using System.Web.Mvc;
     using AutoMapper;
 
+    [HandleError(View = "Errors/", Order = 10)]
     public class SearchController : Controller
     {
         public ActionResult Tags()
@@ -39,8 +40,14 @@ namespace OpenLawOffice.WebClient.Controllers
         [HttpPost]
         public ActionResult Tags(ViewModels.Search.TagSearchViewModel viewModel)
         {
-            List<Common.Models.Matters.MatterTag> matterTags = Data.Matters.MatterTag.Search(viewModel.Query.ToLower());
-            List<Common.Models.Tasks.TaskTag> taskTags = Data.Tasks.TaskTag.Search(viewModel.Query.ToLower());
+            List<Common.Models.Matters.MatterTag> matterTags;
+            List<Common.Models.Tasks.TaskTag> taskTags;
+            ViewModels.Matters.MatterTagViewModel mtvm;
+            ViewModels.Tasks.TaskTagViewModel ttvm;
+
+            matterTags = Data.Matters.MatterTag.Search(viewModel.Query.ToLower());
+
+            taskTags = Data.Tasks.TaskTag.Search(viewModel.Query.ToLower());
 
             if (viewModel.SearchMatters)
             {
@@ -48,8 +55,9 @@ namespace OpenLawOffice.WebClient.Controllers
 
                 matterTags.ForEach(x =>
                 {
-                    ViewModels.Matters.MatterTagViewModel mtvm = Mapper.Map<ViewModels.Matters.MatterTagViewModel>(x);
+                    mtvm = Mapper.Map<ViewModels.Matters.MatterTagViewModel>(x);
                     mtvm.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(x.Matter);
+
                     viewModel.MatterTags.Add(mtvm);
                 });
             }
@@ -60,9 +68,10 @@ namespace OpenLawOffice.WebClient.Controllers
 
                 taskTags.ForEach(x =>
                 {
-                    ViewModels.Tasks.TaskTagViewModel mtvm = Mapper.Map<ViewModels.Tasks.TaskTagViewModel>(x);
-                    mtvm.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(x.Task);
-                    viewModel.TaskTags.Add(mtvm);
+                    ttvm = Mapper.Map<ViewModels.Tasks.TaskTagViewModel>(x);
+                    ttvm.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(x.Task);
+
+                    viewModel.TaskTags.Add(ttvm);
                 });
             }
 

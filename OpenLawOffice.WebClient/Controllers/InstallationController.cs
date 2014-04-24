@@ -36,7 +36,7 @@ namespace OpenLawOffice.WebClient.Controllers
         {
             FileInfo fi;
             string path;
-            
+
             path = Request.PhysicalApplicationPath;
 
             fi = new FileInfo(path + Path.DirectorySeparatorChar + "Install.sql");
@@ -57,7 +57,7 @@ namespace OpenLawOffice.WebClient.Controllers
         public ActionResult Install()
         {
             FileInfo fi;
-            
+
             fi = GetScriptPath();
 
             if (!fi.Exists)
@@ -71,7 +71,7 @@ namespace OpenLawOffice.WebClient.Controllers
         public ActionResult InstallWithData()
         {
             FileInfo fi;
-            
+
             fi = GetScriptPath();
 
             if (!fi.Exists)

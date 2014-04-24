@@ -25,18 +25,18 @@ namespace OpenLawOffice.WebClient.Controllers
     using System.Web.Mvc;
     using AutoMapper;
 
+    [HandleError(View = "Errors/", Order = 10)]
     public class UsersController : BaseController
     {
-        //
-        // GET: /User/
         [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Index()
         {
-            List<ViewModels.Security.UserViewModel> viewModelList = new List<ViewModels.Security.UserViewModel>();
-            List<Common.Models.Security.User> modelList = OpenLawOffice.Data.Security.User.List();
+            List<ViewModels.Security.UserViewModel> viewModelList;
 
-            modelList.ForEach(x =>
+            viewModelList = new List<ViewModels.Security.UserViewModel>();
+
+            Data.Security.User.List().ForEach(x =>
             {
                 viewModelList.Add(Mapper.Map<ViewModels.Security.UserViewModel>(x));
             });
@@ -44,20 +44,20 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModelList);
         }
 
-        //
-        // GET: /User/Details/5
         [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(int id)
         {
-            ViewModels.Security.UserViewModel viewModel = null;
-            Common.Models.Security.User model = OpenLawOffice.Data.Security.User.Get(id);
+            Common.Models.Security.User model;
+            ViewModels.Security.UserViewModel viewModel;
+
+            model = Data.Security.User.Get(id);
+
             viewModel = Mapper.Map<ViewModels.Security.UserViewModel>(model);
+
             return View(viewModel);
         }
 
-        //
-        // GET: /User/Create
         [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         public ActionResult Create()
@@ -65,71 +65,62 @@ namespace OpenLawOffice.WebClient.Controllers
             return View();
         }
 
-        //
-        // POST: /User/Create
         [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
         public ActionResult Create(ViewModels.Security.UserViewModel viewModel)
         {
-            try
-            {
-                Common.Models.Security.User model = Mapper.Map<Common.Models.Security.User>(viewModel);
-                model.PasswordSalt = GetRandomString(10);
+            Common.Models.Security.User model;
 
-                // TODO : This will eventually be done in javascript on the browser
-                model.Password = WebClient.Security.ClientHashPassword("12345");
-                model.Password = WebClient.Security.ServerHashPassword(
-                    model.Password, model.PasswordSalt);
-                model = OpenLawOffice.Data.Security.User.Create(model);
+            model = Mapper.Map<Common.Models.Security.User>(viewModel);
+            model.PasswordSalt = GetRandomString(10);
 
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View(viewModel);
-            }
+            // TODO : This will eventually be done in javascript on the browser
+            model.Password = WebClient.Security.ClientHashPassword("12345");
+            model.Password = WebClient.Security.ServerHashPassword(
+                model.Password, model.PasswordSalt);
+
+            model = Data.Security.User.Create(model);
+
+            return RedirectToAction("Index");
         }
 
-        //
-        // GET: /User/Edit/5
         [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(int id)
         {
-            ViewModels.Security.UserViewModel viewModel = null;
-            Common.Models.Security.User model = OpenLawOffice.Data.Security.User.Get(id);
+            ViewModels.Security.UserViewModel viewModel;
+            Common.Models.Security.User model;
+
+            model = Data.Security.User.Get(id);
+
             viewModel = Mapper.Map<ViewModels.Security.UserViewModel>(model);
             viewModel.Password = null;
+
             return View(viewModel);
         }
 
-        //
-        // POST: /User/Edit/5
         [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
         public ActionResult Edit(int id, ViewModels.Security.UserViewModel viewModel)
         {
-            try
-            {
-                Common.Models.Security.User currentModel = OpenLawOffice.Data.Security.User.Get(id);
-                Common.Models.Security.User model = Mapper.Map<Common.Models.Security.User>(viewModel);
+            Common.Models.Security.User currentModel;
+            Common.Models.Security.User model;
 
-                // TODO : This will eventually be done in javascript on the browser
-                model.Password = WebClient.Security.ClientHashPassword(viewModel.Password);
-                model.Password = WebClient.Security.ServerHashPassword(
-                    model.Password, model.PasswordSalt);
+            currentModel = Data.Security.User.Get(id);
+            model = Mapper.Map<Common.Models.Security.User>(viewModel);
 
-                model = OpenLawOffice.Data.Security.User.Edit(model);
-                model = OpenLawOffice.Data.Security.User.SetPassword(model);
+            // TODO : This will eventually be done in javascript on the browser
+            model.Password = WebClient.Security.ClientHashPassword(viewModel.Password);
+            model.Password = WebClient.Security.ServerHashPassword(
+                model.Password, model.PasswordSalt);
 
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View(viewModel);
-            }
+            model = Data.Security.User.Edit(model);
+
+            model = Data.Security.User.SetPassword(model);
+
+            return RedirectToAction("Index");
         }
 
         private int GetRandomNumber(int maxNumber)

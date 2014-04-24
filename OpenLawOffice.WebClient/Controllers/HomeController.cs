@@ -35,9 +35,9 @@ namespace OpenLawOffice.WebClient.Controllers
             Common.Models.Security.User currentUser;
 
             viewModel = new ViewModels.Home.DashboardViewModel();
-            
+
             currentUser = UserCache.Instance.Lookup(Request);
-            
+
             viewModel.MyTodoList = new List<ViewModels.Tasks.TaskViewModel>();
 
             Data.Tasks.Task.GetTodoListFor(currentUser).ForEach(x =>

@@ -21,64 +21,66 @@
 
 namespace OpenLawOffice.WebClient.Controllers
 {
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Web;
     using System.Web.Mvc;
-    using System.Data;
     using AutoMapper;
 
+    [HandleError(View = "Errors/", Order = 10)]
     public class SecurityAreaAclsController : BaseController
     {
-        //
-        // GET: /SecurityAreaAcls/
         [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Index()
         {
-            List<ViewModels.Security.AreaAclViewModel> modelList = new List<ViewModels.Security.AreaAclViewModel>();
-            OpenLawOffice.Data.Security.AreaAcl.List().ForEach(x =>
+            List<ViewModels.Security.AreaAclViewModel> modelList;
+            ViewModels.Security.AreaAclViewModel vm;
+
+            modelList = new List<ViewModels.Security.AreaAclViewModel>();
+
+            Data.Security.AreaAcl.List().ForEach(x =>
             {
                 x.User = OpenLawOffice.Data.Security.User.Get(x.User.Id.Value);
                 x.Area = OpenLawOffice.Data.Security.Area.Get(x.Area.Id.Value);
-                ViewModels.Security.AreaAclViewModel vm = Mapper.Map<ViewModels.Security.AreaAclViewModel>(x);
+
+                vm = Mapper.Map<ViewModels.Security.AreaAclViewModel>(x);
                 vm.User = Mapper.Map<ViewModels.Security.UserViewModel>(x.User);
                 vm.Area = Mapper.Map<ViewModels.Security.AreaViewModel>(x.Area);
+
                 modelList.Add(vm);
             });
 
             return View(modelList);
         }
 
-        //
-        // GET: /SecurityAreaAcls/Details/5
         [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(int id)
         {
-            ViewModels.Security.AreaAclViewModel viewModel = null;
+            ViewModels.Security.AreaAclViewModel viewModel;
+            Common.Models.Security.AreaAcl model;
 
-            Common.Models.Security.AreaAcl model = OpenLawOffice.Data.Security.AreaAcl.Get(id);
-            model.User = OpenLawOffice.Data.Security.User.Get(model.User.Id.Value);
-            model.Area = OpenLawOffice.Data.Security.Area.Get(model.Area.Id.Value);
+            model = Data.Security.AreaAcl.Get(id);
+            model.User = Data.Security.User.Get(model.User.Id.Value);
+            model.Area = Data.Security.Area.Get(model.Area.Id.Value);
 
             viewModel = Mapper.Map<ViewModels.Security.AreaAclViewModel>(model);
             viewModel.User = Mapper.Map<ViewModels.Security.UserViewModel>(model.User);
             viewModel.Area = Mapper.Map<ViewModels.Security.AreaViewModel>(model.Area);
+
             PopulateCoreDetails(viewModel);
 
             return View(model);
         }
 
-        //
-        // GET: /SecurityAreaAcls/Create
         [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         public ActionResult Create()
         {
-            List<ViewModels.Security.UserViewModel> userList = new List<ViewModels.Security.UserViewModel>();
-            OpenLawOffice.Data.Security.User.List().ForEach(x =>
+            List<ViewModels.Security.UserViewModel> userList;
+
+            userList = new List<ViewModels.Security.UserViewModel>();
+
+            Data.Security.User.List().ForEach(x =>
             {
                 userList.Add(Mapper.Map<ViewModels.Security.UserViewModel>(x));
             });
@@ -86,94 +88,83 @@ namespace OpenLawOffice.WebClient.Controllers
             ViewData["Readonly"] = false;
             ViewData["UserList"] = userList;
 
-            return View(new ViewModels.Security.AreaAclViewModel() 
+            return View(new ViewModels.Security.AreaAclViewModel()
             {
                 AllowPermissions = new ViewModels.PermissionsViewModel(),
                 DenyPermissions = new ViewModels.PermissionsViewModel()
             });
-        } 
+        }
 
-        //
-        // POST: /SecurityAreaAcls/Create
         [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
         public ActionResult Create(ViewModels.Security.AreaAclViewModel viewModel)
         {
-            try
-            {
-                Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
-                Common.Models.Security.AreaAcl model = Mapper.Map<Common.Models.Security.AreaAcl>(viewModel);
-                model = OpenLawOffice.Data.Security.AreaAcl.Create(model, currentUser);
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                List<ViewModels.Security.UserViewModel> userList = new List<ViewModels.Security.UserViewModel>();
-                OpenLawOffice.Data.Security.User.List().ForEach(x =>
-                {
-                    userList.Add(Mapper.Map<ViewModels.Security.UserViewModel>(x));
-                });
+            Common.Models.Security.User currentUser;
+            Common.Models.Security.AreaAcl model;
 
-                ViewData["Readonly"] = false;
-                ViewData["UserList"] = userList;
+            currentUser = UserCache.Instance.Lookup(Request);
 
-                return View(viewModel);
-            }
+            model = Mapper.Map<Common.Models.Security.AreaAcl>(viewModel);
+
+            model = Data.Security.AreaAcl.Create(model, currentUser);
+
+            return RedirectToAction("Index");
         }
-        
-        //
-        // GET: /SecurityAreaAcls/Edit/5
+
         [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(int id)
         {
-            ViewModels.Security.AreaAclViewModel viewModel = null;
+            ViewModels.Security.AreaAclViewModel viewModel;
+            Common.Models.Security.AreaAcl model;
+            List<SelectListItem> selectList;
+            SelectListItem slItem;
 
-            Common.Models.Security.AreaAcl model = OpenLawOffice.Data.Security.AreaAcl.Get(id);
-            model.User = OpenLawOffice.Data.Security.User.Get(model.User.Id.Value);
-            model.Area = OpenLawOffice.Data.Security.Area.Get(model.Area.Id.Value);
+            model = Data.Security.AreaAcl.Get(id);
+            model.User = Data.Security.User.Get(model.User.Id.Value);
+            model.Area = Data.Security.Area.Get(model.Area.Id.Value);
 
             viewModel = Mapper.Map<ViewModels.Security.AreaAclViewModel>(model);
             viewModel.User = Mapper.Map<ViewModels.Security.UserViewModel>(model.User);
             viewModel.Area = Mapper.Map<ViewModels.Security.AreaViewModel>(model.Area);
 
-            List<SelectListItem> selectList = new List<SelectListItem>();
+            selectList = new List<SelectListItem>();
 
-            OpenLawOffice.Data.Security.User.List().ForEach(x =>
+            Data.Security.User.List().ForEach(x =>
             {
-                SelectListItem slItem = new SelectListItem()
+                slItem = new SelectListItem()
                 {
                     Value = x.Id.Value.ToString(),
                     Text = x.Username
                 };
+
                 if (x.Id == model.User.Id.Value)
                     slItem.Selected = true;
+
                 selectList.Add(slItem);
             });
 
             ViewData["UserList"] = selectList;
+
             return View(model);
         }
 
-        //
-        // POST: /SecurityAreaAcls/Edit/5
         [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
         public ActionResult Edit(int id, ViewModels.Security.AreaAclViewModel viewModel)
         {
-            try
-            {
-                Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
-                Common.Models.Security.AreaAcl model = Mapper.Map<Common.Models.Security.AreaAcl>(viewModel);
-                model = OpenLawOffice.Data.Security.AreaAcl.Edit(model, currentUser);
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View(viewModel);
-            }
+            Common.Models.Security.User currentUser;
+            Common.Models.Security.AreaAcl model;
+
+            currentUser = UserCache.Instance.Lookup(Request);
+
+            model = Mapper.Map<Common.Models.Security.AreaAcl>(viewModel);
+
+            model = Data.Security.AreaAcl.Edit(model, currentUser);
+
+            return RedirectToAction("Index");
         }
     }
 }

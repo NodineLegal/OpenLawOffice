@@ -19,26 +19,24 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace OpenLawOffice.WebClient.Controllers
 {
+    [HandleError(View = "Errors/", Order = 10)]
     public class TagCategoriesController : BaseController
     {
-        //
-        // GET: /TagCategories/ListNameOnly
-
         public ActionResult ListNameOnly()
         {
-            string term = Request["term"];
-            List<Common.Models.Tagging.TagCategory> list = Data.Tagging.TagCategory.List(term.Trim());
+            string term;
+            List<Common.Models.Tagging.TagCategory> list;
+
+            term = Request["term"];
+
+            list = Data.Tagging.TagCategory.List(term.Trim());
 
             return Json(list, JsonRequestBehavior.AllowGet);
         }
-
     }
 }

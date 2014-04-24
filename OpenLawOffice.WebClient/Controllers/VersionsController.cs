@@ -32,11 +32,15 @@ namespace OpenLawOffice.WebClient.Controllers
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(Guid id)
         {
-            ViewModels.Documents.VersionViewModel viewModel = null;
-            Common.Models.Documents.Version model = Data.Documents.Version.Get(id);
+            ViewModels.Documents.VersionViewModel viewModel;
+            Common.Models.Documents.Version model;
+
+            model = Data.Documents.Version.Get(id);
             model.Document = Data.Documents.Document.Get(model.Document.Id.Value);
+
             viewModel = Mapper.Map<ViewModels.Documents.VersionViewModel>(model);
             viewModel.Document = Mapper.Map<ViewModels.Documents.DocumentViewModel>(model.Document);
+
             PopulateCoreDetails(viewModel);
 
             return View(viewModel);
@@ -46,8 +50,11 @@ namespace OpenLawOffice.WebClient.Controllers
             Permission = Common.Models.PermissionType.Read)]
         public FileResult Download(Guid id)
         {
-            Common.Models.Documents.Version version = Data.Documents.Version.Get(id);
-            Common.Models.Documents.Version currentVersion = Data.Documents.Document.GetCurrentVersion(version.Document.Id.Value);
+            Common.Models.Documents.Version version;
+            Common.Models.Documents.Version currentVersion;
+
+            version = Data.Documents.Version.Get(id);
+            currentVersion = Data.Documents.Document.GetCurrentVersion(version.Document.Id.Value);
 
             if (currentVersion.VersionNumber == version.VersionNumber)
             {
@@ -65,10 +72,15 @@ namespace OpenLawOffice.WebClient.Controllers
             Permission = Common.Models.PermissionType.Create)]
         public ActionResult Create()
         {
-            Guid documentId = Guid.Parse(Request["DocumentId"]);
-            Common.Models.Documents.Document docModel = Data.Documents.Document.Get(documentId);
-            Common.Models.Matters.Matter matter = Data.Documents.Document.GetMatter(documentId);
-            Common.Models.Tasks.Task task = Data.Documents.Document.GetTask(documentId);
+            Guid documentId;
+            Common.Models.Documents.Document docModel;
+            Common.Models.Matters.Matter matter;
+            Common.Models.Tasks.Task task;
+
+            documentId = Guid.Parse(Request["DocumentId"]);
+            docModel = Data.Documents.Document.Get(documentId);
+            matter = Data.Documents.Document.GetMatter(documentId);
+            task = Data.Documents.Document.GetTask(documentId);
 
             if (matter != null)
                 ViewData["MatterId"] = matter.Id.Value;
@@ -89,63 +101,63 @@ namespace OpenLawOffice.WebClient.Controllers
         [HttpPost]
         public ActionResult Create(ViewModels.Documents.VersionViewModel viewModel, HttpPostedFileBase file)
         {
-            try
+            Common.Models.Security.User currentUser;
+            Common.Models.Documents.Document docModel;
+            Common.Models.Documents.Version currentVersion;
+            Common.Models.Matters.Matter matter;
+            Common.Models.Tasks.Task task;
+            Common.Models.Documents.Version version;
+
+            currentUser = UserCache.Instance.Lookup(Request);
+            docModel = Data.Documents.Document.Get(viewModel.Document.Id.Value);
+            currentVersion = Data.Documents.Document.GetCurrentVersion(viewModel.Document.Id.Value);
+            matter = Data.Documents.Document.GetMatter(docModel.Id.Value);
+            task = Data.Documents.Document.GetTask(docModel.Id.Value);
+
+            version = new Common.Models.Documents.Version()
             {
-                Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
-                Common.Models.Documents.Document docModel = Data.Documents.Document.Get(viewModel.Document.Id.Value);
-                Common.Models.Documents.Version currentVersion = Data.Documents.Document.GetCurrentVersion(viewModel.Document.Id.Value);
-                Common.Models.Matters.Matter matter = Data.Documents.Document.GetMatter(docModel.Id.Value);
-                Common.Models.Tasks.Task task = Data.Documents.Document.GetTask(docModel.Id.Value);
+                Id = Guid.NewGuid(),
+                Document = docModel,
+                Mime = file.ContentType,
+                Filename = file.FileName.Split('.')[0],
+                Extension = file.FileName.Split('.')[1],
+                Size = (long)file.ContentLength,
 
-                Common.Models.Documents.Version version = new Common.Models.Documents.Version()
-                {
-                    Id = Guid.NewGuid(),
-                    Document = docModel,
-                    Mime = file.ContentType,
-                    Filename = file.FileName.Split('.')[0],
-                    Extension = file.FileName.Split('.')[1],
-                    Size = (long)file.ContentLength,
+                // Md5 = md5
+            };
 
-                    // Md5 = md5
-                };
-
-                if (currentVersion == null)
-                {
-                    // Save file
-                    file.SaveAs(Data.FileStorage.Instance.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
-                }
-                else
-                {
-                    // Move current to previous
-                    Data.FileStorage.Instance.MoveCurrentToPrevious(currentVersion.Id.Value + "." + currentVersion.Extension);
-
-                    // Save new
-                    file.SaveAs(Data.FileStorage.Instance.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
-                }
-
-                // Calculate the MD5 checksum
-                version.Md5 = Data.FileStorage.CalculateMd5(
-                    Data.FileStorage.Instance.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
-
-                //Version
-                Data.Documents.Document.CreateNewVersion(docModel.Id.Value, version, currentUser);
-
-                // Matter or Task
-                if (matter != null)
-                {
-                    return RedirectToAction("Documents", "Matters", new { Id = matter.Id.Value });
-                }
-                else if (task != null)
-                {
-                    return RedirectToAction("Documents", "Tasks", new { Id = task.Id.Value });
-                }
-                else
-                    throw new Exception("Must have a matter or task id.");
-            }
-            catch
+            if (currentVersion == null)
             {
-                return View(viewModel);
+                // Save file
+                file.SaveAs(Data.FileStorage.Instance.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
             }
+            else
+            {
+                // Move current to previous
+                Data.FileStorage.Instance.MoveCurrentToPrevious(currentVersion.Id.Value + "." + currentVersion.Extension);
+
+                // Save new
+                file.SaveAs(Data.FileStorage.Instance.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
+            }
+
+            // Calculate the MD5 checksum
+            version.Md5 = Data.FileStorage.CalculateMd5(
+                Data.FileStorage.Instance.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
+
+            //Version
+            Data.Documents.Document.CreateNewVersion(docModel.Id.Value, version, currentUser);
+
+            // Matter or Task
+            if (matter != null)
+            {
+                return RedirectToAction("Documents", "Matters", new { Id = matter.Id.Value });
+            }
+            else if (task != null)
+            {
+                return RedirectToAction("Documents", "Tasks", new { Id = task.Id.Value });
+            }
+            else
+                throw new Exception("Must have a matter or task id.");
         }
     }
 }

@@ -21,18 +21,13 @@
 
 namespace OpenLawOffice.WebClient.Controllers.Security
 {
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Web;
     using System.Web.Mvc;
-    using System.Data;
     using AutoMapper;
 
+    [HandleError(View = "Errors/", Order = 10)]
     public class SecurityAreasController : BaseController
     {
-        //
-        // GET: /Area/
         [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Index()
@@ -45,7 +40,9 @@ namespace OpenLawOffice.WebClient.Controllers.Security
         [HttpGet]
         public ActionResult ListChildrenJqGrid(int? id)
         {
+            List<ViewModels.Security.AreaViewModel> modelList;
             ViewModels.JqGridObject jqObject;
+            List<object> anonList;
             int level = 0;
 
             if (id == null)
@@ -55,8 +52,8 @@ namespace OpenLawOffice.WebClient.Controllers.Security
                     id = int.Parse(Request["nodeid"]);
             }
 
-            List<ViewModels.Security.AreaViewModel> modelList = GetChildrenList(id);
-            List<object> anonList = new List<object>();
+            modelList = GetChildrenList(id);
+            anonList = new List<object>();
 
             if (!string.IsNullOrEmpty(Request["n_level"]))
                 level = int.Parse(Request["n_level"]) + 1;
@@ -99,9 +96,12 @@ namespace OpenLawOffice.WebClient.Controllers.Security
 
         private List<ViewModels.Security.AreaViewModel> GetChildrenList(int? id)
         {
-            List<ViewModels.Security.AreaViewModel> viewModelList = new List<ViewModels.Security.AreaViewModel>();
+            List<ViewModels.Security.AreaViewModel> viewModelList;
+            List<Common.Models.Security.Area> modelList;
 
-            List<Common.Models.Security.Area> modelList = OpenLawOffice.Data.Security.Area.ListChildren(id);
+            viewModelList = new List<ViewModels.Security.AreaViewModel>();
+
+            modelList = Data.Security.Area.ListChildren(id);
 
             modelList.ForEach(x =>
             {
@@ -111,30 +111,41 @@ namespace OpenLawOffice.WebClient.Controllers.Security
             return viewModelList;
         }
 
-        //
-        // GET: /Area/Details/5
         [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(int id)
         {
-            ViewModels.Security.AreaViewModel viewModel = null;
-            Common.Models.Security.Area model = OpenLawOffice.Data.Security.Area.Get(id);
+            ViewModels.Security.AreaViewModel viewModel;
+            Common.Models.Security.Area model;
+
+            model = Data.Security.Area.Get(id);
+
             viewModel = Mapper.Map<ViewModels.Security.AreaViewModel>(model);
+
             PopulateCoreDetails(viewModel);
+
             return View(model);
         }
-        
+
         [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Permissions(int id)
         {
-            List<ViewModels.Security.AreaAclViewModel> viewModelList = new List<ViewModels.Security.AreaAclViewModel>();
-            List<Common.Models.Security.AreaAcl> modelList = OpenLawOffice.Data.Security.AreaAcl.ListForArea(id);
+            List<ViewModels.Security.AreaAclViewModel> viewModelList;
+            List<Common.Models.Security.AreaAcl> modelList;
+            ViewModels.Security.AreaAclViewModel vm;
+
+            viewModelList = new List<ViewModels.Security.AreaAclViewModel>();
+
+            modelList = Data.Security.AreaAcl.ListForArea(id);
+
             modelList.ForEach(x =>
             {
-                x.User = OpenLawOffice.Data.Security.User.Get(x.User.Id.Value);
-                ViewModels.Security.AreaAclViewModel vm = Mapper.Map<ViewModels.Security.AreaAclViewModel>(x);
+                x.User = Data.Security.User.Get(x.User.Id.Value);
+
+                vm = Mapper.Map<ViewModels.Security.AreaAclViewModel>(x);
                 vm.User = Mapper.Map<ViewModels.Security.UserViewModel>(x.User);
+
                 viewModelList.Add(vm);
             });
 

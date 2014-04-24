@@ -23,22 +23,22 @@ namespace OpenLawOffice.WebClient.Controllers
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Web;
     using System.Web.Mvc;
-    using System.Data;
     using AutoMapper;
 
+    [HandleError(View = "Errors/", Order = 10)]
     public class MattersController : BaseController
     {
-        //
-        // GET: /Matter/
-        [SecurityFilter(SecurityAreaName="Matters", IsSecuredResource=true, 
-            Permission=Common.Models.PermissionType.List)]
+        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = true,
+            Permission = Common.Models.PermissionType.List)]
         public ActionResult Index()
         {
-            List<ViewModels.Matters.MatterViewModel> viewModelList = new List<ViewModels.Matters.MatterViewModel>();
-            List<Common.Models.Matters.Matter> modelList = OpenLawOffice.Data.Matters.Matter.List();
+            List<ViewModels.Matters.MatterViewModel> viewModelList;
+            List<Common.Models.Matters.Matter> modelList;
+
+            viewModelList = new List<ViewModels.Matters.MatterViewModel>();
+
+            modelList = OpenLawOffice.Data.Matters.Matter.List();
 
             modelList.ForEach(x =>
             {
@@ -53,6 +53,8 @@ namespace OpenLawOffice.WebClient.Controllers
         [HttpGet]
         public ActionResult ListChildrenJqGrid(Guid? id)
         {
+            List<ViewModels.Matters.MatterViewModel> modelList;
+            List<object> anonList;
             ViewModels.JqGridObject jqObject;
             int level = 0;
 
@@ -63,8 +65,8 @@ namespace OpenLawOffice.WebClient.Controllers
                     id = Guid.Parse(Request["nodeid"]);
             }
 
-            List<ViewModels.Matters.MatterViewModel> modelList = GetChildrenList(id);
-            List<object> anonList = new List<object>();
+            modelList = GetChildrenList(id);
+            anonList = new List<object>();
 
             if (!string.IsNullOrEmpty(Request["n_level"]))
                 level = int.Parse(Request["n_level"]) + 1;
@@ -107,10 +109,11 @@ namespace OpenLawOffice.WebClient.Controllers
 
         private List<ViewModels.Matters.MatterViewModel> GetChildrenList(Guid? id)
         {
-            List<ViewModels.Matters.MatterViewModel> viewModelList = new List<ViewModels.Matters.MatterViewModel>();
-            List<Common.Models.Matters.Matter> modelList = OpenLawOffice.Data.Matters.Matter.ListChildren(id);
+            List<ViewModels.Matters.MatterViewModel> viewModelList;
 
-            modelList.ForEach(x =>
+            viewModelList = new List<ViewModels.Matters.MatterViewModel>();
+
+            Data.Matters.Matter.ListChildren(id).ForEach(x =>
             {
                 viewModelList.Add(Mapper.Map<ViewModels.Matters.MatterViewModel>(x));
             });
@@ -118,91 +121,88 @@ namespace OpenLawOffice.WebClient.Controllers
             return viewModelList;
         }
 
-        //
-        // GET: /Matter/Details/9acb1b4f-0442-4c9b-a550-ad7478e36fb2
         [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = true,
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(Guid id)
         {
-            ViewModels.Matters.MatterViewModel viewModel = null;
-            Common.Models.Matters.Matter model = OpenLawOffice.Data.Matters.Matter.Get(id);
+            ViewModels.Matters.MatterViewModel viewModel;
+            Common.Models.Matters.Matter model;
+
+            model = Data.Matters.Matter.Get(id);
+
             viewModel = Mapper.Map<ViewModels.Matters.MatterViewModel>(model);
+
             PopulateCoreDetails(viewModel);
+
             return View(viewModel);
         }
 
-        //
-        // GET: /Matter/Create
         [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = true,
             Permission = Common.Models.PermissionType.Create)]
         public ActionResult Create()
         {
             return View();
-        } 
+        }
 
-        //
-        // POST: /Matter/CreateE:\Projects\OpenLawOffice\OpenLawOffice.WebClient\Controllers\HomeController.cs
         [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = true,
             Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
         public ActionResult Create(ViewModels.Matters.MatterViewModel viewModel)
         {
-            try
-            {
-                Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
-                Common.Models.Matters.Matter model = Mapper.Map<Common.Models.Matters.Matter>(viewModel);
-                model = OpenLawOffice.Data.Matters.Matter.Create(model, currentUser);
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View(viewModel);
-            }
+            Common.Models.Security.User currentUser;
+            Common.Models.Matters.Matter model;
+
+            currentUser = UserCache.Instance.Lookup(Request);
+
+            model = Mapper.Map<Common.Models.Matters.Matter>(viewModel);
+
+            model = Data.Matters.Matter.Create(model, currentUser);
+
+            return RedirectToAction("Index");
         }
-        
-        //
-        // GET: /Matter/Edit/5
+
         [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = true,
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(Guid id)
         {
-            ViewModels.Matters.MatterViewModel viewModel = null;
-            Common.Models.Matters.Matter model = OpenLawOffice.Data.Matters.Matter.Get(id);
+            ViewModels.Matters.MatterViewModel viewModel;
+            Common.Models.Matters.Matter model;
+
+            model = Data.Matters.Matter.Get(id);
+
             viewModel = Mapper.Map<ViewModels.Matters.MatterViewModel>(id);
+
             return View(viewModel);
         }
 
-        //
-        // POST: /Matter/Edit/5
         [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = true,
             Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
         public ActionResult Edit(Guid id, ViewModels.Matters.MatterViewModel viewModel)
         {
-            try
-            {
-                Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
-                Common.Models.Matters.Matter model = Mapper.Map<Common.Models.Matters.Matter>(viewModel);
-                model = OpenLawOffice.Data.Matters.Matter.Edit(model, currentUser);
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View(viewModel);
-            }
+            Common.Models.Security.User currentUser;
+            Common.Models.Matters.Matter model;
+
+            currentUser = UserCache.Instance.Lookup(Request);
+
+            model = Mapper.Map<Common.Models.Matters.Matter>(viewModel);
+
+            model = Data.Matters.Matter.Edit(model, currentUser);
+
+            return RedirectToAction("Index");
         }
 
         // A note on delete - https://github.com/NodineLegal/OpenLawOffice/wiki/Design-of-Disabling-a-Matter
-
 
         [SecurityFilter(SecurityAreaName = "Tagging", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Tags(Guid id)
         {
-            List<ViewModels.Matters.MatterTagViewModel> viewModelList = new List<ViewModels.Matters.MatterTagViewModel>();
-            List<Common.Models.Matters.MatterTag> modelList = OpenLawOffice.Data.Matters.MatterTag.ListForMatter(id);
+            List<ViewModels.Matters.MatterTagViewModel> viewModelList;
 
-            modelList.ForEach(x =>
+            viewModelList = new List<ViewModels.Matters.MatterTagViewModel>();
+
+            Data.Matters.MatterTag.ListForMatter(id).ForEach(x =>
             {
                 viewModelList.Add(Mapper.Map<ViewModels.Matters.MatterTagViewModel>(x));
             });
@@ -214,14 +214,19 @@ namespace OpenLawOffice.WebClient.Controllers
             Permission = Common.Models.PermissionType.List)]
         public ActionResult ResponsibleUsers(Guid id)
         {
-            List<ViewModels.Matters.ResponsibleUserViewModel> viewModelList = new List<ViewModels.Matters.ResponsibleUserViewModel>();
-            List<Common.Models.Matters.ResponsibleUser> modelList = OpenLawOffice.Data.Matters.ResponsibleUser.ListForMatter(id);
+            Common.Models.Security.User user;
+            ViewModels.Matters.ResponsibleUserViewModel viewModel;
+            List<ViewModels.Matters.ResponsibleUserViewModel> viewModelList;
 
-            modelList.ForEach(x =>
+            viewModelList = new List<ViewModels.Matters.ResponsibleUserViewModel>();
+
+            Data.Matters.ResponsibleUser.ListForMatter(id).ForEach(x =>
             {
-                Common.Models.Security.User user = OpenLawOffice.Data.Security.User.Get(x.User.Id.Value);
-                ViewModels.Matters.ResponsibleUserViewModel viewModel = Mapper.Map<ViewModels.Matters.ResponsibleUserViewModel>(x);
+                user = Data.Security.User.Get(x.User.Id.Value);
+
+                viewModel = Mapper.Map<ViewModels.Matters.ResponsibleUserViewModel>(x);
                 viewModel.User = Mapper.Map<ViewModels.Security.UserViewModel>(user);
+
                 viewModelList.Add(viewModel);
             });
 
@@ -232,14 +237,19 @@ namespace OpenLawOffice.WebClient.Controllers
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Contacts(Guid id)
         {
-            List<ViewModels.Matters.MatterContactViewModel> viewModelList = new List<ViewModels.Matters.MatterContactViewModel>();
-            List<Common.Models.Matters.MatterContact> modelList = OpenLawOffice.Data.Matters.MatterContact.ListForMatter(id);
+            Common.Models.Contacts.Contact contact;
+            ViewModels.Matters.MatterContactViewModel viewModel;
+            List<ViewModels.Matters.MatterContactViewModel> viewModelList;
 
-            modelList.ForEach(x =>
+            viewModelList = new List<ViewModels.Matters.MatterContactViewModel>();
+
+            Data.Matters.MatterContact.ListForMatter(id).ForEach(x =>
             {
-                ViewModels.Matters.MatterContactViewModel viewModel = Mapper.Map<ViewModels.Matters.MatterContactViewModel>(x);
-                Common.Models.Contacts.Contact contact = OpenLawOffice.Data.Contacts.Contact.Get(x.Contact.Id.Value);
+                contact = OpenLawOffice.Data.Contacts.Contact.Get(x.Contact.Id.Value);
+
+                viewModel = Mapper.Map<ViewModels.Matters.MatterContactViewModel>(x);
                 viewModel.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contact);
+
                 viewModelList.Add(viewModel);
             });
 
@@ -250,21 +260,22 @@ namespace OpenLawOffice.WebClient.Controllers
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Tasks(Guid id)
         {
-            List<ViewModels.Tasks.TaskViewModel> modelList = TasksController.GetListForMatter(id);
-
-            return View(modelList);
+            return View(TasksController.GetListForMatter(id));
         }
 
         [SecurityFilter(SecurityAreaName = "Notes", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Notes(Guid id)
         {
-            List<ViewModels.Notes.NoteViewModel> viewModelList = new List<ViewModels.Notes.NoteViewModel>();
-            List<Common.Models.Notes.Note> modelList = Data.Notes.Note.ListForMatter(id);
+            ViewModels.Notes.NoteViewModel viewModel;
+            List<ViewModels.Notes.NoteViewModel> viewModelList;
 
-            modelList.ForEach(x =>
+            viewModelList = new List<ViewModels.Notes.NoteViewModel>();
+
+            Data.Notes.Note.ListForMatter(id).ForEach(x =>
             {
-                ViewModels.Notes.NoteViewModel viewModel = Mapper.Map<ViewModels.Notes.NoteViewModel>(x);
+                viewModel = Mapper.Map<ViewModels.Notes.NoteViewModel>(x);
+
                 viewModelList.Add(viewModel);
             });
 
@@ -275,12 +286,15 @@ namespace OpenLawOffice.WebClient.Controllers
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Documents(Guid id)
         {
-            List<ViewModels.Documents.DocumentViewModel> viewModelList = new List<ViewModels.Documents.DocumentViewModel>();
-            List<Common.Models.Documents.Document> modelList = Data.Documents.Document.ListForMatter(id);
+            ViewModels.Documents.DocumentViewModel viewModel;
+            List<ViewModels.Documents.DocumentViewModel> viewModelList;
 
-            modelList.ForEach(x =>
+            viewModelList = new List<ViewModels.Documents.DocumentViewModel>();
+
+            Data.Documents.Document.ListForMatter(id).ForEach(x =>
             {
-                ViewModels.Documents.DocumentViewModel viewModel = Mapper.Map<ViewModels.Documents.DocumentViewModel>(x);
+                viewModel = Mapper.Map<ViewModels.Documents.DocumentViewModel>(x);
+
                 viewModelList.Add(viewModel);
             });
 
@@ -291,28 +305,41 @@ namespace OpenLawOffice.WebClient.Controllers
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Time(Guid id)
         {
-            ViewModels.Matters.MatterTimeViewModel viewModel = new ViewModels.Matters.MatterTimeViewModel();
+            ViewModels.Matters.MatterTimeViewModel viewModel;
+            List<Common.Models.Timing.Time> times;
+            ViewModels.Matters.MatterTimeViewModel.Task task;
+            ViewModels.Timing.TimeViewModel timeViewModel;
+            Common.Models.Contacts.Contact contact;
+
+            viewModel = new ViewModels.Matters.MatterTimeViewModel();
             viewModel.Tasks = new List<ViewModels.Matters.MatterTimeViewModel.Task>();
 
             Data.Tasks.Task.ListForMatter(id).ForEach(x =>
             {
-                List<Common.Models.Timing.Time> times = Data.Timing.Time.ListForTask(x.Id.Value);
+                times = Data.Timing.Time.ListForTask(x.Id.Value);
+
                 if (times != null && times.Count > 0)
                 {
-                    ViewModels.Matters.MatterTimeViewModel.Task task = new ViewModels.Matters.MatterTimeViewModel.Task()
+                    task = new ViewModels.Matters.MatterTimeViewModel.Task()
                     {
                         Id = x.Id.Value,
                         Title = x.Title
                     };
+
                     task.Times = new List<ViewModels.Timing.TimeViewModel>();
+
                     times.ForEach(y =>
                     {
-                        ViewModels.Timing.TimeViewModel timeViewModel = Mapper.Map<ViewModels.Timing.TimeViewModel>(y);
-                        Common.Models.Contacts.Contact contact = OpenLawOffice.Data.Contacts.Contact.Get(timeViewModel.Worker.Id.Value);
+                        timeViewModel = Mapper.Map<ViewModels.Timing.TimeViewModel>(y);
+
+                        contact = Data.Contacts.Contact.Get(timeViewModel.Worker.Id.Value);
+
                         timeViewModel.Worker = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contact);
                         timeViewModel.WorkerDisplayName = timeViewModel.Worker.DisplayName;
+
                         task.Times.Add(timeViewModel);
                     });
+
                     viewModel.Tasks.Add(task);
                 }
             });

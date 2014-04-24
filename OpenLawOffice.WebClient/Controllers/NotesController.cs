@@ -26,18 +26,25 @@ namespace OpenLawOffice.WebClient.Controllers
     using System.Web.Mvc;
     using AutoMapper;
 
+    [HandleError(View = "Errors/", Order = 10)]
     public class NotesController : BaseController
     {
         [SecurityFilter(SecurityAreaName = "Notes", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(Guid id)
         {
-            ViewModels.Notes.NoteViewModel viewModel = null;
-            Common.Models.Notes.Note model = Data.Notes.Note.Get(id);
+            ViewModels.Notes.NoteViewModel viewModel;
+            Common.Models.Notes.Note model;
+            Common.Models.Matters.Matter noteMatter;
+            Common.Models.Tasks.Task noteTask;
+
+            model = Data.Notes.Note.Get(id);
+
             viewModel = Mapper.Map<ViewModels.Notes.NoteViewModel>(model);
 
-            Common.Models.Matters.Matter noteMatter = Data.Notes.NoteMatter.GetRelatedMatter(id);
-            Common.Models.Tasks.Task noteTask = Data.Notes.NoteTask.GetRelatedTask(id);
+            noteMatter = Data.Notes.NoteMatter.GetRelatedMatter(id);
+
+            noteTask = Data.Notes.NoteTask.GetRelatedTask(id);
 
             if (noteMatter != null)
             { // Note belongs to a matter
@@ -51,6 +58,7 @@ namespace OpenLawOffice.WebClient.Controllers
                 throw new Exception("Note without relation to a matter or task, orphaned.");
 
             PopulateCoreDetails(viewModel);
+
             return View(viewModel);
         }
 
@@ -58,9 +66,13 @@ namespace OpenLawOffice.WebClient.Controllers
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(Guid id)
         {
-            ViewModels.Notes.NoteViewModel viewModel = null;
-            Common.Models.Notes.Note model = Data.Notes.Note.Get(id);
+            Common.Models.Notes.Note model;
+            ViewModels.Notes.NoteViewModel viewModel;
+
+            model = Data.Notes.Note.Get(id);
+
             viewModel = Mapper.Map<ViewModels.Notes.NoteViewModel>(model);
+
             return View(viewModel);
         }
 
@@ -69,9 +81,15 @@ namespace OpenLawOffice.WebClient.Controllers
         [HttpPost]
         public ActionResult Edit(Guid id, ViewModels.Notes.NoteViewModel viewModel)
         {
-            Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
-            Common.Models.Notes.Note model = Mapper.Map<Common.Models.Notes.Note>(viewModel);
+            Common.Models.Security.User currentUser;
+            Common.Models.Notes.Note model;
+
+            currentUser = UserCache.Instance.Lookup(Request);
+
+            model = Mapper.Map<Common.Models.Notes.Note>(viewModel);
+
             model = Data.Notes.Note.Edit(model, currentUser);
+
             return RedirectToAction("Details", new { Id = id });
         }
 
@@ -87,31 +105,33 @@ namespace OpenLawOffice.WebClient.Controllers
         [HttpPost]
         public ActionResult Create(ViewModels.Notes.NoteViewModel viewModel)
         {
-            try
-            {
-                Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
-                Common.Models.Notes.Note model = Mapper.Map<Common.Models.Notes.Note>(viewModel);
-                model = OpenLawOffice.Data.Notes.Note.Create(model, currentUser);
+            Common.Models.Security.User currentUser;
+            Common.Models.Notes.Note model;
+            Guid matterid;
+            long taskid;
 
-                if (Request["MatterId"] != null)
-                {
-                    Guid matterid = Guid.Parse(Request["MatterId"]);
-                    Data.Notes.Note.RelateMatter(model, matterid, currentUser);
-                }
-                else if (Request["TaskId"] != null)
-                {
-                    long taskid = long.Parse(Request["TaskId"]);
-                    Data.Notes.Note.RelateTask(model, taskid, currentUser);
-                }
-                else
-                    throw new HttpRequestValidationException("Must specify a MatterId or a TaskId");
+            currentUser = UserCache.Instance.Lookup(Request);
 
-                return RedirectToAction("Details", new { Id = model.Id });
-            }
-            catch
+            model = Mapper.Map<Common.Models.Notes.Note>(viewModel);
+
+            model = Data.Notes.Note.Create(model, currentUser);
+
+            if (Request["MatterId"] != null)
             {
-                return View(viewModel);
+                matterid = Guid.Parse(Request["MatterId"]);
+
+                Data.Notes.Note.RelateMatter(model, matterid, currentUser);
             }
+            else if (Request["TaskId"] != null)
+            {
+                taskid = long.Parse(Request["TaskId"]);
+
+                Data.Notes.Note.RelateTask(model, taskid, currentUser);
+            }
+            else
+                throw new HttpRequestValidationException("Must specify a MatterId or a TaskId");
+
+            return RedirectToAction("Details", new { Id = model.Id });
         }
     }
 }

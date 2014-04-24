@@ -23,12 +23,10 @@ namespace OpenLawOffice.WebClient.Controllers
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Web;
     using System.Web.Mvc;
-    using System.Data;
     using AutoMapper;
 
+    [HandleError(View = "Errors/", Order = 10)]
     public class TaskAssignedContactsController : BaseController
     {
         // Selects link based on Guid of Matter
@@ -36,10 +34,11 @@ namespace OpenLawOffice.WebClient.Controllers
             Permission = Common.Models.PermissionType.Create)]
         public ActionResult SelectContactToAssign(long id)
         {
-            List<ViewModels.Contacts.SelectableContactViewModel> modelList = new List<ViewModels.Contacts.SelectableContactViewModel>();
-            List<Common.Models.Contacts.Contact> contactList = OpenLawOffice.Data.Contacts.Contact.List();
+            List<ViewModels.Contacts.SelectableContactViewModel> modelList;
 
-            contactList.ForEach(x =>
+            modelList = new List<ViewModels.Contacts.SelectableContactViewModel>();
+
+            Data.Contacts.Contact.List().ForEach(x =>
             {
                 modelList.Add(Mapper.Map<ViewModels.Contacts.SelectableContactViewModel>(x));
             });
@@ -52,6 +51,7 @@ namespace OpenLawOffice.WebClient.Controllers
         public ActionResult AssignContact(int id)
         {
             long taskId = 0;
+            ViewModels.Tasks.TaskAssignedContactViewModel vm;
 
             if (Request["TaskId"] == null)
                 return View("InvalidRequest");
@@ -59,10 +59,9 @@ namespace OpenLawOffice.WebClient.Controllers
             if (!long.TryParse(Request["TaskId"], out taskId))
                 return View("InvalidRequest");
 
-            ViewModels.Tasks.TaskAssignedContactViewModel vm = new ViewModels.Tasks.TaskAssignedContactViewModel();
-
-            vm.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(OpenLawOffice.Data.Tasks.Task.Get(taskId));
-            vm.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(OpenLawOffice.Data.Contacts.Contact.Get(id));
+            vm = new ViewModels.Tasks.TaskAssignedContactViewModel();
+            vm.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(Data.Tasks.Task.Get(taskId));
+            vm.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(Data.Contacts.Contact.Get(id));
 
             return View(vm);
         }
@@ -72,24 +71,26 @@ namespace OpenLawOffice.WebClient.Controllers
         [HttpPost]
         public ActionResult AssignContact(ViewModels.Tasks.TaskAssignedContactViewModel model)
         {
-            // We need to reset the Id of the model as it is picking up the id from the route, 
+            Common.Models.Security.User currentUser;
+            Common.Models.Tasks.TaskAssignedContact taskContact;
+
+            // We need to reset the Id of the model as it is picking up the id from the route,
             // which is incorrect
             model.Id = null;
 
-            Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = UserCache.Instance.Lookup(Request);
 
-            Common.Models.Tasks.TaskAssignedContact taskContact =
-                OpenLawOffice.Data.Tasks.TaskAssignedContact.Get(model.Task.Id.Value, model.Contact.Id.Value);
+            taskContact = Data.Tasks.TaskAssignedContact.Get(model.Task.Id.Value, model.Contact.Id.Value);
 
             if (taskContact == null)
             { // Create
                 taskContact = Mapper.Map<Common.Models.Tasks.TaskAssignedContact>(model);
-                taskContact = OpenLawOffice.Data.Tasks.TaskAssignedContact.Create(taskContact, currentUser);
+                taskContact = Data.Tasks.TaskAssignedContact.Create(taskContact, currentUser);
             }
             else
             { // Enable
                 taskContact = Mapper.Map<Common.Models.Tasks.TaskAssignedContact>(model);
-                taskContact = OpenLawOffice.Data.Tasks.TaskAssignedContact.Enable(taskContact, currentUser);
+                taskContact = Data.Tasks.TaskAssignedContact.Enable(taskContact, currentUser);
             }
 
             return RedirectToAction("Contacts", "Tasks",
@@ -100,11 +101,12 @@ namespace OpenLawOffice.WebClient.Controllers
             Permission = Common.Models.PermissionType.Modify)]
         public ActionResult Edit(Guid id)
         {
-            ViewModels.Tasks.TaskAssignedContactViewModel viewModel = null;
+            Common.Models.Tasks.TaskAssignedContact model;
+            ViewModels.Tasks.TaskAssignedContactViewModel viewModel;
 
-            Common.Models.Tasks.TaskAssignedContact model = OpenLawOffice.Data.Tasks.TaskAssignedContact.Get(id);
-            model.Task = OpenLawOffice.Data.Tasks.Task.Get(model.Task.Id.Value);
-            model.Contact = OpenLawOffice.Data.Contacts.Contact.Get(model.Contact.Id.Value);
+            model = Data.Tasks.TaskAssignedContact.Get(id);
+            model.Task = Data.Tasks.Task.Get(model.Task.Id.Value);
+            model.Contact = Data.Contacts.Contact.Get(model.Contact.Id.Value);
 
             viewModel = Mapper.Map<ViewModels.Tasks.TaskAssignedContactViewModel>(model);
             viewModel.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(model.Task);
@@ -118,37 +120,39 @@ namespace OpenLawOffice.WebClient.Controllers
         [HttpPost]
         public ActionResult Edit(Guid id, ViewModels.Tasks.TaskAssignedContactViewModel viewModel)
         {
-            try
-            {
-                Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
-                Common.Models.Tasks.TaskAssignedContact currentModel = Data.Tasks.TaskAssignedContact.Get(id);
-                Common.Models.Tasks.TaskAssignedContact model = Mapper.Map<Common.Models.Tasks.TaskAssignedContact>(viewModel);
-                model.Contact = currentModel.Contact;
-                model.Task = currentModel.Task;                
-                model = OpenLawOffice.Data.Tasks.TaskAssignedContact.Edit(model, currentUser);
+            Common.Models.Security.User currentUser;
+            Common.Models.Tasks.TaskAssignedContact currentModel;
+            Common.Models.Tasks.TaskAssignedContact model;
 
-                return RedirectToAction("Contacts", "Tasks",
-                    new { id = model.Task.Id.Value.ToString() });
-            }
-            catch
-            {
-                return View(viewModel);
-            }
+            currentUser = UserCache.Instance.Lookup(Request);
+
+            currentModel = Data.Tasks.TaskAssignedContact.Get(id);
+
+            model = Mapper.Map<Common.Models.Tasks.TaskAssignedContact>(viewModel);
+            model.Contact = currentModel.Contact;
+            model.Task = currentModel.Task;
+
+            model = Data.Tasks.TaskAssignedContact.Edit(model, currentUser);
+
+            return RedirectToAction("Contacts", "Tasks",
+                new { id = model.Task.Id.Value.ToString() });
         }
-        
+
         [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
             Permission = Common.Models.PermissionType.Read)]
         public ActionResult Details(Guid id)
         {
-            ViewModels.Tasks.TaskAssignedContactViewModel viewModel = null;
+            ViewModels.Tasks.TaskAssignedContactViewModel viewModel;
+            Common.Models.Tasks.TaskAssignedContact model;
 
-            Common.Models.Tasks.TaskAssignedContact model = OpenLawOffice.Data.Tasks.TaskAssignedContact.Get(id);
-            model.Task = OpenLawOffice.Data.Tasks.Task.Get(model.Task.Id.Value);
-            model.Contact = OpenLawOffice.Data.Contacts.Contact.Get(model.Contact.Id.Value);
+            model = Data.Tasks.TaskAssignedContact.Get(id);
+            model.Task = Data.Tasks.Task.Get(model.Task.Id.Value);
+            model.Contact = Data.Contacts.Contact.Get(model.Contact.Id.Value);
 
             viewModel = Mapper.Map<ViewModels.Tasks.TaskAssignedContactViewModel>(model);
             viewModel.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(model.Task);
             viewModel.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.Contact);
+
             PopulateCoreDetails(viewModel);
 
             return View(viewModel);
@@ -166,22 +170,22 @@ namespace OpenLawOffice.WebClient.Controllers
         [HttpPost]
         public ActionResult Delete(Guid id, ViewModels.Tasks.TaskAssignedContactViewModel viewModel)
         {
-            try
-            {
-                Common.Models.Security.User currentUser = UserCache.Instance.Lookup(Request);
-                Common.Models.Tasks.TaskAssignedContact currentModel = Data.Tasks.TaskAssignedContact.Get(id);
-                Common.Models.Tasks.TaskAssignedContact model = Mapper.Map<Common.Models.Tasks.TaskAssignedContact>(viewModel);
-                model.Contact = currentModel.Contact;
-                model.Task = currentModel.Task;                
-                model = OpenLawOffice.Data.Tasks.TaskAssignedContact.Disable(model, currentUser);
+            Common.Models.Security.User currentUser;
+            Common.Models.Tasks.TaskAssignedContact currentModel;
+            Common.Models.Tasks.TaskAssignedContact model;
 
-                return RedirectToAction("Contacts", "Tasks",
-                    new { id = model.Task.Id.Value.ToString() });
-            }
-            catch(Exception ex)
-            {
-                return View(viewModel);
-            }
+            currentUser = UserCache.Instance.Lookup(Request);
+
+            currentModel = Data.Tasks.TaskAssignedContact.Get(id);
+
+            model = Mapper.Map<Common.Models.Tasks.TaskAssignedContact>(viewModel);
+            model.Contact = currentModel.Contact;
+            model.Task = currentModel.Task;
+
+            model = Data.Tasks.TaskAssignedContact.Disable(model, currentUser);
+
+            return RedirectToAction("Contacts", "Tasks",
+                new { id = model.Task.Id.Value.ToString() });
         }
     }
 }
