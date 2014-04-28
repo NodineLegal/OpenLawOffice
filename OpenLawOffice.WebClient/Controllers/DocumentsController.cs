@@ -27,7 +27,7 @@ namespace OpenLawOffice.WebClient.Controllers
     using System.Web.Mvc;
     using AutoMapper;
 
-    [HandleError(View = "Errors/", Order = 10)]
+    [HandleError(View = "Errors/Index", Order = 10)]
     public class DocumentsController : BaseController
     {
         [SecurityFilter(SecurityAreaName = "Documents", IsSecuredResource = false,
@@ -71,6 +71,19 @@ namespace OpenLawOffice.WebClient.Controllers
             Permission = Common.Models.PermissionType.Create)]
         public ActionResult Create()
         {
+            ViewModels.Documents.DocumentViewModel viewModel;
+
+            if (Request["TaskId"] != null)
+            { // The create request originated from a task
+            }
+            else if (Request["MatterId"] != null)
+            { // The create request originated from a matter
+            }
+            else
+                return View("Errors/InvalidRequest");
+
+
+
             return View();
         }
 

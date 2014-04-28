@@ -1,1 +1,3 @@
 ﻿Please make sure to install Npgsql (See 2.2 http://npgsql.projects.pgfoundry.org/docs/manual/UserManual.html).  This will require registration of Npgsql and Mono.Security
+
+Need to test with: http://ultidev.com/products/UWS-Cassini-Pro/

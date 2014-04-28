@@ -1,11 +1,11 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<IEnumerable<OpenLawOffice.WebClient.ViewModels.Matters.ResponsibleUserViewModel>>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-    ResponsibleUsers
+    Users Responsible for Matter
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <h2>
-        ResponsibleUsers</h2>
+        Users Responsible for Matter<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
     <table class="listing_table">
         <tr>
             <th style="text-align: center;">
@@ -14,28 +14,38 @@
             <th style="text-align: center;">
                 Responsibility
             </th>
-            <th style="width: 150px;">
+            <th style="width: 40px;">
             </th>
         </tr>
         <% foreach (var item in Model)
            { %>
         <tr>
             <td>
-                <%: item.User.Username %>
+                <%: Html.ActionLink(item.User.Username, "Details", new { id = item.Id })%>
             </td>
             <td>
                 <%: item.Responsibility %>
             </td>
             <td>
-                <%: Html.ActionLink("Edit", "Edit", "ResponsibleUsers", new { id = item.Id.Value }, null)%>
-                |
-                <%: Html.ActionLink("Details", "Details", "ResponsibleUsers", new { id = item.Id.Value }, null)%>
-                |
-                <%: Html.ActionLink("Delete", "Delete", "ResponsibleUsers", new { id = item.Id.Value }, null)%>
+                <%: Html.ActionLink("Edit", "Edit", "ResponsibleUsers", new { id = item.Id.Value }, new { @class = "btn-edit", title = "Edit" })%>
+                <%: Html.ActionLink("Remove", "Delete", "ResponsibleUsers", new { id = item.Id.Value }, new { @class = "btn-remove", title = "Remove" })%>
             </td>
         </tr>
         <% } %>
     </table>
+    
+    <div id="pageInfoDialog" title="Help">
+        <p>
+        <span style="font-weight: bold; text-decoration: underline;">Info:</span>
+        Responsible users are the system users (people with login credentials) responsible for managing the system.<br /><br />
+        <span style="font-weight: bold; text-decoration: underline;">Usage:</span>
+        Clicking the title will show the details of the note.  Click the 
+        <img src="../../Content/fugue-icons-3.5.6/icons-shadowless/pencil.png" /> (edit icon) to make 
+        changes to the contact.  Click the 
+        <img src="../../Content/fugue-icons-3.5.6/icons-shadowless/cross.png" /> 
+        (remove icon) to remove the user from the list of responsible users.  
+        </p>
+    </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
     <li>Navigation</li>

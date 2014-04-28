@@ -45,6 +45,13 @@ namespace OpenLawOffice.Data.Documents
                 new { TaskId = taskId, DocumentId = documentId });
         }
 
+        public static Common.Models.Documents.DocumentTask GetFor(Guid documentId)
+        {
+            return DataHelper.Get<Common.Models.Documents.DocumentTask, DBOs.Documents.DocumentTask>(
+                "SELECT * FROM \"document_task\" WHERE \"document_id\"=@DocumentId AND \"utc_disabled\" is null",
+                new { DocumentId = documentId });
+        }
+
         public static Common.Models.Documents.DocumentTask GetIgnoringDisable(Guid taskId, Guid documentId)
         {
             return DataHelper.Get<Common.Models.Documents.DocumentTask, DBOs.Documents.DocumentTask>(

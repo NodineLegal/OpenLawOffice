@@ -1,11 +1,11 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Contacts.ContactViewModel>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-    Create
+    Create Contact
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <h2>
-        Create</h2>
+        Create Contact<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
     <% using (Html.BeginForm())
        {%>
     <%: Html.ValidationSummary(true) %>
@@ -76,7 +76,7 @@
         </tr>
         <tr>
             <td class="display-label">
-                Display Name
+                Display Name<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
                 <%: Html.TextBoxFor(model => model.DisplayName)%>
@@ -826,6 +826,17 @@
         <input type="submit" value="Save" />
     </p>
     <% } %>
+    <div id="pageInfoDialog" title="Help">
+        <p>
+        <span style="font-weight: bold; text-decoration: underline;">Info:</span>
+        Fill in the information on this page to create a new contact.  Required fields are indicated with an
+        <span style="color: #ee0000;font-size: 12px;cursor:help;" title="Required Field">*</span> (display name).
+        While very little information is required to create the contact, the more information provided will prove useful later.<br /><br />
+        <span style="font-weight: bold; text-decoration: underline;">Usage:</span>
+        Fields marked with an <span style="color: #ee0000;font-size: 12px;cursor:help;" title="Required Field">*</span> are required.  Its very important that the 
+        "Our Employee" checkbox be checked if the contact is an employee of the firm or will be billing time (e.g., of counsel).
+        </p>
+    </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
     <li>Navigation</li>

@@ -25,7 +25,7 @@ namespace OpenLawOffice.WebClient.Controllers.Security
     using System.Web.Mvc;
     using AutoMapper;
 
-    [HandleError(View = "Errors/", Order = 10)]
+    [HandleError(View = "Errors/Index", Order = 10)]
     public class SecurityAreasController : BaseController
     {
         [SecurityFilter(SecurityAreaName = "Security", IsSecuredResource = false,

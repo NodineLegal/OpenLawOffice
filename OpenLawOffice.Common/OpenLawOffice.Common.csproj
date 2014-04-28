@@ -54,9 +54,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\OpenLawOffice.WebClient\packages\AutoMapper.3.2.0-ci1011\lib\net40\AutoMapper.Net4.dll</HintPath>
     </Reference>
-    <Reference Include="NLog">
-      <HintPath>..\OpenLawOffice.WebClient\packages\NLog.2.1.0\lib\net40\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />

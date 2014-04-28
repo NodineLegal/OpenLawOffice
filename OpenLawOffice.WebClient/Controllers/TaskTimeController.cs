@@ -26,7 +26,7 @@ using AutoMapper;
 
 namespace OpenLawOffice.WebClient.Controllers
 {
-    [HandleError(View = "Errors/", Order = 10)]
+    [HandleError(View = "Errors/Index", Order = 10)]
     public class TaskTimeController : BaseController
     {
         [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,

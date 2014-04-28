@@ -1,12 +1,11 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<IEnumerable<OpenLawOffice.WebClient.ViewModels.Tasks.TaskViewModel>>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-    Tasks
+    Tasks for Matter
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-    <script type="text/javascript" src="/Scripts/jqGrid-4.5.4/jquery-1.9.0.min.js"></script>
-    <script type="text/javascript" src="/Scripts/jqGrid-4.5.4/grid.locale-en.js"></script>
-    <script type="text/javascript" src="/Scripts/jqGrid-4.5.4/jquery.jqGrid.min.js"></script>
+    <script type="text/javascript" src="../../Scripts/jqGrid-4.6.0/grid.locale-en.js"></script>
+    <script type="text/javascript" src="../../Scripts/jqGrid-4.6.0/jquery.jqGrid.min.js"></script>
     <style type="text/css">
         div.ui-jqgrid-titlebar
         {
@@ -14,7 +13,7 @@
         }
     </style>
     <h2>
-        Tasks</h2>
+        Tasks for Matter<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
     <table id="list">
     </table>
     <div id="pager">
@@ -33,13 +32,13 @@
                     id: 'Id',
                     rows: 'Rows'
                 },
-                colNames: ['id', 'Title', 'Type', 'Due', 'Actions'],
+                colNames: ['id', 'Title', 'Type', 'Due', ''],
                 colModel: [
                     { name: 'Id', width: 1, hidden: true, key: true },
-                    { name: 'Title', width: 350 },
-                    { name: 'Type', width: 250 },
+                    { name: 'Title', width: 350, formatter: titleFormat },
+                    { name: 'Type', width: 200 },
                     { name: 'DueDate', width: 120, formatter: 'date' },
-                    { name: 'act', width: 120 }
+                    { name: 'act', width: 35 }
                 ],
                 pager: '#pager',
                 gridview: true,
@@ -51,14 +50,29 @@
                     var ids = jQuery("#list").jqGrid('getDataIDs');
                     for (var i = 0; i < ids.length; i++) {
                         id = ids[i];
-                        detailButton = "<a href=\"/Tasks/Details/" + ids[i] + "\">Details</a>";
-                        editButton = "<a href=\"/Tasks/Edit/" + ids[i] + "\">Edit</a>";
-                        jQuery("#list").jqGrid('setRowData', ids[i], { act: detailButton + " | " + editButton });
+                        editButton = "<a href=\"/Tasks/Edit/" + ids[i] + "\" class=\"btn-edit\" title=\"Edit\">Edit</a>";
+                        jQuery("#list").jqGrid('setRowData', ids[i], { act: editButton });
                     }
                 }
             });
         });
+
+        function titleFormat(cellvalue, options, rowObject) {
+            return '<a href="/Tasks/Details/' + options.rowId + '">' + cellvalue + '</a>';
+        }
     </script>
+
+    <div id="pageInfoDialog" title="Help">
+        <p>
+        <span style="font-weight: bold; text-decoration: underline;">Info:</span>
+        Matters are the basis of the system.  They contain documents, tasks, notes and more.  Tasks
+        can have subtasks and be subtasks<br /><br />
+        <span style="font-weight: bold; text-decoration: underline;">Usage:</span> 
+        The arrow to the left of the title allows for expanding to view subtasks (tasks within tasks).  
+        Clicking the title will show the details of the task including access to documents, notes, time entries and more.  
+        Click the <img src="../../Content/fugue-icons-3.5.6/icons-shadowless/pencil.png" /> (edit icon) to make changes to the task.
+        </p>
+    </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
     <li>Navigation</li>

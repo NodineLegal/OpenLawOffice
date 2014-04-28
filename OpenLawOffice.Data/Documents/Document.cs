@@ -119,6 +119,10 @@ namespace OpenLawOffice.Data.Documents
         public static Common.Models.Documents.DocumentTask RelateTask(Common.Models.Documents.Document model,
             long taskId, Common.Models.Security.User creator)
         {
+            Common.Models.Tasks.TaskMatter taskMatter = Tasks.TaskMatter.GetFor(taskId);
+
+            RelateMatter(model, taskMatter.Matter.Id.Value, creator);
+
             return DocumentTask.Create(new Common.Models.Documents.DocumentTask()
             {
                 Id = Guid.NewGuid(),

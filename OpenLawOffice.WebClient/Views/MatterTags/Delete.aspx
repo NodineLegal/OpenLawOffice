@@ -1,16 +1,16 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Matters.MatterTagViewModel>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-    Delete
+    Delete Matter Tag
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <h2>
-        Delete</h2>
+        Delete Matter Tag<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
     <% using (Html.BeginForm())
        {%>
     <%: Html.ValidationSummary(true) %>
     <h3>
-        Are you sure you want to delete this?</h3>
+        Are you sure you want to delete this tag?</h3>
     <table class="detail_table">
         <tr>
             <td class="display-label">
@@ -119,6 +119,14 @@
         <input type="submit" value="Delete" />
     </p>
     <% } %>
+    <div id="pageInfoDialog" title="Help">
+        <p>
+        <span style="font-weight: bold; text-decoration: underline;">Info:</span>
+        This page allows a tag to be removed.<br /><br />
+        <span style="font-weight: bold; text-decoration: underline;">Usage:</span>
+        To remove the tag, click the Delete button.
+        </p>
+    </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
     <li>Navigation</li>

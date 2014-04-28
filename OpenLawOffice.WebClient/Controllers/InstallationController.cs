@@ -24,7 +24,7 @@ namespace OpenLawOffice.WebClient.Controllers
     using System.IO;
     using System.Web.Mvc;
 
-    [HandleError(View = "Errors/", Order = 10)]
+    [HandleError(View = "Errors/Index", Order = 10)]
     public class InstallationController : Controller
     {
         public ActionResult Index()

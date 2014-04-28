@@ -24,7 +24,7 @@ using System.Web.Mvc;
 
 namespace OpenLawOffice.WebClient.Controllers
 {
-    [HandleError(View = "Errors/", Order = 10)]
+    [HandleError(View = "Errors/Index", Order = 10)]
     public class TagCategoriesController : BaseController
     {
         public ActionResult ListNameOnly()

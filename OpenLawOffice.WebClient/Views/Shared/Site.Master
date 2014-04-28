@@ -10,6 +10,28 @@
     <link href="../../Content/jquery-ui-1.10.4.custom.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../Scripts/jqGrid-4.5.4/ui.jqgrid.css"
         media="all" />
+    <script type="text/javascript" src="../../Scripts/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="../../Scripts/jquery-ui-1.10.4.custom.js"></script>    
+    <script language="javascript">
+        $(function () {
+            $("#pageInfoDialog").dialog({
+                autoOpen: false,
+                width: 400,
+                show: {
+                    effect: "blind",
+                    duration: 100
+                },
+                hide: {
+                    effect: "fade",
+                    duration: 100
+                }
+            });
+
+            $("#pageInfo").click(function () {
+                $("#pageInfoDialog").dialog("open");
+            });
+        });
+    </script>
 </head>
 <body>
     <div class="page">
@@ -61,10 +83,10 @@
                 </ul>
                 <li>Security</li>
                 <ul>
-                    <li>
+                    <%--<li>
                         <%: Html.ActionLink("Areas", "", "SecurityAreas") %></li>
                     <li>
-                        <%: Html.ActionLink("Area Access", "", "SecurityAreaAcls") %></li>
+                        <%: Html.ActionLink("Area Access", "", "SecurityAreaAcls") %></li>--%>
                     <li>
                         <%: Html.ActionLink("Users", "", "Users") %></li>
                 </ul>
@@ -75,6 +97,9 @@
                     <li>
                         <%: Html.ActionLink("Tasks", "Index", "UserTaskSettings")%></li>
                 </ul>
+                <ul>
+                </ul>
+                <li><%: Html.ActionLink("About", "About", "Home") %> </li>
             </ul>
         </div>
         <div id="menucontainer">

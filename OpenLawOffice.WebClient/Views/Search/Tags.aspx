@@ -5,7 +5,7 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <h2>
-        Search Tags</h2>
+        Search Tags<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
     <% using (Html.BeginForm())
        {%>
     <%: Html.ValidationSummary(true) %>
@@ -36,27 +36,18 @@
             <th style="text-align: center;">
                 Tag
             </th>
-            <th style="width: 150px;">
-            </th>
         </tr>
         <% foreach (var item in Model.MatterTags)
            { %>
         <tr>
             <td>
-                <%: item.Matter.Title %>
+                <%: Html.ActionLink(item.Matter.Title, "Details", "Matters", new { id = item.Matter.Id.Value }, null)%>
             </td>
             <td>
                 <%: item.TagCategory.Name %>
             </td>
             <td>
-                <%: item.Tag %>
-            </td>
-            <td>
-                <%: Html.ActionLink("Edit", "Edit", "MatterTags", new { id = item.Id.Value }, null)%>
-                |
-                <%: Html.ActionLink("Details", "Details", "MatterTags", new { id = item.Id.Value }, null)%>
-                |
-                <%: Html.ActionLink("Delete", "Delete", "MatterTags", new { id = item.Id.Value }, null)%>
+                <%: Html.ActionLink(item.Tag, "Details", "MatterTags", new { id = item.Id.Value }, null)%>
             </td>
         </tr>
         <% } %>
@@ -78,32 +69,32 @@
             <th style="text-align: center;">
                 Tag
             </th>
-            <th style="width: 150px;">
-            </th>
         </tr>
         <% foreach (var item in Model.TaskTags)
            { %>
         <tr>
             <td>
-                <%: item.Task.Title %>
+                <%: Html.ActionLink(item.Task.Title, "Details", "Tasks", new { id = item.Task.Id.Value }, null)%>
             </td>
             <td>
                 <%: item.TagCategory.Name %>
             </td>
             <td>
-                <%: item.Tag %>
-            </td>
-            <td>
-                <%: Html.ActionLink("Edit", "Edit", "MatterTags", new { id = item.Id.Value }, null)%>
-                |
-                <%: Html.ActionLink("Details", "Details", "MatterTags", new { id = item.Id.Value }, null)%>
-                |
-                <%: Html.ActionLink("Delete", "Delete", "MatterTags", new { id = item.Id.Value }, null)%>
+                <%: Html.ActionLink(item.Tag, "Details", "TaskTags", new { id = item.Id.Value }, null)%>
             </td>
         </tr>
         <% } %>
     </table>
     <% } %>
+    
+    <div id="pageInfoDialog" title="Help">
+        <p>
+        <span style="font-weight: bold; text-decoration: underline;">Info:</span>        
+        Click the matter name to view its details or the tag to view its details.<br /><br />
+        <span style="font-weight: bold; text-decoration: underline;">Usage:</span>
+        Selecting Matters or Tasks will include results of those tags.  Enter a part or a whole tag and click search.
+        </p>
+    </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
 </asp:Content>

@@ -6,7 +6,7 @@ to use a different color start by replacing all instances of
 body
 {
     background-color: #5c87b2;
-    font-size: .75em;
+    font-size: 11px;
     font-family: Verdana, Helvetica, Sans-Serif;
     margin: 0;
     padding: 0;
@@ -214,15 +214,20 @@ table th
     border: solid 1px #e8eef4;
 }
 
-.listing_table
+table.listing_table
 {
     width: 100%;
 }
 
-.detail_table
+table.detail_table
 {
     width: 100%;
     margin-bottom: 15px;
+}
+
+td.display-field input
+{
+    width: 100%;
 }
 
 /* MISC
@@ -330,4 +335,90 @@ div#title
 .tri-state
 {
     width: 6em;
+}
+
+.required-field
+{
+    color: #ee0000;
+    float: right;
+    font-size: 12px;
+    cursor: help;
+}
+
+a.btn-edit
+{
+    background-image: url('fugue-icons-3.5.6/icons-shadowless/pencil.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    text-indent: -9999px; /* hide text */
+}
+
+a.btn-download
+{
+    background-image: url('fugue-icons-3.5.6/icons-shadowless/download-cloud.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    text-indent: -9999px; /* hide text */
+}
+
+a.btn-question
+{
+    background-image: url('fugue-icons-3.5.6/icons-shadowless/question.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    text-indent: -9999px; /* hide text */
+    cursor: pointer;
+}
+
+a.btn-remove
+{
+    background-image: url('fugue-icons-3.5.6/icons-shadowless/cross.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    text-indent: -9999px; /* hide text */
+}
+
+a.btn-conflictcheck
+{
+    background-image: url('fugue-icons-3.5.6/icons-shadowless/exclamation-shield.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    text-indent: -9999px; /* hide text */
+}
+
+a.btn-assigncontact
+{
+    background-image: url('fugue-icons-3.5.6/icons-shadowless/user-arrow.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    text-indent: -9999px; /* hide text */
+}
+
+a.btn-timeentry
+{
+    background-image: url('fugue-icons-3.5.6/icons-shadowless/alarm-clock-select.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    text-indent: -9999px; /* hide text */
 }

@@ -46,6 +46,13 @@ namespace OpenLawOffice.Data.Tasks
                 new { TaskId = taskId, MatterId = matterId });
         }
 
+        public static Common.Models.Tasks.TaskMatter GetFor(long taskId)
+        {
+            return DataHelper.Get<Common.Models.Tasks.TaskMatter, DBOs.Tasks.TaskMatter>(
+                "SELECT * FROM \"task_matter\" WHERE \"task_id\"=@TaskId AND \"utc_disabled\" is null",
+                new { TaskId = taskId });
+        }
+
         public static Common.Models.Tasks.TaskMatter Create(Common.Models.Tasks.TaskMatter model,
             Common.Models.Security.User creator)
         {

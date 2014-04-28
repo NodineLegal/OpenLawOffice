@@ -160,7 +160,6 @@
     <Content Include="Global.asax" />
     <Content Include="LICENSE.txt" />
     <Content Include="Views\Account\Login.aspx" />
-    <Content Include="Views\Contacts\Assign.aspx" />
     <Content Include="Views\Contacts\Conflicts.aspx" />
     <Content Include="Views\Contacts\Create.aspx" />
     <Content Include="Views\Contacts\Details.aspx" />
@@ -212,7 +211,7 @@
     <Content Include="Views\Shared\DisplayTemplates\PermissionViewModel.ascx" />
     <Content Include="Views\Shared\EditorTemplates\PermissionViewModel.ascx" />
     <Content Include="Views\Shared\InsufficientRights.aspx" />
-    <Content Include="Views\Shared\InvalidRequest.aspx" />
+    <Content Include="Views\Shared\Errors\InvalidRequest.aspx" />
     <Content Include="Views\TaskAssignedContacts\AssignContact.aspx" />
     <Content Include="Views\TaskAssignedContacts\Delete.aspx" />
     <Content Include="Views\TaskAssignedContacts\Details.aspx" />

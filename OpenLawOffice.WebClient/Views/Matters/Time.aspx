@@ -1,11 +1,11 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Matters.MatterTimeViewModel>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-    Times
+    Time Entries within Matter
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <h2>
-        Times</h2>
+        Time Entries within Matter<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
     <% foreach (var task in Model.Tasks)
        { %>
     <h4>
@@ -25,7 +25,7 @@
             <th style="text-align: center;">
                 Worker
             </th>
-            <th style="width: 100px;">
+            <th style="width: 40px;">
             </th>
         </tr>
         <% foreach (var item in task.Times)
@@ -46,9 +46,8 @@
                 <%: item.Worker.DisplayName%>
             </td>
             <td>
-                <%: Html.ActionLink("Edit", "Edit", "Timing", new { id = item.Id.Value }, null)%>
-                |
-                <%: Html.ActionLink("Details", "Details", "Timing", new { id = item.Id.Value }, null)%>
+                <%: Html.ActionLink("Edit", "Edit", "Timing", new { id = item.Id.Value }, new { @class = "btn-edit", title = "Edit" })%>
+                <%: Html.ActionLink("Details", "Details", "Timing", new { id = item.Id.Value }, new { @class = "btn-timeentry", title = "Time Entry" })%>
             </td>
         </tr>
         <% } %>
@@ -65,6 +64,18 @@
         </tr>
     </table>
     <% } %>
+
+    <div id="pageInfoDialog" title="Help">
+        <p>
+        <span style="font-weight: bold; text-decoration: underline;">Info:</span>
+        Time entries express durations of time spent on a particular task of a matter.  This page shows all the
+        tasks of this matter and the time entries for each of those tasks.<br /><br />
+        <span style="font-weight: bold; text-decoration: underline;">Usage:</span> 
+        Clicking the <img src="../../Content/fugue-icons-3.5.6/icons-shadowless/alarm-clock-select.png" /> (time entry icon) 
+        will show the details of the time entry.  Click the 
+        <img src="../../Content/fugue-icons-3.5.6/icons-shadowless/pencil.png" /> (edit icon) to make changes to the time entry.
+        </p>
+    </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
 </asp:Content>

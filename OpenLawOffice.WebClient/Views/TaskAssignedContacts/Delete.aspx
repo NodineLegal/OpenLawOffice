@@ -1,11 +1,11 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Tasks.TaskAssignedContactViewModel>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-    Delete
+    Unassign Contact from Task
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <h2>
-        Delete</h2>
+        Unassign Contact from Task<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
     <% using (Html.BeginForm())
        {%>
     <%: Html.ValidationSummary(true) %>
@@ -111,6 +111,14 @@
         <input type="submit" value="Delete" />
     </p>
     <% } %>
+    <div id="pageInfoDialog" title="Help">
+        <p>
+        <span style="font-weight: bold; text-decoration: underline;">Info:</span>
+        This page allows a contact to be removed from a task by "unassigning" that contact.<br /><br />
+        <span style="font-weight: bold; text-decoration: underline;">Usage:</span>
+        To unassign the contact from the task, click the unassign button.
+        </p>
+    </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
 </asp:Content>

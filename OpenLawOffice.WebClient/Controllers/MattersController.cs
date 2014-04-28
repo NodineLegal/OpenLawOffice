@@ -26,7 +26,7 @@ namespace OpenLawOffice.WebClient.Controllers
     using System.Web.Mvc;
     using AutoMapper;
 
-    [HandleError(View = "Errors/", Order = 10)]
+    [HandleError(View = "Errors/Index", Order = 10)]
     public class MattersController : BaseController
     {
         [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = true,
@@ -170,7 +170,7 @@ namespace OpenLawOffice.WebClient.Controllers
 
             model = Data.Matters.Matter.Get(id);
 
-            viewModel = Mapper.Map<ViewModels.Matters.MatterViewModel>(id);
+            viewModel = Mapper.Map<ViewModels.Matters.MatterViewModel>(model);
 
             return View(viewModel);
         }
@@ -294,6 +294,8 @@ namespace OpenLawOffice.WebClient.Controllers
             Data.Documents.Document.ListForMatter(id).ForEach(x =>
             {
                 viewModel = Mapper.Map<ViewModels.Documents.DocumentViewModel>(x);
+
+                viewModel.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(Data.Documents.Document.GetTask(x.Id.Value));
 
                 viewModelList.Add(viewModel);
             });

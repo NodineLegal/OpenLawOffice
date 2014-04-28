@@ -33,7 +33,7 @@
     <li>Navigation</li>
     <ul style="list-style: none outside none; padding-left: 1em;">
         <li>
-            <%: Html.ActionLink("New Document", "Create", "Documents", new { MatterId = RouteData.Values["Id"].ToString() }, null)%></li>
+            <%: Html.ActionLink("New Document", "Create", "Documents", new { TaskId = RouteData.Values["Id"].ToString() }, null)%></li>
         <li>
             <%: Html.ActionLink("Task", "Details", "Tasks", new { Id = RouteData.Values["Id"].ToString() }, null)%></li>
     </ul>

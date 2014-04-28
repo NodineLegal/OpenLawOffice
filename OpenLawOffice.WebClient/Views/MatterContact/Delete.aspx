@@ -1,16 +1,16 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Matters.MatterContactViewModel>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-    Delete
+    Unassign Contact from Matter
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <h2>
-        Delete</h2>
+        Unassign Contact from Matter<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
     <% using (Html.BeginForm())
        {%>
     <%: Html.ValidationSummary(true) %>
     <h3>
-        Are you sure you want to unlink the contact from the matter?</h3>
+        Are you sure you want to unassign the contact from the matter?</h3>
     <table class="detail_table">
         <tr>
             <td class="display-label">
@@ -108,9 +108,17 @@
         </tr>
     </table>
     <p>
-        <input type="submit" value="Delete" />
+        <input type="submit" value="Unassign" />
     </p>
     <% } %>
+    <div id="pageInfoDialog" title="Help">
+        <p>
+        <span style="font-weight: bold; text-decoration: underline;">Info:</span>
+        This page allows a contact to be removed from a matter by "unassigning" that contact.<br /><br />
+        <span style="font-weight: bold; text-decoration: underline;">Usage:</span>
+        To unassign the contact from the matter, click the unassign button.
+        </p>
+    </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
 </asp:Content>
