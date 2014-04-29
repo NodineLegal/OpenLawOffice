@@ -46,9 +46,9 @@
         <span style="font-weight: bold; text-decoration: underline;">Info:</span>
         Notes allow users to make comments or record information on matters.<br /><br />
         <span style="font-weight: bold; text-decoration: underline;">Usage:</span>
-        Clicking the title will show the details of the contact.  Click the 
+        Clicking the title will show the details of the note.  Click the 
         <img src="../../Content/fugue-icons-3.5.6/icons-shadowless/pencil.png" /> (edit icon) to make 
-        changes to the contact.
+        changes to the note.
         </p>
     </div>
 </asp:Content>

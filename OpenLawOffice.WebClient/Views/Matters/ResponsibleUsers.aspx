@@ -21,10 +21,10 @@
            { %>
         <tr>
             <td>
-                <%: Html.ActionLink(item.User.Username, "Details", new { id = item.Id })%>
+                <%: Html.ActionLink(item.User.Username, "Details", "Users", new { id = item.Id }, null)%>
             </td>
             <td>
-                <%: item.Responsibility %>
+                <%: Html.ActionLink(item.Responsibility, "Details", "ResponsibleUsers", new { id = item.Id }, null)%>
             </td>
             <td>
                 <%: Html.ActionLink("Edit", "Edit", "ResponsibleUsers", new { id = item.Id.Value }, new { @class = "btn-edit", title = "Edit" })%>
@@ -39,9 +39,10 @@
         <span style="font-weight: bold; text-decoration: underline;">Info:</span>
         Responsible users are the system users (people with login credentials) responsible for managing the system.<br /><br />
         <span style="font-weight: bold; text-decoration: underline;">Usage:</span>
-        Clicking the title will show the details of the note.  Click the 
+        Clicking the user will show the details of the user.
+        Clicking the responsibility will show the details of the responsibility.  Click the 
         <img src="../../Content/fugue-icons-3.5.6/icons-shadowless/pencil.png" /> (edit icon) to make 
-        changes to the contact.  Click the 
+        changes to the responsibility.  Click the 
         <img src="../../Content/fugue-icons-3.5.6/icons-shadowless/cross.png" /> 
         (remove icon) to remove the user from the list of responsible users.  
         </p>

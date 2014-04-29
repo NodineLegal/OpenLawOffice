@@ -94,25 +94,5 @@ namespace OpenLawOffice.WebClient.Controllers
 
             return RedirectToAction("Details", new { Id = taskTime.Id });
         }
-
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Create)]
-        public ActionResult Details(Guid id)
-        {
-            Common.Models.Tasks.TaskTime taskTime;
-            ViewModels.Tasks.TaskTimeViewModel viewModel;
-
-            taskTime = Data.Tasks.TaskTime.Get(id);
-            taskTime.Task = Data.Tasks.Task.Get(taskTime.Task.Id.Value);
-            taskTime.Time = Data.Timing.Time.Get(taskTime.Time.Id.Value);
-            taskTime.Time.Worker = Data.Contacts.Contact.Get(taskTime.Time.Worker.Id.Value);
-
-            viewModel = Mapper.Map<ViewModels.Tasks.TaskTimeViewModel>(taskTime);
-            viewModel.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(taskTime.Task);
-            viewModel.Time = Mapper.Map<ViewModels.Timing.TimeViewModel>(taskTime.Time);
-            viewModel.Time.Worker = Mapper.Map<ViewModels.Contacts.ContactViewModel>(taskTime.Time.Worker);
-
-            return View(viewModel);
-        }
     }
 }

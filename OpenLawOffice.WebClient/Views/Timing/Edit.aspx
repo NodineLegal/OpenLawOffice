@@ -1,12 +1,11 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Timing.TimeViewModel>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-    Edit
+    Edit Time Entry
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-    <script type="text/javascript" src="../../Scripts/jqGrid-4.5.4/jquery-1.9.0.min.js"></script>
-    <script type="text/javascript" src="../../Scripts/jqGrid-4.5.4/grid.locale-en.js"></script>
-    <script type="text/javascript" src="../../Scripts/jqGrid-4.5.4/jquery.jqGrid.min.js"></script>
+    <script type="text/javascript" src="../../Scripts/jqGrid-4.6.0/grid.locale-en.js"></script>
+    <script type="text/javascript" src="../../Scripts/jqGrid-4.6.0/jquery.jqGrid.min.js"></script>
     <style type="text/css">
         div.ui-jqgrid-titlebar
         {
@@ -14,14 +13,14 @@
         }
     </style>
     <h2>
-        Edit</h2>
+        Edit Time Entry<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
     <% using (Html.BeginForm())
        {%>
     <%: Html.ValidationSummary(true) %>
     <table class="detail_table">
         <tr>
             <td class="display-label">
-                Start
+                Start<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
                 <%: Html.EditorFor(model => model.Start) %>
@@ -29,7 +28,7 @@
         </tr>
         <tr>
             <td class="display-label">
-                Stop
+                Stop<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
                 <%: Html.EditorFor(model => model.Stop)%>
@@ -37,7 +36,7 @@
         </tr>
         <tr>
             <td class="display-label">
-                Worker
+                Worker<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
                 Worker:
@@ -89,6 +88,15 @@
         <input type="submit" value="Save" />
     </p>
     <% } %>
+    <div id="pageInfoDialog" title="Help">
+        <p>
+        <span style="font-weight: bold; text-decoration: underline;">Info:</span>
+        Fill in the information on this page to modify the time entry.  Required fields are indicated with an
+        <span style="color: #ee0000;font-size: 12px;cursor:help;" title="Required Field">*</span><br /><br />
+        <span style="font-weight: bold; text-decoration: underline;">Usage:</span>
+        Fields marked with an <span style="color: #ee0000;font-size: 12px;cursor:help;" title="Required Field">*</span> are required.
+        </p>
+    </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
     <li>Navigation</li>

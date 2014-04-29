@@ -1,11 +1,11 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<IEnumerable<OpenLawOffice.WebClient.ViewModels.Contacts.SelectableContactViewModel>>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-    SelectContactToAssign
+    Select Contact for Time Entry
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <h2>
-        Assign Worker</h2>
+        Select Contact for Time Entry<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
     <p>
         Select the person that did the work.</p>
     <table class="listing_table">
@@ -23,19 +23,27 @@
            { %>
         <tr>
             <td>
-                <%: item.DisplayName %>
+                <%: Html.ActionLink(item.DisplayName, "Details", "Contacts", new { id = item.Id }, null)%>
             </td>
             <td>
                 <%: item.Address1AddressCity + ", " + item.Address1AddressStateOrProvince %>
             </td>
             <td>
-                <%: Html.ActionLink("Details", "Details", "Contacts", new { Id = Request["TaskId"] }, null)%>
-                |
-                <%: Html.ActionLink("Select", "Create", new { ContactId = item.Id, TaskId = Request["TaskId"] })%>
+                <%: Html.ActionLink("Select", "Create", "TaskTime", new { ContactId = item.Id, TaskId = Request["TaskId"] }, new { @class = "btn-assigncontact", title = "Assign Contact" })%>
             </td>
         </tr>
         <% } %>
     </table>
+    <div id="pageInfoDialog" title="Help">
+        <p>
+        <span style="font-weight: bold; text-decoration: underline;">Info:</span>
+        This page allows a contact to be assigned to a time entry.<br /><br />
+        <span style="font-weight: bold; text-decoration: underline;">Usage:</span>
+        Click the contact to show details of the contact.
+        To assign a contact to a time entry, click the 
+        <img src="../../Content/fugue-icons-3.5.6/icons-shadowless/user-arrow.png" /> (assign contact icon)
+        </p>
+    </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
 </asp:Content>

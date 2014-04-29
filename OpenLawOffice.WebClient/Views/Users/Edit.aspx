@@ -1,11 +1,11 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Security.UserViewModel>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-    Edit
+    Edit User
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <h2>
-        Edit</h2>
+        Edit User<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
     <% using (Html.BeginForm())
        {%>
     <%: Html.ValidationSummary(true) %>
@@ -20,7 +20,7 @@
         </tr>
         <tr>
             <td class="display-label">
-                Username
+                Username<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
                 <%: Html.TextBoxFor(model => model.Username) %>
@@ -29,7 +29,7 @@
         </tr>
         <tr>
             <td class="display-label">
-                Password
+                Password<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
                 <%: Html.TextBoxFor(model => model.Password) %>
@@ -41,6 +41,15 @@
         <input type="submit" value="Save" />
     </p>
     <% } %>
+    <div id="pageInfoDialog" title="Help">
+        <p>
+        <span style="font-weight: bold; text-decoration: underline;">Info:</span>
+        Fill in the information on this page to modify the user.  Required fields are indicated with an
+        <span style="color: #ee0000;font-size: 12px;cursor:help;" title="Required Field">*</span><br /><br />
+        <span style="font-weight: bold; text-decoration: underline;">Usage:</span>
+        Fields marked with an <span style="color: #ee0000;font-size: 12px;cursor:help;" title="Required Field">*</span> are required.
+        </p>
+    </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
     <li>Navigation</li>

@@ -235,7 +235,6 @@
     <Content Include="Views\TaskTags\Details.aspx" />
     <Content Include="Views\TaskTags\Edit.aspx" />
     <Content Include="Views\TaskTime\Create.aspx" />
-    <Content Include="Views\TaskTime\Details.aspx" />
     <Content Include="Views\TaskTime\SelectContactToAssign.aspx" />
     <Content Include="Views\Timing\Details.aspx" />
     <Content Include="Views\Timing\Edit.aspx" />

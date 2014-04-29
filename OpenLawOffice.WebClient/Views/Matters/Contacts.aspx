@@ -21,10 +21,10 @@
            { %>
         <tr>
             <td>
-                <%: Html.ActionLink(item.Contact.DisplayName, "Details", "MatterContact", new { id = item.Id }, null)%>
+                <%: Html.ActionLink(item.Contact.DisplayName, "Details", "Contacts", new { id = item.Id }, null)%>
             </td>
             <td>
-                <%: item.Role %>
+                <%: Html.ActionLink(item.Role, "Details", "MatterContact", new { id = item.Id }, null)%>
             </td>
             <td>
                 <%: Html.ActionLink("Edit", "Edit", "MatterContact", new { id = item.Id }, new { @class = "btn-edit", title = "Edit" })%>
@@ -39,7 +39,8 @@
         Contacts are the people (individuals or organizations) that do things or have things done to or for them. 
         The contacts on this page are assigned to the matter with the role stated.<br /><br />
         <span style="font-weight: bold; text-decoration: underline;">Usage:</span>
-        Clicking the title will show the details of the contact assignment.  Click the 
+        Clicking the contact will show the details of the contact.
+        Clicking the role will show the details of the contact assignment.  Click the 
         <img src="../../Content/fugue-icons-3.5.6/icons-shadowless/pencil.png" /> (edit icon) to make 
         changes to the contact.  Click the 
         <img src="../../Content/fugue-icons-3.5.6/icons-shadowless/cross.png" /> (remove icon) to 
