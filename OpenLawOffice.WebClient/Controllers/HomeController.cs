@@ -33,6 +33,7 @@ namespace OpenLawOffice.WebClient.Controllers
         {
             ViewModels.Home.DashboardViewModel viewModel;
             Common.Models.Security.User currentUser;
+            List<Common.Models.Settings.TagFilter> tagFilter;            
 
             viewModel = new ViewModels.Home.DashboardViewModel();
 
@@ -40,7 +41,9 @@ namespace OpenLawOffice.WebClient.Controllers
 
             viewModel.MyTodoList = new List<ViewModels.Tasks.TaskViewModel>();
 
-            Data.Tasks.Task.GetTodoListFor(currentUser).ForEach(x =>
+            tagFilter = Data.Settings.UserTaskSettings.ListTagFiltersFor(currentUser);
+
+            Data.Tasks.Task.GetTodoListFor(currentUser, tagFilter).ForEach(x =>
             {
                 viewModel.MyTodoList.Add(Mapper.Map<ViewModels.Tasks.TaskViewModel>(x));
             });

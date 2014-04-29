@@ -48,6 +48,7 @@ namespace OpenLawOffice.Data
         {
             var val = reader[columnName];
             if (val == null) return default(T);
+            if (val == System.DBNull.Value) return default(T);
             return (T)reader[columnName];
         }
     }
