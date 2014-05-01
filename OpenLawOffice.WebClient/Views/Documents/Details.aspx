@@ -127,7 +127,7 @@
     </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
-    <li>Navigation</li>
+    <li>Actions</li>
     <ul style="list-style: none outside none; padding-left: 1em;">
         <li>
             <%: Html.ActionLink("New Version", "Create", "Versions", new { DocumentId = Model.Id }, null)%></li>

@@ -123,6 +123,23 @@ namespace OpenLawOffice.WebClient.Controllers
             return RedirectToAction("Index");
         }
 
+        public ActionResult Disable(int id)
+        {
+            return Details(id);
+        }
+
+        [HttpPost]
+        public ActionResult Disable(int id, ViewModels.Security.UserViewModel viewModel)
+        {
+            Common.Models.Security.User model;
+
+            model = Data.Security.User.Get(id);
+
+            model = Data.Security.User.Disable(model);
+
+            return RedirectToAction("Index");
+        }
+
         private int GetRandomNumber(int maxNumber)
         {
             if (maxNumber < 1)

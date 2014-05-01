@@ -137,5 +137,18 @@ namespace OpenLawOffice.Data.Security
 
             return model;
         }
+
+        public static Common.Models.Security.User Disable(Common.Models.Security.User model)
+        {
+            model.UtcDisabled = DateTime.UtcNow;
+            DBOs.Security.User dbo = Mapper.Map<DBOs.Security.User>(model);
+
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                conn.Execute("UPDATE \"user\" SET \"utc_disabled\"=@UtcDisabled WHERE \"id\"=@Id", dbo);
+            }
+
+            return model;
+        }
     }
 }

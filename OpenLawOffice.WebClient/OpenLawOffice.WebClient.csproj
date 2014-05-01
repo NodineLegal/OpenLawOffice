@@ -240,6 +240,7 @@
     <Content Include="Views\Timing\Edit.aspx" />
     <Content Include="Views\Users\Create.aspx" />
     <Content Include="Views\Users\Details.aspx" />
+    <Content Include="Views\Users\Disable.aspx" />
     <Content Include="Views\Users\Edit.aspx" />
     <Content Include="Views\Users\Index.aspx" />
     <Content Include="Views\UserTaskSettings\CreateFilter.aspx" />
