@@ -77,6 +77,42 @@ namespace OpenLawOffice.Data.Matters
             return list;
         }
 
+        public static List<Common.Models.Matters.Matter> ListChildrenForContact(Guid? parentId, int contactId)
+        {
+            List<Common.Models.Matters.Matter> list = new List<Common.Models.Matters.Matter>();
+            IEnumerable<DBOs.Matters.Matter> ie = null;
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                if (parentId.HasValue)
+                    ie = conn.Query<DBOs.Matters.Matter>(
+                        "SELECT \"matter\".* FROM \"matter\" JOIN \"secured_resource_acl\" ON " +
+                        "\"matter\".\"id\"=\"secured_resource_acl\".\"secured_resource_id\" " +
+                        "WHERE \"secured_resource_acl\".\"allow_flags\" & 2 > 0 " +
+                        "AND NOT \"secured_resource_acl\".\"deny_flags\" & 2 > 0 " +
+                        "AND \"matter\".\"utc_disabled\" is null  " +
+                        "AND \"secured_resource_acl\".\"utc_disabled\" is null " +
+                        "AND \"matter\".\"parent_id\"=@ParentId " + 
+                        "AND \"matter\".\"id\" IN (SELECT \"matter_id\" FROM \"matter_contact\" WHERE \"contact_id\"=@ContactId)", 
+                        new { ParentId = parentId.Value, ContactId = contactId });
+                else
+                    ie = conn.Query<DBOs.Matters.Matter>(
+                        "SELECT \"matter\".* FROM \"matter\" JOIN \"secured_resource_acl\" ON " +
+                        "\"matter\".\"id\"=\"secured_resource_acl\".\"secured_resource_id\" " +
+                        "WHERE \"secured_resource_acl\".\"allow_flags\" & 2 > 0 " +
+                        "AND NOT \"secured_resource_acl\".\"deny_flags\" & 2 > 0 " +
+                        "AND \"matter\".\"utc_disabled\" is null  " +
+                        "AND \"secured_resource_acl\".\"utc_disabled\" is null " +
+                        "AND \"matter\".\"parent_id\" is null " +
+                        "AND \"matter\".\"id\" IN (SELECT \"matter_id\" FROM \"matter_contact\" WHERE \"contact_id\"=@ContactId)",
+                        new { ContactId = contactId });
+            }
+
+            foreach (DBOs.Matters.Matter dbo in ie)
+                list.Add(Mapper.Map<Common.Models.Matters.Matter>(dbo));
+
+            return list;
+        }
+
         public static Common.Models.Matters.Matter Create(Common.Models.Matters.Matter model,
             Common.Models.Security.User creator)
         {

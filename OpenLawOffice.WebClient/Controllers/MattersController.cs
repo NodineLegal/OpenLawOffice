@@ -53,6 +53,20 @@ namespace OpenLawOffice.WebClient.Controllers
         [HttpGet]
         public ActionResult ListChildrenJqGrid(Guid? id)
         {
+        }
+
+        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = true,
+            Permission = Common.Models.PermissionType.List)]
+        [HttpGet]
+        public ActionResult ListChildrenForContactJqGrid(Guid? id)
+        {
+            ViewModels.JqGridObject jqObj;
+            Func<ViewModels.JqGridObject, Guid?, List<ViewModels.Matters.MatterViewModel>> func = ListChildrenJqGridBase(id, null);
+            ListChildrenJqGridBase(id, ListChildrenJqGridBase(id, null));
+        }
+
+        public ViewModels.JqGridObject ListChildrenJqGridBase(Guid? id, Func<Guid?, List<ViewModels.Matters.MatterViewModel>> getChildrenMethod)
+        {
             List<ViewModels.Matters.MatterViewModel> modelList;
             List<object> anonList;
             ViewModels.JqGridObject jqObject;
@@ -114,6 +128,20 @@ namespace OpenLawOffice.WebClient.Controllers
             viewModelList = new List<ViewModels.Matters.MatterViewModel>();
 
             Data.Matters.Matter.ListChildren(id).ForEach(x =>
+            {
+                viewModelList.Add(Mapper.Map<ViewModels.Matters.MatterViewModel>(x));
+            });
+
+            return viewModelList;
+        }
+
+        private List<ViewModels.Matters.MatterViewModel> GetChildrenListForContact(Guid? id, int contactId)
+        {
+            List<ViewModels.Matters.MatterViewModel> viewModelList;
+
+            viewModelList = new List<ViewModels.Matters.MatterViewModel>();
+
+            Data.Matters.Matter.ListChildrenForContact(id, contactId).ForEach(x =>
             {
                 viewModelList.Add(Mapper.Map<ViewModels.Matters.MatterViewModel>(x));
             });
