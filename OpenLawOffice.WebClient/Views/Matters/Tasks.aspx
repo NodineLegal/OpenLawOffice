@@ -65,7 +65,7 @@
     <div id="pageInfoDialog" title="Help">
         <p>
         <span style="font-weight: bold; text-decoration: underline;">Info:</span>
-        Matters are the basis of the system.  They contain documents, tasks, notes and more.  Tasks
+        Tasks can contain documents, tasks, notes and more.  Tasks
         can have subtasks and be subtasks<br /><br />
         <span style="font-weight: bold; text-decoration: underline;">Usage:</span> 
         The arrow to the left of the title allows for expanding to view subtasks (tasks within tasks).  

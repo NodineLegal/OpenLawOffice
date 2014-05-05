@@ -166,6 +166,7 @@
     <Content Include="Views\Contacts\Edit.aspx" />
     <Content Include="Views\Contacts\Index.aspx" />
     <Content Include="Views\Contacts\Matters.aspx" />
+    <Content Include="Views\Contacts\Tasks.aspx" />
     <Content Include="Views\Documents\Create.aspx" />
     <Content Include="Views\Documents\Details.aspx" />
     <Content Include="Views\Documents\Edit.aspx" />

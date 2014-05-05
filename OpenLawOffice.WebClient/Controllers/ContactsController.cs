@@ -219,5 +219,42 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(list);
         }
 
+        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
+            Permission = Common.Models.PermissionType.List)]
+        public ActionResult Tasks(int? id)
+        {
+            ViewModels.Tasks.TaskViewModel viewModel;
+            List<ViewModels.Tasks.TaskViewModel> list;
+            int contactId;
+
+            if (id.HasValue)
+                contactId = id.Value;
+            else
+                contactId = int.Parse(Request["ContactId"]);
+
+            list = new List<ViewModels.Tasks.TaskViewModel>();
+            Data.Tasks.Task.ListAllTasksForContact(contactId).ForEach(x =>
+            {
+                viewModel = Mapper.Map<ViewModels.Tasks.TaskViewModel>(x);
+
+                if (viewModel.IsGroupingTask)
+                {
+                    if (Data.Tasks.Task.GetTaskForWhichIAmTheSequentialPredecessor(x.Id.Value) != null)
+                        viewModel.Type = "Sequential Group";
+                    else
+                        viewModel.Type = "Group";
+                }
+                else
+                {
+                    if (x.SequentialPredecessor != null)
+                        viewModel.Type = "Sequential";
+                    else
+                        viewModel.Type = "Standard";
+                }
+                list.Add(viewModel);
+            });
+
+            return View(list);
+        }
     }
 }

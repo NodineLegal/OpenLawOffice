@@ -46,6 +46,24 @@ namespace OpenLawOffice.Data.Tasks
                 "SELECT * FROM \"task\" WHERE \"utc_disabled\" is null");
         }
 
+        public static List<Common.Models.Tasks.Task> ListAllTasksForContact(int contactId)
+        {
+            List<Common.Models.Tasks.Task> list = new List<Common.Models.Tasks.Task>();
+            IEnumerable<DBOs.Tasks.Task> ie = null;
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                ie = conn.Query<DBOs.Tasks.Task>(
+                    "SELECT \"task\".* FROM \"task\" WHERE \"task\".\"utc_disabled\" is null  " +
+                    "AND \"task\".\"id\" IN (SELECT \"task_id\" FROM \"task_assigned_contact\" WHERE \"contact_id\"=@ContactId)",
+                    new { ContactId = contactId });
+            }
+
+            foreach (DBOs.Tasks.Task dbo in ie)
+                list.Add(Mapper.Map<Common.Models.Tasks.Task>(dbo));
+
+            return list;
+        }
+
         public static List<Common.Models.Tasks.Task> ListForMatter(Guid matterId)
         {
             /* Standard Tasks are neither hierarchical or sequenced - not is_grouping_task, no parent_id
