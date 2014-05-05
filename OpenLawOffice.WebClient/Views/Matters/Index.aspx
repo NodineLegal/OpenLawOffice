@@ -70,7 +70,7 @@
     <div id="pageInfoDialog" title="Help">
         <p>
         <span style="font-weight: bold; text-decoration: underline;">Info:</span>
-        Tasks are units of work to be done.  They contain documents, notes, time entries and more.<br /><br />
+        A matter is a substantial or essential thing.  They contain documents, notes, time entries and more.<br /><br />
         <span style="font-weight: bold; text-decoration: underline;">Usage:</span> 
         The arrow to the left of the title allows for expanding to view submatters (matters within matters).  
         Clicking the title will show the details of the matter including access to documents, tasks, notes and more.  

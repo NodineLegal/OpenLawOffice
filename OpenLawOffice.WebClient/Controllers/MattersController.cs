@@ -53,6 +53,11 @@ namespace OpenLawOffice.WebClient.Controllers
         [HttpGet]
         public ActionResult ListChildrenJqGrid(Guid? id)
         {
+            ViewModels.JqGridObject jqObject;
+
+            jqObject = ListChildrenJqGridObject(id, x => GetChildrenList(x));
+
+            return Json(jqObject, JsonRequestBehavior.AllowGet);
         }
 
         [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = true,
@@ -60,16 +65,20 @@ namespace OpenLawOffice.WebClient.Controllers
         [HttpGet]
         public ActionResult ListChildrenForContactJqGrid(Guid? id)
         {
-            ViewModels.JqGridObject jqObj;
-            Func<ViewModels.JqGridObject, Guid?, List<ViewModels.Matters.MatterViewModel>> func = ListChildrenJqGridBase(id, null);
-            ListChildrenJqGridBase(id, ListChildrenJqGridBase(id, null));
+            ViewModels.JqGridObject jqObject;
+            int contactId;
+
+            contactId = int.Parse(Request["ContactId"]);
+
+            jqObject = ListChildrenJqGridObject(id, x => GetChildrenListForContact(x, contactId));
+
+            return Json(jqObject, JsonRequestBehavior.AllowGet);
         }
 
-        public ViewModels.JqGridObject ListChildrenJqGridBase(Guid? id, Func<Guid?, List<ViewModels.Matters.MatterViewModel>> getChildrenMethod)
+        private ViewModels.JqGridObject ListChildrenJqGridObject(Guid? id, Func<Guid?, List<ViewModels.Matters.MatterViewModel>> act)
         {
             List<ViewModels.Matters.MatterViewModel> modelList;
             List<object> anonList;
-            ViewModels.JqGridObject jqObject;
             int level = 0;
 
             if (id == null)
@@ -79,7 +88,8 @@ namespace OpenLawOffice.WebClient.Controllers
                     id = Guid.Parse(Request["nodeid"]);
             }
 
-            modelList = GetChildrenList(id);
+            modelList = act(id);
+            //modelList = GetChildrenList(id);
             anonList = new List<object>();
 
             if (!string.IsNullOrEmpty(Request["n_level"]))
@@ -110,15 +120,13 @@ namespace OpenLawOffice.WebClient.Controllers
                     });
             });
 
-            jqObject = new ViewModels.JqGridObject()
+            return new ViewModels.JqGridObject()
             {
                 TotalPages = 1,
                 CurrentPage = 1,
                 TotalRecords = modelList.Count,
                 Rows = anonList.ToArray()
             };
-
-            return Json(jqObject, JsonRequestBehavior.AllowGet);
         }
 
         private List<ViewModels.Matters.MatterViewModel> GetChildrenList(Guid? id)

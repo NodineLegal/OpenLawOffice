@@ -197,5 +197,27 @@ namespace OpenLawOffice.WebClient.Controllers
 
             return View(viewModel);
         }
+
+        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
+            Permission = Common.Models.PermissionType.List)]
+        public ActionResult Matters(int? id)
+        {
+            List<ViewModels.Matters.MatterViewModel> list;
+            int contactId;
+
+            if (id.HasValue)
+                contactId = id.Value;
+            else
+                contactId = int.Parse(Request["ContactId"]);
+
+            list = new List<ViewModels.Matters.MatterViewModel>();
+            Data.Matters.Matter.ListAllMattersForContact(contactId).ForEach(x =>
+            {
+                list.Add(Mapper.Map<ViewModels.Matters.MatterViewModel>(x));
+            });
+
+            return View(list);
+        }
+
     }
 }

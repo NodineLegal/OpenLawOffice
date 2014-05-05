@@ -827,7 +827,7 @@
     <li>
         <%: Html.ActionLink("Check Conflicts", "Conflicts", new { id = Model.Id }) %></li>
     <li>
-        <%: Html.ActionLink("Matters", "Matters", new { id = Model.Id }) %></li>
+        <%: Html.ActionLink("Matters", "Matters", new { ContactId = Model.Id }) %></li>
     <li>
-        <%: Html.ActionLink("Tasks", "Tasks", new { id = Model.Id }) %></li>
+        <%: Html.ActionLink("Tasks", "Tasks", new { ContactId = Model.Id })%></li>
 </asp:Content>
