@@ -53,4 +53,13 @@
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
+    <li>Actions</li>
+    <ul style="list-style: none outside none; padding-left: 1em;">
+        <li>
+            <%: Html.ActionLink("New Contact", "Create") %></li>
+        <li>
+            <%: Html.ActionLink("New Task", "Create", "Tasks", null, null) %></li>
+    </ul>
+    <li>
+        <%: Html.ActionLink("Contact", "Details", new { id = Request["ContactId"] })%></li>
 </asp:Content>

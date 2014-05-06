@@ -839,4 +839,19 @@
     </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
+    <li>Actions</li>
+    <ul style="list-style: none outside none; padding-left: 1em;">
+        <li>
+            <%: Html.ActionLink("New Contact", "Create") %></li>
+        <li>
+            <%: Html.ActionLink("Details", "Details", new { id = Model.Id })%></li>
+        <li>
+            <%: Html.ActionLink("List", "Index") %></li>
+    </ul>
+    <li>
+        <%: Html.ActionLink("Check Conflicts", "Conflicts", new { id = Model.Id }) %></li>
+    <li>
+        <%: Html.ActionLink("Matters", "Matters", new { ContactId = Model.Id }) %></li>
+    <li>
+        <%: Html.ActionLink("Tasks", "Tasks", new { ContactId = Model.Id })%></li>
 </asp:Content>

@@ -50,4 +50,6 @@
     </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
+    <li>
+        <%: Html.ActionLink("Contact", "Details", new { id = RouteData.Values["Id"].ToString() })%></li>
 </asp:Content>
