@@ -49,8 +49,12 @@ namespace OpenLawOffice.WebClient.Controllers
             Common.Models.Documents.Document model;
             List<Common.Models.Documents.Version> versionList;
             ViewModels.Documents.DocumentViewModel viewModel;
+            Common.Models.Matters.Matter matter;
+            Common.Models.Tasks.Task task;
 
             model = Data.Documents.Document.Get(id);
+            matter = Data.Documents.Document.GetMatter(id);
+            task = Data.Documents.Document.GetTask(id);
 
             viewModel = Mapper.Map<ViewModels.Documents.DocumentViewModel>(model);
             viewModel.Versions = new List<ViewModels.Documents.VersionViewModel>();
@@ -63,6 +67,12 @@ namespace OpenLawOffice.WebClient.Controllers
             });
 
             PopulateCoreDetails(viewModel);
+
+            if (matter != null && matter.Id.HasValue)
+                ViewData["MatterId"] = matter.Id.Value;
+
+            if (task != null && task.Id.HasValue)
+                ViewData["TaskId"] = task.Id.Value;
 
             return View(viewModel);
         }
@@ -145,10 +155,20 @@ namespace OpenLawOffice.WebClient.Controllers
         {
             ViewModels.Documents.DocumentViewModel viewModel;
             Common.Models.Documents.Document model;
+            Common.Models.Matters.Matter matter;
+            Common.Models.Tasks.Task task;
 
             model = OpenLawOffice.Data.Documents.Document.Get(id);
+            matter = Data.Documents.Document.GetMatter(id);
+            task = Data.Documents.Document.GetTask(id);
 
             viewModel = Mapper.Map<ViewModels.Documents.DocumentViewModel>(model);
+
+            if (matter != null && matter.Id.HasValue)
+                ViewData["MatterId"] = matter.Id.Value;
+
+            if (task != null && task.Id.HasValue)
+                ViewData["TaskId"] = task.Id.Value;
 
             return View(viewModel);
         }

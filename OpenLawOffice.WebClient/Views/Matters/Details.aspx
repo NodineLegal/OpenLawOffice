@@ -29,7 +29,7 @@
         (<%: Html.ActionLink("Add", "Create", "Notes", new { controller = "Matters", MatterId = Model.Id }, null)%>)</li>
     <li>
         <%: Html.ActionLink("Documents", "Documents", "Matters", new { id = Model.Id }, null)%>
-        (<%: Html.ActionLink("Add", "AddDocument", new { controller = "Matters", id = Model.Id }) %>)</li>
+        (<%: Html.ActionLink("Add", "Create", "Documents", new { controller = "Matters", MatterId = Model.Id }, null)%>)</li>
     <li>
         <%: Html.ActionLink("Times", "Time", "Matters", new { id = Model.Id }, null)%>
         (<%: Html.ActionLink("Add", "AddTime", new { controller = "Matters", id = Model.Id }) %>)</li>
