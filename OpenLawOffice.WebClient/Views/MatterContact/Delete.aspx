@@ -121,4 +121,12 @@
     </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
+    <li>Actions</li>
+    <ul style="list-style: none outside none; padding-left: 1em;">
+        <li>
+            <%: Html.ActionLink("Edit", "Edit", new { id = Model.Id })%></li>
+        <li>
+            <%: Html.ActionLink("Details", "Details", new { id = Model.Id })%></li>
+    </ul>    
+    <li><%: Html.ActionLink("Contacts of Matter", "Contacts", "Matters", new { id = Model.Matter.Id.Value }, null)%></li>
 </asp:Content>

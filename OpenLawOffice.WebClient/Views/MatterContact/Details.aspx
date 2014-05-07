@@ -12,15 +12,15 @@
                 Matter
             </td>
             <td class="display-field">
-                <%: Model.Matter.Title %>
+                <%: Html.ActionLink(Model.Matter.Title, "Details", "Matters", new { id = Model.Matter.Id.Value }, null) %>
             </td>
         </tr>
         <tr>
             <td class="display-label">
-                User
+                Contact
             </td>
             <td class="display-field">
-                <%: Model.Contact.DisplayName %>
+                <%: Html.ActionLink(Model.Contact.DisplayName, "Details", "Contacts", new { id = Model.Contact.Id.Value }, null)%>
             </td>
         </tr>
         <tr>
@@ -110,4 +110,12 @@
     </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
+    <li>Actions</li>
+    <ul style="list-style: none outside none; padding-left: 1em;">
+        <li>
+            <%: Html.ActionLink("Edit", "Edit", new { id = Model.Id })%></li>
+        <li>
+            <%: Html.ActionLink("Delete", "Delete", new { id = Model.Id })%></li>
+    </ul>    
+    <li><%: Html.ActionLink("Contacts of Matter", "Contacts", "Matters", new { id = Model.Matter.Id.Value }, null)%></li>
 </asp:Content>
