@@ -10,31 +10,30 @@
             <%: Html.ActionLink("New Matter", "Create") %></li>
         <li>
             <%: Html.ActionLink("Details", "Details", new { id = Model.Id })%></li>
-        <li>
-            <%: Html.ActionLink("Delete ", "Delete", new { id = Model.Id })%></li>
+       <%-- <li>
+            <%: Html.ActionLink("Delete ", "Delete", new { id = Model.Id })%></li>--%>
         <li>
             <%: Html.ActionLink("List", "Index") %></li>
     </ul>
     <li>
-        <%: Html.ActionLink("Tags", "Tags", "Matters") %></li>
+        <%: Html.ActionLink("Tags", "Tags", new { id = Model.Id })%></li>
     <li>
-        <%: Html.ActionLink("Responsible Users", "Users", "Matters")%></li>
+        <%: Html.ActionLink("Responsible Users", "ResponsibleUsers", new { id = Model.Id })%></li>
     <li>
-        <%: Html.ActionLink("Contacts", "Contacts", "Matters")%></li>
+        <%: Html.ActionLink("Contacts", "Contacts", new { id = Model.Id })%></li>
     <li>
-        <%: Html.ActionLink("Tasks", "Tasks", "Matters")%>
-        (<%: Html.ActionLink("Add", "AddTask", new { controller = "Matters", id = Model.Id }) %>)</li>
+        <%: Html.ActionLink("Tasks", "Tasks", "Matters", new { id = Model.Id }, null)%>
+        (<%: Html.ActionLink("Add", "Create", "Tasks", new { controller = "Matters", MatterId = Model.Id }, null)%>)</li>
     <li>
-        <%: Html.ActionLink("Notes", "Notes", "Matters")%>
-        (<%: Html.ActionLink("Add", "AddNote", new { controller = "Matters", id = Model.Id }) %>)</li>
+        <%: Html.ActionLink("Notes", "Notes", "Matters", new { id = Model.Id }, null)%>
+        (<%: Html.ActionLink("Add", "Create", "Notes", new { controller = "Matters", MatterId = Model.Id }, null)%>)</li>
     <li>
-        <%: Html.ActionLink("Documents", "Documents", "Matters")%>
-        (<%: Html.ActionLink("Add", "AddDocument", new { controller = "Matters", id = Model.Id }) %>)</li>
+        <%: Html.ActionLink("Documents", "Documents", "Matters", new { id = Model.Id }, null)%>
+        (<%: Html.ActionLink("Add", "Create", "Documents", new { controller = "Matters", MatterId = Model.Id }, null)%>)</li>
     <li>
-        <%: Html.ActionLink("Time", "Time", "Matters")%>
-        (<%: Html.ActionLink("Add", "AddTime", new { controller = "Matters", id = Model.Id }) %>)</li>
-    <li>
-        <%: Html.ActionLink("Permissions", "Acls", "Matters")%></li>
+        <%: Html.ActionLink("Times", "Time", "Matters", new { id = Model.Id }, null)%></li>
+    <%--<li>
+        <%: Html.ActionLink("Permissions", "Acls", "Matters")%></li>--%>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" runat="server">
     <script type="text/javascript" src="../../Scripts/jqGrid-4.6.0/grid.locale-en.js"></script>

@@ -9,7 +9,7 @@
     <% foreach (var task in Model.Tasks)
        { %>
     <h4>
-        <%: task.Title%></h4>
+        <%: Html.ActionLink(task.Title, "Details", "Tasks", new { id = task.Id }, null) %></h4>
     <% double totalMinutes = 0; %>
     <table class="listing_table">
         <tr>
@@ -43,7 +43,7 @@
                 min.
             </td>
             <td>
-                <%: item.Worker.DisplayName%>
+                <%: Html.ActionLink(item.Worker.DisplayName, "Details", "Contacts", new { id = item.Worker.Id.Value }, null) %>
             </td>
             <td>
                 <%: Html.ActionLink("Edit", "Edit", "Timing", new { id = item.Id.Value }, new { @class = "btn-edit", title = "Edit" })%>
@@ -71,6 +71,7 @@
         Time entries express durations of time spent on a particular task of a matter.  This page shows all the
         tasks of this matter and the time entries for each of those tasks.<br /><br />
         <span style="font-weight: bold; text-decoration: underline;">Usage:</span> 
+        Clicking the Worker will show the details of the contact that did the work.
         Clicking the <img src="../../Content/fugue-icons-3.5.6/icons-shadowless/alarm-clock-select.png" /> (time entry icon) 
         will show the details of the time entry.  Click the 
         <img src="../../Content/fugue-icons-3.5.6/icons-shadowless/pencil.png" /> (edit icon) to make changes to the time entry.
@@ -78,4 +79,6 @@
     </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
+    <li>
+        <%: Html.ActionLink("Matter", "Details", "Matters", new { Id = RouteData.Values["Id"].ToString() }, null)%></li>
 </asp:Content>

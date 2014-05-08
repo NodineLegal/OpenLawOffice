@@ -36,8 +36,10 @@ namespace OpenLawOffice.WebClient.Controllers
             Common.Models.Matters.MatterTag model;
 
             model = Data.Matters.MatterTag.Get(id);
+            model.Matter = Data.Matters.Matter.Get(model.Matter.Id.Value);
 
             viewModel = Mapper.Map<ViewModels.Matters.MatterTagViewModel>(model);
+            viewModel.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(model.Matter);
 
             PopulateCoreDetails(viewModel);
 

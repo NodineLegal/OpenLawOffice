@@ -10,8 +10,8 @@
             <%: Html.ActionLink("New Matter", "Create") %></li>
         <li>
             <%: Html.ActionLink("Edit", "Edit", new { id = Model.Id })%></li>
-        <li>
-            <%: Html.ActionLink("Delete ", "Delete", new { id = Model.Id })%></li>
+       <%-- <li>
+            <%: Html.ActionLink("Delete ", "Delete", new { id = Model.Id })%></li>--%>
         <li>
             <%: Html.ActionLink("List", "Index") %></li>
     </ul>
@@ -31,10 +31,9 @@
         <%: Html.ActionLink("Documents", "Documents", "Matters", new { id = Model.Id }, null)%>
         (<%: Html.ActionLink("Add", "Create", "Documents", new { controller = "Matters", MatterId = Model.Id }, null)%>)</li>
     <li>
-        <%: Html.ActionLink("Times", "Time", "Matters", new { id = Model.Id }, null)%>
-        (<%: Html.ActionLink("Add", "AddTime", new { controller = "Matters", id = Model.Id }) %>)</li>
-    <li>
-        <%: Html.ActionLink("Permissions", "Acls", "Matters")%></li>
+        <%: Html.ActionLink("Times", "Time", "Matters", new { id = Model.Id }, null)%></li>
+    <%--<li>
+        <%: Html.ActionLink("Permissions", "Acls", "Matters")%></li>--%>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" runat="server">
     <h2>

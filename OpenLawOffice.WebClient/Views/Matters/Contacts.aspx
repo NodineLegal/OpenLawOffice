@@ -55,7 +55,6 @@
             <%: Html.ActionLink("New Contact", "Create", "Contacts", new { MatterId = RouteData.Values["Id"].ToString() }, null)%></li>
         <li>
             <%: Html.ActionLink("Assign Contact", "SelectContactToAssign", "MatterContact", new { id = RouteData.Values["Id"].ToString() }, null)%></li>
-        <li>
-            <%: Html.ActionLink("Matter", "Details", "Matters", new { Id = RouteData.Values["Id"].ToString() }, null)%></li>
     </ul>
+    <li><%: Html.ActionLink("Matter", "Details", "Matters", new { Id = RouteData.Values["Id"].ToString() }, null)%></li>
 </asp:Content>

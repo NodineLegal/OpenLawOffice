@@ -57,7 +57,7 @@
     <ul style="list-style: none outside none; padding-left: 1em;">
         <li>
             <%: Html.ActionLink("New Note", "Create", "Notes", new { MatterId = RouteData.Values["Id"].ToString() }, null)%></li>
-        <li>
-            <%: Html.ActionLink("Matter", "Details", "Matters", new { Id  = RouteData.Values["Id"].ToString() }, null)%></li>
     </ul>
+    <li>
+        <%: Html.ActionLink("Matter", "Details", "Matters", new { Id  = RouteData.Values["Id"].ToString() }, null)%></li>
 </asp:Content>
