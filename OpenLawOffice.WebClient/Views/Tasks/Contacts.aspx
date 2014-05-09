@@ -52,10 +52,10 @@
     <li>Actions</li>
     <ul style="list-style: none outside none; padding-left: 1em;">
         <li>
-            <%: Html.ActionLink("New Contact", "Create", "TaskAssignedContacts", new { TaskId = RouteData.Values["Id"].ToString() }, null)%></li>
+            <%: Html.ActionLink("New Contact", "SelectContactToAssign", "TaskAssignedContacts", new { TaskId = RouteData.Values["Id"].ToString() }, null)%></li>
         <li>
             <%: Html.ActionLink("Assign Contact", "SelectContactToAssign", "TaskAssignedContacts", new { id = RouteData.Values["Id"].ToString() }, null)%></li>
-        <li>
-            <%: Html.ActionLink("Task", "Details", "Tasks", new { Id = RouteData.Values["Id"].ToString() }, null)%></li>
     </ul>
+    <li>
+        <%: Html.ActionLink("Task", "Details", "Tasks", new { Id = RouteData.Values["Id"].ToString() }, null)%></li>
 </asp:Content>

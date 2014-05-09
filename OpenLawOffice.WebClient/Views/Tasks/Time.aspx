@@ -39,7 +39,7 @@
                 min.
             </td>
             <td>
-                <%: item.Worker.DisplayName %>
+                <%: Html.ActionLink(item.Worker.DisplayName, "Details", "Contacts", new { id = item.Worker.Id }, null) %>
             </td>
             <td>
                 <%: Html.ActionLink("Edit", "Edit", "Timing", new { id = item.Id.Value }, new { @class = "btn-edit", title = "Edit" })%>
@@ -77,7 +77,7 @@
     <ul style="list-style: none outside none; padding-left: 1em;">
         <li>
             <%: Html.ActionLink("New Entry", "SelectContactToAssign", "TaskTime", new { TaskId = RouteData.Values["Id"].ToString() }, null)%></li>
+    </ul>
         <li>
             <%: Html.ActionLink("Task", "Details", "Tasks", new { Id = RouteData.Values["Id"].ToString() }, null)%></li>
-    </ul>
 </asp:Content>

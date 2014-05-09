@@ -191,9 +191,9 @@
             <%: Html.ActionLink("New Task", "Create", new { MatterId = ViewData["MatterId"] })%></li>
         <li>
             <%: Html.ActionLink("Edit", "Edit", new { id = Model.Id })%></li>
-        <li>
-            <%: Html.ActionLink("Matter ", "Details", "Matters", new { id = ViewData["MatterId"] }, null)%></li>
     </ul>
+    <li>
+        <%: Html.ActionLink("Matter ", "Details", "Matters", new { id = ViewData["MatterId"] }, null)%></li>
     <li>
         <%: Html.ActionLink("Tags", "Tags", "Tasks", new { id = Model.Id }, null)%></li>
     <li>

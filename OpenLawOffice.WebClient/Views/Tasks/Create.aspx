@@ -149,12 +149,9 @@
         </p>
     </div>
 </asp:Content>
-<asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
-    <li>Actions</li>
-    <ul style="list-style: none outside none; padding-left: 1em;">
-        <li>
-            <%: Html.ActionLink("Matter ", "Details", "Matters", new { id = ViewData["MatterId"] }, null)%></li>
-    </ul>
+<asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">    
     <li>
-        <%: Html.ActionLink("Tasks", "Tasks", "Matters", new { id = ViewData["MatterId"] }, null) %></li>
+        <%: Html.ActionLink("Matter ", "Details", "Matters", new { id = ViewData["MatterId"] }, null)%></li>
+    <li>
+        <%: Html.ActionLink("Tasks of Matter", "Tasks", "Matters", new { id = ViewData["MatterId"] }, null) %></li>
 </asp:Content>
