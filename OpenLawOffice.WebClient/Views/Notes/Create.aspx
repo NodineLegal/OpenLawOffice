@@ -44,4 +44,14 @@
     </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
+<% if (Request["MatterId"] != null)
+    { %>
+    <li><%: Html.ActionLink("Matter", "Details", "Matters", new { id = Request["MatterId"] }, null)%></li>
+    <li><%: Html.ActionLink("Notes of Matter", "Notes", "Matters", new { id = Request["MatterId"] }, null) %></li>
+<%  }
+    if (Request["TaskId"] != null)
+    { %>
+    <li><%: Html.ActionLink("Task", "Details", "Tasks", new { id = Request["TaskId"] }, null)%></li>
+    <li><%: Html.ActionLink("Notes of Task", "Notes", "Tasks", new { id = Request["TaskId"] }, null)%></li>
+<%  } %>
 </asp:Content>

@@ -23,7 +23,7 @@
                 Matter
             </td>
             <td class="display-field">
-                <%: Model.Matter.Title %>
+                <%: Html.ActionLink(Model.Matter.Title, "Details", "Matters", new { id = Model.Matter.Id }, null)  %>
             </td>
         </tr>
         <tr>
@@ -69,6 +69,8 @@
         <li>
             <%: Html.ActionLink("Details", "Details", new { id = Model.Id })%></li>
         <li>
-            <%: Html.ActionLink("List", "ResponsibleUsers", "Matters", new { id = Model.Matter.Id }, null)%></li>
+            <%: Html.ActionLink("Delete ", "Delete", new { id = Model.Id })%></li>
     </ul>
+    <li>
+        <%: Html.ActionLink("Responsible User List", "ResponsibleUsers", "Matters", new { id = Model.Matter.Id }, null)%></li>
 </asp:Content>

@@ -39,6 +39,24 @@ namespace OpenLawOffice.Data.Notes
                 new { id = id });
         }
 
+        public static Common.Models.Matters.Matter GetMatter(Guid noteId)
+        {
+            return DataHelper.Get<Common.Models.Matters.Matter, DBOs.Matters.Matter>(
+                "SELECT * FROM \"matter\" WHERE \"id\" IN (SELECT \"matter_id\" FROM " +
+                "\"note_matter\" WHERE \"note_id\"=@NoteId AND \"utc_disabled\" is null) " +
+                "AND \"matter\".\"utc_disabled\" is null",
+                new { NoteId = noteId });
+        }
+
+        public static Common.Models.Tasks.Task GetTask(Guid noteId)
+        {
+            return DataHelper.Get<Common.Models.Tasks.Task, DBOs.Tasks.Task>(
+                "SELECT * FROM \"task\" WHERE \"id\" IN (SELECT \"task_id\" FROM " +
+                "\"note_task\" WHERE \"note_id\"=@NoteId AND \"utc_disabled\" is null) " +
+                "AND \"task\".\"utc_disabled\" is null",
+                new { NoteId = noteId });
+        }
+
         public static List<Common.Models.Notes.Note> ListForMatter(Guid matterId)
         {
             return DataHelper.List<Common.Models.Notes.Note, DBOs.Notes.Note>(

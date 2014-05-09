@@ -136,7 +136,7 @@
             <%: Html.ActionLink("Edit", "Edit", new { id = Model.Id })%></li>
         <li>
             <%: Html.ActionLink("Details ", "Details", new { id = Model.Id })%></li>
-        <li>
-            <%: Html.ActionLink("List", "Index") %></li>
     </ul>
+    <li>
+        <%: Html.ActionLink("Responsible User List", "ResponsibleUsers", "Matters", new { id = Model.Matter.Id }, null)%></li>
 </asp:Content>

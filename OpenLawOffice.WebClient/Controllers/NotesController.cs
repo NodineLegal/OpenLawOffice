@@ -67,11 +67,20 @@ namespace OpenLawOffice.WebClient.Controllers
         public ActionResult Edit(Guid id)
         {
             Common.Models.Notes.Note model;
+            Common.Models.Matters.Matter matter;
+            Common.Models.Tasks.Task task;
             ViewModels.Notes.NoteViewModel viewModel;
 
             model = Data.Notes.Note.Get(id);
+            matter = Data.Notes.Note.GetMatter(id);
+            task = Data.Notes.Note.GetTask(id);
 
             viewModel = Mapper.Map<ViewModels.Notes.NoteViewModel>(model);
+
+            if (matter != null)
+                ViewData["MatterId"] = matter.Id.Value;
+            if (task != null)
+                ViewData["TaskId"] = task.Id.Value;
 
             return View(viewModel);
         }

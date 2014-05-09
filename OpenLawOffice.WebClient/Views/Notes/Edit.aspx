@@ -52,4 +52,26 @@
     </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
+    <li>Actions</li>
+    <ul style="list-style: none outside none; padding-left: 1em;">
+        <li>
+            <%: Html.ActionLink("New Note", "Create", new { MatterId = ViewData["MatterId"], TaskId = ViewData["TaskId"] })%></li>
+        <li>
+            <%: Html.ActionLink("Edit", "Edit", new { id = Model.Id })%></li>
+    </ul>
+        <% if (ViewData["MatterId"] != null)
+           { %>
+    
+    <li>
+        <%: Html.ActionLink("Matter", "Details", "Matters", new { id = ViewData["MatterId"] }, null)%></li>
+    <li>
+        <%: Html.ActionLink("Notes of Matter", "Notes", "Matters", new { id = ViewData["MatterId"] }, null)%></li>
+    <% }
+           else if (ViewData["TaskId"] != null)
+           { %>
+    <li>
+        <%: Html.ActionLink("Task", "Details", "Tasks", new { id = ViewData["TaskId"] }, null)%></li>
+    <li>
+        <%: Html.ActionLink("Notes of Task", "Notes", "Tasks", new { id = ViewData["TaskId"] }, null)%></li>
+    <% } %>
 </asp:Content>
