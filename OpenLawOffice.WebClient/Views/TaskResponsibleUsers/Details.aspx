@@ -20,7 +20,7 @@
                 Task
             </td>
             <td class="display-field">
-                <%: Model.Task.Title %>
+                <%: Html.ActionLink(Model.Task.Title, "Details", "Tasks", new { id = Model.Task.Id }, null)%>
             </td>
         </tr>
         <tr>
@@ -28,7 +28,7 @@
                 User
             </td>
             <td class="display-field">
-                <%: Model.User.Username %>
+                <%: Html.ActionLink(Model.User.Username, "Details", "Users", new { id = Model.User.Id }, null) %>
             </td>
         </tr>
         <tr>
@@ -126,7 +126,7 @@
             <%: Html.ActionLink("Edit", "Edit", new { id = Model.Id })%></li>
         <li>
             <%: Html.ActionLink("Delete ", "Delete", new { id = Model.Id })%></li>
-        <li>
-            <%: Html.ActionLink("List", "ResponsibleUsers", "Tasks", new { id = Model.Task.Id }, null)%></li>
     </ul>
+    <li>
+        <%: Html.ActionLink("Responsible User List", "ResponsibleUsers", "Tasks", new { id = Model.Task.Id }, null)%></li>
 </asp:Content>

@@ -12,7 +12,7 @@
                 Task
             </td>
             <td class="display-field">
-                <%: Model.Task.Title %>
+                <%: Html.ActionLink(Model.Task.Title, "Details", "Tasks", new { id = Model.Task.Id }, null) %>
             </td>
         </tr>
         <tr>
@@ -20,7 +20,7 @@
                 User
             </td>
             <td class="display-field">
-                <%: Model.Contact.DisplayName %>
+                <%: Html.ActionLink(Model.Contact.DisplayName, "Details", "Contacts", new { id = Model.Contact.Id }, null)%>
             </td>
         </tr>
         <tr>
@@ -113,10 +113,12 @@
     <li>Actions</li>
     <ul style="list-style: none outside none; padding-left: 1em;">
         <li>
-            <%: Html.ActionLink("Edit", "Edit", new { id = Model.Id })%></li>
+            <%: Html.ActionLink("New Contact", "Create", "Contacts")%></li>
         <li>
-            <%: Html.ActionLink("Delete ", "Delete", new { id = Model.Id })%></li>
+            <%: Html.ActionLink("Edit", "Edit", "TaskAssignedContacts", new { id = RouteData.Values["Id"] }, null)%></li>
         <li>
-            <%: Html.ActionLink("List", "Contacts", "Tasks", new { id = Model.Task.Id }, null)%></li>
+            <%: Html.ActionLink("Delete", "Delete", "TaskAssignedContacts", new { id = RouteData.Values["Id"] }, null)%></li>
     </ul>
+    <li><%: Html.ActionLink("Task", "Details", "Tasks", new { id = Model.Task.Id }, null)%></li>
+    <li><%: Html.ActionLink("Contacts of Task", "Contacts", "Tasks", new { id = Model.Task.Id }, null)%></li>
 </asp:Content>

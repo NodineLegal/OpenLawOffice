@@ -16,7 +16,7 @@
             </td>
             <td class="display-field">
                 <%: Html.HiddenFor(model => model.Matter.Id)%>
-                <%: Model.Matter.Title %>
+                <%: Html.ActionLink(Model.Matter.Title, "Details", "Matters", new { id = Model.Matter.Id }, null)%>
             </td>
         </tr>
         <tr>
@@ -25,7 +25,7 @@
             </td>
             <td class="display-field">
                 <%: Html.HiddenFor(model => model.Contact.Id) %>
-                <%: Model.Contact.DisplayName %>
+                <%: Html.ActionLink(Model.Contact.DisplayName, "Details", "Contacts", new { id = Model.Contact.Id }, null)%>
             </td>
         </tr>
         <tr>

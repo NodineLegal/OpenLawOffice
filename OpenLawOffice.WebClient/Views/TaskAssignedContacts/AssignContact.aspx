@@ -17,7 +17,7 @@
             </td>
             <td class="display-field">
                 <%: Html.HiddenFor(model => model.Task.Id)%>
-                <%: Model.Task.Title%>
+                <%: Html.ActionLink(Model.Task.Title, "Details", "Tasks", new { id = Model.Task.Id }, null) %>
             </td>
         </tr>
         <tr>
@@ -26,7 +26,7 @@
             </td>
             <td class="display-field">
                 <%: Html.HiddenFor(model => model.Contact.Id) %>
-                <%: Model.Contact.DisplayName %>
+                <%: Html.ActionLink(Model.Contact.DisplayName, "Details", "Contacts", new { id = Model.Contact.Id }, null)%>
             </td>
         </tr>
         <tr>
@@ -56,4 +56,11 @@
     </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
+    <li>Actions</li>
+    <ul style="list-style: none outside none; padding-left: 1em;">
+        <li>
+            <%: Html.ActionLink("New Contact", "Create", "Contacts")%></li>
+    </ul>
+    <li><%: Html.ActionLink("Task", "Details", "Tasks", new { id = Request["TaskId"] }, null) %></li>
+    <li><%: Html.ActionLink("Contacts of Task", "Contacts", "Tasks", new { id = Request["TaskId"] }, null)%></li>
 </asp:Content>

@@ -16,12 +16,12 @@
                 Matter
             </td>
             <td class="display-field">
-                <%: Model.Task.Title %>
+                <%: Html.ActionLink(Model.Task.Title, "Details", "Tasks", new { id = Model.Task.Id }, null)%>
             </td>
         </tr>
         <tr>
             <td class="display-label">
-                User
+                User<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
                 <%: Html.DropDownListFor(x => x.User.Id,
@@ -54,4 +54,6 @@
     </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
+    <li>
+        <%: Html.ActionLink("Responsible User List", "ResponsibleUsers", "Tasks", new { id = Model.Task.Id }, null)%></li>
 </asp:Content>
