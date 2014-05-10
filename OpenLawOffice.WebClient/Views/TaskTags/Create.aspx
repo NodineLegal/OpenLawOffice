@@ -72,9 +72,6 @@
     </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
-    <li>Actions</li>
-    <ul style="list-style: none outside none; padding-left: 1em;">
-        <li>
-            <%: Html.ActionLink("List", "Tags", "Tasks", new { id = Request["Id"] }, null)%></li>
-    </ul>
+    <li>
+        <%: Html.ActionLink("Task Tags", "Tags", "Tasks", new { id = RouteData.Values["Id"] }, null)%></li>
 </asp:Content>

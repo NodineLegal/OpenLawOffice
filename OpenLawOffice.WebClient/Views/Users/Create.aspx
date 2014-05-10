@@ -44,9 +44,6 @@
     </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
-    <li>Actions</li>
-    <ul style="list-style: none outside none; padding-left: 1em;">
-        <li>
-            <%: Html.ActionLink("List", "Index") %></li>
-    </ul>
+    <li>
+        <%: Html.ActionLink("User List", "Index") %></li>
 </asp:Content>

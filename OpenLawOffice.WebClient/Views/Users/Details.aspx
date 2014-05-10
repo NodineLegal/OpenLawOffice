@@ -80,7 +80,7 @@
             <%: Html.ActionLink("Edit", "Edit", new { id = Model.Id })%></li>
         <li>
             <%: Html.ActionLink("Disable ", "Disable", new { id = Model.Id })%></li>
-        <li>
-            <%: Html.ActionLink("List", "Index") %></li>
     </ul>
+    <li>
+        <%: Html.ActionLink("User List", "Index") %></li>
 </asp:Content>

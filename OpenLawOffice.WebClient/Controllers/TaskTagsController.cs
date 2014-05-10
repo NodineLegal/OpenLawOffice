@@ -36,8 +36,10 @@ namespace OpenLawOffice.WebClient.Controllers
             Common.Models.Tasks.TaskTag model;
 
             model = Data.Tasks.TaskTag.Get(id);
+            model.Task = Data.Tasks.Task.Get(model.Task.Id.Value);
 
             viewModel = Mapper.Map<ViewModels.Tasks.TaskTagViewModel>(model);
+            viewModel.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(model.Task);
 
             PopulateCoreDetails(viewModel);
 

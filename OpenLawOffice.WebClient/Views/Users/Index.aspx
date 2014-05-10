@@ -11,7 +11,7 @@
             <th>
                 Username
             </th>
-            <th style="width: 40px;">
+            <th style="width: 20px;">
             </th>
         </tr>
         <% foreach (var item in Model)

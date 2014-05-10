@@ -45,7 +45,7 @@
                 Worker
             </td>
             <td class="display-field">
-                <%: Model.Worker.DisplayName %>
+                <%: Html.ActionLink(Model.Worker.DisplayName, "Details", "Contacts", new { id = Model.Worker.Id }, null) %>
             </td>
         </tr>
     </table>
@@ -132,12 +132,12 @@
     <ul style="list-style: none outside none; padding-left: 1em;">
         <li>
             <%: Html.ActionLink("Edit", "Edit", new { id = Model.Id })%></li>
-        <li>
-            <%: Html.ActionLink("Delete ", "Delete", new { id = Model.Id })%></li>
-        <% if (ViewData["TaskId"] != null)
-           { %>
-        <li>
-            <%: Html.ActionLink("Task ", "Details", "Tasks", new { id = ViewData["TaskId"] }, null)%></li>
-        <% } %>
     </ul>
+    <% if (ViewData["TaskId"] != null)
+        { %>
+    <li>
+        <%: Html.ActionLink("Task ", "Details", "Tasks", new { id = ViewData["TaskId"] }, null)%></li>
+    <li>
+        <%: Html.ActionLink("Times for Task", "Time", "Tasks", new { id = ViewData["TaskId"] }, null)%></li>
+    <% } %>
 </asp:Content>
