@@ -43,4 +43,6 @@
     </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
+    <li>
+        <%: Html.ActionLink("Document", "Details", "Documents", new { id = Request["DocumentId"] }, null)%></li>
 </asp:Content>

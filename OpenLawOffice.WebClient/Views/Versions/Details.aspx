@@ -20,7 +20,7 @@
                 Document
             </td>
             <td class="display-field">
-                <%: Model.Document.Title %>
+                <%: Html.ActionLink(Model.Document.Title, "Details", "Documents", new { id = Model.Document.Id }, null) %>
             </td>
         </tr>
         <tr>
@@ -60,7 +60,7 @@
                 Size
             </td>
             <td class="display-field">
-                <%: Model.Size %>
+                <%: Model.Size %> bytes
             </td>
         </tr>
         <tr>
@@ -150,4 +150,6 @@
     </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
+    <li>
+        <%: Html.ActionLink("Document", "Details", "Documents", new { id = Model.Document.Id }, null)%></li>
 </asp:Content>
