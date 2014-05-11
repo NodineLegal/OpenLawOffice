@@ -36,6 +36,8 @@ namespace OpenLawOffice.Data
 
         public string PreviousVersionsPath { get { return _settings.PreviousVersionsPath; } }
 
+        public string TempPath { get { return _settings.TempPath; } }
+
         public FileStorage()
         {
             _settings = FileStorageSettings.Load();

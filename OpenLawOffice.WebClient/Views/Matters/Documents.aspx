@@ -1,20 +1,61 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<IEnumerable<OpenLawOffice.WebClient.ViewModels.Documents.DocumentViewModel>>" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<IEnumerable<OpenLawOffice.WebClient.ViewModels.Documents.SelectableDocumentViewModel>>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
     Documents of Matter
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <h2>Documents of Matter<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
+    <div style="width: 70px; padding-bottom: 5px;">
+        <a id="SelectAll" href="javascript:void(0);">Select All</a><br />
+        <a id="DeselectAll" href="javascript:void(0);">Deselect All</a>
+<script language="javascript">
+
+    $(function () {    
+        var cbs = [];
+
+        <% 
+        foreach (var item in Model)
+        { %>
+            <%= "cbs.push('" + item.Id + "');" %>
+          <%
+        }
+        %>
+
+        $("#SelectAll").click(function () {
+            for (var i = 0; i < cbs.length; i++)
+            {
+                $("#CB_" + cbs[i]).prop('checked', true);
+            }
+        });
+
+        $("#DeselectAll").click(function () {
+            for (var i = 0; i < cbs.length; i++)
+            {
+                $("#CB_" + cbs[i]).prop('checked', false);
+            }
+        });
+    });
+</script>
+    </div>
+
+    <% using (Html.BeginForm())
+       {%>
+    <%: Html.ValidationSummary(true) %>
     <table class="listing_table">
         <tr>
+            <th style="text-align: center; width: 20px;" />
             <th style="text-align: center;">Title</th>
             <th style="text-align: center;">Task</th>
-            <th style="width: 50px;">
+            <th style="width: 40px;">
             </th>
         </tr>
-        <% foreach (var item in Model)
+        <% 
+           foreach (var item in Model)
            { %>
         <tr>
+            <td>
+                <input type="checkbox" id="CB_<%: item.Id.Value %>" name="CB_<%: item.Id.Value %>" />
+            </td>
             <td>
                 <%: Html.ActionLink(item.Title, "Details", "Documents", new { id = item.Id }, null)%>
             </td>
@@ -31,6 +72,11 @@
         </tr>
         <% } %>
     </table>
+
+    <input type="submit" value="Download all Selected" style="margin-top: 5px;" />
+    
+    <% } %>
+
     <div id="pageInfoDialog" title="Help">
         <p>
         <span style="font-weight: bold; text-decoration: underline;">Info:</span>

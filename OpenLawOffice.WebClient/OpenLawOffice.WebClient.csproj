@@ -45,6 +45,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
     </Reference>
+    <Reference Include="Ionic.Zip">
+      <HintPath>packages\DotNetZip.1.9.2\lib\net20\Ionic.Zip.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Mono.Security, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -88,6 +91,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ContactsController.cs" />
+    <Compile Include="Controllers\DeletingFileResult.cs" />
     <Compile Include="Controllers\DocumentsController.cs" />
     <Compile Include="Controllers\ErrorsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -127,6 +131,7 @@
     <Compile Include="ViewModels\CoreViewModel.cs" />
     <Compile Include="ViewModels\DateOnlyViewModelBase.cs" />
     <Compile Include="ViewModels\Documents\DocumentViewModel.cs" />
+    <Compile Include="ViewModels\Documents\SelectableDocumentViewModel.cs" />
     <Compile Include="ViewModels\Documents\VersionViewModel.cs" />
     <Compile Include="ViewModels\Home\DashboardViewModel.cs" />
     <Compile Include="ViewModels\JqGridObject.cs" />

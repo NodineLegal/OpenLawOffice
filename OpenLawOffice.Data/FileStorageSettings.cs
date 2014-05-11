@@ -42,6 +42,13 @@ namespace OpenLawOffice.Data
             set { this["previousVersionsPath"] = value; }
         }
 
+        [ConfigurationProperty("tempPath", IsRequired = true)]
+        public string TempPath
+        {
+            get { return (string)this["tempPath"]; }
+            set { this["tempPath"] = value; }
+        }
+
         public static FileStorageSettings Load()
         {
             return (FileStorageSettings)System.Configuration.ConfigurationManager.GetSection("fileStorageSettings");

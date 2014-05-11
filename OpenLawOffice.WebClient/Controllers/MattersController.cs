@@ -25,6 +25,7 @@ namespace OpenLawOffice.WebClient.Controllers
     using System.Collections.Generic;
     using System.Web.Mvc;
     using AutoMapper;
+    using Ionic.Zip;
 
     [HandleError(View = "Errors/Index", Order = 10)]
     public class MattersController : BaseController
@@ -322,14 +323,14 @@ namespace OpenLawOffice.WebClient.Controllers
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Documents(Guid id)
         {
-            ViewModels.Documents.DocumentViewModel viewModel;
-            List<ViewModels.Documents.DocumentViewModel> viewModelList;
+            ViewModels.Documents.SelectableDocumentViewModel viewModel;
+            List<ViewModels.Documents.SelectableDocumentViewModel> viewModelList;
 
-            viewModelList = new List<ViewModels.Documents.DocumentViewModel>();
+            viewModelList = new List<ViewModels.Documents.SelectableDocumentViewModel>();
 
             Data.Documents.Document.ListForMatter(id).ForEach(x =>
             {
-                viewModel = Mapper.Map<ViewModels.Documents.DocumentViewModel>(x);
+                viewModel = Mapper.Map<ViewModels.Documents.SelectableDocumentViewModel>(x);
 
                 viewModel.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(Data.Documents.Document.GetTask(x.Id.Value));
 
@@ -337,6 +338,78 @@ namespace OpenLawOffice.WebClient.Controllers
             });
 
             return View(viewModelList);
+        }
+
+        [SecurityFilter(SecurityAreaName = "Documents", IsSecuredResource = false,
+            Permission = Common.Models.PermissionType.List)]
+        [HttpPost]
+        public ActionResult Documents(Guid id, List<ViewModels.Documents.SelectableDocumentViewModel> viewModelListNull)
+        {
+            string zipTitle;
+            int inc = 0;
+            string path;
+            Guid temp;
+            List<Common.Models.Documents.Document> documents;
+            Common.Models.Matters.Matter matter;
+            Common.Models.Documents.Version version;
+            ViewModels.Documents.SelectableDocumentViewModel viewModel;
+            List<ViewModels.Documents.SelectableDocumentViewModel> viewModelList;
+
+            viewModelList = new List<ViewModels.Documents.SelectableDocumentViewModel>();
+
+            matter = Data.Matters.Matter.Get(id);
+
+            documents = Data.Documents.Document.ListForMatter(id);
+
+            using (ZipFile zip = new ZipFile())
+            {
+                //zip.CompressionLevel = Ionic.Zlib.CompressionLevel.BestCompression;
+                documents.ForEach(x =>
+                {
+                    version = Data.Documents.Document.GetCurrentVersion(x.Id.Value);
+
+                    viewModel = Mapper.Map<ViewModels.Documents.SelectableDocumentViewModel>(x);
+
+                    viewModel.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(Data.Documents.Document.GetTask(x.Id.Value));
+
+                    viewModelList.Add(viewModel);
+
+                    if (Request["CB_" + x.Id.Value.ToString()] == "on")
+                    {
+
+                        path = Data.FileStorage.Instance.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension);
+
+                        zipTitle = x.Title + "." + version.Extension;
+
+                        if (zip[zipTitle] != null)
+                        {
+                            inc = 1;
+                            zipTitle = x.Title + " (" + inc.ToString() + ")" + "." + version.Extension;
+                            while (zip[zipTitle] != null)
+                            {
+                                inc++;
+                                zipTitle = x.Title + " (" + inc.ToString() + ")" + "." + version.Extension;
+                            }
+                        }
+
+                        ZipEntry ze = zip.AddFile(path, "");
+                        ze.FileName = zipTitle;
+                    }
+                });
+
+                if (!System.IO.Directory.Exists(Data.FileStorage.Instance.TempPath))
+                    System.IO.Directory.CreateDirectory(Data.FileStorage.Instance.TempPath);
+
+                temp = Guid.NewGuid();
+
+                if (zip.Count > 0)
+                    zip.Save(Data.FileStorage.Instance.TempPath + temp.ToString() + ".zip");
+                else
+                    return View(viewModelList);
+            }
+
+
+            return new DeletingFileResult(Data.FileStorage.Instance.TempPath + temp.ToString() + ".zip", matter.Title + ".zip");
         }
 
         [SecurityFilter(SecurityAreaName = "Timing", IsSecuredResource = false,
