@@ -25,6 +25,7 @@ namespace OpenLawOffice.WebClient.Controllers
     using System.Collections.Generic;
     using System.Web.Mvc;
     using AutoMapper;
+    using System.Configuration;
 
     [HandleError(View = "Errors/Index", Order = 10)]
     public class TasksController : BaseController
@@ -300,6 +301,106 @@ namespace OpenLawOffice.WebClient.Controllers
             Data.Tasks.Task.RelateMatter(model, matterid, currentUser);
 
             return RedirectToAction("Details", new { Id = model.Id });
+        }
+
+        public ActionResult TodoListForUser(int? id)
+        {
+            DateTime? start = null;
+            DateTime? stop = null;
+            List<dynamic> jsonList;
+            Common.Models.Security.User user;
+            List<Common.Models.Settings.TagFilter> tagFilter;
+            if (Request["start"] != null)
+                start = Common.Utilities.UnixTimeStampToDateTime(double.Parse(Request["start"]));
+            if (Request["stop"] != null)
+                stop = Common.Utilities.UnixTimeStampToDateTime(double.Parse(Request["stop"]));
+
+            if (!id.HasValue)
+            {
+                if (string.IsNullOrEmpty(Request["UserId"]))
+                    return null;
+                else
+                    id = int.Parse(Request["UserId"]);
+            }
+
+            user = Data.Security.User.Get(id.Value);
+
+            tagFilter = Data.Settings.UserTaskSettings.ListTagFiltersFor(user);
+
+            jsonList = new List<dynamic>();
+
+            Data.Tasks.Task.GetTodoListFor(user, tagFilter, start, stop).ForEach(x =>
+            {
+                if (x.DueDate.HasValue)
+                {
+                    jsonList.Add(new
+                    {
+                        id = x.Id.Value,
+                        title = x.Title,
+                        allDay = true,
+                        start = Common.Utilities.DateTimeToUnixTimestamp(x.DueDate.Value.ToLocalTime()),
+                        description = x.Description
+                    });
+                }
+            });
+
+            return Json(jsonList, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult TodoListForContact(int? id)
+        {
+            DateTime? start = null;
+            DateTime? stop = null;
+            List<dynamic> jsonList;
+            Common.Models.Contacts.Contact contact;
+            List<Common.Models.Settings.TagFilter> tagFilters;
+            GlobalFilterSettings filterSettings;
+            if (Request["start"] != null)
+                start = Common.Utilities.UnixTimeStampToDateTime(double.Parse(Request["start"]));
+            if (Request["stop"] != null)
+                stop = Common.Utilities.UnixTimeStampToDateTime(double.Parse(Request["stop"]));
+
+            if (!id.HasValue)
+            {
+                if (string.IsNullOrEmpty(Request["ContactId"]))
+                    return null;
+                else
+                    id = int.Parse(Request["ContactId"]);
+            }
+
+            contact = Data.Contacts.Contact.Get(id.Value);
+
+            filterSettings = ConfigurationManager.GetSection("globalFilterSettings") as GlobalFilterSettings;
+            tagFilters = new List<Common.Models.Settings.TagFilter>();
+            System.Collections.IEnumerator ie = filterSettings.TagFilters.GetEnumerator();
+            while (ie.MoveNext())
+            {
+                TagFilterSettingElement ele = (TagFilterSettingElement)ie.Current;
+                tagFilters.Add(new Common.Models.Settings.TagFilter()
+                    {
+                        Category = ele.Category,
+                        Tag = ele.Tag
+                    });
+            }
+
+            jsonList = new List<dynamic>();
+
+            Data.Tasks.Task.GetTodoListFor(contact, tagFilters, start, stop).ForEach(x =>
+            {
+                if (x.DueDate.HasValue)
+                {
+                    jsonList.Add(new
+                    {
+                        id = x.Id.Value,
+                        title = x.Title,
+                        allDay = true,
+                        start = Common.Utilities.DateTimeToUnixTimestamp(x.DueDate.Value.ToLocalTime()),
+                        description = x.Description
+                    });
+                }
+            });
+
+            return Json(jsonList, JsonRequestBehavior.AllowGet);
         }
 
         [SecurityFilter(SecurityAreaName = "Timing", IsSecuredResource = false,

@@ -1,0 +1,113 @@
+﻿<%@ Master Language="C#" Inherits="System.Web.Mvc.ViewMasterPage" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>
+        <asp:ContentPlaceHolder ID="TitleContent" runat="server" />
+    </title>
+    
+    <link rel="stylesheet" type="text/css" href="../../Content/Site.css" />
+    <link rel="stylesheet" type="text/css" href="../../Content/fullcalendar.css" />
+    <link rel="stylesheet" type="text/css" href="../../Content/fullcalendar.print.css" media="print" />
+    <link rel="stylesheet" type="text/css" href="../../Content/jquery-ui-1.10.4.custom.css" />
+    
+    <script type="text/javascript" src="../../Scripts/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="../../Scripts/jquery-ui-1.10.4.custom.js"></script>
+    <script type="text/javascript" src='../../Scripts/fullcalendar/fullcalendar.min.js'></script>
+        
+    
+</head>
+<body>
+    <div class="page">
+        <div id="header">
+            <div id="title">
+                <h1>
+                    OpenLawOffice</h1>
+            </div>
+            <div id="logindisplay">
+                <% if (Request.Cookies["Username"] != null)
+                   { %>
+                Logged in as:
+                <%= Request.Cookies["Username"].Value%>
+                <% }
+                   else
+                   { %>
+                Not logged in
+                <% } %>
+            </div>
+        </div>
+        
+        <table border="0" cellpadding="0" cellspacing="0" id="mainTable">
+            <tr>
+                <td id="mainTable_Nav">
+                    <ul>
+                        <li>
+                            <%: Html.ActionLink("Dashboard", "Index", "Home") %></li>
+                        <ul>
+                        </ul>
+                        <li>Search</li>
+                        <ul>
+                            <li>
+                                <%: Html.ActionLink("Tags", "Tags", "Search") %></li>
+                            <li>Document Text</li>
+                        </ul>
+                        <li>
+                            Calendar</li>
+                        <ul>
+                            <li>
+                                <%: Html.ActionLink("User", "SelectUser", "Calendar", null, null) %></li>
+                        <li>
+                            <%: Html.ActionLink("Contact", "SelectContact", "Calendar", null, null) %></li>
+                        </ul>
+                        <li>
+                            <%: Html.ActionLink("Matters", "", "Matters") %></li>
+                        <ul>
+                            <li>
+                                <%: Html.ActionLink("New Matter", "Create", "Matters") %></li>
+                        </ul>
+                        <li>
+                            <%: Html.ActionLink("Contacts", "", "Contacts")%></li>
+                        <ul>
+                            <li>
+                                <%: Html.ActionLink("New Contact", "Create", "Contacts") %></li>
+                        </ul>
+                        <ul>
+                        </ul>
+                        <li>Billing</li>
+                        <ul>
+                        </ul>
+                        <li>Security</li>
+                        <ul>
+                            <%--<li>
+                                <%: Html.ActionLink("Areas", "", "SecurityAreas") %></li>
+                            <li>
+                                <%: Html.ActionLink("Area Access", "", "SecurityAreaAcls") %></li>--%>
+                            <li>
+                                <%: Html.ActionLink("Users", "", "Users") %></li>
+                        </ul>
+                        <ul>
+                        </ul>
+                        <li>Settings</li>
+                        <ul>
+                            <li>
+                                <%: Html.ActionLink("Tasks", "Index", "UserTaskSettings")%></li>
+                        </ul>
+                        <ul>
+                        </ul>
+                        <li><%: Html.ActionLink("About", "About", "Home") %> </li>
+                    </ul>
+                </td>
+                <td>
+                    <div>
+                    <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+                    <div id="footer">
+                    </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

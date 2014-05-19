@@ -61,9 +61,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Authorization.cs" />
+    <Compile Include="Calendar\Event.cs" />
     <Compile Include="DataHelper.cs" />
     <Compile Include="Contacts\Contact.cs" />
     <Compile Include="Database.cs" />
+    <Compile Include="DBOs\Calendar\Event.cs" />
+    <Compile Include="DBOs\Calendar\EventAssignedContact.cs" />
+    <Compile Include="DBOs\Calendar\EventResponsibleUser.cs" />
     <Compile Include="DBOs\ColumnAttributeTypeMapper.cs" />
     <Compile Include="DBOs\Contacts\Contact.cs" />
     <Compile Include="DBOs\Core.cs" />

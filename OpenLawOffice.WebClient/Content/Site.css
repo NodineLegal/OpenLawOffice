@@ -127,6 +127,35 @@ page width. Or, you can specify an exact pixel width. */
     margin-top: 2px;
 }
 
+#mainTable
+{
+    width: 100%;
+    border: 0 none;
+}
+
+#mainTable td
+{
+    border: 0 none;
+    padding: 0;
+}
+
+#mainTable_Nav
+{
+    border: 0 none;
+    width: 150px;
+    text-align: left;
+    vertical-align: top;
+    background-color: #fff;
+}
+
+#mainTable_Nav ul
+{
+    list-style: none outside none;
+    margin-left: 0;
+    padding-left: 1em;
+    margin-top: 2px;
+}
+
 #main
 {
     padding: 30px 30px 15px 30px;
@@ -145,16 +174,6 @@ page width. Or, you can specify an exact pixel width. */
     line-height: normal;
     margin: 0;
     font-size: .9em;
-}
-
-/* TAB MENU
-----------------------------------------------------------*/
-ul#menu
-{
-    list-style: none outside none;
-    margin-left: 0;
-    padding-left: 1em;
-    margin-top: 2px;
 }
 
 /* FORM LAYOUT ELEMENTS
@@ -214,12 +233,12 @@ table th
     border: solid 1px #e8eef4;
 }
 
-table.listing_table
+#main table.listing_table
 {
     width: 100%;
 }
 
-table.detail_table
+#main table.detail_table
 {
     width: 100%;
     margin-bottom: 15px;
@@ -248,6 +267,14 @@ td.display-field input
     width: 150px;
     height: 90%;
     background-color: #fff;
+}
+
+#menucontainer ul
+{
+    list-style: none outside none;
+    margin-left: 0;
+    padding-left: 1em;
+    margin-top: 2px;
 }
 
 div#title

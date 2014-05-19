@@ -64,6 +64,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Calendar\Event.cs" />
+    <Compile Include="Models\Calendar\EventAssignedContact.cs" />
+    <Compile Include="Models\Calendar\EventResponsibleUser.cs" />
     <Compile Include="Models\Contacts\Contact.cs" />
     <Compile Include="Models\Core.cs" />
     <Compile Include="Models\Documents\Document.cs" />

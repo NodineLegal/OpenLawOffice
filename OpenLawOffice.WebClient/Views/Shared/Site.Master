@@ -10,6 +10,8 @@
     <link href="../../Content/jquery-ui-1.10.4.custom.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../Scripts/jqGrid-4.6.0/ui.jqgrid.css"
         media="all" />
+    <link href="../../Content/fullcalendar.css" rel="stylesheet" type="text/css" />
+    <link href="../../Content/fullcalendar.print.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="../../Scripts/jquery-1.10.2.js"></script>
     <script type="text/javascript" src="../../Scripts/jquery-ui-1.10.4.custom.js"></script>    
     <script language="javascript">
@@ -63,6 +65,14 @@
                     <li>
                         <%: Html.ActionLink("Tags", "Tags", "Search") %></li>
                     <li>Document Text</li>
+                </ul>
+                <li>
+                    Calendar</li>
+                <ul>
+                    <li>
+                        <%: Html.ActionLink("User", "SelectUser", "Calendar", null, null) %></li>
+                    <li>
+                        <%: Html.ActionLink("Contact", "SelectContact", "Calendar", null, null) %></li>
                 </ul>
                 <li>
                     <%: Html.ActionLink("Matters", "", "Matters") %></li>

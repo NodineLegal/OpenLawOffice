@@ -90,6 +90,7 @@
   <ItemGroup>
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\CalendarController.cs" />
     <Compile Include="Controllers\ContactsController.cs" />
     <Compile Include="Controllers\DeletingFileResult.cs" />
     <Compile Include="Controllers\DocumentsController.cs" />
@@ -116,9 +117,12 @@
     <Compile Include="Controllers\UserTaskSettingsController.cs" />
     <Compile Include="Controllers\VersionsController.cs" />
     <Compile Include="Controllers\HandleErrorAttribute.cs" />
+    <Compile Include="TagFilterSettingElement.cs" />
+    <Compile Include="TagFilterSettingsCollection.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="GlobalFilterSettings.cs" />
     <Compile Include="Helpers\EnumDropDownListForHelper.cs" />
     <Compile Include="Security.cs" />
     <Compile Include="ViewModels\Account\LoginModel.cs" />
@@ -162,9 +166,16 @@
     <Compile Include="ViewModels\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\fullcalendar.css" />
+    <Content Include="Content\fullcalendar.print.css" />
     <Content Include="Global.asax" />
     <Content Include="LICENSE.txt" />
     <Content Include="Views\Account\Login.aspx" />
+    <Content Include="Views\Calendar\Contact.aspx" />
+    <Content Include="Views\Calendar\Index.aspx" />
+    <Content Include="Views\Calendar\SelectContact.aspx" />
+    <Content Include="Views\Calendar\SelectUser.aspx" />
+    <Content Include="Views\Calendar\User.aspx" />
     <Content Include="Views\Contacts\Conflicts.aspx" />
     <Content Include="Views\Contacts\Create.aspx" />
     <Content Include="Views\Contacts\Details.aspx" />
@@ -291,6 +302,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\Calendar.Master" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

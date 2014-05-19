@@ -80,5 +80,20 @@ namespace OpenLawOffice.Common
             var isLinkLocalAddress = octets[0] == 169 && octets[1] == 254;
             return isLinkLocalAddress;
         }
+        
+        public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
+        {
+            // Unix timestamp is seconds past epoch
+            System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+            dtDateTime = dtDateTime.AddSeconds(unixTimeStamp);
+            return dtDateTime;
+        }
+
+        public static double? DateTimeToUnixTimestamp(DateTime? dateTime)
+        {
+            if (!dateTime.HasValue) return null;
+            DateTime dt = dateTime.Value.ToUniversalTime();
+            return (dt - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds;
+        }
     }
 }
