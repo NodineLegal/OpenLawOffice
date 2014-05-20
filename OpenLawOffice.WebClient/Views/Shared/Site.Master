@@ -70,6 +70,8 @@
                     Calendar</li>
                 <ul>
                     <li>
+                        <%: Html.ActionLink("Master", "Index", "Calendar", null, null) %></li>
+                    <li>
                         <%: Html.ActionLink("User", "SelectUser", "Calendar", null, null) %></li>
                     <li>
                         <%: Html.ActionLink("Contact", "SelectContact", "Calendar", null, null) %></li>

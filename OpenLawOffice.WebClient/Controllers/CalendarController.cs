@@ -28,6 +28,11 @@ namespace OpenLawOffice.WebClient.Controllers
 
     public class CalendarController : Controller
     {
+        public ActionResult Index()
+        {
+            return View();
+        }
+
         public new ActionResult User()
         {
             return View();
@@ -64,6 +69,43 @@ namespace OpenLawOffice.WebClient.Controllers
             });
 
             return View(contactList);
+        }
+
+        public ActionResult ListAllEvents()
+        {
+            double start = 0;
+            double? stop = null;
+            List<Common.Models.Calendar.Event> list;
+            List<dynamic> jsonList;
+
+            if (Request["start"] != null)
+                start = double.Parse(Request["start"]);
+            if (Request["stop"] != null)
+                stop = double.Parse(Request["stop"]);
+
+            list = Data.Calendar.Event.List(start, stop);
+
+            jsonList = new List<dynamic>();
+
+            list.ForEach(x =>
+            {
+                DateTime? end = null;
+                if (x.End.HasValue)
+                    end = x.End.Value.ToLocalTime();
+
+                jsonList.Add(new
+                {
+                    id = x.Id.Value,
+                    title = x.Title,
+                    allDay = x.AllDay,
+                    start = Common.Utilities.DateTimeToUnixTimestamp(x.Start.ToLocalTime()),
+                    end = Common.Utilities.DateTimeToUnixTimestamp(end),
+                    location = x.Location,
+                    description = x.Description
+                });
+            });
+
+            return Json(jsonList, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult ListEventsForUser(int id)

@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Calendar.Master" Inherits="System.Web.Mvc.ViewPage<dynamic>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-	User
+	Calendar for User
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
@@ -72,6 +72,8 @@
                         if ($("#taskViewDialog").dialog("isOpen")) $("#taskViewDialog").dialog("close");
                         $("#eventViewDialog_Date").html(calFormatStartStop(calEvent.start, calEvent.end));
                         $("#eventViewDialog_Location").html(calEvent.location);
+                        $("#eventViewDialog_ViewLink").attr('href', '/Events/Details/' + calEvent.id);
+                        $("#eventViewDialog_EditLink").attr('href', '/Events/Edit/' + calEvent.id);
                         $("#eventViewDialog").dialog("open");
                         $("#eventViewDialog").dialog("option", "title", calEvent.title);
                     } else if (calEvent.source.name == 'Task') {
@@ -81,6 +83,8 @@
                             $("#taskViewDialog_Description").html(calEvent.description.substring(0, 120) + "...");
                         else
                             $("#taskViewDialog_Description").html(calEvent.description);
+                        $("#taskViewDialog_ViewLink").attr('href', '/Tasks/Details/' + calEvent.id);
+                        $("#taskViewDialog_EditLink").attr('href', '/Tasks/Edit/' + calEvent.id);
                         $("#taskViewDialog").dialog("open");
                         $("#taskViewDialog").dialog("option", "title", calEvent.title);
                     }
@@ -134,7 +138,7 @@
             Type <span style="padding: 5px 0 20px 0; font-weight:normal;">Event</span>
         </div>
         <hr style="line-height: 1px;" />
-        <span>View event »</span><span style="float: right;">Edit event »</span>
+        <span><a id="eventViewDialog_ViewLink" href="javascript:void(0);">View event »</a></span><span style="float: right;"><a id="eventViewDialog_EditLink" href="javascript:void(0);">Edit event »</a></span>
     </div>
     
     <div id="taskViewDialog" title="View Task" style="font-size: 14px;">
@@ -144,6 +148,6 @@
             <div id="taskViewDialog_Description" style="font-weight: normal; font-size: 12px;"></div>
         </div>
         <hr style="line-height: 1px;" />
-        <span>View task »</span><span style="float: right;">Edit task »</span>
+        <span><a id="taskViewDialog_ViewLink" href="javascript:void(0);">View task »</a></span><span style="float: right;"><a id="taskViewDialog_EditLink" href="javascript:void(0);">Edit task »</a></span>
     </div>
 </asp:Content>

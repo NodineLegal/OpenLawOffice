@@ -303,6 +303,51 @@ namespace OpenLawOffice.WebClient.Controllers
             return RedirectToAction("Details", new { Id = model.Id });
         }
 
+        public ActionResult TodoListForAll()
+        {
+            DateTime? start = null;
+            DateTime? stop = null;
+            List<dynamic> jsonList;
+            List<Common.Models.Settings.TagFilter> tagFilters;
+            GlobalFilterSettings filterSettings;
+            if (Request["start"] != null)
+                start = Common.Utilities.UnixTimeStampToDateTime(double.Parse(Request["start"]));
+            if (Request["stop"] != null)
+                stop = Common.Utilities.UnixTimeStampToDateTime(double.Parse(Request["stop"]));
+            
+            filterSettings = ConfigurationManager.GetSection("globalFilterSettings") as GlobalFilterSettings;
+            tagFilters = new List<Common.Models.Settings.TagFilter>();
+            System.Collections.IEnumerator ie = filterSettings.TagFilters.GetEnumerator();
+            while (ie.MoveNext())
+            {
+                TagFilterSettingElement ele = (TagFilterSettingElement)ie.Current;
+                tagFilters.Add(new Common.Models.Settings.TagFilter()
+                {
+                    Category = ele.Category,
+                    Tag = ele.Tag
+                });
+            }
+
+            jsonList = new List<dynamic>();
+
+            Data.Tasks.Task.GetTodoListForAll(tagFilters, start, stop).ForEach(x =>
+            {
+                if (x.DueDate.HasValue)
+                {
+                    jsonList.Add(new
+                    {
+                        id = x.Id.Value,
+                        title = x.Title,
+                        allDay = true,
+                        start = Common.Utilities.DateTimeToUnixTimestamp(x.DueDate.Value.ToLocalTime()),
+                        description = x.Description
+                    });
+                }
+            });
+
+            return Json(jsonList, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult TodoListForUser(int? id)
         {
             DateTime? start = null;
