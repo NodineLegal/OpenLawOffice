@@ -55,6 +55,7 @@
       <HintPath>..\OpenLawOffice.WebClient\packages\AutoMapper.3.2.1\lib\net40\AutoMapper.Net4.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
@@ -64,15 +65,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Calendar\Event.cs" />
-    <Compile Include="Models\Calendar\EventAssignedContact.cs" />
-    <Compile Include="Models\Calendar\EventResponsibleUser.cs" />
+    <Compile Include="Models\Events\Event.cs" />
+    <Compile Include="Models\Events\EventAssignedContact.cs" />
+    <Compile Include="Models\Events\EventMatter.cs" />
+    <Compile Include="Models\Events\EventNote.cs" />
+    <Compile Include="Models\Events\EventResponsibleUser.cs" />
     <Compile Include="Models\Contacts\Contact.cs" />
     <Compile Include="Models\Core.cs" />
     <Compile Include="Models\Documents\Document.cs" />
     <Compile Include="Models\Documents\DocumentMatter.cs" />
     <Compile Include="Models\Documents\DocumentTask.cs" />
     <Compile Include="Models\Documents\Version.cs" />
+    <Compile Include="Models\Events\EventTag.cs" />
+    <Compile Include="Models\Events\EventTask.cs" />
     <Compile Include="Models\MapMeAttribute.cs" />
     <Compile Include="Models\Matters\Matter.cs" />
     <Compile Include="Models\Matters\MatterContact.cs" />
@@ -104,6 +109,12 @@
     <Compile Include="Models\Timing\Time.cs" />
     <Compile Include="ObjectMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Settings\FileStorageSettings.cs" />
+    <Compile Include="Settings\Manager.cs" />
+    <Compile Include="Settings\OloSection.cs" />
+    <Compile Include="Settings\SystemSettings.cs" />
+    <Compile Include="Settings\TagFilterCollection.cs" />
+    <Compile Include="Settings\TagFilterElement.cs" />
     <Compile Include="Singleton.cs" />
     <Compile Include="Utilities.cs" />
   </ItemGroup>

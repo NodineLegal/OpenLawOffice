@@ -61,13 +61,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Authorization.cs" />
-    <Compile Include="Calendar\Event.cs" />
+    <Compile Include="DBOs\Events\EventMatter.cs" />
+    <Compile Include="DBOs\Events\EventNote.cs" />
+    <Compile Include="DBOs\Events\EventTag.cs" />
+    <Compile Include="DBOs\Events\EventTask.cs" />
+    <Compile Include="Events\Event.cs" />
     <Compile Include="DataHelper.cs" />
     <Compile Include="Contacts\Contact.cs" />
     <Compile Include="Database.cs" />
-    <Compile Include="DBOs\Calendar\Event.cs" />
-    <Compile Include="DBOs\Calendar\EventAssignedContact.cs" />
-    <Compile Include="DBOs\Calendar\EventResponsibleUser.cs" />
+    <Compile Include="DateTimeExtensions.cs" />
+    <Compile Include="DBOs\Events\Event.cs" />
+    <Compile Include="DBOs\Events\EventAssignedContact.cs" />
+    <Compile Include="DBOs\Events\EventResponsibleUser.cs" />
     <Compile Include="DBOs\ColumnAttributeTypeMapper.cs" />
     <Compile Include="DBOs\Contacts\Contact.cs" />
     <Compile Include="DBOs\Core.cs" />
@@ -104,8 +109,12 @@
     <Compile Include="Documents\DocumentMatter.cs" />
     <Compile Include="Documents\DocumentTask.cs" />
     <Compile Include="Documents\Version.cs" />
-    <Compile Include="FileStorage.cs" />
-    <Compile Include="FileStorageSettings.cs" />
+    <Compile Include="Events\EventAssignedContact.cs" />
+    <Compile Include="Events\EventMatter.cs" />
+    <Compile Include="Events\EventNote.cs" />
+    <Compile Include="Events\EventTag.cs" />
+    <Compile Include="Events\EventResponsibleUser.cs" />
+    <Compile Include="Events\EventTask.cs" />
     <Compile Include="Installation\Setup.cs" />
     <Compile Include="Matters\Matter.cs" />
     <Compile Include="Matters\MatterContact.cs" />

@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="TagFilterSettingsCollection.cs" company="Nodine Legal, LLC">
+// <copyright file="TagFilterCollection.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,24 +19,28 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.WebClient
+namespace OpenLawOffice.Common.Settings
 {
     using System.Configuration;
+    using System.Collections.Generic;
 
-    public class TagFilterSettingsCollection : ConfigurationElementCollection
+    /// <summary>
+    /// TODO: Update summary.
+    /// </summary>
+    public class TagFilterCollection : ConfigurationElementCollection
     {
-        public new TagFilterSettingElement this[string name]
+        public new TagFilterElement this[string name]
         {
             get
             {
                 if (IndexOf(name) < 0) return null;
-                return (TagFilterSettingElement)BaseGet(name);
+                return (TagFilterElement)BaseGet(name);
             }
         }
 
-        public TagFilterSettingElement this[int index]
+        public TagFilterElement this[int index]
         {
-            get { return (TagFilterSettingElement)BaseGet(index); }
+            get { return (TagFilterElement)BaseGet(index); }
         }
 
         public int IndexOf(string name)
@@ -62,12 +66,12 @@ namespace OpenLawOffice.WebClient
 
         protected override ConfigurationElement CreateNewElement()
         {
-            return new TagFilterSettingElement();
+            return new TagFilterElement();
         }
 
         protected override object GetElementKey(ConfigurationElement element)
         {
-            return ((TagFilterSettingElement)element).Name;
+            return ((TagFilterElement)element).Name;
         }
 
         protected override string ElementName
@@ -76,6 +80,28 @@ namespace OpenLawOffice.WebClient
             {
                 return "tagFilter";
             }
+        }
+
+        public List<Common.Models.Settings.TagFilter> ToUserSettingsModel()
+        {
+            List<Common.Models.Settings.TagFilter> tagFilters;
+            System.Collections.IEnumerator ie;
+
+            tagFilters = new List<Common.Models.Settings.TagFilter>();
+
+            ie = Common.Settings.Manager.Instance.System.GlobalTaskTagFilters.GetEnumerator();
+
+            while (ie.MoveNext())
+            {
+                TagFilterElement ele = (TagFilterElement)ie.Current;
+                tagFilters.Add(new Common.Models.Settings.TagFilter()
+                {
+                    Category = ele.Category,
+                    Tag = ele.Tag
+                });
+            }
+
+            return tagFilters;
         }
     }
 }

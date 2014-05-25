@@ -58,7 +58,7 @@ namespace OpenLawOffice.Data.Tagging
             Common.Models.Security.User creator)
         {
             model.CreatedBy = model.ModifiedBy = creator;
-            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            model.Created = model.Modified = DateTime.UtcNow;
             DBOs.Tagging.TagCategory dbo = Mapper.Map<DBOs.Tagging.TagCategory>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
@@ -76,7 +76,7 @@ namespace OpenLawOffice.Data.Tagging
             Common.Models.Security.User disabler)
         {
             model.DisabledBy = disabler;
-            model.UtcDisabled = DateTime.UtcNow;
+            model.Disabled = DateTime.UtcNow;
 
             DataHelper.Disable<Common.Models.Tagging.TagCategory,
                 DBOs.Tagging.TagCategory>("tag_category", disabler.Id.Value, model.Id);
@@ -88,9 +88,9 @@ namespace OpenLawOffice.Data.Tagging
             Common.Models.Security.User enabler)
         {
             model.ModifiedBy = enabler;
-            model.UtcModified = DateTime.UtcNow;
+            model.Modified = DateTime.UtcNow;
             model.DisabledBy = null;
-            model.UtcDisabled = null;
+            model.Disabled = null;
 
             DataHelper.Enable<Common.Models.Tagging.TagCategory,
                 DBOs.Tagging.TagCategory>("tag_category", enabler.Id.Value, model.Id);

@@ -65,7 +65,7 @@ namespace OpenLawOffice.Data.Documents
         public static Common.Models.Documents.DocumentMatter Create(Common.Models.Documents.DocumentMatter model,
             Common.Models.Security.User creator)
         {
-            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            model.Created = model.Modified = DateTime.UtcNow;
             model.CreatedBy = model.ModifiedBy = creator;
             DBOs.Documents.DocumentMatter dbo = Mapper.Map<DBOs.Documents.DocumentMatter>(model);
 
@@ -77,7 +77,7 @@ namespace OpenLawOffice.Data.Documents
                 { // Update
                     conn.Execute("UPDATE \"document_matter\" SET \"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId " +
                         "\"utc_disabled\"=null, \"disabled_by_user_id\"=null WHERE \"id\"=@Id", dbo);
-                    model.UtcCreated = currentModel.UtcCreated;
+                    model.Created = currentModel.Created;
                     model.CreatedBy = currentModel.CreatedBy;
                 }
                 else

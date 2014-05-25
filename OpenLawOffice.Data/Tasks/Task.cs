@@ -508,7 +508,7 @@ namespace OpenLawOffice.Data.Tasks
             Common.Models.Security.User creator)
         {
             model.CreatedBy = model.ModifiedBy = creator;
-            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            model.Created = model.Modified = DateTime.UtcNow;
             DBOs.Tasks.Task dbo = Mapper.Map<DBOs.Tasks.Task>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
@@ -530,8 +530,8 @@ namespace OpenLawOffice.Data.Tasks
                 Id = Guid.NewGuid(),
                 Matter = new Common.Models.Matters.Matter() { Id = matterId },
                 Task = taskModel,
-                UtcCreated = DateTime.UtcNow,
-                UtcModified = DateTime.UtcNow,
+                Created = DateTime.UtcNow,
+                Modified = DateTime.UtcNow,
                 CreatedBy = creator,
                 ModifiedBy = creator
             };
@@ -589,7 +589,7 @@ namespace OpenLawOffice.Data.Tasks
             }
 
             model.ModifiedBy = modifier;
-            model.UtcModified = DateTime.UtcNow;
+            model.Modified = DateTime.UtcNow;
             DBOs.Tasks.Task dbo = Mapper.Map<DBOs.Tasks.Task>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())

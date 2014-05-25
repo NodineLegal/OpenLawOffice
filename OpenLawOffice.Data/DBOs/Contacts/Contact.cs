@@ -887,9 +887,18 @@ namespace OpenLawOffice.Data.DBOs.Contacts
             Dapper.SqlMapper.SetTypeMap(typeof(Contact), new ColumnAttributeTypeMapper<Contact>());
             Mapper.CreateMap<DBOs.Contacts.Contact, Common.Models.Contacts.Contact>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
-                .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
-                .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
-                .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
+                .ForMember(dst => dst.Created, opt => opt.ResolveUsing(db =>
+                {
+                    return db.UtcCreated.ToSystemTime();
+                }))
+                .ForMember(dst => dst.Modified, opt => opt.ResolveUsing(db =>
+                {
+                    return db.UtcModified.ToSystemTime();
+                }))
+                .ForMember(dst => dst.Disabled, opt => opt.ResolveUsing(db =>
+                {
+                    return db.UtcDisabled.ToSystemTime();
+                }))
                 .ForMember(dst => dst.CreatedBy, opt => opt.ResolveUsing(db =>
                 {
                     return new Common.Models.Security.User()
@@ -981,8 +990,14 @@ namespace OpenLawOffice.Data.DBOs.Contacts
                 .ForMember(dst => dst.Telephone9TelephoneNumber, opt => opt.MapFrom(src => src.Telephone9TelephoneNumber))
                 .ForMember(dst => dst.Telephone10DisplayName, opt => opt.MapFrom(src => src.Telephone10DisplayName))
                 .ForMember(dst => dst.Telephone10TelephoneNumber, opt => opt.MapFrom(src => src.Telephone10TelephoneNumber))
-                .ForMember(dst => dst.Birthday, opt => opt.MapFrom(src => src.Birthday))
-                .ForMember(dst => dst.Wedding, opt => opt.MapFrom(src => src.Wedding))
+                .ForMember(dst => dst.Birthday, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Birthday.ToSystemTime();
+                }))
+                .ForMember(dst => dst.Wedding, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Wedding.ToSystemTime();
+                }))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dst => dst.CompanyName, opt => opt.MapFrom(src => src.CompanyName))
                 .ForMember(dst => dst.DepartmentName, opt => opt.MapFrom(src => src.DepartmentName))
@@ -999,9 +1014,18 @@ namespace OpenLawOffice.Data.DBOs.Contacts
                 .ForMember(dst => dst.ReferredByName, opt => opt.MapFrom(src => src.ReferredByName));
 
             Mapper.CreateMap<Common.Models.Contacts.Contact, DBOs.Contacts.Contact>()
-                .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
-                .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
-                .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
+                .ForMember(dst => dst.UtcCreated, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Created.ToDbTime();
+                }))
+                .ForMember(dst => dst.UtcModified, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Modified.ToDbTime();
+                }))
+                .ForMember(dst => dst.UtcDisabled, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Disabled.ToDbTime();
+                }))
                 .ForMember(dst => dst.CreatedByUserId, opt => opt.ResolveUsing(model =>
                 {
                     if (model.CreatedBy == null || !model.CreatedBy.Id.HasValue)
@@ -1085,8 +1109,14 @@ namespace OpenLawOffice.Data.DBOs.Contacts
                 .ForMember(dst => dst.Telephone9TelephoneNumber, opt => opt.MapFrom(src => src.Telephone9TelephoneNumber))
                 .ForMember(dst => dst.Telephone10DisplayName, opt => opt.MapFrom(src => src.Telephone10DisplayName))
                 .ForMember(dst => dst.Telephone10TelephoneNumber, opt => opt.MapFrom(src => src.Telephone10TelephoneNumber))
-                .ForMember(dst => dst.Birthday, opt => opt.MapFrom(src => src.Birthday))
-                .ForMember(dst => dst.Wedding, opt => opt.MapFrom(src => src.Wedding))
+                .ForMember(dst => dst.Birthday, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Birthday.ToDbTime();
+                }))
+                .ForMember(dst => dst.Wedding, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Wedding.ToDbTime();
+                }))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dst => dst.CompanyName, opt => opt.MapFrom(src => src.CompanyName))
                 .ForMember(dst => dst.DepartmentName, opt => opt.MapFrom(src => src.DepartmentName))

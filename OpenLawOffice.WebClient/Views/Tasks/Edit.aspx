@@ -271,7 +271,7 @@
             <%: Html.ActionLink("Details", "Details", new { id = Model.Id })%></li>
     </ul>
     <li>
-        <%: Html.ActionLink("Matter ", "Details", "Matters", new { id = ViewData["MatterId"] }, null)%></li>
+        <%: Html.ActionLink("Matter", "Details", "Matters", new { id = ViewData["MatterId"] }, null)%></li>
     <li>
         <%: Html.ActionLink("Tags", "Tags", "Tasks", new { id = Model.Id }, null)%></li>
     <li>

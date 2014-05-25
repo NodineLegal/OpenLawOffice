@@ -377,7 +377,7 @@ namespace OpenLawOffice.WebClient.Controllers
                     if (Request["CB_" + x.Id.Value.ToString()] == "on")
                     {
 
-                        path = Data.FileStorage.Instance.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension);
+                        path = Common.Settings.Manager.Instance.FileStorage.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension);
 
                         zipTitle = x.Title + "." + version.Extension;
 
@@ -397,19 +397,19 @@ namespace OpenLawOffice.WebClient.Controllers
                     }
                 });
 
-                if (!System.IO.Directory.Exists(Data.FileStorage.Instance.TempPath))
-                    System.IO.Directory.CreateDirectory(Data.FileStorage.Instance.TempPath);
+                if (!System.IO.Directory.Exists(Common.Settings.Manager.Instance.FileStorage.TempPath))
+                    System.IO.Directory.CreateDirectory(Common.Settings.Manager.Instance.FileStorage.TempPath);
 
                 temp = Guid.NewGuid();
 
                 if (zip.Count > 0)
-                    zip.Save(Data.FileStorage.Instance.TempPath + temp.ToString() + ".zip");
+                    zip.Save(Common.Settings.Manager.Instance.FileStorage.TempPath + temp.ToString() + ".zip");
                 else
                     return View(viewModelList);
             }
 
 
-            return new DeletingFileResult(Data.FileStorage.Instance.TempPath + temp.ToString() + ".zip", matter.Title + ".zip");
+            return new DeletingFileResult(Common.Settings.Manager.Instance.FileStorage.TempPath + temp.ToString() + ".zip", matter.Title + ".zip");
         }
 
         [SecurityFilter(SecurityAreaName = "Timing", IsSecuredResource = false,

@@ -75,7 +75,7 @@ namespace OpenLawOffice.WebClient.Controllers
         {
             double start = 0;
             double? stop = null;
-            List<Common.Models.Calendar.Event> list;
+            List<Common.Models.Events.Event> list;
             List<dynamic> jsonList;
 
             if (Request["start"] != null)
@@ -83,7 +83,7 @@ namespace OpenLawOffice.WebClient.Controllers
             if (Request["stop"] != null)
                 stop = double.Parse(Request["stop"]);
 
-            list = Data.Calendar.Event.List(start, stop);
+            list = Data.Events.Event.List(start, stop);
 
             jsonList = new List<dynamic>();
 
@@ -91,14 +91,14 @@ namespace OpenLawOffice.WebClient.Controllers
             {
                 DateTime? end = null;
                 if (x.End.HasValue)
-                    end = x.End.Value.ToLocalTime();
+                    end = x.End.Value;
 
                 jsonList.Add(new
                 {
                     id = x.Id.Value,
                     title = x.Title,
                     allDay = x.AllDay,
-                    start = Common.Utilities.DateTimeToUnixTimestamp(x.Start.ToLocalTime()),
+                    start = Common.Utilities.DateTimeToUnixTimestamp(x.Start),
                     end = Common.Utilities.DateTimeToUnixTimestamp(end),
                     location = x.Location,
                     description = x.Description
@@ -112,7 +112,7 @@ namespace OpenLawOffice.WebClient.Controllers
         {
             double start = 0;
             double? stop = null;
-            List<Common.Models.Calendar.Event> list;
+            List<Common.Models.Events.Event> list;
             List<dynamic> jsonList;
 
             if (Request["start"] != null)
@@ -120,7 +120,7 @@ namespace OpenLawOffice.WebClient.Controllers
             if (Request["stop"] != null)
                 stop = double.Parse(Request["stop"]);
 
-            list = Data.Calendar.Event.ListForUser(id, start, stop);
+            list = Data.Events.Event.ListForUser(id, start, stop);
 
             jsonList = new List<dynamic>();
 
@@ -128,14 +128,14 @@ namespace OpenLawOffice.WebClient.Controllers
             {
                 DateTime? end = null;
                 if (x.End.HasValue)
-                    end = x.End.Value.ToLocalTime();
+                    end = x.End.Value;
 
                 jsonList.Add(new
                 {
                     id = x.Id.Value,
                     title = x.Title,
                     allDay = x.AllDay,
-                    start = Common.Utilities.DateTimeToUnixTimestamp(x.Start.ToLocalTime()),
+                    start = Common.Utilities.DateTimeToUnixTimestamp(x.Start),
                     end = Common.Utilities.DateTimeToUnixTimestamp(end),
                     location = x.Location,
                     description = x.Description
@@ -149,7 +149,7 @@ namespace OpenLawOffice.WebClient.Controllers
         {
             double start = 0;
             double? stop = null;
-            List<Common.Models.Calendar.Event> list;
+            List<Common.Models.Events.Event> list;
             List<dynamic> jsonList;
 
             if (Request["start"] != null)
@@ -157,7 +157,7 @@ namespace OpenLawOffice.WebClient.Controllers
             if (Request["stop"] != null)
                 stop = double.Parse(Request["stop"]);
 
-            list = Data.Calendar.Event.ListForContact(id, start, stop);
+            list = Data.Events.Event.ListForContact(id, start, stop);
 
             jsonList = new List<dynamic>();
 
@@ -165,14 +165,14 @@ namespace OpenLawOffice.WebClient.Controllers
             {
                 DateTime? end = null;
                 if (x.End.HasValue)
-                    end = x.End.Value.ToLocalTime();
+                    end = x.End.Value;
 
                 jsonList.Add(new
                 {
                     id = x.Id.Value,
                     title = x.Title,
                     allDay = x.AllDay,
-                    start = Common.Utilities.DateTimeToUnixTimestamp(x.Start.ToLocalTime()),
+                    start = Common.Utilities.DateTimeToUnixTimestamp(x.Start),
                     end = Common.Utilities.DateTimeToUnixTimestamp(end),
                     location = x.Location,
                     description = x.Description

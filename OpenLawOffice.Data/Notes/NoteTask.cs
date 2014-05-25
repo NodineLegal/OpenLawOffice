@@ -58,7 +58,7 @@ namespace OpenLawOffice.Data.Notes
         public static Common.Models.Notes.NoteTask Create(Common.Models.Notes.NoteTask model,
             Common.Models.Security.User creator)
         {
-            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            model.Created = model.Modified = DateTime.UtcNow;
             model.CreatedBy = model.ModifiedBy = creator;
             DBOs.Notes.NoteTask dbo = Mapper.Map<DBOs.Notes.NoteTask>(model);
 
@@ -70,7 +70,7 @@ namespace OpenLawOffice.Data.Notes
                 { // Update
                     conn.Execute("UPDATE \"note_task\" SET \"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId " +
                         "\"utc_disabled\"=null, \"disabled_by_user_id\"=null WHERE \"id\"=@Id", dbo);
-                    model.UtcCreated = currentModel.UtcCreated;
+                    model.Created = currentModel.Created;
                     model.CreatedBy = currentModel.CreatedBy;
                 }
                 else

@@ -54,7 +54,7 @@ namespace OpenLawOffice.Data.Settings
             Common.Models.Settings.TagFilter model, Common.Models.Security.User creator)
         {
             model.CreatedBy = model.ModifiedBy = creator;
-            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            model.Created = model.Modified = DateTime.UtcNow;
             DBOs.Settings.TagFilter dbo = Mapper.Map<DBOs.Settings.TagFilter>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
@@ -72,7 +72,7 @@ namespace OpenLawOffice.Data.Settings
             Common.Models.Security.User modifier)
         {
             model.ModifiedBy = modifier;
-            model.UtcModified = DateTime.UtcNow;
+            model.Modified = DateTime.UtcNow;
             DBOs.Settings.TagFilter dbo = Mapper.Map<DBOs.Settings.TagFilter>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())

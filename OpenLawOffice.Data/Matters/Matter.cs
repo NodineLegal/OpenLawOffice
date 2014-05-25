@@ -142,7 +142,7 @@ namespace OpenLawOffice.Data.Matters
             // Matter
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
             model.CreatedBy = model.ModifiedBy = creator;
-            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            model.Created = model.Modified = DateTime.UtcNow;
             DBOs.Matters.Matter dbo = Mapper.Map<DBOs.Matters.Matter>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
@@ -165,7 +165,7 @@ namespace OpenLawOffice.Data.Matters
             Common.Models.Security.User modifier)
         {
             model.ModifiedBy = modifier;
-            model.UtcModified = DateTime.UtcNow;
+            model.Modified = DateTime.UtcNow;
             DBOs.Matters.Matter dbo = Mapper.Map<DBOs.Matters.Matter>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
@@ -180,7 +180,7 @@ namespace OpenLawOffice.Data.Matters
             {
                 Id = model.Id,
                 ModifiedBy = modifier,
-                UtcModified = model.UtcModified
+                Modified = model.Modified
             }, modifier);
 
             return model;

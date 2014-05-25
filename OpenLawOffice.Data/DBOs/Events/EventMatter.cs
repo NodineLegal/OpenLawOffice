@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="Event.cs" company="Nodine Legal, LLC">
+// <copyright file="EventMatter.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,7 +19,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.Data.DBOs.Calendar
+namespace OpenLawOffice.Data.DBOs.Events
 {
     using System;
     using AutoMapper;
@@ -28,37 +28,34 @@ namespace OpenLawOffice.Data.DBOs.Calendar
     /// TODO: Update summary.
     /// </summary>
     [Common.Models.MapMe]
-    public class Event : Core
+    public class EventMatter : Core
     {
         [ColumnMapping(Name = "id")]
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
 
-        [ColumnMapping(Name = "title")]
-        public string Title { get; set; }
+        [ColumnMapping(Name = "event_id")]
+        public Guid EventId { get; set; }
 
-        [ColumnMapping(Name = "allday")]
-        public bool AllDay { get; set; }
-
-        [ColumnMapping(Name = "start")]
-        public DateTime Start { get; set; }
-
-        [ColumnMapping(Name = "end")]
-        public DateTime? End { get; set; }
-
-        [ColumnMapping(Name = "location")]
-        public string Location { get; set; }
-
-        [ColumnMapping(Name = "description")]
-        public string Description { get; set; }
+        [ColumnMapping(Name = "matter_id")]
+        public Guid MatterId { get; set; }
 
         public void BuildMappings()
         {
-            Dapper.SqlMapper.SetTypeMap(typeof(Event), new ColumnAttributeTypeMapper<Event>());
-            Mapper.CreateMap<DBOs.Calendar.Event, Common.Models.Calendar.Event>()
+            Dapper.SqlMapper.SetTypeMap(typeof(EventMatter), new ColumnAttributeTypeMapper<EventMatter>());
+            Mapper.CreateMap<DBOs.Events.EventMatter, Common.Models.Events.EventMatter>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
-                .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
-                .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
-                .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
+                .ForMember(dst => dst.Created, opt => opt.ResolveUsing(db =>
+                {
+                    return db.UtcCreated.ToSystemTime();
+                }))
+                .ForMember(dst => dst.Modified, opt => opt.ResolveUsing(db =>
+                {
+                    return db.UtcModified.ToSystemTime();
+                }))
+                .ForMember(dst => dst.Disabled, opt => opt.ResolveUsing(db =>
+                {
+                    return db.UtcDisabled.ToSystemTime();
+                }))
                 .ForMember(dst => dst.CreatedBy, opt => opt.ResolveUsing(db =>
                 {
                     return new Common.Models.Security.User()
@@ -85,25 +82,36 @@ namespace OpenLawOffice.Data.DBOs.Calendar
                     };
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
-                .ForMember(dst => dst.AllDay, opt => opt.MapFrom(src => src.AllDay))
-                .ForMember(dst => dst.Start, opt => opt.ResolveUsing(db =>
+                .ForMember(dst => dst.Event, opt => opt.ResolveUsing(db =>
                 {
-                    return new DateTime(db.Start.Ticks, DateTimeKind.Utc);
+                    return new Common.Models.Events.Event()
+                    {
+                        Id = db.EventId,
+                        IsStub = true
+                    };
                 }))
-                .ForMember(dst => dst.End, opt => opt.ResolveUsing(db =>
+                .ForMember(dst => dst.Matter, opt => opt.ResolveUsing(db =>
                 {
-                    if (!db.End.HasValue) return null;
-                    return new DateTime(db.End.Value.Ticks, DateTimeKind.Utc);
-                }))
-                .ForMember(dst => dst.End, opt => opt.MapFrom(src => src.End))
-                .ForMember(dst => dst.Location, opt => opt.MapFrom(src => src.Location))
-                .ForMember(dst => dst.Description, opt => opt.MapFrom(src => src.Description));
+                    return new Common.Models.Matters.Matter()
+                    {
+                        Id = db.MatterId,
+                        IsStub = true
+                    };
+                }));
 
-            Mapper.CreateMap<Common.Models.Calendar.Event, DBOs.Calendar.Event>()
-                .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
-                .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
-                .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
+            Mapper.CreateMap<Common.Models.Events.EventMatter, DBOs.Events.EventMatter>()
+                .ForMember(dst => dst.UtcCreated, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Created.ToDbTime();
+                }))
+                .ForMember(dst => dst.UtcModified, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Modified.ToDbTime();
+                }))
+                .ForMember(dst => dst.UtcDisabled, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Disabled.ToDbTime();
+                }))
                 .ForMember(dst => dst.CreatedByUserId, opt => opt.ResolveUsing(model =>
                 {
                     if (model.CreatedBy == null || !model.CreatedBy.Id.HasValue)
@@ -122,21 +130,20 @@ namespace OpenLawOffice.Data.DBOs.Calendar
                     return model.DisabledBy.Id;
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
-                .ForMember(dst => dst.AllDay, opt => opt.MapFrom(src => src.AllDay))
-                .ForMember(dst => dst.Start, opt => opt.ResolveUsing(db =>
+                .ForMember(dst => dst.EventId, opt => opt.ResolveUsing(model =>
                 {
-                    return new DateTime(db.Start.Ticks, DateTimeKind.Local);
+                    if (model.Event != null)
+                        return model.Event.Id;
+                    else
+                        return null;
                 }))
-                .ForMember(dst => dst.End, opt => opt.ResolveUsing(db =>
+                .ForMember(dst => dst.MatterId, opt => opt.ResolveUsing(model =>
                 {
-                    if (!db.End.HasValue) return null;
-                    return new DateTime(db.End.Value.Ticks, DateTimeKind.Local);
-                }))
-                .ForMember(dst => dst.Start, opt => opt.MapFrom(src => src.Start))
-                .ForMember(dst => dst.End, opt => opt.MapFrom(src => src.End))
-                .ForMember(dst => dst.Location, opt => opt.MapFrom(src => src.Location))
-                .ForMember(dst => dst.Description, opt => opt.MapFrom(src => src.Description));
+                    if (model.Matter != null)
+                        return model.Matter.Id;
+                    else
+                        return null;
+                }));
         }
     }
 }

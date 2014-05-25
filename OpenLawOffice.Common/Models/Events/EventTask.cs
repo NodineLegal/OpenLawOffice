@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="Event.cs" company="Nodine Legal, LLC">
+// <copyright file="EventTask.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,27 +19,19 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.Common.Models.Calendar
+namespace OpenLawOffice.Common.Models.Events
 {
     using System;
 
     /// <summary>
     /// TODO: Update summary.
     /// </summary>
-    public class Event : Core
+    public class EventTask : Core
     {
         public Guid? Id { get; set; }
 
-        public string Title { get; set; }
+        public Event Event { get; set; }
 
-        public bool AllDay { get; set; }
-
-        public DateTime Start { get; set; }
-
-        public DateTime? End { get; set; }
-
-        public string Location { get; set; }
-
-        public string Description { get; set; }
+        public Tasks.Task Task { get; set; }
     }
 }

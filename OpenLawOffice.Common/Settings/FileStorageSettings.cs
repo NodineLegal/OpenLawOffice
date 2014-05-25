@@ -19,14 +19,17 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.Data
+namespace OpenLawOffice.Common.Settings
 {
     using System.Configuration;
+    using System.IO;
+    using System.Security.Cryptography;
+    using System;
 
     /// <summary>
     /// TODO: Update summary.
     /// </summary>
-    public class FileStorageSettings : ConfigurationSection
+    public class FileStorageSettings : ConfigurationElement
     {
         [ConfigurationProperty("currentVersionPath", IsRequired = true)]
         public string CurrentVersionPath
@@ -49,9 +52,35 @@ namespace OpenLawOffice.Data
             set { this["tempPath"] = value; }
         }
 
-        public static FileStorageSettings Load()
+        public static string CalculateMd5(string path)
         {
-            return (FileStorageSettings)System.Configuration.ConfigurationManager.GetSection("fileStorageSettings");
+            string output = null;
+            using (MD5 md5 = MD5.Create())
+            {
+                using (FileStream stream = File.OpenRead(path))
+                {
+                    output = BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "").ToUpper();
+                }
+            }
+            return output;
+        }
+
+        public string GetCurrentVersionFilepathFor(string filename)
+        {
+            string[] Split = filename.Split('.');
+            return CurrentVersionPath + Split[0] + "." + Split[1];
+        }
+
+        public string GetPreviousVersionFilepathFor(string filename)
+        {
+            string[] Split = filename.Split('.');
+            return PreviousVersionsPath + Split[0] + "." + Split[1];
+        }
+
+        public void MoveCurrentToPrevious(string filename)
+        {
+            string currentFilePath = GetCurrentVersionFilepathFor(filename);
+            File.Move(currentFilePath, GetPreviousVersionFilepathFor(filename));
         }
     }
 }

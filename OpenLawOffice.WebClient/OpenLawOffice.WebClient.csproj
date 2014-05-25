@@ -95,6 +95,7 @@
     <Compile Include="Controllers\DeletingFileResult.cs" />
     <Compile Include="Controllers\DocumentsController.cs" />
     <Compile Include="Controllers\ErrorsController.cs" />
+    <Compile Include="Controllers\EventsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InstallationController.cs" />
     <Compile Include="Controllers\MatterContactController.cs" />
@@ -117,18 +118,20 @@
     <Compile Include="Controllers\UserTaskSettingsController.cs" />
     <Compile Include="Controllers\VersionsController.cs" />
     <Compile Include="Controllers\HandleErrorAttribute.cs" />
-    <Compile Include="TagFilterSettingElement.cs" />
-    <Compile Include="TagFilterSettingsCollection.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="GlobalFilterSettings.cs" />
     <Compile Include="Helpers\EnumDropDownListForHelper.cs" />
     <Compile Include="Security.cs" />
     <Compile Include="ViewModels\Account\LoginModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserCache.cs" />
     <Compile Include="ViewModels\AssignmentTypeViewModel.cs" />
+    <Compile Include="ViewModels\Events\EventAssignedContactViewModel.cs" />
+    <Compile Include="ViewModels\Events\EventMatterViewModel.cs" />
+    <Compile Include="ViewModels\Events\EventResponsibleUserViewModel.cs" />
+    <Compile Include="ViewModels\Events\EventTagViewModel.cs" />
+    <Compile Include="ViewModels\Events\EventViewModel.cs" />
     <Compile Include="ViewModels\Contacts\ConflictViewModel.cs" />
     <Compile Include="ViewModels\Contacts\ContactViewModel.cs" />
     <Compile Include="ViewModels\Contacts\SelectableContactViewModel.cs" />
@@ -186,6 +189,19 @@
     <Content Include="Views\Documents\Create.aspx" />
     <Content Include="Views\Documents\Details.aspx" />
     <Content Include="Views\Documents\Edit.aspx" />
+    <Content Include="Views\Events\Contacts.aspx" />
+    <Content Include="Views\Events\ContactAgenda.aspx" />
+    <Content Include="Views\Events\Create.aspx" />
+    <Content Include="Views\Events\Details.aspx" />
+    <Content Include="Views\Events\Edit.aspx" />
+    <Content Include="Views\Events\Matters.aspx" />
+    <Content Include="Views\Events\Notes.aspx" />
+    <Content Include="Views\Events\ResponsibleUsers.aspx" />
+    <Content Include="Views\Events\SelectContact.aspx" />
+    <Content Include="Views\Events\SelectUser.aspx" />
+    <Content Include="Views\Events\Tags.aspx" />
+    <Content Include="Views\Events\UserAgenda.aspx" />
+    <Content Include="Views\Shared\CoreDetailsView.ascx" />
     <Content Include="Views\Shared\Errors\Index.aspx" />
     <Content Include="Views\Shared\Errors\NotFound.aspx" />
     <Content Include="Views\Installation\Complete.aspx" />
@@ -230,6 +246,7 @@
     <Content Include="Views\Shared\EditorTemplates\PermissionViewModel.ascx" />
     <Content Include="Views\Shared\InsufficientRights.aspx" />
     <Content Include="Views\Shared\Errors\InvalidRequest.aspx" />
+    <Content Include="Views\Shared\LeftMenu.ascx" />
     <Content Include="Views\TaskAssignedContacts\AssignContact.aspx" />
     <Content Include="Views\TaskAssignedContacts\Delete.aspx" />
     <Content Include="Views\TaskAssignedContacts\Details.aspx" />
@@ -289,6 +306,8 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Scripts\" />
+    <Folder Include="Views\EventContact\" />
+    <Folder Include="Views\EventResponsibleUsers\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenLawOffice.Common\OpenLawOffice.Common.csproj">

@@ -62,7 +62,7 @@ namespace OpenLawOffice.Data.Security
 
         public static Common.Models.Security.User Create(Common.Models.Security.User model)
         {
-            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            model.Created = model.Modified = DateTime.UtcNow;
 
             DBOs.Security.User dbo = Mapper.Map<DBOs.Security.User>(model);
 
@@ -79,7 +79,7 @@ namespace OpenLawOffice.Data.Security
 
         public static Common.Models.Security.User Edit(Common.Models.Security.User model)
         {
-            model.UtcModified = DateTime.UtcNow;
+            model.Modified = DateTime.UtcNow;
             DBOs.Security.User dbo = Mapper.Map<DBOs.Security.User>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
@@ -94,7 +94,7 @@ namespace OpenLawOffice.Data.Security
 
         public static Common.Models.Security.User SetAuthTokenAndExpiry(Common.Models.Security.User model)
         {
-            model.UtcModified = DateTime.UtcNow;
+            model.Modified = DateTime.UtcNow;
             DBOs.Security.User dbo = Mapper.Map<DBOs.Security.User>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
@@ -110,7 +110,7 @@ namespace OpenLawOffice.Data.Security
         public static Common.Models.Security.User RenewExpiry(Common.Models.Security.User model)
         {
             model.UserAuthTokenExpiry = DateTime.UtcNow.AddMinutes(15);
-            model.UtcModified = DateTime.UtcNow;
+            model.Modified = DateTime.UtcNow;
             DBOs.Security.User dbo = Mapper.Map<DBOs.Security.User>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
@@ -125,7 +125,7 @@ namespace OpenLawOffice.Data.Security
 
         public static Common.Models.Security.User SetPassword(Common.Models.Security.User model)
         {
-            model.UtcModified = DateTime.UtcNow;
+            model.Modified = DateTime.UtcNow;
             DBOs.Security.User dbo = Mapper.Map<DBOs.Security.User>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
@@ -140,7 +140,7 @@ namespace OpenLawOffice.Data.Security
 
         public static Common.Models.Security.User Disable(Common.Models.Security.User model)
         {
-            model.UtcDisabled = DateTime.UtcNow;
+            model.Disabled = DateTime.UtcNow;
             DBOs.Security.User dbo = Mapper.Map<DBOs.Security.User>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())

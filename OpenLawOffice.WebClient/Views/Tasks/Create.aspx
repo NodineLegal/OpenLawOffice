@@ -151,7 +151,7 @@
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">    
     <li>
-        <%: Html.ActionLink("Matter ", "Details", "Matters", new { id = ViewData["MatterId"] }, null)%></li>
+        <%: Html.ActionLink("Matter", "Details", "Matters", new { id = ViewData["MatterId"] }, null)%></li>
     <li>
         <%: Html.ActionLink("Tasks of Matter", "Tasks", "Matters", new { id = ViewData["MatterId"] }, null) %></li>
 </asp:Content>

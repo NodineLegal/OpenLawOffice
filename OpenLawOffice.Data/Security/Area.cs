@@ -78,7 +78,7 @@ namespace OpenLawOffice.Data.Security
             Common.Models.Security.User creator)
         {
             model.CreatedBy = model.ModifiedBy = creator;
-            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            model.Created = model.Modified = DateTime.UtcNow;
             DBOs.Security.Area dbo = Mapper.Map<DBOs.Security.Area>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
@@ -96,7 +96,7 @@ namespace OpenLawOffice.Data.Security
             Common.Models.Security.User modifier)
         {
             model.ModifiedBy = modifier;
-            model.UtcModified = DateTime.UtcNow;
+            model.Modified = DateTime.UtcNow;
             DBOs.Matters.Matter dbo = Mapper.Map<DBOs.Matters.Matter>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())

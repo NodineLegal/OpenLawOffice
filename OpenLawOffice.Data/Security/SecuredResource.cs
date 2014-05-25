@@ -43,7 +43,7 @@ namespace OpenLawOffice.Data.Security
         {
             if (!model.Id.HasValue) throw new ArgumentException("SecuredResource must have its ID property set before calling Create().");
             model.CreatedBy = model.ModifiedBy = creator;
-            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            model.Created = model.Modified = DateTime.UtcNow;
             DBOs.Security.SecuredResource dbo = Mapper.Map<DBOs.Security.SecuredResource>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
@@ -69,7 +69,7 @@ namespace OpenLawOffice.Data.Security
             Common.Models.Security.User modifier)
         {
             model.ModifiedBy = modifier;
-            model.UtcModified = DateTime.UtcNow;
+            model.Modified = DateTime.UtcNow;
             DBOs.Security.SecuredResource dbo = Mapper.Map<DBOs.Security.SecuredResource>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())

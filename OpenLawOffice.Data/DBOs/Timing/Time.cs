@@ -47,9 +47,18 @@ namespace OpenLawOffice.Data.DBOs.Timing
             Dapper.SqlMapper.SetTypeMap(typeof(Time), new ColumnAttributeTypeMapper<Time>());
             Mapper.CreateMap<DBOs.Timing.Time, Common.Models.Timing.Time>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
-                .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
-                .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
-                .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
+                .ForMember(dst => dst.Created, opt => opt.ResolveUsing(db =>
+                {
+                    return db.UtcCreated.ToSystemTime();
+                }))
+                .ForMember(dst => dst.Modified, opt => opt.ResolveUsing(db =>
+                {
+                    return db.UtcModified.ToSystemTime();
+                }))
+                .ForMember(dst => dst.Disabled, opt => opt.ResolveUsing(db =>
+                {
+                    return db.UtcDisabled.ToSystemTime();
+                }))
                 .ForMember(dst => dst.CreatedBy, opt => opt.ResolveUsing(db =>
                 {
                     return new Common.Models.Security.User()
@@ -76,8 +85,14 @@ namespace OpenLawOffice.Data.DBOs.Timing
                     };
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.Start, opt => opt.MapFrom(src => src.Start))
-                .ForMember(dst => dst.Stop, opt => opt.MapFrom(src => src.Stop))
+                .ForMember(dst => dst.Start, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Start.ToSystemTime();
+                }))
+                .ForMember(dst => dst.Stop, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Stop.ToSystemTime();
+                }))
                 .ForMember(dst => dst.Worker, opt => opt.ResolveUsing(db =>
                 {
                     return new Common.Models.Contacts.Contact()
@@ -88,9 +103,18 @@ namespace OpenLawOffice.Data.DBOs.Timing
                 }));
 
             Mapper.CreateMap<Common.Models.Timing.Time, DBOs.Timing.Time>()
-                .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
-                .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
-                .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
+                .ForMember(dst => dst.UtcCreated, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Created.ToDbTime();
+                }))
+                .ForMember(dst => dst.UtcModified, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Modified.ToDbTime();
+                }))
+                .ForMember(dst => dst.UtcDisabled, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Disabled.ToDbTime();
+                }))
                 .ForMember(dst => dst.CreatedByUserId, opt => opt.ResolveUsing(model =>
                 {
                     if (model.CreatedBy == null || !model.CreatedBy.Id.HasValue)
@@ -109,8 +133,14 @@ namespace OpenLawOffice.Data.DBOs.Timing
                     return model.DisabledBy.Id;
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.Start, opt => opt.MapFrom(src => src.Start))
-                .ForMember(dst => dst.Stop, opt => opt.MapFrom(src => src.Stop))
+                .ForMember(dst => dst.Start, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Start.ToDbTime();
+                }))
+                .ForMember(dst => dst.Stop, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Stop.ToDbTime();
+                }))
                 .ForMember(dst => dst.WorkerContactId, opt => opt.ResolveUsing(model =>
                 {
                     if (model.Worker == null) return null;

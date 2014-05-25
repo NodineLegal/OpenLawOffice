@@ -83,7 +83,7 @@ namespace OpenLawOffice.Data.Notes
         {
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
             model.CreatedBy = model.ModifiedBy = creator;
-            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            model.Created = model.Modified = DateTime.UtcNow;
             DBOs.Notes.Note dbo = Mapper.Map<DBOs.Notes.Note>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
@@ -106,8 +106,8 @@ namespace OpenLawOffice.Data.Notes
                 Matter = new Common.Models.Matters.Matter() { Id = matterId },
                 CreatedBy = creator,
                 ModifiedBy = creator,
-                UtcCreated = DateTime.UtcNow,
-                UtcModified = DateTime.UtcNow
+                Created = DateTime.UtcNow,
+                Modified = DateTime.UtcNow
             }, creator);
         }
 
@@ -121,8 +121,23 @@ namespace OpenLawOffice.Data.Notes
                 Task = new Common.Models.Tasks.Task { Id = taskId },
                 CreatedBy = creator,
                 ModifiedBy = creator,
-                UtcCreated = DateTime.UtcNow,
-                UtcModified = DateTime.UtcNow
+                Created = DateTime.UtcNow,
+                Modified = DateTime.UtcNow
+            }, creator);
+        }
+
+        public static Common.Models.Events.EventNote RelateEvent(Common.Models.Notes.Note model,
+            Guid eventId, Common.Models.Security.User creator)
+        {
+            return Events.EventNote.Create(new Common.Models.Events.EventNote()
+            {
+                Id = Guid.NewGuid(),
+                Note = model,
+                Event = new Common.Models.Events.Event() { Id = eventId },
+                CreatedBy = creator,
+                ModifiedBy = creator,
+                Created = DateTime.UtcNow,
+                Modified = DateTime.UtcNow
             }, creator);
         }
 
@@ -130,7 +145,7 @@ namespace OpenLawOffice.Data.Notes
             Common.Models.Security.User modifier)
         {
             model.ModifiedBy = modifier;
-            model.UtcModified = DateTime.UtcNow;
+            model.Modified = DateTime.UtcNow;
             DBOs.Notes.Note dbo = Mapper.Map<DBOs.Notes.Note>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())

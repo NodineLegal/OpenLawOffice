@@ -46,9 +46,18 @@ namespace OpenLawOffice.Data.DBOs.Security
             Dapper.SqlMapper.SetTypeMap(typeof(AreaAcl), new ColumnAttributeTypeMapper<AreaAcl>());
             Mapper.CreateMap<DBOs.Security.AreaAcl, Common.Models.Security.AreaAcl>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
-                .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
-                .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
-                .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
+                .ForMember(dst => dst.Created, opt => opt.ResolveUsing(db =>
+                {
+                    return db.UtcCreated.ToSystemTime();
+                }))
+                .ForMember(dst => dst.Modified, opt => opt.ResolveUsing(db =>
+                {
+                    return db.UtcModified.ToSystemTime();
+                }))
+                .ForMember(dst => dst.Disabled, opt => opt.ResolveUsing(db =>
+                {
+                    return db.UtcDisabled.ToSystemTime();
+                }))
                 .ForMember(dst => dst.CreatedBy, opt => opt.ResolveUsing(db =>
                 {
                     return new Common.Models.Security.User()
@@ -95,9 +104,18 @@ namespace OpenLawOffice.Data.DBOs.Security
                 .ForMember(dst => dst.DenyFlags, opt => opt.MapFrom(src => src.DenyFlags));
 
             Mapper.CreateMap<Common.Models.Security.AreaAcl, DBOs.Security.AreaAcl>()
-                .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
-                .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
-                .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
+                .ForMember(dst => dst.UtcCreated, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Created.ToDbTime();
+                }))
+                .ForMember(dst => dst.UtcModified, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Modified.ToDbTime();
+                }))
+                .ForMember(dst => dst.UtcDisabled, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Disabled.ToDbTime();
+                }))
                 .ForMember(dst => dst.CreatedByUserId, opt => opt.ResolveUsing(model =>
                 {
                     if (model.CreatedBy == null || !model.CreatedBy.Id.HasValue)

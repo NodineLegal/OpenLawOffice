@@ -94,7 +94,7 @@ namespace OpenLawOffice.WebClient.Controllers
 
             if (currentResponsibleUser != null)
             { // Update
-                if (!currentResponsibleUser.UtcDisabled.HasValue)
+                if (!currentResponsibleUser.Disabled.HasValue)
                 {
                     ModelState.AddModelError("User", "This user already has a responsibility.");
 

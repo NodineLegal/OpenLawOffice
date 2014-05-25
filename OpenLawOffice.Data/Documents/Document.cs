@@ -88,7 +88,7 @@ namespace OpenLawOffice.Data.Documents
         {
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
             model.CreatedBy = model.ModifiedBy = creator;
-            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            model.Created = model.Modified = DateTime.UtcNow;
             DBOs.Documents.Document dbo = Mapper.Map<DBOs.Documents.Document>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
@@ -111,8 +111,8 @@ namespace OpenLawOffice.Data.Documents
                 Matter = new Common.Models.Matters.Matter() { Id = matterId },
                 CreatedBy = creator,
                 ModifiedBy = creator,
-                UtcCreated = DateTime.UtcNow,
-                UtcModified = DateTime.UtcNow
+                Created = DateTime.UtcNow,
+                Modified = DateTime.UtcNow
             }, creator);
         }
 
@@ -130,8 +130,8 @@ namespace OpenLawOffice.Data.Documents
                 Task = new Common.Models.Tasks.Task { Id = taskId },
                 CreatedBy = creator,
                 ModifiedBy = creator,
-                UtcCreated = DateTime.UtcNow,
-                UtcModified = DateTime.UtcNow
+                Created = DateTime.UtcNow,
+                Modified = DateTime.UtcNow
             }, creator);
         }
 
@@ -139,7 +139,7 @@ namespace OpenLawOffice.Data.Documents
             Common.Models.Security.User modifier)
         {
             model.ModifiedBy = modifier;
-            model.UtcModified = DateTime.UtcNow;
+            model.Modified = DateTime.UtcNow;
             DBOs.Documents.Document dbo = Mapper.Map<DBOs.Documents.Document>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
@@ -171,7 +171,7 @@ namespace OpenLawOffice.Data.Documents
         {
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
             model.CreatedBy = model.ModifiedBy = creator;
-            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            model.Created = model.Modified = DateTime.UtcNow;
 
             Common.Models.Documents.Version currentVersion = GetCurrentVersion(documentId);
             if (currentVersion == null)

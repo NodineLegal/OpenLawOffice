@@ -65,7 +65,7 @@ namespace OpenLawOffice.Data.Matters
         public static Common.Models.Matters.MatterContact Create(Common.Models.Matters.MatterContact model,
             Common.Models.Security.User creator)
         {
-            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            model.Created = model.Modified = DateTime.UtcNow;
             model.CreatedBy = model.ModifiedBy = creator;
 
             DBOs.Matters.MatterContact dbo = Mapper.Map<DBOs.Matters.MatterContact>(model);
@@ -85,7 +85,7 @@ namespace OpenLawOffice.Data.Matters
             Common.Models.Security.User modifier)
         {
             model.ModifiedBy = modifier;
-            model.UtcModified = DateTime.UtcNow;
+            model.Modified = DateTime.UtcNow;
             DBOs.Matters.MatterContact dbo = Mapper.Map<DBOs.Matters.MatterContact>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
@@ -102,7 +102,7 @@ namespace OpenLawOffice.Data.Matters
             Common.Models.Security.User disabler)
         {
             model.DisabledBy = disabler;
-            model.UtcDisabled = DateTime.UtcNow;
+            model.Disabled = DateTime.UtcNow;
 
             DataHelper.Disable<Common.Models.Matters.MatterContact,
                 DBOs.Matters.MatterContact>("matter_contact", disabler.Id.Value, model.Id);
@@ -114,9 +114,9 @@ namespace OpenLawOffice.Data.Matters
             Common.Models.Security.User enabler)
         {
             model.ModifiedBy = enabler;
-            model.UtcModified = DateTime.UtcNow;
+            model.Modified = DateTime.UtcNow;
             model.DisabledBy = null;
-            model.UtcDisabled = null;
+            model.Disabled = null;
 
             DataHelper.Enable<Common.Models.Matters.MatterContact,
                 DBOs.Matters.MatterContact>("matter_contact", enabler.Id.Value, model.Id);

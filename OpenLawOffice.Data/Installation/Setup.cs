@@ -357,7 +357,7 @@ namespace OpenLawOffice.Data.Installation
                 };
 
                 Documents.Document.CreateNewVersion(document1.Id.Value, version1, user);
-                System.IO.File.Copy(installDirPath + "fw4.pdf", FileStorage.Instance.CurrentVersionPath + version1.Id.Value.ToString() + "." + version1.Extension);
+                System.IO.File.Copy(installDirPath + "fw4.pdf", Common.Settings.Manager.Instance.FileStorage.CurrentVersionPath + version1.Id.Value.ToString() + "." + version1.Extension);
             }
 
             Common.Models.Documents.Document document2 = Documents.Document.Get(Guid.Parse("d861cfa7-f446-44d1-8ed1-e7a3f8a495e1"));
@@ -384,7 +384,7 @@ namespace OpenLawOffice.Data.Installation
                 };
 
                 Documents.Document.CreateNewVersion(document2.Id.Value, version2, user);
-                System.IO.File.Copy(installDirPath + "bitcoin.pdf", FileStorage.Instance.CurrentVersionPath + version2.Id.Value.ToString() + "." + version2.Extension);
+                System.IO.File.Copy(installDirPath + "bitcoin.pdf", Common.Settings.Manager.Instance.FileStorage.CurrentVersionPath + version2.Id.Value.ToString() + "." + version2.Extension);
             }
         }
 

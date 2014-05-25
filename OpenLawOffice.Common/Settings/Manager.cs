@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="EventResponsibleUser.cs" company="Nodine Legal, LLC">
+// <copyright file="Manager.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,21 +19,36 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.Common.Models.Calendar
+namespace OpenLawOffice.Common.Settings
 {
     using System;
+    using System.Configuration;
 
     /// <summary>
-    /// Relates a user to an event
+    /// TODO: Update summary.
     /// </summary>
-    public class EventResponsibleUser : Core
+    public class Manager : Singleton<Manager>
     {
-        public Guid? Id { get; set; }
+        private OloSection _config;
 
-        public Event Event { get; set; }
+        public OloSection Configuration
+        {
+            get { return _config; }
+        }
 
-        public Security.User User { get; set; }
+        public FileStorageSettings FileStorage
+        {
+            get { return _config.FileStorage; }
+        }
 
-        public string Responsibility { get; set; }
+        public SystemSettings System
+        {
+            get { return _config.System; }
+        }
+
+        public Manager()
+        {
+            _config = (OloSection)ConfigurationManager.GetSection("openLawOffice");
+        }
     }
 }

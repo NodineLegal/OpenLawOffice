@@ -19,7 +19,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.Data.DBOs.Calendar
+namespace OpenLawOffice.Data.DBOs.Events
 {
     using System;
     using AutoMapper;
@@ -45,11 +45,20 @@ namespace OpenLawOffice.Data.DBOs.Calendar
         public void BuildMappings()
         {
             Dapper.SqlMapper.SetTypeMap(typeof(EventResponsibleUser), new ColumnAttributeTypeMapper<EventResponsibleUser>());
-            Mapper.CreateMap<DBOs.Calendar.EventResponsibleUser, Common.Models.Calendar.EventResponsibleUser>()
+            Mapper.CreateMap<DBOs.Events.EventResponsibleUser, Common.Models.Events.EventResponsibleUser>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
-                .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
-                .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
-                .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
+                .ForMember(dst => dst.Created, opt => opt.ResolveUsing(db =>
+                {
+                    return db.UtcCreated.ToSystemTime();
+                }))
+                .ForMember(dst => dst.Modified, opt => opt.ResolveUsing(db =>
+                {
+                    return db.UtcModified.ToSystemTime();
+                }))
+                .ForMember(dst => dst.Disabled, opt => opt.ResolveUsing(db =>
+                {
+                    return db.UtcDisabled.ToSystemTime();
+                }))
                 .ForMember(dst => dst.CreatedBy, opt => opt.ResolveUsing(db =>
                 {
                     return new Common.Models.Security.User()
@@ -78,7 +87,7 @@ namespace OpenLawOffice.Data.DBOs.Calendar
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Event, opt => opt.ResolveUsing(db =>
                 {
-                    return new Common.Models.Calendar.Event()
+                    return new Common.Models.Events.Event()
                     {
                         Id = db.EventId,
                         IsStub = true
@@ -94,10 +103,19 @@ namespace OpenLawOffice.Data.DBOs.Calendar
                 }))
                 .ForMember(dst => dst.Responsibility, opt => opt.MapFrom(src => src.Responsibility));
 
-            Mapper.CreateMap<Common.Models.Calendar.EventResponsibleUser, DBOs.Calendar.EventResponsibleUser>()
-                .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
-                .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
-                .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
+            Mapper.CreateMap<Common.Models.Events.EventResponsibleUser, DBOs.Events.EventResponsibleUser>()
+                .ForMember(dst => dst.UtcCreated, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Created.ToDbTime();
+                }))
+                .ForMember(dst => dst.UtcModified, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Modified.ToDbTime();
+                }))
+                .ForMember(dst => dst.UtcDisabled, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Disabled.ToDbTime();
+                }))
                 .ForMember(dst => dst.CreatedByUserId, opt => opt.ResolveUsing(model =>
                 {
                     if (model.CreatedBy == null || !model.CreatedBy.Id.HasValue)

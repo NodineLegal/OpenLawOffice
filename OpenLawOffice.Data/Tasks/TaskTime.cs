@@ -49,7 +49,7 @@ namespace OpenLawOffice.Data.Tasks
             Common.Models.Security.User creator)
         {
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
-            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            model.Created = model.Modified = DateTime.UtcNow;
             model.CreatedBy = model.ModifiedBy = creator;
 
             DBOs.Tasks.TaskTime dbo = Mapper.Map<DBOs.Tasks.TaskTime>(model);

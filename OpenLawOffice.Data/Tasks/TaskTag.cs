@@ -74,7 +74,7 @@ namespace OpenLawOffice.Data.Tasks
         {
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
             model.CreatedBy = model.ModifiedBy = creator;
-            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            model.Created = model.Modified = DateTime.UtcNow;
 
             Common.Models.Tagging.TagCategory existingTagCat = Tagging.TagCategory.Get(model.TagCategory.Name);
 
@@ -100,7 +100,7 @@ namespace OpenLawOffice.Data.Tasks
             Common.Models.Security.User modifier)
         {
             model.ModifiedBy = modifier;
-            model.UtcModified = DateTime.UtcNow;
+            model.Modified = DateTime.UtcNow;
             DBOs.Tasks.TaskTag dbo = Mapper.Map<DBOs.Tasks.TaskTag>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
@@ -178,7 +178,7 @@ namespace OpenLawOffice.Data.Tasks
                 tag.TagCategory = newTagCat;
 
                 // If new tagcat was disabled, it needs enabled
-                if (newTagCat.UtcDisabled.HasValue)
+                if (newTagCat.Disabled.HasValue)
                 {
                     tag.TagCategory = Tagging.TagCategory.Enable(tag.TagCategory, modifier);
                 }
@@ -203,7 +203,7 @@ namespace OpenLawOffice.Data.Tasks
             Common.Models.Security.User disabler)
         {
             model.DisabledBy = disabler;
-            model.UtcDisabled = DateTime.UtcNow;
+            model.Disabled = DateTime.UtcNow;
 
             DataHelper.Disable<Common.Models.Matters.MatterContact,
                 DBOs.Matters.MatterContact>("task_tag", disabler.Id.Value, model.Id);
@@ -215,9 +215,9 @@ namespace OpenLawOffice.Data.Tasks
             Common.Models.Security.User enabler)
         {
             model.ModifiedBy = enabler;
-            model.UtcModified = DateTime.UtcNow;
+            model.Modified = DateTime.UtcNow;
             model.DisabledBy = null;
-            model.UtcDisabled = null;
+            model.Disabled = null;
 
             DataHelper.Enable<Common.Models.Matters.MatterContact,
                 DBOs.Matters.MatterContact>("task_tag", enabler.Id.Value, model.Id);

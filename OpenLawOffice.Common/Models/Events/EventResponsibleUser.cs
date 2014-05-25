@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="GlobalFilterSettings.cs" company="Nodine Legal, LLC">
+// <copyright file="EventResponsibleUser.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,16 +19,21 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.WebClient
+namespace OpenLawOffice.Common.Models.Events
 {
-    using System.Configuration;
+    using System;
 
-    public class GlobalFilterSettings : ConfigurationSection
+    /// <summary>
+    /// Relates a user to an event
+    /// </summary>
+    public class EventResponsibleUser : Core
     {
-        [ConfigurationProperty("tagFilters", IsDefaultCollection = false)]
-        public TagFilterSettingsCollection TagFilters
-        {
-            get { return (TagFilterSettingsCollection)base["tagFilters"]; }
-        }
+        public Guid? Id { get; set; }
+
+        public Event Event { get; set; }
+
+        public Security.User User { get; set; }
+
+        public string Responsibility { get; set; }
     }
 }

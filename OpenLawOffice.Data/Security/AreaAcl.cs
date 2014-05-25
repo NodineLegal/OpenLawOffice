@@ -64,7 +64,7 @@ namespace OpenLawOffice.Data.Security
             Common.Models.Security.User creator)
         {
             model.CreatedBy = model.ModifiedBy = creator;
-            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            model.Created = model.Modified = DateTime.UtcNow;
             DBOs.Security.AreaAcl dbo = Mapper.Map<DBOs.Security.AreaAcl>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
@@ -82,7 +82,7 @@ namespace OpenLawOffice.Data.Security
             Common.Models.Security.User modifier)
         {
             model.ModifiedBy = modifier;
-            model.UtcModified = DateTime.UtcNow;
+            model.Modified = DateTime.UtcNow;
             DBOs.Security.AreaAcl dbo = Mapper.Map<DBOs.Security.AreaAcl>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
@@ -99,7 +99,7 @@ namespace OpenLawOffice.Data.Security
             Common.Models.Security.User disabler)
         {
             model.DisabledBy = disabler;
-            model.UtcDisabled = DateTime.UtcNow;
+            model.Disabled = DateTime.UtcNow;
 
             DataHelper.Disable<Common.Models.Security.AreaAcl,
                 DBOs.Security.AreaAcl>("area_acl", disabler.Id.Value, model.Id);
@@ -111,9 +111,9 @@ namespace OpenLawOffice.Data.Security
             Common.Models.Security.User enabler)
         {
             model.ModifiedBy = enabler;
-            model.UtcModified = DateTime.UtcNow;
+            model.Modified = DateTime.UtcNow;
             model.DisabledBy = null;
-            model.UtcDisabled = null;
+            model.Disabled = null;
 
             DataHelper.Enable<Common.Models.Security.AreaAcl,
                 DBOs.Security.AreaAcl>("area_acl", enabler.Id.Value, model.Id);

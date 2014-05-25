@@ -44,7 +44,7 @@ namespace OpenLawOffice.Data.Security
         {
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
             model.CreatedBy = model.ModifiedBy = creator;
-            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            model.Created = model.Modified = DateTime.UtcNow;
             DBOs.Security.SecuredResourceAcl dbo = Mapper.Map<DBOs.Security.SecuredResourceAcl>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())

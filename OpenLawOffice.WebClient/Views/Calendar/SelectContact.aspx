@@ -35,7 +35,7 @@
     <div id="pageInfoDialog" title="Help">
         <p>
         <span style="font-weight: bold; text-decoration: underline;">Info:</span>
-        To view a contact's calendar, click that contact's username.<br /><br />
+        To view a contact's calendar, click that contact's name.<br /><br />
         <span style="font-weight: bold; text-decoration: underline;">Usage:</span>
         Clicking the contact's name will show a calendar for that contact.
         </p>

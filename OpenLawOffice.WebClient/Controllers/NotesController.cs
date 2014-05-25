@@ -116,7 +116,7 @@ namespace OpenLawOffice.WebClient.Controllers
         {
             Common.Models.Security.User currentUser;
             Common.Models.Notes.Note model;
-            Guid matterid;
+            Guid matterid, eventid;
             long taskid;
 
             currentUser = UserCache.Instance.Lookup(Request);
@@ -137,8 +137,14 @@ namespace OpenLawOffice.WebClient.Controllers
 
                 Data.Notes.Note.RelateTask(model, taskid, currentUser);
             }
+            else if (Request["EventId"] != null)
+            {
+                eventid = Guid.Parse(Request["EventId"]);
+
+                Data.Notes.Note.RelateEvent(model, eventid, currentUser);
+            }
             else
-                throw new HttpRequestValidationException("Must specify a MatterId or a TaskId");
+                throw new HttpRequestValidationException("Must specify a MatterId, TaskId or EventId");
 
             return RedirectToAction("Details", new { Id = model.Id });
         }

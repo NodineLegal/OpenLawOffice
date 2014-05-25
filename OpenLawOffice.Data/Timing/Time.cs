@@ -60,7 +60,7 @@ namespace OpenLawOffice.Data.Timing
         {
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
             model.CreatedBy = model.ModifiedBy = creator;
-            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            model.Created = model.Modified = DateTime.UtcNow;
             DBOs.Timing.Time dbo = Mapper.Map<DBOs.Timing.Time>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
@@ -77,7 +77,7 @@ namespace OpenLawOffice.Data.Timing
             Common.Models.Security.User modifier)
         {
             model.ModifiedBy = modifier;
-            model.UtcModified = DateTime.UtcNow;
+            model.Modified = DateTime.UtcNow;
             DBOs.Timing.Time dbo = Mapper.Map<DBOs.Timing.Time>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
@@ -98,8 +98,8 @@ namespace OpenLawOffice.Data.Timing
                 Id = Guid.NewGuid(),
                 Task = new Common.Models.Tasks.Task() { Id = taskId, IsStub = true },
                 Time = timeModel,
-                UtcCreated = DateTime.UtcNow,
-                UtcModified = DateTime.UtcNow,
+                Created = DateTime.UtcNow,
+                Modified = DateTime.UtcNow,
                 CreatedBy = creator,
                 ModifiedBy = creator
             };

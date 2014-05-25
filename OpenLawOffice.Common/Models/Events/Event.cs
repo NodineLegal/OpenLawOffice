@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="EventAssignedContact.cs" company="Nodine Legal, LLC">
+// <copyright file="Event.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,21 +19,27 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.Common.Models.Calendar
+namespace OpenLawOffice.Common.Models.Events
 {
     using System;
 
     /// <summary>
-    /// Relates an event to a task
+    /// TODO: Update summary.
     /// </summary>
-    public class EventAssignedContact : Core
+    public class Event : Core
     {
         public Guid? Id { get; set; }
 
-        public Event Event { get; set; }
+        public string Title { get; set; }
 
-        public Contacts.Contact Contact { get; set; }
+        public bool AllDay { get; set; }
 
-        public Tasks.AssignmentType AssignmentType { get; set; }
+        public DateTime Start { get; set; }
+
+        public DateTime? End { get; set; }
+
+        public string Location { get; set; }
+
+        public string Description { get; set; }
     }
 }

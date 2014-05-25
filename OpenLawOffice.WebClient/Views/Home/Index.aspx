@@ -24,7 +24,7 @@
             <td>
                 <% if (item.DueDate.HasValue)
                    { %>
-                <%: String.Format("{0:g}", DateTime.SpecifyKind(item.DueDate.Value, DateTimeKind.Utc).ToLocalTime()) %>
+                <%: String.Format("{0:g}", item.DueDate.Value) %>
                 <% } %>
             </td>
         </tr>

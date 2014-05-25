@@ -58,7 +58,7 @@ namespace OpenLawOffice.Data.Tasks
             Common.Models.Security.User creator)
         {
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
-            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            model.Created = model.Modified = DateTime.UtcNow;
             model.CreatedBy = model.ModifiedBy = creator;
 
             DBOs.Tasks.TaskAssignedContact dbo = Mapper.Map<DBOs.Tasks.TaskAssignedContact>(model);
@@ -68,7 +68,6 @@ namespace OpenLawOffice.Data.Tasks
                 conn.Execute("INSERT INTO \"task_assigned_contact\" (\"id\", \"task_id\", \"contact_id\", \"assignment_type\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
                     "VALUES (@Id, @TaskId, @ContactId, @AssignmentType, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);
-                model.Id = conn.Query<DBOs.Tasks.TaskAssignedContact>("SELECT currval(pg_get_serial_sequence('task_assigned_contact', 'id')) AS \"id\"").Single().Id;
             }
 
             return model;
@@ -78,7 +77,7 @@ namespace OpenLawOffice.Data.Tasks
             Common.Models.Security.User modifier)
         {
             model.ModifiedBy = modifier;
-            model.UtcModified = DateTime.UtcNow;
+            model.Modified = DateTime.UtcNow;
             DBOs.Tasks.TaskAssignedContact dbo = Mapper.Map<DBOs.Tasks.TaskAssignedContact>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
@@ -95,7 +94,7 @@ namespace OpenLawOffice.Data.Tasks
             Common.Models.Security.User disabler)
         {
             model.DisabledBy = disabler;
-            model.UtcDisabled = DateTime.UtcNow;
+            model.Disabled = DateTime.UtcNow;
 
             DataHelper.Disable<Common.Models.Tasks.TaskAssignedContact,
                 DBOs.Tasks.TaskAssignedContact>("task_assigned_contact", disabler.Id.Value, model.Id);
@@ -107,9 +106,9 @@ namespace OpenLawOffice.Data.Tasks
             Common.Models.Security.User enabler)
         {
             model.ModifiedBy = enabler;
-            model.UtcModified = DateTime.UtcNow;
+            model.Modified = DateTime.UtcNow;
             model.DisabledBy = null;
-            model.UtcDisabled = null;
+            model.Disabled = null;
 
             DataHelper.Enable<Common.Models.Tasks.TaskAssignedContact,
                 DBOs.Tasks.TaskAssignedContact>("task_assigned_contact", enabler.Id.Value, model.Id);

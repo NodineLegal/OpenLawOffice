@@ -38,7 +38,7 @@ namespace OpenLawOffice.WebClient.Controllers
 
             version = Data.Documents.Document.GetCurrentVersion(id);
 
-            return File(Data.FileStorage.Instance.CurrentVersionPath + version.Id.ToString() + "." + version.Extension,
+            return File(Common.Settings.Manager.Instance.FileStorage.CurrentVersionPath + version.Id.ToString() + "." + version.Extension,
                 version.Mime, version.Filename + "." + version.Extension);
         }
 
@@ -125,11 +125,11 @@ namespace OpenLawOffice.WebClient.Controllers
             };
 
             // Save file
-            file.SaveAs(Data.FileStorage.Instance.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
+            file.SaveAs(Common.Settings.Manager.Instance.FileStorage.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
 
             // Calculate the MD5 checksum
-            version.Md5 = Data.FileStorage.CalculateMd5(
-                Data.FileStorage.Instance.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
+            version.Md5 = Common.Settings.FileStorageSettings.CalculateMd5(
+                Common.Settings.Manager.Instance.FileStorage.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
 
             // Version
             Data.Documents.Document.CreateNewVersion(model.Id.Value, version, currentUser);

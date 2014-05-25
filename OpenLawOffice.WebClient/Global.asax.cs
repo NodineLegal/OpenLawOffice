@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using System.Web.Configuration;
 
 namespace OpenLawOffice.WebClient
 {
@@ -32,6 +33,9 @@ namespace OpenLawOffice.WebClient
             AreaRegistration.RegisterAllAreas();
 
             RegisterRoutes(RouteTable.Routes);
+
+            //Common.Settings.Manager.Instance.SetConfig(WebConfigurationManager.OpenWebConfiguration("~/"));
+            //System.Configuration.ConfigurationManager.OpenExeConfiguration(System.Reflection.Assembly.GetAssembly(typeof(MvcApplication)).Location);
         }
 
         // Credit: http://www.codeproject.com/Articles/422572/Exception-Handling-in-ASP-NET-MVC

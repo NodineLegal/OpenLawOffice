@@ -58,12 +58,12 @@ namespace OpenLawOffice.WebClient.Controllers
 
             if (currentVersion.VersionNumber == version.VersionNumber)
             {
-                return File(Data.FileStorage.Instance.CurrentVersionPath + version.Id.ToString() + "." + version.Extension,
+                return File(Common.Settings.Manager.Instance.FileStorage.CurrentVersionPath + version.Id.ToString() + "." + version.Extension,
                     version.Mime, version.Filename + "." + version.Extension);
             }
             else
             {
-                return File(Data.FileStorage.Instance.PreviousVersionsPath + version.Id.ToString() + "." + version.Extension,
+                return File(Common.Settings.Manager.Instance.FileStorage.PreviousVersionsPath + version.Id.ToString() + "." + version.Extension,
                    version.Mime, version.Filename + "." + version.Extension);
             }
         }
@@ -129,20 +129,20 @@ namespace OpenLawOffice.WebClient.Controllers
             if (currentVersion == null)
             {
                 // Save file
-                file.SaveAs(Data.FileStorage.Instance.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
+                file.SaveAs(Common.Settings.Manager.Instance.FileStorage.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
             }
             else
             {
                 // Move current to previous
-                Data.FileStorage.Instance.MoveCurrentToPrevious(currentVersion.Id.Value + "." + currentVersion.Extension);
+                Common.Settings.Manager.Instance.FileStorage.MoveCurrentToPrevious(currentVersion.Id.Value + "." + currentVersion.Extension);
 
                 // Save new
-                file.SaveAs(Data.FileStorage.Instance.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
+                file.SaveAs(Common.Settings.Manager.Instance.FileStorage.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
             }
 
             // Calculate the MD5 checksum
-            version.Md5 = Data.FileStorage.CalculateMd5(
-                Data.FileStorage.Instance.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
+            version.Md5 = Common.Settings.FileStorageSettings.CalculateMd5(
+                Common.Settings.Manager.Instance.FileStorage.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
 
             //Version
             Data.Documents.Document.CreateNewVersion(docModel.Id.Value, version, currentUser);

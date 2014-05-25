@@ -65,9 +65,18 @@ namespace OpenLawOffice.Data.DBOs.Tasks
             Dapper.SqlMapper.SetTypeMap(typeof(Task), new ColumnAttributeTypeMapper<Task>());
             Mapper.CreateMap<DBOs.Tasks.Task, Common.Models.Tasks.Task>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
-                .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
-                .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
-                .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
+                .ForMember(dst => dst.Created, opt => opt.ResolveUsing(db =>
+                {
+                    return db.UtcCreated.ToSystemTime();
+                }))
+                .ForMember(dst => dst.Modified, opt => opt.ResolveUsing(db =>
+                {
+                    return db.UtcModified.ToSystemTime();
+                }))
+                .ForMember(dst => dst.Disabled, opt => opt.ResolveUsing(db =>
+                {
+                    return db.UtcDisabled.ToSystemTime();
+                }))
                 .ForMember(dst => dst.CreatedBy, opt => opt.ResolveUsing(db =>
                 {
                     return new Common.Models.Security.User()
@@ -107,10 +116,22 @@ namespace OpenLawOffice.Data.DBOs.Tasks
                 }))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dst => dst.Description, opt => opt.MapFrom(src => src.Description))
-                .ForMember(dst => dst.ProjectedStart, opt => opt.MapFrom(src => src.ProjectedStart))
-                .ForMember(dst => dst.DueDate, opt => opt.MapFrom(src => src.DueDate))
-                .ForMember(dst => dst.ProjectedEnd, opt => opt.MapFrom(src => src.ProjectedEnd))
-                .ForMember(dst => dst.ActualEnd, opt => opt.MapFrom(src => src.ActualEnd))
+                .ForMember(dst => dst.ProjectedStart, opt => opt.ResolveUsing(db =>
+                {
+                    return db.ProjectedStart.ToSystemTime();
+                }))
+                .ForMember(dst => dst.DueDate, opt => opt.ResolveUsing(db =>
+                {
+                    return db.DueDate.ToSystemTime();
+                }))
+                .ForMember(dst => dst.ProjectedEnd, opt => opt.ResolveUsing(db =>
+                {
+                    return db.ProjectedEnd.ToSystemTime();
+                }))
+                .ForMember(dst => dst.ActualEnd, opt => opt.ResolveUsing(db =>
+                {
+                    return db.ActualEnd.ToSystemTime();
+                }))
                 .ForMember(dst => dst.IsGroupingTask, opt => opt.MapFrom(src => src.IsGroupingTask))
                 .ForMember(dst => dst.SequentialPredecessor, opt => opt.ResolveUsing(db =>
                 {
@@ -125,9 +146,18 @@ namespace OpenLawOffice.Data.DBOs.Tasks
                 }));
 
             Mapper.CreateMap<Common.Models.Tasks.Task, DBOs.Tasks.Task>()
-                .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
-                .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
-                .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
+                .ForMember(dst => dst.UtcCreated, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Created.ToDbTime();
+                }))
+                .ForMember(dst => dst.UtcModified, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Modified.ToDbTime();
+                }))
+                .ForMember(dst => dst.UtcDisabled, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Disabled.ToDbTime();
+                }))
                 .ForMember(dst => dst.CreatedByUserId, opt => opt.ResolveUsing(model =>
                 {
                     if (model.CreatedBy == null || !model.CreatedBy.Id.HasValue)

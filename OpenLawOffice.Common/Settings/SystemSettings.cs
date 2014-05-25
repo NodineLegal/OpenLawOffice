@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="TagFilterSettingElement.cs" company="Nodine Legal, LLC">
+// <copyright file="SystemSettings.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,41 +19,39 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.WebClient
+namespace OpenLawOffice.Common.Settings
 {
+    using System;
     using System.Configuration;
 
-    public class TagFilterSettingElement : ConfigurationElement
+    /// <summary>
+    /// TODO: Update summary.
+    /// </summary>
+    public class SystemSettings : ConfigurationElement
     {
-        [ConfigurationProperty("name", IsRequired = false, IsKey = true)]
-        public string Name
+        [ConfigurationProperty("fileStorage", IsRequired = true)]
+        public FileStorageSettings FileStorage
         {
-            get { return (string)this["name"]; }
-            set { this["name"] = value; }
+            get { return (FileStorageSettings)base["fileStorage"]; }
+            set { base["fileStorage"] = value; }
         }
 
-        [ConfigurationProperty("category", IsRequired = false)]
-        public string Category
+        [ConfigurationProperty("timezone", IsRequired = true)]
+        public string Timezone
         {
-            get { return (string)this["category"]; }
-            set { this["category"] = value; }
+            get { return (string)base["timezone"]; }
+            set { base["timezone"] = value; }
         }
 
-        [ConfigurationProperty("tag", IsRequired = true)]
-        public string Tag
+        [ConfigurationProperty("globalTaskTagFilters", IsDefaultCollection = false)]
+        public TagFilterCollection GlobalTaskTagFilters
         {
-            get { return (string)this["tag"]; }
-            set { this["tag"] = value; }
+            get { return (TagFilterCollection)base["globalTaskTagFilters"]; }
         }
 
-        public TagFilterSettingElement()
+        public static SystemSettings Load()
         {
-        }
-
-        public TagFilterSettingElement(string category, string tag)
-        {
-            Category = category;
-            Tag = tag;
+            return (SystemSettings)ConfigurationManager.GetSection("OpenLawOffice");
         }
     }
 }

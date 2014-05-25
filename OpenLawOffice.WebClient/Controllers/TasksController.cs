@@ -309,24 +309,12 @@ namespace OpenLawOffice.WebClient.Controllers
             DateTime? stop = null;
             List<dynamic> jsonList;
             List<Common.Models.Settings.TagFilter> tagFilters;
-            GlobalFilterSettings filterSettings;
             if (Request["start"] != null)
                 start = Common.Utilities.UnixTimeStampToDateTime(double.Parse(Request["start"]));
             if (Request["stop"] != null)
                 stop = Common.Utilities.UnixTimeStampToDateTime(double.Parse(Request["stop"]));
-            
-            filterSettings = ConfigurationManager.GetSection("globalFilterSettings") as GlobalFilterSettings;
-            tagFilters = new List<Common.Models.Settings.TagFilter>();
-            System.Collections.IEnumerator ie = filterSettings.TagFilters.GetEnumerator();
-            while (ie.MoveNext())
-            {
-                TagFilterSettingElement ele = (TagFilterSettingElement)ie.Current;
-                tagFilters.Add(new Common.Models.Settings.TagFilter()
-                {
-                    Category = ele.Category,
-                    Tag = ele.Tag
-                });
-            }
+
+            tagFilters = Common.Settings.Manager.Instance.System.GlobalTaskTagFilters.ToUserSettingsModel();
 
             jsonList = new List<dynamic>();
 
@@ -399,7 +387,6 @@ namespace OpenLawOffice.WebClient.Controllers
             List<dynamic> jsonList;
             Common.Models.Contacts.Contact contact;
             List<Common.Models.Settings.TagFilter> tagFilters;
-            GlobalFilterSettings filterSettings;
             if (Request["start"] != null)
                 start = Common.Utilities.UnixTimeStampToDateTime(double.Parse(Request["start"]));
             if (Request["stop"] != null)
@@ -415,18 +402,7 @@ namespace OpenLawOffice.WebClient.Controllers
 
             contact = Data.Contacts.Contact.Get(id.Value);
 
-            filterSettings = ConfigurationManager.GetSection("globalFilterSettings") as GlobalFilterSettings;
-            tagFilters = new List<Common.Models.Settings.TagFilter>();
-            System.Collections.IEnumerator ie = filterSettings.TagFilters.GetEnumerator();
-            while (ie.MoveNext())
-            {
-                TagFilterSettingElement ele = (TagFilterSettingElement)ie.Current;
-                tagFilters.Add(new Common.Models.Settings.TagFilter()
-                    {
-                        Category = ele.Category,
-                        Tag = ele.Tag
-                    });
-            }
+            tagFilters = Common.Settings.Manager.Instance.System.GlobalTaskTagFilters.ToUserSettingsModel();
 
             jsonList = new List<dynamic>();
 

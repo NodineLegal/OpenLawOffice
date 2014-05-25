@@ -73,7 +73,7 @@ namespace OpenLawOffice.Data.Tasks
             Common.Models.Security.User creator)
         {
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
-            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            model.Created = model.Modified = DateTime.UtcNow;
             model.CreatedBy = model.ModifiedBy = creator;
 
             DBOs.Tasks.TaskResponsibleUser dbo = Mapper.Map<DBOs.Tasks.TaskResponsibleUser>(model);
@@ -83,7 +83,6 @@ namespace OpenLawOffice.Data.Tasks
                 conn.Execute("INSERT INTO \"task_responsible_user\" (\"id\", \"task_id\", \"user_id\", \"responsibility\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
                     "VALUES (@Id, @TaskId, @UserId, @Responsibility, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);
-                model.Id = conn.Query<DBOs.Tasks.TaskAssignedContact>("SELECT currval(pg_get_serial_sequence('task_responsible_user', 'id')) AS \"id\"").Single().Id;
             }
 
             return model;
@@ -93,7 +92,7 @@ namespace OpenLawOffice.Data.Tasks
             Common.Models.Security.User modifier)
         {
             model.ModifiedBy = modifier;
-            model.UtcModified = DateTime.UtcNow;
+            model.Modified = DateTime.UtcNow;
             Common.Models.Tasks.TaskResponsibleUser currentModel = Data.Tasks.TaskResponsibleUser.Get(model.Id.Value);
             model.Task = currentModel.Task;
             DBOs.Tasks.TaskResponsibleUser dbo = Mapper.Map<DBOs.Tasks.TaskResponsibleUser>(model);
@@ -112,7 +111,7 @@ namespace OpenLawOffice.Data.Tasks
             Common.Models.Security.User disabler)
         {
             model.DisabledBy = disabler;
-            model.UtcDisabled = DateTime.UtcNow;
+            model.Disabled = DateTime.UtcNow;
 
             DataHelper.Disable<Common.Models.Tasks.TaskResponsibleUser,
                 DBOs.Tasks.TaskResponsibleUser>("task_responsible_user", disabler.Id.Value, model.Id);
@@ -124,9 +123,9 @@ namespace OpenLawOffice.Data.Tasks
             Common.Models.Security.User enabler)
         {
             model.ModifiedBy = enabler;
-            model.UtcModified = DateTime.UtcNow;
+            model.Modified = DateTime.UtcNow;
             model.DisabledBy = null;
-            model.UtcDisabled = null;
+            model.Disabled = null;
 
             DataHelper.Enable<Common.Models.Tasks.TaskResponsibleUser,
                 DBOs.Tasks.TaskResponsibleUser>("task_responsible_user", enabler.Id.Value, model.Id);

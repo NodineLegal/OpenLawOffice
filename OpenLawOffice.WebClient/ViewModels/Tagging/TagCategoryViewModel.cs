@@ -35,9 +35,9 @@ namespace OpenLawOffice.WebClient.ViewModels.Tagging
         {
             Mapper.CreateMap<Common.Models.Tagging.TagCategory, TagCategoryViewModel>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
-                .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
-                .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
-                .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
+                .ForMember(dst => dst.Created, opt => opt.MapFrom(src => src.Created))
+                .ForMember(dst => dst.Modified, opt => opt.MapFrom(src => src.Modified))
+                .ForMember(dst => dst.Disabled, opt => opt.MapFrom(src => src.Disabled))
                 .ForMember(dst => dst.CreatedBy, opt => opt.ResolveUsing(db =>
                 {
                     return new ViewModels.Security.UserViewModel()
@@ -67,9 +67,9 @@ namespace OpenLawOffice.WebClient.ViewModels.Tagging
                 .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Name));
 
             Mapper.CreateMap<TagCategoryViewModel, Common.Models.Tagging.TagCategory>()
-                .ForMember(dst => dst.UtcCreated, opt => opt.MapFrom(src => src.UtcCreated))
-                .ForMember(dst => dst.UtcModified, opt => opt.MapFrom(src => src.UtcModified))
-                .ForMember(dst => dst.UtcDisabled, opt => opt.MapFrom(src => src.UtcDisabled))
+                .ForMember(dst => dst.Created, opt => opt.MapFrom(src => src.Created))
+                .ForMember(dst => dst.Modified, opt => opt.MapFrom(src => src.Modified))
+                .ForMember(dst => dst.Disabled, opt => opt.MapFrom(src => src.Disabled))
                 .ForMember(dst => dst.CreatedBy, opt => opt.ResolveUsing(model =>
                 {
                     if (model.CreatedBy == null || !model.CreatedBy.Id.HasValue)

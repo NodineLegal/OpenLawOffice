@@ -119,7 +119,7 @@ namespace OpenLawOffice.Data.Contacts
             Common.Models.Security.User creator)
         {
             model.CreatedBy = model.ModifiedBy = creator;
-            model.UtcCreated = model.UtcModified = DateTime.UtcNow;
+            model.Created = model.Modified = DateTime.UtcNow;
 
             DBOs.Contacts.Contact dbo = Mapper.Map<DBOs.Contacts.Contact>(model);
 
@@ -186,7 +186,7 @@ namespace OpenLawOffice.Data.Contacts
             Common.Models.Security.User modifier)
         {
             model.ModifiedBy = modifier;
-            model.UtcModified = DateTime.UtcNow;
+            model.Modified = DateTime.UtcNow;
             DBOs.Contacts.Contact dbo = Mapper.Map<DBOs.Contacts.Contact>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())

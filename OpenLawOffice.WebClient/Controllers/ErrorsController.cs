@@ -28,7 +28,7 @@ namespace OpenLawOffice.WebClient.Controllers
     {
         public ActionResult Index()
         {
-            return View("Errors/");
+            return View("Errors/Index");
         }
 
         public ActionResult NotFound()
