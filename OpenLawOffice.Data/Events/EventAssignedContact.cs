@@ -40,7 +40,7 @@ namespace OpenLawOffice.Data.Events
                 new { id = id });
         }
 
-        public static Common.Models.Events.EventAssignedContact Get(long eventId, int contactId)
+        public static Common.Models.Events.EventAssignedContact Get(Guid eventId, int contactId)
         {
             return DataHelper.Get<Common.Models.Events.EventAssignedContact, DBOs.Events.EventAssignedContact>(
                 "SELECT * FROM \"event_assigned_contact\" WHERE \"event_id\"=@EventId AND \"contact_id\"=@ContactId AND \"utc_disabled\" is null",

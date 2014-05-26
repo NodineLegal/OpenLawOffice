@@ -95,6 +95,7 @@
     <Compile Include="Controllers\DeletingFileResult.cs" />
     <Compile Include="Controllers\DocumentsController.cs" />
     <Compile Include="Controllers\ErrorsController.cs" />
+    <Compile Include="Controllers\EventAssignedContactController.cs" />
     <Compile Include="Controllers\EventsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InstallationController.cs" />
@@ -189,6 +190,11 @@
     <Content Include="Views\Documents\Create.aspx" />
     <Content Include="Views\Documents\Details.aspx" />
     <Content Include="Views\Documents\Edit.aspx" />
+    <Content Include="Views\EventAssignedContact\AssignContact.aspx" />
+    <Content Include="Views\EventAssignedContact\Delete.aspx" />
+    <Content Include="Views\EventAssignedContact\Details.aspx" />
+    <Content Include="Views\EventAssignedContact\Edit.aspx" />
+    <Content Include="Views\EventAssignedContact\SelectContactToAssign.aspx" />
     <Content Include="Views\Events\Contacts.aspx" />
     <Content Include="Views\Events\ContactAgenda.aspx" />
     <Content Include="Views\Events\Create.aspx" />
@@ -306,8 +312,8 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Scripts\" />
-    <Folder Include="Views\EventContact\" />
     <Folder Include="Views\EventResponsibleUsers\" />
+    <Folder Include="Views\EventTags\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenLawOffice.Common\OpenLawOffice.Common.csproj">

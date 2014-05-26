@@ -26,11 +26,11 @@
                 <%: Html.ActionLink(item.Contact.DisplayName, "Details", "Contacts", new { id = item.Contact.Id }, null)%>
             </td>
             <td>
-                <%: Html.ActionLink(item.Role, "Details", "EventContact", new { id = item.Id }, null)%>
+                <%: Html.ActionLink(item.Role, "Details", "EventAssignedContacts", new { id = item.Id }, null)%>
             </td>
             <td>
-                <%: Html.ActionLink("Edit", "Edit", "EventContact", new { id = item.Id }, new { @class = "btn-edit", title = "Edit" })%>
-                <%: Html.ActionLink("Unassign", "Delete", "EventContact", new { id = item.Id }, new { @class = "btn-remove", title = "Unassign" })%>
+                <%: Html.ActionLink("Edit", "Edit", "EventAssignedContacts", new { id = item.Id }, new { @class = "btn-edit", title = "Edit" })%>
+                <%: Html.ActionLink("Unassign", "Delete", "EventAssignedContacts", new { id = item.Id }, new { @class = "btn-remove", title = "Unassign" })%>
             </td>
         </tr>
         <% } %>
@@ -58,7 +58,7 @@
         <li>
             <%: Html.ActionLink("New Contact", "Create", "Contacts", new { MatterId = RouteData.Values["Id"].ToString() }, null)%></li>
         <li>
-            <%: Html.ActionLink("Assign Contact", "SelectContactToAssign", "EventContact", new { id = RouteData.Values["Id"].ToString() }, null)%></li>
+            <%: Html.ActionLink("Assign Contact", "SelectContactToAssign", "EventAssignedContacts", new { id = RouteData.Values["Id"].ToString() }, null)%></li>
     </ul>
     <li><%: Html.ActionLink("Event", "Details", "Events", new { Id = RouteData.Values["Id"].ToString() }, null)%></li>
 </asp:Content>
