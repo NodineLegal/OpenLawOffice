@@ -25,11 +25,11 @@
                 <%: Html.ActionLink(item.User.Username, "Details", "Users", new { id = item.Id }, null)%>
             </td>
             <td>
-                <%: Html.ActionLink(item.Responsibility, "Details", "ResponsibleUsers", new { id = item.Id }, null)%>
+                <%: Html.ActionLink(item.Responsibility, "Details", "EventResponsibleUsers", new { id = item.Id }, null)%>
             </td>
             <td>
-                <%: Html.ActionLink("Edit", "Edit", "ResponsibleUsers", new { id = item.Id.Value }, new { @class = "btn-edit", title = "Edit" })%>
-                <%: Html.ActionLink("Remove", "Delete", "ResponsibleUsers", new { id = item.Id.Value }, new { @class = "btn-remove", title = "Remove" })%>
+                <%: Html.ActionLink("Edit", "Edit", "EventResponsibleUsers", new { id = item.Id.Value }, new { @class = "btn-edit", title = "Edit" })%>
+                <%: Html.ActionLink("Remove", "Delete", "EventResponsibleUsers", new { id = item.Id.Value }, new { @class = "btn-remove", title = "Remove" })%>
             </td>
         </tr>
         <% } %>

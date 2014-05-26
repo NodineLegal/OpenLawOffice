@@ -21,13 +21,14 @@
 
 namespace OpenLawOffice.WebClient.ViewModels.Events
 {
+    using System;
     using AutoMapper;
     using OpenLawOffice.Common.Models;
 
     [MapMe]
     public class EventResponsibleUserViewModel : CoreViewModel
     {
-        public int? Id { get; set; }
+        public Guid? Id { get; set; }
 
         public EventViewModel Event { get; set; }
 

@@ -1,11 +1,12 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Tasks.TaskTagViewModel>" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Events.EventTagViewModel>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-    Task Tag Details
+    Event Tag Details
 </asp:Content>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <h2>
-        Task Tag Details<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
+        Event Tag Details<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
     <table class="detail_table">
         <tr>
             <td class="display-label">
@@ -17,10 +18,10 @@
         </tr>
         <tr>
             <td class="display-label">
-                Task
+                Event
             </td>
             <td class="display-field">
-                <%: Html.ActionLink(Model.Task.Title, "Details", "Tasks", new { id = Model.Task.Id }, null) %>
+                <%: Html.ActionLink(Model.Event.Title, "Details", "Events", new { id = Model.Event.Id }, null)%>
             </td>
         </tr>
         <tr>
@@ -48,16 +49,17 @@
         </p>
     </div>
 </asp:Content>
+
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
     <li>Actions</li>
     <ul style="list-style: none outside none; padding-left: 1em;">
         <li>
-            <%: Html.ActionLink("New Task Tag", "Create", new { id = Model.Task.Id })%></li>
+            <%: Html.ActionLink("New Event Tag", "Create", new { id = Model.Event.Id })%></li>
         <li>
             <%: Html.ActionLink("Edit", "Edit", new { id = Model.Id })%></li>
         <li>
             <%: Html.ActionLink("Delete ", "Delete", new { id = Model.Id })%></li>
     </ul>
     <li>
-        <%: Html.ActionLink("Task Tags", "Tags", "Tasks", new { id = Model.Task.Id }, null)%></li>
+        <%: Html.ActionLink("Event Tags", "Tags", "Events", new { id = Model.Event.Id }, null)%></li>
 </asp:Content>

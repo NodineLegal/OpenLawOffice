@@ -96,7 +96,9 @@
     <Compile Include="Controllers\DocumentsController.cs" />
     <Compile Include="Controllers\ErrorsController.cs" />
     <Compile Include="Controllers\EventAssignedContactController.cs" />
+    <Compile Include="Controllers\EventResponsibleUsersController.cs" />
     <Compile Include="Controllers\EventsController.cs" />
+    <Compile Include="Controllers\EventTagsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InstallationController.cs" />
     <Compile Include="Controllers\MatterContactController.cs" />
@@ -195,6 +197,10 @@
     <Content Include="Views\EventAssignedContact\Details.aspx" />
     <Content Include="Views\EventAssignedContact\Edit.aspx" />
     <Content Include="Views\EventAssignedContact\SelectContactToAssign.aspx" />
+    <Content Include="Views\EventResponsibleUsers\Create.aspx" />
+    <Content Include="Views\EventResponsibleUsers\Delete.aspx" />
+    <Content Include="Views\EventResponsibleUsers\Details.aspx" />
+    <Content Include="Views\EventResponsibleUsers\Edit.aspx" />
     <Content Include="Views\Events\Contacts.aspx" />
     <Content Include="Views\Events\ContactAgenda.aspx" />
     <Content Include="Views\Events\Create.aspx" />
@@ -207,6 +213,10 @@
     <Content Include="Views\Events\SelectUser.aspx" />
     <Content Include="Views\Events\Tags.aspx" />
     <Content Include="Views\Events\UserAgenda.aspx" />
+    <Content Include="Views\EventTags\Create.aspx" />
+    <Content Include="Views\EventTags\Delete.aspx" />
+    <Content Include="Views\EventTags\Details.aspx" />
+    <Content Include="Views\EventTags\Edit.aspx" />
     <Content Include="Views\Shared\CoreDetailsView.ascx" />
     <Content Include="Views\Shared\Errors\Index.aspx" />
     <Content Include="Views\Shared\Errors\NotFound.aspx" />
@@ -312,8 +322,8 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Scripts\" />
-    <Folder Include="Views\EventResponsibleUsers\" />
-    <Folder Include="Views\EventTags\" />
+    <Folder Include="Views\EventMatters\" />
+    <Folder Include="Views\EventTasks\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenLawOffice.Common\OpenLawOffice.Common.csproj">
