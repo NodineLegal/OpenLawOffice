@@ -89,6 +89,11 @@
             <%: Html.ActionLink("Edit", "Edit", new { id = Model.Id })%></li>
     </ul>
     <li>
+        <%: Html.ActionLink("Matters", "Matters", "Events", new { id = Model.Id }, null)%> 
+        (<%: Html.ActionLink("Attach", "SelectMatter", "EventMatter", new { id = RouteData.Values["Id"] }, null) %>)</li>
+    <li>
+        <%: Html.ActionLink("Tasks", "Tasks", "Events", new { id = Model.Id }, null)%></li>
+    <li>
         <%: Html.ActionLink("Tags", "Tags", "Events", new { id = Model.Id }, null)%></li>
     <li>
         <%: Html.ActionLink("Responsible Users", "ResponsibleUsers", "Events", new { id = Model.Id }, null)%></li>

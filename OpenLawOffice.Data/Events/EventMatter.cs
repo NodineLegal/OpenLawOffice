@@ -67,9 +67,16 @@ namespace OpenLawOffice.Data.Events
         public static Common.Models.Events.EventMatter Create(Common.Models.Events.EventMatter model,
             Common.Models.Security.User creator)
         {
+            Common.Models.Events.EventMatter currentModel;
+
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
             model.Created = model.Modified = DateTime.UtcNow;
             model.CreatedBy = model.ModifiedBy = creator;
+
+            currentModel = Get(model.Event.Id.Value, model.Matter.Id.Value);
+
+            if (currentModel != null) 
+                return currentModel;
 
             DBOs.Events.EventMatter dbo = Mapper.Map<DBOs.Events.EventMatter>(model);
 
@@ -81,6 +88,15 @@ namespace OpenLawOffice.Data.Events
             }
 
             return model;
+        }
+
+        public static void Delete(Common.Models.Events.EventMatter model, Common.Models.Security.User deleter)
+        {
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                conn.Execute("DELETE FROM \"event_matter\" WHERE \"id\"=@Id",
+                    new { Id = model.Id.Value });
+            }
         }
     }
 }

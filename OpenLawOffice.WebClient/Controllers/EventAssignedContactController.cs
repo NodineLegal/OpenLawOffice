@@ -29,7 +29,7 @@ namespace OpenLawOffice.WebClient.Controllers
     [HandleError(View = "Errors/Index", Order = 10)]
     public class EventAssignedContactController : BaseController
     {
-        public ActionResult SelectContactToAssign(long id)
+        public ActionResult SelectContactToAssign(Guid id)
         {
             List<ViewModels.Contacts.SelectableContactViewModel> modelList;
 

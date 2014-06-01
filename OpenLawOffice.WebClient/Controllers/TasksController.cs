@@ -551,6 +551,23 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModelList);
         }
 
+        public ActionResult Events(long id)
+        {
+            ViewModels.Events.EventViewModel viewModel;
+            List<ViewModels.Events.EventViewModel> viewModelList;
+
+            viewModelList = new List<ViewModels.Events.EventViewModel>();
+
+            Data.Events.Event.ListForTask(id).ForEach(x =>
+            {
+                viewModel = Mapper.Map<ViewModels.Events.EventViewModel>(x);
+
+                viewModelList.Add(viewModel);
+            });
+
+            return View(viewModelList);
+        }
+
         #region Commented Out Sequential Predecessor Code
 
         //public static DBOs.Tasks.Task GetSequentialPredecessor(DBOs.Tasks.Task taskDbo, IDbConnection db)

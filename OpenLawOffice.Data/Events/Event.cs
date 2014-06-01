@@ -40,6 +40,12 @@ namespace OpenLawOffice.Data.Events
                 new { id = id });
         }
 
+        public static List<Common.Models.Events.Event> List()
+        {
+            return DataHelper.List<Common.Models.Events.Event, DBOs.Events.Event>(
+                "SELECT * FROM \"event\" WHERE \"utc_disabled\" is null");
+        }
+
         public static List<Common.Models.Events.Event> List(double start, double? stop)
         {
             if (stop.HasValue)
@@ -146,6 +152,22 @@ namespace OpenLawOffice.Data.Events
                 "SELECT * FROM \"notes\" WHERE \"id\" IN (SELECT \"note_id\" FROM \"event_note\" WHERE \"event_id\"=@EventId) " +
                 "AND \"utc_disabled\" is null",
                 new { EventId = eventId });
+        }
+
+        public static List<Common.Models.Matters.Matter> ListTasksFor(Guid eventId)
+        {
+            return DataHelper.List<Common.Models.Matters.Matter, DBOs.Matters.Matter>(
+                "SELECT * FROM \"task\" WHERE \"id\" IN (SELECT \"task_id\" FROM \"event_task\" WHERE \"event_id\"=@EventId) " +
+                "AND \"utc_disabled\" is null",
+                new { EventId = eventId });
+        }
+
+        public static List<Common.Models.Events.Event> ListForTask(long taskId)
+        {
+            return DataHelper.List<Common.Models.Events.Event, DBOs.Events.Event>(
+                "SELECT * FROM \"event\" WHERE \"id\" in (SELECT \"event_id\" FROM \"event_task\" WHERE \"task_id\"=@TaskId) " +
+                "AND \"utc_disabled\" is null",
+                new { TaskId = taskId });
         }
 
         public static Common.Models.Events.Event Create(Common.Models.Events.Event model,

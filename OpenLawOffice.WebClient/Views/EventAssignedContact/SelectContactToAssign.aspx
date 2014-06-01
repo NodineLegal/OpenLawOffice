@@ -28,7 +28,7 @@
                 <%: item.Address1AddressCity + ", " + item.Address1AddressStateOrProvince %>
             </td>
             <td>
-                <%: Html.ActionLink("Assign", "AssignContact", new { id = item.Id, MatterId = RouteData.Values["Id"].ToString() }, new { @class = "btn-assigncontact", title = "Assign Contact" })%>
+                <%: Html.ActionLink("Assign", "AssignContact", new { id = item.Id, EventId = RouteData.Values["Id"].ToString() }, new { @class = "btn-assigncontact", title = "Assign Contact" })%>
             </td>
         </tr>
         <% } %>

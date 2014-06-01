@@ -132,6 +132,9 @@
     <li>
         <%: Html.ActionLink("Contacts", "Contacts", "Tasks", new { id = Model.Id }, null)%></li>
     <li>
+        <%: Html.ActionLink("Events", "Events", "Tasks", new { id = Model.Id }, null)%>
+        (<%: Html.ActionLink("Add", "Create", "Events", new { controller = "Tasks", TaskId = Model.Id }, null)%>)</li>
+    <li>
         <%: Html.ActionLink("Notes", "Notes", "Tasks", new { id = Model.Id }, null)%>
         (<%: Html.ActionLink("Add", "Create", "Notes", new { controller = "Tasks", TaskId = Model.Id }, null)%>)</li>
     <li>

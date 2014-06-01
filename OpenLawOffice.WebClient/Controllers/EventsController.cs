@@ -28,7 +28,6 @@ namespace OpenLawOffice.WebClient.Controllers
 
     public class EventsController : BaseController
     {
-
         public ActionResult SelectUser()
         {
             List<ViewModels.Security.UserViewModel> usersList;

@@ -1,12 +1,12 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<IEnumerable<OpenLawOffice.WebClient.ViewModels.Matters.MatterViewModel>>" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<IEnumerable<OpenLawOffice.WebClient.ViewModels.Tasks.TaskViewModel>>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-	Matters for Event
+	Tasks for Event
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
-    <h2>Matters for Event<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
+    <h2>Tasks for Event<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
     
     <table class="listing_table">
         <tr>
@@ -14,7 +14,7 @@
                 Title
             </th>
             <th>
-                Synopsis
+                Due Date
             </th>
             <th style="width: 40px;">
             </th>
@@ -26,19 +26,14 @@
                 <%: Html.ActionLink(item.Title, "Details", "Matters", new { id = item.Id }, null)%>
             </td>
             <td>
-                <% if (item.Synopsis.Length > 100)
-                   {
-                %>
-                <%: item.Synopsis.Substring(0, 100)%>...
-                <% }
-                   else
+                <% if (item.DueDate.HasValue)
                    { %>
-                <%: item.Synopsis%>
+                <%: String.Format("{0:g}", item.DueDate.Value)%>
                 <% } %>
             </td>
             <td>
-                <%: Html.ActionLink("Edit", "Edit", "Matters", new { id = item.Id }, new { @class = "btn-edit", title = "Edit" })%>
-                <%: Html.ActionLink("Unassign", "UnlinkMatter", "EventMatter", new { id = item.Id, EventId = RouteData.Values["Id"] }, new { @class = "btn-remove", title = "Unassign" })%>
+                <%: Html.ActionLink("Edit", "Edit", "Tasks", new { id = item.Id }, new { @class = "btn-edit", title = "Edit" })%>
+                <%: Html.ActionLink("Unassign", "Delete", "EventMatter", new { id = item.Id }, new { @class = "btn-remove", title = "Unassign" })%>
             </td>
         </tr>
         <% } %>
@@ -52,9 +47,9 @@
         Clicking the title will show the details of the matter.
         Click the 
         <img src="../../Content/fugue-icons-3.5.6/icons-shadowless/pencil.png" /> (edit icon) to make 
-        changes to the matter.  Click the 
+        changes to the task.  Click the 
         <img src="../../Content/fugue-icons-3.5.6/icons-shadowless/cross.png" /> (remove icon) to 
-        unlink the event and the matter.
+        unlink the event and the task.
         </p>
     </div>
 </asp:Content>
@@ -63,9 +58,11 @@
     <li>Actions</li>
     <ul style="list-style: none outside none; padding-left: 1em;">
         <li>
-            <%: Html.ActionLink("New Matter", "Create", "Matters", null, null) %></li>
+            <%: Html.ActionLink("New Event", "Create") %></li>
         <li>
-            <%: Html.ActionLink("Attach Matter", "SelectMatter", "EventMatter", new { id = RouteData.Values["Id"] }, null) %></li>
+            <%: Html.ActionLink("New Task", "Create", "Tasks", null, null) %></li>
+        <li>
+            <%: Html.ActionLink("Attach Task", "SelectTask", "EventTask", new { EventId = RouteData.Values["Id"] }, null) %></li>
     </ul>
     <li>
         <%: Html.ActionLink("Event", "Details", new { id = RouteData.Values["Id"] })%></li>

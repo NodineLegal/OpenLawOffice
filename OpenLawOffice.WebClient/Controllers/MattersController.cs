@@ -34,19 +34,7 @@ namespace OpenLawOffice.WebClient.Controllers
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Index()
         {
-            List<ViewModels.Matters.MatterViewModel> viewModelList;
-            List<Common.Models.Matters.Matter> modelList;
-
-            viewModelList = new List<ViewModels.Matters.MatterViewModel>();
-
-            modelList = OpenLawOffice.Data.Matters.Matter.List();
-
-            modelList.ForEach(x =>
-            {
-                viewModelList.Add(Mapper.Map<ViewModels.Matters.MatterViewModel>(x));
-            });
-
-            return View(viewModelList);
+            return View();
         }
 
         [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = true,
@@ -456,6 +444,23 @@ namespace OpenLawOffice.WebClient.Controllers
             });
 
             return View(viewModel);
+        }
+
+        public ActionResult Events(Guid id)
+        {
+            ViewModels.Events.EventViewModel viewModel;
+            List<ViewModels.Events.EventViewModel> viewModelList;
+
+            viewModelList = new List<ViewModels.Events.EventViewModel>();
+
+            Data.Events.Event.ListForMatter(id).ForEach(x =>
+            {
+                viewModel = Mapper.Map<ViewModels.Events.EventViewModel>(x);
+
+                viewModelList.Add(viewModel);
+            });
+
+            return View(viewModelList);
         }
     }
 }

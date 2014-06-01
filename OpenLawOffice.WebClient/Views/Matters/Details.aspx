@@ -23,7 +23,10 @@
         <%: Html.ActionLink("Contacts", "Contacts", new { id = Model.Id })%></li>
     <li>
         <%: Html.ActionLink("Tasks", "Tasks", "Matters", new { id = Model.Id }, null)%>
-        (<%: Html.ActionLink("Add", "Create", "Tasks", new { controller = "Matters", MatterId = Model.Id }, null)%>)</li>
+        (<%: Html.ActionLink("Add", "Create", "Tasks", new { controller = "Matters", MatterId = Model.Id }, null)%>)</li>        
+    <li>
+        <%: Html.ActionLink("Events", "Events", "Matters", new { id = Model.Id }, null)%>
+        (<%: Html.ActionLink("Add", "Create", "Events", new { controller = "Matters", MatterId = Model.Id }, null)%>)</li>
     <li>
         <%: Html.ActionLink("Notes", "Notes", "Matters", new { id = Model.Id }, null)%>
         (<%: Html.ActionLink("Add", "Create", "Notes", new { controller = "Matters", MatterId = Model.Id }, null)%>)</li>
