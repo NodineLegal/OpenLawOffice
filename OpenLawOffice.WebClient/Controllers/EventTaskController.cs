@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="EventMatterController.cs" company="Nodine Legal, LLC">
+// <copyright file="EventTaskController.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -26,9 +26,9 @@ namespace OpenLawOffice.WebClient.Controllers
     using System.Web.Mvc;
     using AutoMapper;
 
-    public class EventMatterController : BaseController
+    public class EventTaskController : BaseController
     {
-        public ActionResult SelectMatter(Guid id)
+        public ActionResult SelectTask(Guid id)
         {
             return View();
         }
@@ -47,71 +47,71 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(list);
         }
 
-        public ActionResult AssignMatter(Guid id)
+        public ActionResult AssignTask(Guid id)
         {
-            Guid matterId;
-            Common.Models.Matters.Matter matter;
+            long taskId;
+            Common.Models.Tasks.Task task;
             Common.Models.Events.Event evnt;
 
-            matterId = Guid.Parse(Request["MatterId"]);
+            taskId = long.Parse(Request["TaskId"]);
 
-            matter = Data.Matters.Matter.Get(matterId);
+            task = Data.Tasks.Task.Get(taskId);
 
             evnt = Data.Events.Event.Get(id);
 
-            return View(new ViewModels.Events.EventMatterViewModel()
+            return View(new ViewModels.Events.EventTaskViewModel()
             {
-                Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(matter),
+                Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(task),
                 Event = Mapper.Map<ViewModels.Events.EventViewModel>(evnt)
             });
         }
 
-        public ActionResult AssignEvent(Guid id)
+        public ActionResult AssignEvent(long id)
         {
             Guid eventId;
-            Common.Models.Matters.Matter matter;
+            Common.Models.Tasks.Task task;
             Common.Models.Events.Event evnt;
 
             eventId = Guid.Parse(Request["EventId"]);
 
             evnt = Data.Events.Event.Get(eventId);
 
-            matter = Data.Matters.Matter.Get(id);
+            task = Data.Tasks.Task.Get(id);
 
-            return View(new ViewModels.Events.EventMatterViewModel()
+            return View(new ViewModels.Events.EventTaskViewModel()
             {
-                Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(matter),
+                Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(task),
                 Event = Mapper.Map<ViewModels.Events.EventViewModel>(evnt)
             });
         }
 
         [HttpPost]
-        public ActionResult AssignMatter(Guid id, ViewModels.Events.EventMatterViewModel viewModel)
+        public ActionResult AssignTask(Guid id, ViewModels.Events.EventTaskViewModel viewModel)
         {
-            Guid matterId;
+            long taskId;
             Common.Models.Security.User currentUser;
 
             currentUser = UserCache.Instance.Lookup(Request);
 
-            matterId = Guid.Parse(Request["MatterId"]);
+            taskId = long.Parse(Request["TaskId"]);
 
-            Data.Events.EventMatter.Create(new Common.Models.Events.EventMatter()
+            Data.Events.EventTask.Create(new Common.Models.Events.EventTask()
             {
                 Event = new Common.Models.Events.Event()
                 {
                     Id = id
                 },
-                Matter = new Common.Models.Matters.Matter()
+                Task = new Common.Models.Tasks.Task()
                 {
-                    Id = matterId
+                    Id = taskId
                 },
             }, currentUser);
 
-            return RedirectToAction("Matters", "Events", new { id = id });
+            return RedirectToAction("Tasks", "Events", new { id = id });
         }
 
         [HttpPost]
-        public ActionResult AssignEvent(Guid id, ViewModels.Events.EventMatterViewModel viewModel)
+        public ActionResult AssignEvent(long id, ViewModels.Events.EventTaskViewModel viewModel)
         {
             Guid eventId;
             Common.Models.Security.User currentUser;
@@ -120,91 +120,91 @@ namespace OpenLawOffice.WebClient.Controllers
 
             eventId = Guid.Parse(Request["EventId"]);
 
-            Data.Events.EventMatter.Create(new Common.Models.Events.EventMatter()
+            Data.Events.EventTask.Create(new Common.Models.Events.EventTask()
             {
                 Event = new Common.Models.Events.Event()
                 {
                     Id = eventId
                 },
-                Matter = new Common.Models.Matters.Matter()
+                Task = new Common.Models.Tasks.Task()
                 {
                     Id = id
                 },
             }, currentUser);
 
-            return RedirectToAction("Events", "Matters", new { id = id });
+            return RedirectToAction("Events", "Tasks", new { id = id });
         }
 
-        public ActionResult UnlinkMatter(Guid id)
+        public ActionResult UnlinkMatter(long id)
         {
             Guid eventId;
-            Common.Models.Events.EventMatter model;
+            Common.Models.Events.EventTask model;
 
             eventId = Guid.Parse(Request["EventId"]);
 
-            model = Data.Events.EventMatter.Get(eventId, id);
-            model.Matter = Data.Matters.Matter.Get(model.Matter.Id.Value);
+            model = Data.Events.EventTask.Get(id, eventId);
+            model.Task = Data.Tasks.Task.Get(model.Task.Id.Value);
             model.Event = Data.Events.Event.Get(model.Event.Id.Value);
 
-            return View("Unlink", new ViewModels.Events.EventMatterViewModel()
+            return View("Unlink", new ViewModels.Events.EventTaskViewModel()
             {
-                Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(model.Matter),
+                Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(model.Task),
                 Event = Mapper.Map<ViewModels.Events.EventViewModel>(model.Event)
             });
         }
 
         [HttpPost]
-        public ActionResult UnlinkMatter(Guid id, ViewModels.Events.EventMatterViewModel viewModel)
+        public ActionResult UnlinkMatter(long id, ViewModels.Events.EventTaskViewModel viewModel)
         {
             Guid eventId;
-            Common.Models.Events.EventMatter model;
+            Common.Models.Events.EventTask model;
             Common.Models.Security.User currentUser;
 
             currentUser = UserCache.Instance.Lookup(Request);
 
             eventId = Guid.Parse(Request["EventId"]);
 
-            model = Data.Events.EventMatter.Get(eventId, id);
+            model = Data.Events.EventTask.Get(id, eventId);
 
-            Data.Events.EventMatter.Delete(model, currentUser);
+            Data.Events.EventTask.Delete(model, currentUser);
 
-            return RedirectToAction("Matters", "Events", new { id = model.Event.Id.Value });
+            return RedirectToAction("Tasks", "Events", new { id = model.Event.Id.Value });
         }
 
         public ActionResult UnlinkEvent(Guid id)
         {
-            Guid matterId;
-            Common.Models.Events.EventMatter model;
+            long taskId;
+            Common.Models.Events.EventTask model;
 
-            matterId = Guid.Parse(Request["MatterId"]);
+            taskId = long.Parse(Request["TaskId"]);
 
-            model = Data.Events.EventMatter.Get(id, matterId);
-            model.Matter = Data.Matters.Matter.Get(model.Matter.Id.Value);
+            model = Data.Events.EventTask.Get(taskId, id);
+            model.Task = Data.Tasks.Task.Get(model.Task.Id.Value);
             model.Event = Data.Events.Event.Get(model.Event.Id.Value);
 
-            return View("Unlink", new ViewModels.Events.EventMatterViewModel()
+            return View("Unlink", new ViewModels.Events.EventTaskViewModel()
             {
-                Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(model.Matter),
+                Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(model.Task),
                 Event = Mapper.Map<ViewModels.Events.EventViewModel>(model.Event)
             });
         }
 
         [HttpPost]
-        public ActionResult UnlinkEvent(Guid id, ViewModels.Events.EventMatterViewModel viewModel)
+        public ActionResult UnlinkEvent(Guid id, ViewModels.Events.EventTaskViewModel viewModel)
         {
-            Guid matterId;
-            Common.Models.Events.EventMatter model;
+            long taskId;
+            Common.Models.Events.EventTask model;
             Common.Models.Security.User currentUser;
 
             currentUser = UserCache.Instance.Lookup(Request);
 
-            matterId = Guid.Parse(Request["MatterId"]);
+            taskId = long.Parse(Request["TaskId"]);
 
-            model = Data.Events.EventMatter.Get(id, matterId);
+            model = Data.Events.EventTask.Get(taskId, id);
 
-            Data.Events.EventMatter.Delete(model, currentUser);
+            Data.Events.EventTask.Delete(model, currentUser);
 
-            return RedirectToAction("Events", "Matters", new { id = model.Matter.Id.Value });
+            return RedirectToAction("Events", "Tasks", new { id = model.Task.Id.Value });
         }
     }
 }

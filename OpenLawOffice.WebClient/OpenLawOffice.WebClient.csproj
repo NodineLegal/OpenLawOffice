@@ -100,6 +100,7 @@
     <Compile Include="Controllers\EventResponsibleUsersController.cs" />
     <Compile Include="Controllers\EventsController.cs" />
     <Compile Include="Controllers\EventTagsController.cs" />
+    <Compile Include="Controllers\EventTaskController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InstallationController.cs" />
     <Compile Include="Controllers\MatterContactController.cs" />
@@ -135,6 +136,7 @@
     <Compile Include="ViewModels\Events\EventMatterViewModel.cs" />
     <Compile Include="ViewModels\Events\EventResponsibleUserViewModel.cs" />
     <Compile Include="ViewModels\Events\EventTagViewModel.cs" />
+    <Compile Include="ViewModels\Events\EventTaskViewModel.cs" />
     <Compile Include="ViewModels\Events\EventViewModel.cs" />
     <Compile Include="ViewModels\Contacts\ConflictViewModel.cs" />
     <Compile Include="ViewModels\Contacts\ContactViewModel.cs" />

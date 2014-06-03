@@ -63,11 +63,19 @@ namespace OpenLawOffice.Data.Events
         public static Common.Models.Events.EventTask Create(Common.Models.Events.EventTask model,
             Common.Models.Security.User creator)
         {
+            DBOs.Events.EventTask dbo;
+            Common.Models.Events.EventTask currentModel;
+
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
             model.Created = model.Modified = DateTime.UtcNow;
             model.CreatedBy = model.ModifiedBy = creator;
 
-            DBOs.Events.EventTask dbo = Mapper.Map<DBOs.Events.EventTask>(model);
+            currentModel = Get(model.Task.Id.Value, model.Event.Id.Value);
+
+            if (currentModel != null)
+                return currentModel;
+
+            dbo = Mapper.Map<DBOs.Events.EventTask>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
@@ -77,6 +85,15 @@ namespace OpenLawOffice.Data.Events
             }
 
             return model;
+        }
+
+        public static void Delete(Common.Models.Events.EventTask model, Common.Models.Security.User deleter)
+        {
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                conn.Execute("DELETE FROM \"event_task\" WHERE \"id\"=@Id",
+                    new { Id = model.Id.Value });
+            }
         }
     }
 }

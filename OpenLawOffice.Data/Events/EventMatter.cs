@@ -67,6 +67,7 @@ namespace OpenLawOffice.Data.Events
         public static Common.Models.Events.EventMatter Create(Common.Models.Events.EventMatter model,
             Common.Models.Security.User creator)
         {
+            DBOs.Events.EventMatter dbo;
             Common.Models.Events.EventMatter currentModel;
 
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
@@ -78,7 +79,7 @@ namespace OpenLawOffice.Data.Events
             if (currentModel != null) 
                 return currentModel;
 
-            DBOs.Events.EventMatter dbo = Mapper.Map<DBOs.Events.EventMatter>(model);
+            dbo = Mapper.Map<DBOs.Events.EventMatter>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
