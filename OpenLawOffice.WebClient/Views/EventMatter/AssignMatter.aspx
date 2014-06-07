@@ -45,4 +45,10 @@
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
+    <li>Actions</li>
+    <ul style="list-style: none outside none; padding-left: 1em;">
+        <li>
+            <%: Html.ActionLink("New Matter", "Create", "Matters")%></li>
+    </ul>
+    <li><%: Html.ActionLink("Event", "Details", "Events", new { id = RouteData.Values["Id"].ToString() }, null)%></li>
 </asp:Content>

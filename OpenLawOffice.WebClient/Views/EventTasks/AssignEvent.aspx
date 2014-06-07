@@ -1,13 +1,13 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Events.EventMatterViewModel>" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Events.EventTaskViewModel>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-	Assign Event for Matter
+	Assign Event for Task
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
     <h2>
-        Assign Event for Matter<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
+        Assign Event for Task<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
     <% using (Html.BeginForm())
     { %>
     <%: Html.ValidationSummary(true) %>
@@ -22,10 +22,10 @@
         </tr>
         <tr>
             <td class="display-label">
-                Matter
+                Task
             </td>
             <td class="display-field">
-                <%: Model.Matter.Title %>
+                <%: Model.Task.Title%>
             </td>
         </tr>
     </table>
@@ -36,7 +36,7 @@
     <div id="pageInfoDialog" title="Help">
         <p>
         <span style="font-weight: bold; text-decoration: underline;">Info:</span>
-        If you would like to link the event and matter on this page, click the 'Link' button.<br /><br />
+        If you would like to link the event and task on this page, click the 'Link' button.<br /><br />
         <span style="font-weight: bold; text-decoration: underline;">Usage:</span>
         Click 'Link' to relate the matter and event.
         </p>
@@ -50,5 +50,5 @@
         <li>
             <%: Html.ActionLink("New Event", "Create", "Events")%></li>
     </ul>
-    <li><%: Html.ActionLink("Matter", "Details", "Matters", new { id = RouteData.Values["Id"].ToString() }, null)%></li>
+    <li><%: Html.ActionLink("Task", "Details", "Tasks", new { id = RouteData.Values["Id"].ToString() }, null)%></li>
 </asp:Content>

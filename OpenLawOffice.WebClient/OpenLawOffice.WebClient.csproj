@@ -226,6 +226,11 @@
     <Content Include="Views\EventTags\Delete.aspx" />
     <Content Include="Views\EventTags\Details.aspx" />
     <Content Include="Views\EventTags\Edit.aspx" />
+    <Content Include="Views\EventTasks\AssignEvent.aspx" />
+    <Content Include="Views\EventTasks\AssignTask.aspx" />
+    <Content Include="Views\EventTasks\SelectEvent.aspx" />
+    <Content Include="Views\EventTasks\SelectTask.aspx" />
+    <Content Include="Views\EventTasks\Unlink.aspx" />
     <Content Include="Views\Matters\Events.aspx" />
     <Content Include="Views\Shared\CoreDetailsView.ascx" />
     <Content Include="Views\Shared\Errors\Index.aspx" />
@@ -333,7 +338,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Scripts\" />
-    <Folder Include="Views\EventTasks\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenLawOffice.Common\OpenLawOffice.Common.csproj">

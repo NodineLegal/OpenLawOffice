@@ -59,6 +59,5 @@
         <li>
             <%: Html.ActionLink("New Event", "Create", "Events")%></li>
     </ul>
-    <li><%: Html.ActionLink("Matter", "Details", "Matters", new { id = RouteData.Values["Id"].ToString() }, null)%></li>
+    <li><%: Html.ActionLink("Task", "Details", "Tasks", new { id = RouteData.Values["Id"].ToString() }, null)%></li>
 </asp:Content>
-

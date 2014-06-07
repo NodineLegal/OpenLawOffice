@@ -17,7 +17,7 @@
                 Event
             </td>
             <td class="display-field">
-                <%: Model.Event.Title %>
+                <%: Html.ActionLink(Model.Event.Title, "Details", "Events", new { id = Model.Event.Id }, null) %>
             </td>
         </tr>
         <tr>
@@ -25,7 +25,7 @@
                 Matter
             </td>
             <td class="display-field">
-                <%: Model.Matter.Title %>
+                <%: Html.ActionLink(Model.Matter.Title, "Details", "Matters", new { id = Model.Matter.Id }, null)%>
             </td>
         </tr>
     </table>
@@ -45,4 +45,13 @@
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
+    <li>Actions</li>
+    <ul style="list-style: none outside none; padding-left: 1em;">
+        <li>
+            <%: Html.ActionLink("New Matter", "Create", "Matters")%></li>
+        <li>
+            <%: Html.ActionLink("New Event", "Create", "Events")%></li>
+    </ul>
+    <li><%: Html.ActionLink("Matter", "Details", "Matters", new { id = Model.Matter.Id }, null)%></li>
+    <li><%: Html.ActionLink("Event", "Details", "Events", new { id = Model.Event.Id }, null)%></li>
 </asp:Content>

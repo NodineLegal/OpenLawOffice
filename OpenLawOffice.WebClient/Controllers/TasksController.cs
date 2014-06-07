@@ -56,8 +56,9 @@ namespace OpenLawOffice.WebClient.Controllers
             {
                 string matterid = Request["MatterId"];
                 if (string.IsNullOrEmpty(matterid))
-                    return null;
-                modelList = GetListForMatter(Guid.Parse(matterid));
+                    modelList = GetList();
+                else
+                    modelList = GetListForMatter(Guid.Parse(matterid));
             }
             else
             {
@@ -149,6 +150,39 @@ namespace OpenLawOffice.WebClient.Controllers
             viewModelList = new List<ViewModels.Tasks.TaskViewModel>();
 
             Data.Tasks.Task.ListForMatter(matterid).ForEach(x =>
+            {
+                viewModel = Mapper.Map<ViewModels.Tasks.TaskViewModel>(x);
+
+                if (viewModel.IsGroupingTask)
+                {
+                    if (Data.Tasks.Task.GetTaskForWhichIAmTheSequentialPredecessor(x.Id.Value)
+                        != null)
+                        viewModel.Type = "Sequential Group";
+                    else
+                        viewModel.Type = "Group";
+                }
+                else
+                {
+                    if (x.SequentialPredecessor != null)
+                        viewModel.Type = "Sequential";
+                    else
+                        viewModel.Type = "Standard";
+                }
+
+                viewModelList.Add(viewModel);
+            });
+
+            return viewModelList;
+        }
+
+        public static List<ViewModels.Tasks.TaskViewModel> GetList()
+        {
+            List<ViewModels.Tasks.TaskViewModel> viewModelList;
+            ViewModels.Tasks.TaskViewModel viewModel;
+
+            viewModelList = new List<ViewModels.Tasks.TaskViewModel>();
+
+            Data.Tasks.Task.List().ForEach(x =>
             {
                 viewModel = Mapper.Map<ViewModels.Tasks.TaskViewModel>(x);
 
