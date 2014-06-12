@@ -44,8 +44,10 @@
     <table class="listing_table">
         <tr>
             <th style="text-align: center; width: 20px;" />
+            <th style="text-align: center;">Date</th>
             <th style="text-align: center;">Title</th>
             <th style="text-align: center;">Task</th>
+            <th style="text-align: center;">Ext</th>
             <th style="width: 40px;">
             </th>
         </tr>
@@ -57,6 +59,9 @@
                 <input type="checkbox" id="CB_<%: item.Id.Value %>" name="CB_<%: item.Id.Value %>" />
             </td>
             <td>
+                <%: string.Format("{0:MMM d, yyyy}", item.Date) %>
+            </td>
+            <td>
                 <%: Html.ActionLink(item.Title, "Details", "Documents", new { id = item.Id }, null)%>
             </td>
             <td>
@@ -64,6 +69,9 @@
                    { %>
                     <%: Html.ActionLink(item.Task.Title, "Details", "Tasks", new { id = item.Task.Id.Value }, null) %>
                 <% } %>
+            </td>
+            <td>
+                <%: item.Extension %>
             </td>
             <td style="text-align: center;">
                 <%: Html.ActionLink("Edit", "Edit", "Documents", new { id = item.Id }, new { @class = "btn-edit", title = "Edit" })%>

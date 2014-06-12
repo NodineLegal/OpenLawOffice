@@ -570,6 +570,7 @@ namespace OpenLawOffice.WebClient.Controllers
             Permission = Common.Models.PermissionType.List)]
         public ActionResult Documents(long id)
         {
+            Common.Models.Documents.Version version;
             List<ViewModels.Documents.DocumentViewModel> viewModelList;
             ViewModels.Documents.DocumentViewModel viewModel;
 
@@ -577,7 +578,9 @@ namespace OpenLawOffice.WebClient.Controllers
 
             Data.Documents.Document.ListForTask(id).ForEach(x =>
             {
+                version = Data.Documents.Document.GetCurrentVersion(x.Id.Value);
                 viewModel = Mapper.Map<ViewModels.Documents.DocumentViewModel>(x);
+                viewModel.Extension = version.Extension;
 
                 viewModelList.Add(viewModel);
             });

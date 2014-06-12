@@ -33,6 +33,10 @@ namespace OpenLawOffice.WebClient.ViewModels.Documents
 
         public string Title { get; set; }
 
+        public DateTime? Date { get; set; }
+
+        public string Extension { get; set; }
+
         public Tasks.TaskViewModel Task { get; set; }
 
         public List<VersionViewModel> Versions { get; set; }
@@ -71,6 +75,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Documents
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
+                .ForMember(dst => dst.Date, opt => opt.MapFrom(src => src.Date))
+                .ForMember(dst => dst.Extension, opt => opt.Ignore())
                 .ForMember(dst => dst.Task, opt => opt.Ignore())
                 .ForMember(dst => dst.Versions, opt => opt.Ignore());
 
@@ -109,7 +115,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Documents
                     };
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title));
+                .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
+                .ForMember(dst => dst.Date, opt => opt.MapFrom(src => src.Date));
         }
     }
 }

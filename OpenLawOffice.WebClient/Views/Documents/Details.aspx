@@ -17,6 +17,14 @@
         </tr>
         <tr>
             <td class="display-label">
+                Date
+            </td>
+            <td class="display-field">
+                <%: string.Format("{0:MMM d, yyyy}", Model.Date) %>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
                 Title
             </td>
             <td class="display-field">

@@ -64,6 +64,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Documents
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
+                .ForMember(dst => dst.Date, opt => opt.MapFrom(src => src.Date))
+                .ForMember(dst => dst.Extension, opt => opt.Ignore())
                 .ForMember(dst => dst.Task, opt => opt.Ignore())
                 .ForMember(dst => dst.Versions, opt => opt.Ignore())
                 .ForMember(dst => dst.IsSelected, opt => opt.Ignore());

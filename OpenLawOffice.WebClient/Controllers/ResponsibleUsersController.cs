@@ -88,6 +88,7 @@ namespace OpenLawOffice.WebClient.Controllers
             currentUser = UserCache.Instance.Lookup(Request);
 
             model = Mapper.Map<Common.Models.Matters.ResponsibleUser>(viewModel);
+            model.Matter = new Common.Models.Matters.Matter() { Id = Guid.Parse(RouteData.Values["Id"].ToString()) };
 
             // Is there already an entry for this user?
             currentResponsibleUser = Data.Matters.ResponsibleUser.GetIgnoringDisable(

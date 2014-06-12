@@ -40,7 +40,7 @@ namespace OpenLawOffice.WebClient.Controllers
             BaseController controller;
             HttpCookie cookie = null;
             Data.Authorization.AuthorizeResult authResult;
-
+            
             cookie = filterContext.HttpContext.Request.Cookies["UserAuthToken"];
 
             if (cookie == null)

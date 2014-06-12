@@ -217,7 +217,7 @@ namespace OpenLawOffice.Data.Contacts
                     "\"email3_email_address\"=@Email3EmailAddress, \"email3_display_name\"=@Email3DisplayName, \"email2_email_address\"=@Email2EmailAddress, " +
                     "\"email2_display_name\"=@Email2DisplayName, \"email1_email_address\"=@Email1EmailAddress, \"email1_display_name\"=@Email1DisplayName, " +
                     "\"display_name\"=@DisplayName, \"initials\"=@Initials, \"given_name\"=@GivenName, \"middle_name\"=@MiddleName, \"surname\"=@Surname, " +
-                    "\"display_name_prefix\"=@DisplayNamePrefix, \"generation\"=@Generation, \"nickname\"=@Nickname, \"is_organization\"=@IsOrganization, \"is_our_employee=\"@IsOurEmployee) " +
+                    "\"display_name_prefix\"=@DisplayNamePrefix, \"generation\"=@Generation, \"nickname\"=@Nickname, \"is_organization\"=@IsOrganization, \"is_our_employee\"=@IsOurEmployee " +
                     "WHERE \"id\"=@Id", dbo);
             }
 

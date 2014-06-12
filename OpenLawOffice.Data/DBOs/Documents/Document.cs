@@ -36,6 +36,9 @@ namespace OpenLawOffice.Data.DBOs.Documents
         [ColumnMapping(Name = "title")]
         public string Title { get; set; }
 
+        [ColumnMapping(Name = "date")]
+        public DateTime Date { get; set; }
+
         public void BuildMappings()
         {
             Dapper.SqlMapper.SetTypeMap(typeof(Document), new ColumnAttributeTypeMapper<Document>());
@@ -79,7 +82,8 @@ namespace OpenLawOffice.Data.DBOs.Documents
                     };
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title));
+                .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
+                .ForMember(dst => dst.Date, opt => opt.MapFrom(src => src.Date));
 
             Mapper.CreateMap<Common.Models.Documents.Document, DBOs.Documents.Document>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.ResolveUsing(db =>
@@ -112,7 +116,8 @@ namespace OpenLawOffice.Data.DBOs.Documents
                     return model.DisabledBy.Id;
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title));
+                .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
+                .ForMember(dst => dst.Date, opt => opt.MapFrom(src => src.Date));
         }
     }
 }

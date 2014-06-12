@@ -258,6 +258,7 @@ ALTER SEQUENCE contact_id_seq OWNED BY contact.id;
 CREATE TABLE document (
     id uuid NOT NULL,
     title text NOT NULL,
+	date timestamp without time zone,
     created_by_user_id integer NOT NULL,
     modified_by_user_id integer NOT NULL,
     disabled_by_user_id integer,

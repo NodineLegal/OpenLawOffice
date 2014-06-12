@@ -68,7 +68,8 @@ namespace OpenLawOffice.Data.Documents
                 "\"document\".\"id\"=\"document_matter\".\"document_id\" " +
                 "WHERE \"document_matter\".\"matter_id\"=@MatterId " +
                 "AND \"document\".\"utc_disabled\" is null " +
-                "AND \"document_matter\".\"utc_disabled\" is null",
+                "AND \"document_matter\".\"utc_disabled\" is null " +
+                "ORDER BY \"document\".\"date\" DESC, \"document\".\"title\" ASC",
                 new { MatterId = matterId });
         }
 
@@ -79,7 +80,8 @@ namespace OpenLawOffice.Data.Documents
                 "\"document\".\"id\"=\"document_task\".\"document_id\" " +
                 "WHERE \"document_task\".\"task_id\"=@TaskId " +
                 "AND \"document\".\"utc_disabled\" is null " +
-                "AND \"document_task\".\"utc_disabled\" is null",
+                "AND \"document_task\".\"utc_disabled\" is null " +
+                "ORDER BY \"document\".\"date\" DESC, \"document\".\"title\" ASC",
                 new { TaskId = taskId });
         }
 
@@ -93,8 +95,8 @@ namespace OpenLawOffice.Data.Documents
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("INSERT INTO \"document\" (\"id\", \"title\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
-                    "VALUES (@Id, @Title, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
+                conn.Execute("INSERT INTO \"document\" (\"id\", \"date\", \"title\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                    "VALUES (@Id, @Date, @Title, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);
             }
 
@@ -145,7 +147,7 @@ namespace OpenLawOffice.Data.Documents
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("UPDATE \"document\" SET " +
-                    "\"title\"=@Title, \"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId " +
+                    "\"date\"=@Date, \"title\"=@Title, \"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId " +
                     "WHERE \"id\"=@Id", dbo);
             }
 

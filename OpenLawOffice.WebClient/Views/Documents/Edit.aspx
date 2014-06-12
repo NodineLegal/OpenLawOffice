@@ -20,6 +20,15 @@
         </tr>
         <tr>
             <td class="display-label">
+                Date
+            </td>
+            <td class="display-field">
+                <%: Html.EditorFor(model => model.Date)%>
+                <%: Html.ValidationMessageFor(model => model.Date)%>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
                 Title<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">

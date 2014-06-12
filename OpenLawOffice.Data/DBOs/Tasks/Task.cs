@@ -185,10 +185,22 @@ namespace OpenLawOffice.Data.DBOs.Tasks
                 }))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dst => dst.Description, opt => opt.MapFrom(src => src.Description))
-                .ForMember(dst => dst.ProjectedStart, opt => opt.MapFrom(src => src.ProjectedStart))
-                .ForMember(dst => dst.DueDate, opt => opt.MapFrom(src => src.DueDate))
-                .ForMember(dst => dst.ProjectedEnd, opt => opt.MapFrom(src => src.ProjectedEnd))
-                .ForMember(dst => dst.ActualEnd, opt => opt.MapFrom(src => src.ActualEnd))
+                .ForMember(dst => dst.ProjectedStart, opt => opt.ResolveUsing(db =>
+                {
+                    return db.ProjectedStart.ToDbTime();
+                }))
+                .ForMember(dst => dst.DueDate, opt => opt.ResolveUsing(db =>
+                {
+                    return db.DueDate.ToDbTime();
+                }))
+                .ForMember(dst => dst.ProjectedEnd, opt => opt.ResolveUsing(db =>
+                {
+                    return db.ProjectedEnd.ToDbTime();
+                }))
+                .ForMember(dst => dst.ActualEnd, opt => opt.ResolveUsing(db =>
+                {
+                    return db.ActualEnd.ToDbTime();
+                }))
                 .ForMember(dst => dst.IsGroupingTask, opt => opt.MapFrom(src => src.IsGroupingTask))
                 .ForMember(dst => dst.SequentialPredecessorId, opt => opt.ResolveUsing(model =>
                 {
