@@ -92,7 +92,7 @@ namespace OpenLawOffice.WebClient.Controllers
             taskTime.Time = Data.Timing.Time.Create(taskTime.Time, currentUser);
             taskTime = Data.Tasks.TaskTime.Create(taskTime, currentUser);
 
-            return RedirectToAction("Details", new { Id = taskTime.Id });
+            return RedirectToAction("Time", "Tasks", new { Id = Request["TaskId"] });
         }
     }
 }

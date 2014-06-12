@@ -43,7 +43,8 @@ namespace OpenLawOffice.Data.Timing
         {
             return DataHelper.List<Common.Models.Timing.Time, DBOs.Timing.Time>(
                 "SELECT \"time\".* FROM \"time\" JOIN \"task_time\" ON \"time\".\"id\"=\"task_time\".\"time_id\" " +
-                "WHERE \"task_id\"=@TaskId AND \"time\".\"utc_disabled\" is null AND \"task_time\".\"utc_disabled\" is null",
+                "WHERE \"task_id\"=@TaskId AND \"time\".\"utc_disabled\" is null AND \"task_time\".\"utc_disabled\" is null " +
+                "ORDER BY \"start\" ASC",
                 new { TaskId = taskId });
         }
 
