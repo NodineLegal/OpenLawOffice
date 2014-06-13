@@ -72,7 +72,9 @@
     <Reference Include="System.Data.DataSetExtensions">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Web.Mvc, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.Mvc, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -175,10 +177,51 @@
     <Compile Include="ViewModels\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\alarm-clock-select.png" />
+    <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\calendar-arrow.png" />
+    <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\cross.png" />
+    <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\download-cloud.png" />
+    <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\exclamation-shield.png" />
+    <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\gear-arrow.png" />
+    <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\pencil.png" />
+    <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\question.png" />
+    <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\user-arrow.png" />
     <Content Include="Content\fullcalendar.css" />
     <Content Include="Content\fullcalendar.print.css" />
+    <Content Include="Content\images\animated-overlay.gif" />
+    <Content Include="Content\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\images\ui-bg_flat_55_fbec88_40x100.png" />
+    <Content Include="Content\images\ui-bg_glass_75_d0e5f5_1x400.png" />
+    <Content Include="Content\images\ui-bg_glass_85_dfeffc_1x400.png" />
+    <Content Include="Content\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\images\ui-bg_gloss-wave_55_5c9ccc_500x100.png" />
+    <Content Include="Content\images\ui-bg_inset-hard_100_f5f8f9_1x100.png" />
+    <Content Include="Content\images\ui-bg_inset-hard_100_fcfdfd_1x100.png" />
+    <Content Include="Content\images\ui-icons_217bc0_256x240.png" />
+    <Content Include="Content\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\images\ui-icons_469bdd_256x240.png" />
+    <Content Include="Content\images\ui-icons_6da8d5_256x240.png" />
+    <Content Include="Content\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\images\ui-icons_d8e7f3_256x240.png" />
+    <Content Include="Content\images\ui-icons_f9bd01_256x240.png" />
+    <Content Include="Content\jquery-ui-1.10.4.custom.css" />
+    <Content Include="Content\jquery-ui-1.10.4.custom.min.css" />
     <Content Include="Global.asax" />
     <Content Include="LICENSE.txt" />
+    <Content Include="Scripts\fullcalendar\fullcalendar.js" />
+    <Content Include="Scripts\fullcalendar\fullcalendar.min.js" />
+    <Content Include="Scripts\fullcalendar\gcal.js" />
+    <Content Include="Scripts\jqGrid-4.6.0\grid.locale-en.js" />
+    <Content Include="Scripts\jqGrid-4.6.0\jquery-1.11.0.min.js" />
+    <Content Include="Scripts\jqGrid-4.6.0\jquery.jqGrid.min.js" />
+    <Content Include="Scripts\jqGrid-4.6.0\ui.jqgrid.css" />
+    <Content Include="Scripts\jquery-1.10.2.js" />
+    <Content Include="Scripts\jquery-ui-1.10.4.custom.js" />
+    <Content Include="Scripts\jquery-ui-1.10.4.custom.min.js" />
+    <Content Include="Scripts\jquery-ui-1.9.2.custom.min.js" />
+    <Content Include="Scripts\jquery-ui.custom.min.js" />
+    <Content Include="Scripts\jquery.min.js" />
+    <Content Include="Scripts\moment.min.js" />
     <Content Include="Views\Account\Login.aspx" />
     <Content Include="Views\Calendar\Contact.aspx" />
     <Content Include="Views\Calendar\Index.aspx" />
@@ -337,7 +380,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Scripts\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenLawOffice.Common\OpenLawOffice.Common.csproj">

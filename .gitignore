@@ -11,3 +11,5 @@ obj
 packages
 OpenLawOffice.WinClient
 OpenLawOffice.Server
+
+/OpenLawOffice.WebClient/OpenLawOffice.WebClient.Publish.xml
