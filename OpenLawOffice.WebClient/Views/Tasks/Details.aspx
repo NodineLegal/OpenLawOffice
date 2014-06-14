@@ -33,6 +33,14 @@
         </tr>
         <tr>
             <td class="display-label">
+                Active
+            </td>
+            <td class="display-field">
+                <%: Html.CheckBoxFor(model => model.Active, new { disabled = true })%>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
                 Projected Start
             </td>
             <td class="display-field">

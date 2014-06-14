@@ -4,7 +4,7 @@
 
 -- Dumped from database version 9.2.4
 -- Dumped by pg_dump version 9.2.4
--- Started on 2014-06-13 18:34:51
+-- Started on 2014-06-13 20:11:58
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
@@ -835,7 +835,8 @@ CREATE TABLE task (
     disabled_by_user_id integer,
     utc_created timestamp without time zone NOT NULL,
     utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
+    utc_disabled timestamp without time zone,
+    active boolean NOT NULL
 );
 
 
@@ -2630,7 +2631,7 @@ ALTER TABLE ONLY task_tag
 
 
 --
--- TOC entry 2286 (class 2606 OID 114947)
+-- TOC entry 2286 (class 2606 OID 115115)
 -- Name: FK_task_task_ParentId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2639,7 +2640,7 @@ ALTER TABLE ONLY task
 
 
 --
--- TOC entry 2285 (class 2606 OID 114952)
+-- TOC entry 2285 (class 2606 OID 115120)
 -- Name: FK_task_task_SequentialPredecessorId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2693,7 +2694,7 @@ ALTER TABLE ONLY task_time
 
 
 --
--- TOC entry 2284 (class 2606 OID 114982)
+-- TOC entry 2284 (class 2606 OID 115125)
 -- Name: FK_task_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2702,7 +2703,7 @@ ALTER TABLE ONLY task
 
 
 --
--- TOC entry 2283 (class 2606 OID 114987)
+-- TOC entry 2283 (class 2606 OID 115130)
 -- Name: FK_task_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2711,7 +2712,7 @@ ALTER TABLE ONLY task
 
 
 --
--- TOC entry 2282 (class 2606 OID 114992)
+-- TOC entry 2282 (class 2606 OID 115135)
 -- Name: FK_task_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2794,7 +2795,7 @@ GRANT ALL ON SCHEMA public TO postgres;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
--- Completed on 2014-06-13 18:34:52
+-- Completed on 2014-06-13 20:11:58
 
 --
 -- PostgreSQL database dump complete

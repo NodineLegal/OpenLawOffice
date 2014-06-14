@@ -131,7 +131,7 @@ namespace OpenLawOffice.Data.Tasks
                     tags.Add(x.Tag.ToLower());
             });
 
-            sql = "SELECT * FROM \"task\" WHERE \"id\" IN (SELECT \"task_id\" FROM \"task_responsible_user\" WHERE \"user_id\"=@UserId) ";
+            sql = "SELECT * FROM \"task\" WHERE \"active\"=true AND \"id\" IN (SELECT \"task_id\" FROM \"task_responsible_user\" WHERE \"user_id\"=@UserId) ";
 
             if (cats.Count > 0 || tags.Count > 0)
             {
@@ -243,7 +243,7 @@ namespace OpenLawOffice.Data.Tasks
                     tags.Add(x.Tag.ToLower());
             });
 
-            sql = "SELECT * FROM \"task\" WHERE \"id\" IN (SELECT \"task_id\" FROM \"task_assigned_contact\" WHERE \"contact_id\"=@ContactId) " +
+            sql = "SELECT * FROM \"task\" WHERE \"active\"=true AND \"id\" IN (SELECT \"task_id\" FROM \"task_assigned_contact\" WHERE \"contact_id\"=@ContactId) " +
                 "AND \"id\" IN (SELECT \"task_id\" FROM \"task_tag\" WHERE \"tag_category_id\" " +
                 "IN (SELECT \"id\" FROM \"tag_category\" WHERE LOWER(\"name\") IN (";
 
@@ -333,7 +333,7 @@ namespace OpenLawOffice.Data.Tasks
                     tags.Add(x.Tag.ToLower());
             });
 
-            sql = "SELECT * FROM \"task\" WHERE " +
+            sql = "SELECT * FROM \"task\" WHERE \"active\"=true AND " +
                 "\"id\" IN (SELECT \"task_id\" FROM \"task_tag\" WHERE \"tag_category_id\" " +
                 "IN (SELECT \"id\" FROM \"tag_category\" WHERE LOWER(\"name\") IN (";
 
@@ -535,8 +535,11 @@ namespace OpenLawOffice.Data.Tasks
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("INSERT INTO \"task\" (\"title\", \"description\", \"projected_start\", \"due_date\", \"projected_end\", \"actual_end\", \"parent_id\", \"is_grouping_task\", \"sequential_predecessor_id\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
-                    "VALUES (@Title, @Description, @ProjectedStart, @DueDate, @ProjectedEnd, @ActualEnd, @ParentId, @IsGroupingTask, @SequentialPredecessorId, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
+                conn.Execute("INSERT INTO \"task\" (\"title\", \"description\", \"projected_start\", \"due_date\", \"projected_end\", " +
+                    "\"actual_end\", \"parent_id\", \"is_grouping_task\", \"sequential_predecessor_id\", \"active\", \"utc_created\", " +
+                    "\"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                    "VALUES (@Title, @Description, @ProjectedStart, @DueDate, @ProjectedEnd, @ActualEnd, @ParentId, @IsGroupingTask, " +
+                    "@SequentialPredecessorId, @Active, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);
                 model.Id = conn.Query<DBOs.Security.Area>("SELECT currval(pg_get_serial_sequence('task', 'id')) AS \"id\"").Single().Id;
             }
@@ -619,7 +622,7 @@ namespace OpenLawOffice.Data.Tasks
                 conn.Execute("UPDATE \"task\" SET " +
                     "\"title\"=@Title, \"description\"=@Description, \"projected_start\"=@ProjectedStart, " +
                     "\"due_date\"=@DueDate, \"projected_end\"=@ProjectedEnd, \"actual_end\"=@ActualEnd, \"parent_id\"=@ParentId, " +
-                    "\"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId " +
+                    "\"active\"=@Active, \"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId " +
                     "WHERE \"id\"=@Id", dbo);
             }
 

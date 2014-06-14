@@ -46,6 +46,15 @@
         </tr>
         <tr>
             <td class="display-label">
+                Active<span class="required-field" title="Required Field">*</span>
+            </td>
+            <td class="display-field">
+                <%: Html.CheckBoxFor(model => model.Active)%>
+                A check indicates there is something left to complete.  Once completed, uncheck.
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
                 Projected Start
             </td>
             <td class="display-field">

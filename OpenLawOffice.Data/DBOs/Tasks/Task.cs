@@ -60,6 +60,9 @@ namespace OpenLawOffice.Data.DBOs.Tasks
         [ColumnMapping(Name = "sequential_predecessor_id")]
         public long? SequentialPredecessorId { get; set; }
 
+        [ColumnMapping(Name = "active")]
+        public bool Active { get; set; }
+
         public void BuildMappings()
         {
             Dapper.SqlMapper.SetTypeMap(typeof(Task), new ColumnAttributeTypeMapper<Task>());
@@ -143,7 +146,8 @@ namespace OpenLawOffice.Data.DBOs.Tasks
                         };
                     else
                         return null;
-                }));
+                }))
+                .ForMember(dst => dst.Active, opt => opt.MapFrom(src => src.Active));
 
             Mapper.CreateMap<Common.Models.Tasks.Task, DBOs.Tasks.Task>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.ResolveUsing(db =>
@@ -208,7 +212,8 @@ namespace OpenLawOffice.Data.DBOs.Tasks
                         return model.SequentialPredecessor.Id;
                     else
                         return null;
-                }));
+                }))
+                .ForMember(dst => dst.Active, opt => opt.MapFrom(src => src.Active));
         }
     }
 }

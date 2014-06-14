@@ -50,6 +50,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasks
 
         public TaskViewModel SequentialPredecessor { get; set; }
 
+        public bool Active { get; set; }
+
         public void BuildMappings()
         {
             Mapper.CreateMap<Common.Models.Tasks.Task, TaskViewModel>()
@@ -110,7 +112,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasks
                         Id = db.SequentialPredecessor.Id.Value,
                         IsStub = true
                     };
-                }));
+                }))
+                .ForMember(dst => dst.Active, opt => opt.MapFrom(src => src.Active));
 
             Mapper.CreateMap<TaskViewModel, Common.Models.Tasks.Task>()
                 .ForMember(dst => dst.Created, opt => opt.MapFrom(src => src.Created))
@@ -173,7 +176,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasks
                         Id = model.SequentialPredecessor.Id,
                         IsStub = true
                     };
-                }));
+                }))
+                .ForMember(dst => dst.Active, opt => opt.MapFrom(src => src.Active));
         }
     }
 }

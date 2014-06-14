@@ -47,5 +47,7 @@ namespace OpenLawOffice.Common.Models.Tasks
         public bool IsGroupingTask { get; set; }
 
         public Task SequentialPredecessor { get; set; }
+
+        public bool Active { get; set; }
     }
 }
