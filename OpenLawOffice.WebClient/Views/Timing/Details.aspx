@@ -48,6 +48,14 @@
                 <%: Html.ActionLink(Model.Worker.DisplayName, "Details", "Contacts", new { id = Model.Worker.Id }, null) %>
             </td>
         </tr>
+        <tr>
+            <td class="display-label">
+                Details
+            </td>
+            <td class="display-field">
+                <%: Model.Details %>
+            </td>
+        </tr>
     </table>
 <% Html.RenderPartial("CoreDetailsView"); %>
 

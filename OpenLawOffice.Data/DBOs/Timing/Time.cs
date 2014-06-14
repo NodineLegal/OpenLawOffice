@@ -42,6 +42,9 @@ namespace OpenLawOffice.Data.DBOs.Timing
         [ColumnMapping(Name = "worker_contact_id")]
         public int WorkerContactId { get; set; }
 
+        [ColumnMapping(Name = "details")]
+        public string Details { get; set; }
+
         public void BuildMappings()
         {
             Dapper.SqlMapper.SetTypeMap(typeof(Time), new ColumnAttributeTypeMapper<Time>());
@@ -100,7 +103,8 @@ namespace OpenLawOffice.Data.DBOs.Timing
                         Id = db.WorkerContactId,
                         IsStub = true
                     };
-                }));
+                }))
+                .ForMember(dst => dst.Details, opt => opt.MapFrom(src => src.Details));
 
             Mapper.CreateMap<Common.Models.Timing.Time, DBOs.Timing.Time>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.ResolveUsing(db =>
@@ -145,7 +149,8 @@ namespace OpenLawOffice.Data.DBOs.Timing
                 {
                     if (model.Worker == null) return null;
                     return model.Worker.Id;
-                }));
+                }))
+                .ForMember(dst => dst.Details, opt => opt.MapFrom(src => src.Details));
         }
     }
 }

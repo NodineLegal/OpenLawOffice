@@ -39,9 +39,8 @@
                 Worker<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                Worker:
-                <%: Html.TextBoxFor(model => model.Worker.Id, new { @readonly = true })%>
-                <%: Html.ValidationMessageFor(model => model.Worker.Id)%>
+                Worker: <%: Html.TextBoxFor(model => model.Worker.DisplayName, new { @readonly = true })%>
+                <%: Html.HiddenFor(model => model.Worker.Id, new { @readonly = true })%>
                 <table id="list">
                 </table>
                 <div id="pager">
@@ -71,7 +70,10 @@
                             gridview: true,
                             caption: 'Contacts',
                             onSelectRow: function (id) {
+                                var selr = jQuery('#list').jqGrid('getGridParam', 'selrow');
+                                var data = $("#list").jqGrid('getRowData', selr)
                                 $("#Worker_Id").val(id);
+                                $("#Worker_DisplayName").val(data.DisplayName);
                             }
                         });
                     });
@@ -79,8 +81,17 @@
                     $("#clear").click(function () {
                         $("#list").jqGrid('resetSelection');
                         $("#Worker_Id").val(null);
+                        $("#Worker_DisplayName").val(null);
                     });
                 </script>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
+                Details:
+            </td>
+            <td class="display-field">
+                <%: Html.TextAreaFor(model => model.Details, new { style = "width: 500px; height: 100px;" })%>
             </td>
         </tr>
     </table>

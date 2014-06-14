@@ -35,5 +35,7 @@ namespace OpenLawOffice.Common.Models.Timing
         public DateTime? Stop { get; set; }
 
         public Contacts.Contact Worker { get; set; }
+
+        public string Details { get; set; }
     }
 }

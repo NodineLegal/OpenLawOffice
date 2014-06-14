@@ -38,6 +38,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Timing
 
         public Contacts.ContactViewModel Worker { get; set; }
 
+        public string Details { get; set; }
+
         public string WorkerDisplayName { get; set; }
 
         public void BuildMappings()
@@ -87,6 +89,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Timing
                         IsStub = true
                     };
                 }))
+                .ForMember(dst => dst.Details, opt => opt.MapFrom(src => src.Details))
                 .ForMember(dst => dst.WorkerDisplayName, opt => opt.Ignore());
 
             Mapper.CreateMap<TimeViewModel, Common.Models.Timing.Time>()
@@ -134,7 +137,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Timing
                         Id = model.Worker.Id,
                         IsStub = true
                     };
-                }));
+                }))
+                .ForMember(dst => dst.Details, opt => opt.MapFrom(src => src.Details));
         }
     }
 }
