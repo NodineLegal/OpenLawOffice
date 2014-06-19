@@ -49,13 +49,12 @@
       <HintPath>packages\DotNetZip.1.9.2\lib\net20\Ionic.Zip.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Mono.Security, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>packages\elmah.postgresql.1.2\lib\Mono.Security.dll</HintPath>
+    <Reference Include="Mono.Security, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>packages\Npgsql.2.1.3\lib\net40\Mono.Security.dll</HintPath>
     </Reference>
-    <Reference Include="Npgsql, Version=2.0.6.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>packages\elmah.postgresql.1.2\lib\Npgsql.dll</HintPath>
+    <Reference Include="Npgsql">
+      <HintPath>packages\Npgsql.2.1.3\lib\net40\Npgsql.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -90,7 +89,9 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccountRoleService.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\CalendarController.cs" />
     <Compile Include="Controllers\ContactsController.cs" />
@@ -111,9 +112,6 @@
     <Compile Include="Controllers\NotesController.cs" />
     <Compile Include="Controllers\ResponsibleUsersController.cs" />
     <Compile Include="Controllers\SearchController.cs" />
-    <Compile Include="Controllers\SecurityAreaAclsController.cs" />
-    <Compile Include="Controllers\SecurityFilterAttribute.cs" />
-    <Compile Include="Controllers\SecurityAreasController.cs" />
     <Compile Include="Controllers\TagCategoriesController.cs" />
     <Compile Include="Controllers\TaskAssignedContactsController.cs" />
     <Compile Include="Controllers\TaskResponsibleUsersController.cs" />
@@ -121,7 +119,6 @@
     <Compile Include="Controllers\TaskTagsController.cs" />
     <Compile Include="Controllers\TaskTimeController.cs" />
     <Compile Include="Controllers\TimingController.cs" />
-    <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Controllers\UserTaskSettingsController.cs" />
     <Compile Include="Controllers\VersionsController.cs" />
     <Compile Include="Controllers\HandleErrorAttribute.cs" />
@@ -130,9 +127,17 @@
     </Compile>
     <Compile Include="Helpers\EnumDropDownListForHelper.cs" />
     <Compile Include="Security.cs" />
-    <Compile Include="ViewModels\Account\LoginModel.cs" />
+    <Compile Include="AccountMembershipService.cs" />
+    <Compile Include="ViewModels\AccountValidation.cs" />
+    <Compile Include="ViewModels\Account\ChangePasswordViewModel.cs" />
+    <Compile Include="ViewModels\Account\LoginViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UserCache.cs" />
+    <Compile Include="ViewModels\Account\ProfileViewModel.cs" />
+    <Compile Include="ViewModels\Account\RecoveryViewModel.cs" />
+    <Compile Include="ViewModels\Account\RegisterViewModel.cs" />
+    <Compile Include="ViewModels\Account\SelectableUserRoleViewModel.cs" />
+    <Compile Include="ViewModels\Account\UserRoleViewModel.cs" />
+    <Compile Include="ViewModels\Account\UsersViewModel.cs" />
     <Compile Include="ViewModels\AssignmentTypeViewModel.cs" />
     <Compile Include="ViewModels\Events\EventAssignedContactViewModel.cs" />
     <Compile Include="ViewModels\Events\EventMatterViewModel.cs" />
@@ -148,7 +153,9 @@
     <Compile Include="ViewModels\Documents\DocumentViewModel.cs" />
     <Compile Include="ViewModels\Documents\SelectableDocumentViewModel.cs" />
     <Compile Include="ViewModels\Documents\VersionViewModel.cs" />
+    <Compile Include="FormsAuthenticationService.cs" />
     <Compile Include="ViewModels\Home\DashboardViewModel.cs" />
+    <Compile Include="IFormsAuthenticationService.cs" />
     <Compile Include="ViewModels\JqGridObject.cs" />
     <Compile Include="ViewModels\Matters\MatterContactViewModel.cs" />
     <Compile Include="ViewModels\Matters\MatterTagViewModel.cs" />
@@ -157,12 +164,8 @@
     <Compile Include="ViewModels\Matters\ResponsibleUserViewModel.cs" />
     <Compile Include="ViewModels\Notes\NoteViewModel.cs" />
     <Compile Include="ViewModels\PermissionsViewModel.cs" />
+    <Compile Include="ViewModels\PropertiesMustMatchAttribute.cs" />
     <Compile Include="ViewModels\Search\TagSearchViewModel.cs" />
-    <Compile Include="ViewModels\Security\AreaViewModel.cs" />
-    <Compile Include="ViewModels\Security\AreaAclViewModel.cs" />
-    <Compile Include="ViewModels\Security\SecuredResourceAclViewModel.cs" />
-    <Compile Include="ViewModels\Security\SecuredResourceViewModel.cs" />
-    <Compile Include="ViewModels\Security\UserViewModel.cs" />
     <Compile Include="ViewModels\Settings\TagFilterViewModel.cs" />
     <Compile Include="ViewModels\Settings\UserTaskSettingsViewModel.cs" />
     <Compile Include="ViewModels\Tagging\TagBaseViewModel.cs" />
@@ -174,6 +177,7 @@
     <Compile Include="ViewModels\Tasks\TaskTimeViewModel.cs" />
     <Compile Include="ViewModels\Tasks\TaskViewModel.cs" />
     <Compile Include="ViewModels\Timing\TimeViewModel.cs" />
+    <Compile Include="ViewModels\ValidatePasswordLengthAttribute.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -222,7 +226,20 @@
     <Content Include="Scripts\jquery-ui.custom.min.js" />
     <Content Include="Scripts\jquery.min.js" />
     <Content Include="Scripts\moment.min.js" />
+    <Content Include="Views\Account\ChangePassword.aspx" />
+    <Content Include="Views\Account\ChangePasswordSuccess.aspx" />
     <Content Include="Views\Account\Login.aspx" />
+    <Content Include="Views\Account\Profile.aspx" />
+    <Content Include="Views\Account\Recovery.aspx" />
+    <Content Include="Views\Account\RecoveryEmailSent.aspx" />
+    <Content Include="Views\Account\Register.aspx" />
+    <Content Include="Views\Admin\CreateUser.aspx" />
+    <Content Include="Views\Admin\DetailsUser.aspx" />
+    <Content Include="Views\Admin\DisableUser.aspx" />
+    <Content Include="Views\Admin\EditUser.aspx" />
+    <Content Include="Views\Admin\Index.aspx" />
+    <Content Include="Views\Admin\UnlockUser.aspx" />
+    <Content Include="Views\Admin\UserRoles.aspx" />
     <Content Include="Views\Calendar\Contact.aspx" />
     <Content Include="Views\Calendar\Index.aspx" />
     <Content Include="Views\Calendar\SelectContact.aspx" />
@@ -309,13 +326,6 @@
     <Content Include="Views\ResponsibleUsers\Details.aspx" />
     <Content Include="Views\ResponsibleUsers\Edit.aspx" />
     <Content Include="Views\Search\Tags.aspx" />
-    <Content Include="Views\SecurityAreaAcls\Create.aspx" />
-    <Content Include="Views\SecurityAreaAcls\Details.aspx" />
-    <Content Include="Views\SecurityAreaAcls\Edit.aspx" />
-    <Content Include="Views\SecurityAreaAcls\Index.aspx" />
-    <Content Include="Views\SecurityAreas\Details.aspx" />
-    <Content Include="Views\SecurityAreas\Index.aspx" />
-    <Content Include="Views\SecurityAreas\Permissions.aspx" />
     <Content Include="Views\Shared\DisplayTemplates\PermissionViewModel.ascx" />
     <Content Include="Views\Shared\EditorTemplates\PermissionViewModel.ascx" />
     <Content Include="Views\Shared\InsufficientRights.aspx" />
@@ -348,11 +358,6 @@
     <Content Include="Views\TaskTime\SelectContactToAssign.aspx" />
     <Content Include="Views\Timing\Details.aspx" />
     <Content Include="Views\Timing\Edit.aspx" />
-    <Content Include="Views\Users\Create.aspx" />
-    <Content Include="Views\Users\Details.aspx" />
-    <Content Include="Views\Users\Disable.aspx" />
-    <Content Include="Views\Users\Edit.aspx" />
-    <Content Include="Views\Users\Index.aspx" />
     <Content Include="Views\UserTaskSettings\CreateFilter.aspx" />
     <Content Include="Views\UserTaskSettings\DeleteFilter.aspx" />
     <Content Include="Views\UserTaskSettings\DetailsFilter.aspx" />

@@ -27,6 +27,7 @@ namespace OpenLawOffice.WebClient.Controllers
     [HandleError(View = "Errors/Index", Order = 10)]
     public class TagCategoriesController : BaseController
     {
+        [Authorize(Roles = "Login, User")]
         public ActionResult ListNameOnly()
         {
             string term;

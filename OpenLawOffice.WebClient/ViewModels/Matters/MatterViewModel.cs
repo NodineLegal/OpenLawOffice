@@ -45,26 +45,26 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
                 .ForMember(dst => dst.Disabled, opt => opt.MapFrom(src => src.Disabled))
                 .ForMember(dst => dst.CreatedBy, opt => opt.ResolveUsing(db =>
                 {
-                    return new ViewModels.Security.UserViewModel()
+                    return new ViewModels.Account.UsersViewModel()
                     {
-                        Id = db.CreatedBy.Id,
+                        PId = db.CreatedBy.PId,
                         IsStub = true
                     };
                 }))
                 .ForMember(dst => dst.ModifiedBy, opt => opt.ResolveUsing(db =>
                 {
-                    return new ViewModels.Security.UserViewModel()
+                    return new ViewModels.Account.UsersViewModel()
                     {
-                        Id = db.ModifiedBy.Id,
+                        PId = db.ModifiedBy.PId,
                         IsStub = true
                     };
                 }))
                 .ForMember(dst => dst.DisabledBy, opt => opt.ResolveUsing(db =>
                 {
-                    if (db.DisabledBy == null || !db.DisabledBy.Id.HasValue) return null;
-                    return new ViewModels.Security.UserViewModel()
+                    if (db.DisabledBy == null || !db.DisabledBy.PId.HasValue) return null;
+                    return new ViewModels.Account.UsersViewModel()
                     {
-                        Id = db.DisabledBy.Id.Value,
+                        PId = db.DisabledBy.PId.Value,
                         IsStub = true
                     };
                 }))
@@ -85,34 +85,26 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
                 .ForMember(dst => dst.Created, opt => opt.MapFrom(src => src.Created))
                 .ForMember(dst => dst.Modified, opt => opt.MapFrom(src => src.Modified))
                 .ForMember(dst => dst.Disabled, opt => opt.MapFrom(src => src.Disabled))
-                .ForMember(dst => dst.CreatedBy, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.CreatedBy, opt => opt.ResolveUsing(db =>
                 {
-                    if (model.CreatedBy == null || !model.CreatedBy.Id.HasValue)
-                        return null;
-                    return new Common.Models.Security.User()
+                    return new ViewModels.Account.UsersViewModel()
                     {
-                        Id = model.CreatedBy.Id,
-                        IsStub = true
+                        PId = db.CreatedBy.PId
                     };
                 }))
-                .ForMember(dst => dst.ModifiedBy, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.ModifiedBy, opt => opt.ResolveUsing(db =>
                 {
-                    if (model.ModifiedBy == null || !model.ModifiedBy.Id.HasValue)
-                        return null;
-                    return new Common.Models.Security.User()
+                    return new ViewModels.Account.UsersViewModel()
                     {
-                        Id = model.ModifiedBy.Id,
-                        IsStub = true
+                        PId = db.ModifiedBy.PId
                     };
                 }))
-                .ForMember(dst => dst.DisabledBy, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.DisabledBy, opt => opt.ResolveUsing(db =>
                 {
-                    if (model.DisabledBy == null || !model.DisabledBy.Id.HasValue)
-                        return null;
-                    return new Common.Models.Security.User()
+                    if (db.DisabledBy == null || !db.DisabledBy.PId.HasValue) return null;
+                    return new ViewModels.Account.UsersViewModel()
                     {
-                        Id = model.DisabledBy.Id,
-                        IsStub = true
+                        PId = db.DisabledBy.PId.Value
                     };
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
@@ -123,8 +115,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
                     return model.Parent.Id.Value;
                 }))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
-                .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis))
-                .ForMember(dst => dst.SecuredResource, opt => opt.Ignore());
+                .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis));
         }
     }
 }

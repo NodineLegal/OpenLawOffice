@@ -70,7 +70,7 @@ namespace OpenLawOffice.Data.Tasks
         }
 
         public static Common.Models.Tasks.TaskTag Create(Common.Models.Tasks.TaskTag model,
-            Common.Models.Security.User creator)
+            Common.Models.Account.Users creator)
         {
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
             model.CreatedBy = model.ModifiedBy = creator;
@@ -88,7 +88,7 @@ namespace OpenLawOffice.Data.Tasks
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("INSERT INTO \"task_tag\" (\"id\", \"task_id\", \"tag_category_id\", \"tag\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                conn.Execute("INSERT INTO \"task_tag\" (\"id\", \"task_id\", \"tag_category_id\", \"tag\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
                     "VALUES (@Id, @TaskId, @TagCategoryId, @Tag, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);
             }
@@ -97,7 +97,7 @@ namespace OpenLawOffice.Data.Tasks
         }
 
         public static Common.Models.Tasks.TaskTag Edit(Common.Models.Tasks.TaskTag model,
-            Common.Models.Security.User modifier)
+            Common.Models.Account.Users modifier)
         {
             model.ModifiedBy = modifier;
             model.Modified = DateTime.UtcNow;
@@ -106,7 +106,7 @@ namespace OpenLawOffice.Data.Tasks
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("UPDATE \"task_tag\" SET " +
-                    "\"task_id\"=@TaskId, \"tag\"=@Tag, \"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId " +
+                    "\"task_id\"=@TaskId, \"tag\"=@Tag, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserId " +
                     "WHERE \"id\"=@Id", dbo);
             }
 
@@ -117,7 +117,7 @@ namespace OpenLawOffice.Data.Tasks
 
         private static Common.Models.Tagging.TagCategory UpdateTagCategory(
             Common.Models.Tasks.TaskTag model,
-            Common.Models.Security.User modifier)
+            Common.Models.Account.Users modifier)
         {
             Common.Models.Tasks.TaskTag currentTag = Get(model.Id.Value);
 
@@ -161,7 +161,7 @@ namespace OpenLawOffice.Data.Tasks
 
         private static Common.Models.Tagging.TagCategory AddOrChangeTagCategory(
             Common.Models.Tasks.TaskTag tag,
-            Common.Models.Security.User modifier)
+            Common.Models.Account.Users modifier)
         {
             Common.Models.Tagging.TagCategory newTagCat = null;
 
@@ -200,19 +200,19 @@ namespace OpenLawOffice.Data.Tasks
         }
 
         public static Common.Models.Tasks.TaskTag Disable(Common.Models.Tasks.TaskTag model,
-            Common.Models.Security.User disabler)
+            Common.Models.Account.Users disabler)
         {
             model.DisabledBy = disabler;
             model.Disabled = DateTime.UtcNow;
 
             DataHelper.Disable<Common.Models.Matters.MatterContact,
-                DBOs.Matters.MatterContact>("task_tag", disabler.Id.Value, model.Id);
+                DBOs.Matters.MatterContact>("task_tag", disabler.PId.Value, model.Id);
 
             return model;
         }
 
         public static Common.Models.Tasks.TaskTag Enable(Common.Models.Tasks.TaskTag model,
-            Common.Models.Security.User enabler)
+            Common.Models.Account.Users enabler)
         {
             model.ModifiedBy = enabler;
             model.Modified = DateTime.UtcNow;
@@ -220,7 +220,7 @@ namespace OpenLawOffice.Data.Tasks
             model.Disabled = null;
 
             DataHelper.Enable<Common.Models.Matters.MatterContact,
-                DBOs.Matters.MatterContact>("task_tag", enabler.Id.Value, model.Id);
+                DBOs.Matters.MatterContact>("task_tag", enabler.PId.Value, model.Id);
 
             return model;
         }

@@ -29,6 +29,7 @@ namespace OpenLawOffice.WebClient.Controllers
     [HandleError(View = "Errors/Index", Order = 10)]
     public class EventAssignedContactController : BaseController
     {
+        [Authorize(Roles = "Login, User")]
         public ActionResult SelectContactToAssign(Guid id)
         {
             List<ViewModels.Contacts.SelectableContactViewModel> modelList;
@@ -43,6 +44,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(modelList);
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult AssignContact(int id)
         {
             Guid eventId = Guid.Empty;
@@ -62,16 +64,17 @@ namespace OpenLawOffice.WebClient.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult AssignContact(ViewModels.Events.EventAssignedContactViewModel model)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Events.EventAssignedContact eventContact;
 
             // We need to reset the Id of the model as it is picking up the id from the route,
             // which is incorrect
             model.Id = null;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             eventContact = Data.Events.EventAssignedContact.Get(model.Event.Id.Value, model.Contact.Id.Value);
 
@@ -90,6 +93,7 @@ namespace OpenLawOffice.WebClient.Controllers
                 new { id = eventContact.Event.Id.Value.ToString() });
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult Edit(Guid id)
         {
             Common.Models.Events.EventAssignedContact model;
@@ -107,13 +111,14 @@ namespace OpenLawOffice.WebClient.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Edit(Guid id, ViewModels.Events.EventAssignedContactViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Events.EventAssignedContact currentModel;
             Common.Models.Events.EventAssignedContact model;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             currentModel = Data.Events.EventAssignedContact.Get(id);
 
@@ -127,6 +132,7 @@ namespace OpenLawOffice.WebClient.Controllers
                 new { id = model.Event.Id.Value.ToString() });
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult Details(Guid id)
         {
             ViewModels.Events.EventAssignedContactViewModel viewModel;
@@ -145,19 +151,21 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult Delete(Guid id)
         {
             return Details(id);
         }
 
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Delete(Guid id, ViewModels.Tasks.TaskAssignedContactViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Events.EventAssignedContact currentModel;
             Common.Models.Events.EventAssignedContact model;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             currentModel = Data.Events.EventAssignedContact.Get(id);
 

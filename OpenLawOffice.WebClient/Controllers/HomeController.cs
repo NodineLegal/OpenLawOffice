@@ -28,16 +28,16 @@ namespace OpenLawOffice.WebClient.Controllers
     [HandleError(View = "Errors/Index", Order = 10)]
     public class HomeController : BaseController
     {
-        [SecurityFilter]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Index()
         {
             ViewModels.Home.DashboardViewModel viewModel;
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             List<Common.Models.Settings.TagFilter> tagFilter;            
 
             viewModel = new ViewModels.Home.DashboardViewModel();
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             viewModel.MyTodoList = new List<ViewModels.Tasks.TaskViewModel>();
 
@@ -51,7 +51,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
-        [SecurityFilter]
+        [Authorize(Roles = "Login, User")]
         public ActionResult About()
         {
             return View();

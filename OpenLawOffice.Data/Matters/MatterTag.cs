@@ -70,7 +70,7 @@ namespace OpenLawOffice.Data.Matters
         }
 
         public static Common.Models.Matters.MatterTag Create(Common.Models.Matters.MatterTag model,
-            Common.Models.Security.User creator)
+            Common.Models.Account.Users creator)
         {
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
             model.CreatedBy = model.ModifiedBy = creator;
@@ -88,7 +88,7 @@ namespace OpenLawOffice.Data.Matters
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("INSERT INTO \"matter_tag\" (\"id\", \"matter_id\", \"tag_category_id\", \"tag\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                conn.Execute("INSERT INTO \"matter_tag\" (\"id\", \"matter_id\", \"tag_category_id\", \"tag\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
                     "VALUES (@Id, @MatterId, @TagCategoryId, @Tag, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);
             }
@@ -97,7 +97,7 @@ namespace OpenLawOffice.Data.Matters
         }
 
         public static Common.Models.Matters.MatterTag Edit(Common.Models.Matters.MatterTag model,
-            Common.Models.Security.User modifier)
+            Common.Models.Account.Users modifier)
         {
             model.ModifiedBy = modifier;
             model.Modified = DateTime.UtcNow;
@@ -106,7 +106,7 @@ namespace OpenLawOffice.Data.Matters
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("UPDATE \"matter_tag\" SET " +
-                    "\"matter_id\"=@MatterId, \"tag\"=@Tag, \"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId " +
+                    "\"matter_id\"=@MatterId, \"tag\"=@Tag, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserId " +
                     "WHERE \"id\"=@Id", dbo);
             }
 
@@ -117,7 +117,7 @@ namespace OpenLawOffice.Data.Matters
 
         private static Common.Models.Tagging.TagCategory UpdateTagCategory(
             Common.Models.Matters.MatterTag model,
-            Common.Models.Security.User modifier)
+            Common.Models.Account.Users modifier)
         {
             Common.Models.Matters.MatterTag currentTag = Get(model.Id.Value);
 
@@ -161,7 +161,7 @@ namespace OpenLawOffice.Data.Matters
 
         private static Common.Models.Tagging.TagCategory AddOrChangeTagCategory(
             Common.Models.Matters.MatterTag tag,
-            Common.Models.Security.User modifier)
+            Common.Models.Account.Users modifier)
         {
             Common.Models.Tagging.TagCategory newTagCat = null;
 
@@ -200,19 +200,19 @@ namespace OpenLawOffice.Data.Matters
         }
 
         public static Common.Models.Matters.MatterTag Disable(Common.Models.Matters.MatterTag model,
-            Common.Models.Security.User disabler)
+            Common.Models.Account.Users disabler)
         {
             model.DisabledBy = disabler;
             model.Disabled = DateTime.UtcNow;
 
             DataHelper.Disable<Common.Models.Matters.MatterTag,
-                DBOs.Matters.MatterTag>("matter_tag", disabler.Id.Value, model.Id);
+                DBOs.Matters.MatterTag>("matter_tag", disabler.PId.Value, model.Id);
 
             return model;
         }
 
         public static Common.Models.Matters.MatterTag Enable(Common.Models.Matters.MatterTag model,
-            Common.Models.Security.User enabler)
+            Common.Models.Account.Users enabler)
         {
             model.ModifiedBy = enabler;
             model.Modified = DateTime.UtcNow;
@@ -220,7 +220,7 @@ namespace OpenLawOffice.Data.Matters
             model.Disabled = null;
 
             DataHelper.Enable<Common.Models.Matters.MatterTag,
-                DBOs.Matters.MatterTag>("matter_tag", enabler.Id.Value, model.Id);
+                DBOs.Matters.MatterTag>("matter_tag", enabler.PId.Value, model.Id);
 
             return model;
         }

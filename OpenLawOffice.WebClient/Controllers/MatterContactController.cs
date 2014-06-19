@@ -29,9 +29,7 @@ namespace OpenLawOffice.WebClient.Controllers
     [HandleError(View = "Errors/Index", Order = 10)]
     public class MatterContactController : BaseController
     {
-        // Selects link based on Guid of Matter
-        [SecurityFilter(SecurityAreaName = "Contacts", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Create)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult SelectContactToAssign(Guid id)
         {
             List<ViewModels.Contacts.SelectableContactViewModel> modelList = new List<ViewModels.Contacts.SelectableContactViewModel>();
@@ -44,8 +42,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(modelList);
         }
 
-        [SecurityFilter(SecurityAreaName = "Contacts", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Create)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult AssignContact(int id)
         {
             ViewModels.Matters.MatterContactViewModel vm;
@@ -64,19 +61,18 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(vm);
         }
 
-        [SecurityFilter(SecurityAreaName = "Contacts", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult AssignContact(ViewModels.Matters.MatterContactViewModel model)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Matters.MatterContact matterContact;
 
             // We need to reset the Id of the model as it is picking up the id from the route,
             // which is incorrect
             model.Id = null;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             matterContact = Data.Matters.MatterContact.Get(model.Matter.Id.Value, model.Contact.Id.Value);
 
@@ -95,8 +91,7 @@ namespace OpenLawOffice.WebClient.Controllers
                 new { id = matterContact.Matter.Id.Value.ToString() });
         }
 
-        [SecurityFilter(SecurityAreaName = "Contacts", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Modify)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Edit(int id)
         {
             ViewModels.Matters.MatterContactViewModel viewModel;
@@ -113,15 +108,14 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Contacts", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Edit(int id, ViewModels.Matters.MatterContactViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Matters.MatterContact model;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
             model = Mapper.Map<Common.Models.Matters.MatterContact>(viewModel);
             model = Data.Matters.MatterContact.Edit(model, currentUser);
 
@@ -129,8 +123,7 @@ namespace OpenLawOffice.WebClient.Controllers
                 new { id = model.Matter.Id.Value.ToString() });
         }
 
-        [SecurityFilter(SecurityAreaName = "Contacts", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Read)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Details(int id)
         {
             ViewModels.Matters.MatterContactViewModel viewModel;
@@ -149,22 +142,20 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Contacts", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Disable)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Delete(int id)
         {
             return Details(id);
         }
 
-        [SecurityFilter(SecurityAreaName = "Contacts", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Disable)]
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Delete(int id, ViewModels.Matters.MatterContactViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Matters.MatterContact model;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             model = Mapper.Map<Common.Models.Matters.MatterContact>(viewModel);
 

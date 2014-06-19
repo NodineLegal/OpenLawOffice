@@ -5,43 +5,45 @@
         <%: Html.ActionLink("Dashboard", "Index", "Home") %></li>
     <ul>
     </ul>
+    <% if (Page.User.IsInRole("Users"))
+       {  %>
     <li>
         Calendar</li>
     <ul>
         <li>
-            <%: Html.ActionLink("Master", "Index", "Calendar", null, null) %></li>
+            <%: Html.ActionLink("Master", "Index", "Calendar", null, null)%></li>
         <li>
-            <%: Html.ActionLink("User", "SelectUser", "Calendar", null, null) %></li>
+            <%: Html.ActionLink("User", "SelectUser", "Calendar", null, null)%></li>
         <li>
-            <%: Html.ActionLink("Contact", "SelectContact", "Calendar", null, null) %></li>
+            <%: Html.ActionLink("Contact", "SelectContact", "Calendar", null, null)%></li>
     </ul>
     <li>
-        <%: Html.ActionLink("Matters", "", "Matters") %></li>
+        <%: Html.ActionLink("Matters", "", "Matters")%></li>
     <ul>
         <li>
-            <%: Html.ActionLink("New Matter", "Create", "Matters") %></li>
+            <%: Html.ActionLink("New Matter", "Create", "Matters")%></li>
     </ul>
     <li>
         Events</li>
     <ul>
         <li>
-            <%: Html.ActionLink("New Event", "Create", "Events", null, null) %></li>
+            <%: Html.ActionLink("New Event", "Create", "Events", null, null)%></li>
         <li>
-            <%: Html.ActionLink("User Agenda", "SelectUser", "Events", null, null) %></li>
+            <%: Html.ActionLink("User Agenda", "SelectUser", "Events", null, null)%></li>
         <li>
             <%: Html.ActionLink("Contact Agenda", "SelectContact", "Events", null, null)%></li>
     </ul>
     <li>Search</li>
     <ul>
         <li>
-            <%: Html.ActionLink("Tags", "Tags", "Search") %></li>
+            <%: Html.ActionLink("Tags", "Tags", "Search")%></li>
         <li>Document Text</li>
     </ul>
     <li>
         <%: Html.ActionLink("Contacts", "", "Contacts")%></li>
     <ul>
         <li>
-            <%: Html.ActionLink("New Contact", "Create", "Contacts") %></li>
+            <%: Html.ActionLink("New Contact", "Create", "Contacts")%></li>
     </ul>
     <ul>
     </ul>
@@ -55,7 +57,7 @@
         <li>
             <%: Html.ActionLink("Area Access", "", "SecurityAreaAcls") %></li>--%>
         <li>
-            <%: Html.ActionLink("Users", "", "Users") %></li>
+            <%: Html.ActionLink("Users", "", "Users")%></li>
     </ul>
     <ul>
     </ul>
@@ -66,5 +68,12 @@
     </ul>
     <ul>
     </ul>
-    <li><%: Html.ActionLink("About", "About", "Home") %> </li>
+    <% } %>
+    <% if (Page.User.IsInRole("Admin"))
+       { %>
+    <li><%: Html.ActionLink("Admin", "Index", "Admin")%></li>
+    <ul>
+    </ul>
+    <% } %>
+    <li><%: Html.ActionLink("About", "About", "Home") %></li>
 </ul>

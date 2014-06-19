@@ -65,6 +65,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Account\UserRole.cs" />
+    <Compile Include="Models\Account\Users.cs" />
     <Compile Include="Models\Events\Event.cs" />
     <Compile Include="Models\Events\EventAssignedContact.cs" />
     <Compile Include="Models\Events\EventMatter.cs" />
@@ -89,13 +91,6 @@
     <Compile Include="Models\Notes\NoteMatter.cs" />
     <Compile Include="Models\Notes\NoteTask.cs" />
     <Compile Include="Models\PermissionType.cs" />
-    <Compile Include="Models\Security\Area.cs" />
-    <Compile Include="Models\Security\AreaAcl.cs" />
-    <Compile Include="Models\Security\Authentication.cs" />
-    <Compile Include="Models\Security\ISecuredResource.cs" />
-    <Compile Include="Models\Security\SecuredResource.cs" />
-    <Compile Include="Models\Security\SecuredResourceAcl.cs" />
-    <Compile Include="Models\Security\User.cs" />
     <Compile Include="Models\Settings\TagFilter.cs" />
     <Compile Include="Models\Tagging\TagBase.cs" />
     <Compile Include="Models\Tagging\TagCategory.cs" />

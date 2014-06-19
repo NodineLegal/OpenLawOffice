@@ -71,7 +71,7 @@ namespace OpenLawOffice.Data
             return ret;
         }
 
-        internal static void Disable<TReturn, TDbo>(string tableName, int userId, object id)
+        internal static void Disable<TReturn, TDbo>(string tableName, Guid userPId, object id)
             where TReturn : class
             where TDbo : class
         {
@@ -80,13 +80,13 @@ namespace OpenLawOffice.Data
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("UPDATE \"" + tableName + "\" SET " +
-                    "\"utc_disabled\"=@Now, \"disabled_by_user_id\"=@UserId " +
+                    "\"utc_disabled\"=@Now, \"disabled_by_user_pid\"=@UserPId " +
                     "WHERE \"id\"=@Id",
-                    new { Now = Now, UserId = userId, Id = id });
+                    new { Now = Now, UserPId = userPId, Id = id });
             }
         }
 
-        internal static void Enable<TReturn, TDbo>(string tableName, int userId, object id)
+        internal static void Enable<TReturn, TDbo>(string tableName, Guid userPId, object id)
             where TReturn : class
             where TDbo : class
         {
@@ -95,9 +95,9 @@ namespace OpenLawOffice.Data
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("UPDATE \"" + tableName + "\" SET " +
-                    "\"utc_modified\"=@Now, \"modified_by_user_id\"=@UserId, \"utc_disabled\"=null, \"disabled_by_user_id\"=null " +
+                    "\"utc_modified\"=@Now, \"modified_by_user_pid\"=@UserPId, \"utc_disabled\"=null, \"disabled_by_user_pid\"=null " +
                     "WHERE \"id\"=@Id",
-                    new { Now = Now, UserId = userId, Id = id });
+                    new { Now = Now, UserPId = userPId, Id = id });
             }
         }
     }

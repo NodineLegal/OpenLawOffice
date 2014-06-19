@@ -29,8 +29,7 @@ namespace OpenLawOffice.WebClient.Controllers
     [HandleError(View = "Errors/Index", Order = 10)]
     public class TaskResponsibleUsersController : BaseController
     {
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Read)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Details(Guid id)
         {
             ViewModels.Tasks.TaskResponsibleUserViewModel viewModel;
@@ -38,34 +37,33 @@ namespace OpenLawOffice.WebClient.Controllers
 
             model = Data.Tasks.TaskResponsibleUser.Get(id);
             model.Task = Data.Tasks.Task.Get(model.Task.Id.Value);
-            model.User = Data.Security.User.Get(model.User.Id.Value);
+            model.User = Data.Account.Users.Get(model.User.PId.Value);
 
             viewModel = Mapper.Map<ViewModels.Tasks.TaskResponsibleUserViewModel>(model);
             viewModel.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(model.Task);
-            viewModel.User = Mapper.Map<ViewModels.Security.UserViewModel>(model.User);
+            viewModel.User = Mapper.Map<ViewModels.Account.UsersViewModel>(model.User);
 
             PopulateCoreDetails(viewModel);
 
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Create)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Create(long id)
         {
-            List<ViewModels.Security.UserViewModel> userViewModelList;
+            List<ViewModels.Account.UsersViewModel> userViewModelList;
             Common.Models.Tasks.Task task;
             ViewModels.Tasks.TaskViewModel taskViewModel;
 
-            userViewModelList = new List<ViewModels.Security.UserViewModel>();
+            userViewModelList = new List<ViewModels.Account.UsersViewModel>();
 
             task = OpenLawOffice.Data.Tasks.Task.Get(id);
 
             taskViewModel = Mapper.Map<ViewModels.Tasks.TaskViewModel>(task);
 
-            Data.Security.User.List().ForEach(x =>
+            Data.Account.Users.List().ForEach(x =>
             {
-                userViewModelList.Add(Mapper.Map<ViewModels.Security.UserViewModel>(x));
+                userViewModelList.Add(Mapper.Map<ViewModels.Account.UsersViewModel>(x));
             });
 
             ViewData["UserList"] = userViewModelList;
@@ -73,24 +71,23 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(new ViewModels.Tasks.TaskResponsibleUserViewModel() { Task = taskViewModel });
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Create(ViewModels.Tasks.TaskResponsibleUserViewModel viewModel)
         {
             Common.Models.Tasks.TaskResponsibleUser model;
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Tasks.TaskResponsibleUser currentResponsibleUser;
-            List<ViewModels.Security.UserViewModel> userViewModelList;
+            List<ViewModels.Account.UsersViewModel> userViewModelList;
             Common.Models.Tasks.Task task;
             ViewModels.Tasks.TaskViewModel taskViewModel;
 
             model = Mapper.Map<Common.Models.Tasks.TaskResponsibleUser>(viewModel);
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             // Is there already an entry for this user?
             currentResponsibleUser = Data.Tasks.TaskResponsibleUser.GetIgnoringDisable(
-                long.Parse(RouteData.Values["Id"].ToString()), currentUser.Id.Value);
+                long.Parse(RouteData.Values["Id"].ToString()), currentUser.PId.Value);
 
             if (currentResponsibleUser != null)
             { // Update
@@ -98,15 +95,15 @@ namespace OpenLawOffice.WebClient.Controllers
                 {
                     ModelState.AddModelError("User", "This user already has a responsibility.");
 
-                    userViewModelList = new List<ViewModels.Security.UserViewModel>();
+                    userViewModelList = new List<ViewModels.Account.UsersViewModel>();
 
                     task = Data.Tasks.Task.Get(currentResponsibleUser.Task.Id.Value);
 
                     taskViewModel = Mapper.Map<ViewModels.Tasks.TaskViewModel>(task);
 
-                    Data.Security.User.List().ForEach(x =>
+                    Data.Account.Users.List().ForEach(x =>
                     {
-                        userViewModelList.Add(Mapper.Map<ViewModels.Security.UserViewModel>(x));
+                        userViewModelList.Add(Mapper.Map<ViewModels.Account.UsersViewModel>(x));
                     });
 
                     ViewData["UserList"] = userViewModelList;
@@ -131,27 +128,26 @@ namespace OpenLawOffice.WebClient.Controllers
             return RedirectToAction("ResponsibleUsers", "Tasks", new { Id = model.Task.Id.Value.ToString() });
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Modify)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Edit(Guid id)
         {
             ViewModels.Tasks.TaskResponsibleUserViewModel viewModel;
-            List<ViewModels.Security.UserViewModel> userViewModelList;
+            List<ViewModels.Account.UsersViewModel> userViewModelList;
             Common.Models.Tasks.TaskResponsibleUser model;
 
-            userViewModelList = new List<ViewModels.Security.UserViewModel>();
+            userViewModelList = new List<ViewModels.Account.UsersViewModel>();
 
             model = Data.Tasks.TaskResponsibleUser.Get(id);
             model.Task = Data.Tasks.Task.Get(model.Task.Id.Value);
-            model.User = Data.Security.User.Get(model.User.Id.Value);
+            model.User = Data.Account.Users.Get(model.User.PId.Value);
 
             viewModel = Mapper.Map<ViewModels.Tasks.TaskResponsibleUserViewModel>(model);
             viewModel.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(model.Task);
-            viewModel.User = Mapper.Map<ViewModels.Security.UserViewModel>(model.User);
+            viewModel.User = Mapper.Map<ViewModels.Account.UsersViewModel>(model.User);
 
-            Data.Security.User.List().ForEach(x =>
+            Data.Account.Users.List().ForEach(x =>
             {
-                userViewModelList.Add(Mapper.Map<ViewModels.Security.UserViewModel>(x));
+                userViewModelList.Add(Mapper.Map<ViewModels.Account.UsersViewModel>(x));
             });
 
             ViewData["UserList"] = userViewModelList;
@@ -159,15 +155,14 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Edit(Guid id, ViewModels.Tasks.TaskResponsibleUserViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Tasks.TaskResponsibleUser model;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             model = Mapper.Map<Common.Models.Tasks.TaskResponsibleUser>(viewModel);
 
@@ -176,22 +171,20 @@ namespace OpenLawOffice.WebClient.Controllers
             return RedirectToAction("ResponsibleUsers", "Tasks", new { Id = model.Task.Id.Value });
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Disable)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Delete(Guid id)
         {
             return Details(id);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Disable)]
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Delete(Guid id, ViewModels.Tasks.TaskResponsibleUserViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Tasks.TaskResponsibleUser model;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             model = Data.Tasks.TaskResponsibleUser.Get(id);
 

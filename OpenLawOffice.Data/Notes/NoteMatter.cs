@@ -63,7 +63,7 @@ namespace OpenLawOffice.Data.Notes
         }
 
         public static Common.Models.Notes.NoteMatter Create(Common.Models.Notes.NoteMatter model,
-            Common.Models.Security.User creator)
+            Common.Models.Account.Users creator)
         {
             model.Created = model.Modified = DateTime.UtcNow;
             model.CreatedBy = model.ModifiedBy = creator;
@@ -75,14 +75,14 @@ namespace OpenLawOffice.Data.Notes
 
                 if (currentModel != null)
                 { // Update
-                    conn.Execute("UPDATE \"note_matter\" SET \"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId " +
-                        "\"utc_disabled\"=null, \"disabled_by_user_id\"=null WHERE \"id\"=@Id", dbo);
+                    conn.Execute("UPDATE \"note_matter\" SET \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserId " +
+                        "\"utc_disabled\"=null, \"disabled_by_user_pid\"=null WHERE \"id\"=@Id", dbo);
                     model.Created = currentModel.Created;
                     model.CreatedBy = currentModel.CreatedBy;
                 }
                 else
                 { // Create
-                    conn.Execute("INSERT INTO \"note_matter\" (\"id\", \"note_id\", \"matter_id\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                    conn.Execute("INSERT INTO \"note_matter\" (\"id\", \"note_id\", \"matter_id\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
                         "VALUES (@Id, @NoteId, @MatterId, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                         dbo);
                 }

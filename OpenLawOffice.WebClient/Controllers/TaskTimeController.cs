@@ -29,8 +29,7 @@ namespace OpenLawOffice.WebClient.Controllers
     [HandleError(View = "Errors/Index", Order = 10)]
     public class TaskTimeController : BaseController
     {
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Create)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult SelectContactToAssign()
         {
             List<ViewModels.Contacts.SelectableContactViewModel> modelList;
@@ -45,8 +44,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(modelList);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Create)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Create()
         {
             long taskId;
@@ -77,15 +75,14 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Create(ViewModels.Tasks.TaskTimeViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Tasks.TaskTime taskTime;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
             taskTime = Mapper.Map<Common.Models.Tasks.TaskTime>(viewModel);
             taskTime.Time = Mapper.Map<Common.Models.Timing.Time>(viewModel.Time);
 

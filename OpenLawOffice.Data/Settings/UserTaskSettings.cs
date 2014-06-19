@@ -40,18 +40,18 @@ namespace OpenLawOffice.Data.Settings
         }
 
         public static List<Common.Models.Settings.TagFilter> ListTagFiltersFor(
-            Common.Models.Security.User user)
+            Common.Models.Account.Users user)
         {
             List<Common.Models.Settings.TagFilter> list =
                 DataHelper.List<Common.Models.Settings.TagFilter, DBOs.Settings.TagFilter>(
-                "SELECT * FROM \"tag_filter\" WHERE \"user_id\"=@UserId AND \"utc_disabled\" is null",
-                new { UserId = user.Id.Value });
+                "SELECT * FROM \"tag_filter\" WHERE \"user_pid\"=@UserId AND \"utc_disabled\" is null",
+                new { UserId = user.PId.Value });
 
             return list;
         }
 
         public static Common.Models.Settings.TagFilter CreateTagFilter(
-            Common.Models.Settings.TagFilter model, Common.Models.Security.User creator)
+            Common.Models.Settings.TagFilter model, Common.Models.Account.Users creator)
         {
             model.CreatedBy = model.ModifiedBy = creator;
             model.Created = model.Modified = DateTime.UtcNow;
@@ -59,7 +59,7 @@ namespace OpenLawOffice.Data.Settings
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("INSERT INTO \"tag_filter\" (\"user_id\", \"category\", \"tag\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                conn.Execute("INSERT INTO \"tag_filter\" (\"user_pid\", \"category\", \"tag\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
                     "VALUES (@UserId, @Category, @Tag, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);
                 model.Id = conn.Query<DBOs.Settings.TagFilter>("SELECT currval(pg_get_serial_sequence('tag_filter', 'id')) AS \"id\"").Single().Id;
@@ -69,7 +69,7 @@ namespace OpenLawOffice.Data.Settings
         }
 
         public static Common.Models.Settings.TagFilter EditTagFilter(Common.Models.Settings.TagFilter model,
-            Common.Models.Security.User modifier)
+            Common.Models.Account.Users modifier)
         {
             model.ModifiedBy = modifier;
             model.Modified = DateTime.UtcNow;
@@ -78,8 +78,8 @@ namespace OpenLawOffice.Data.Settings
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("UPDATE \"tag_filter\" SET " +
-                    "\"user_id\"=@UserId, \"category\"=@Category, \"tag\"=@Tag, " +
-                    "\"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId " +
+                    "\"user_pid\"=@UserId, \"category\"=@Category, \"tag\"=@Tag, " +
+                    "\"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserId " +
                     "WHERE \"id\"=@Id", dbo);
             }
 
@@ -87,7 +87,7 @@ namespace OpenLawOffice.Data.Settings
         }
 
         public static void DeleteTagFilter(Common.Models.Settings.TagFilter model,
-            Common.Models.Security.User deleter)
+            Common.Models.Account.Users deleter)
         {
             DBOs.Settings.TagFilter dbo = Mapper.Map<DBOs.Settings.TagFilter>(model);
 

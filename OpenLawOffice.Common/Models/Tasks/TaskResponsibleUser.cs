@@ -32,7 +32,7 @@ namespace OpenLawOffice.Common.Models.Tasks
 
         public Task Task { get; set; }
 
-        public Security.User User { get; set; }
+        public Account.Users User { get; set; }
 
         public string Responsibility { get; set; }
     }

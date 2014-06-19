@@ -901,26 +901,26 @@ namespace OpenLawOffice.Data.DBOs.Contacts
                 }))
                 .ForMember(dst => dst.CreatedBy, opt => opt.ResolveUsing(db =>
                 {
-                    return new Common.Models.Security.User()
+                    return new Common.Models.Account.Users()
                     {
-                        Id = db.CreatedByUserId,
+                        PId = db.CreatedByUserPId,
                         IsStub = true
                     };
                 }))
                 .ForMember(dst => dst.ModifiedBy, opt => opt.ResolveUsing(db =>
                 {
-                    return new Common.Models.Security.User()
+                    return new Common.Models.Account.Users()
                     {
-                        Id = db.ModifiedByUserId,
+                        PId = db.ModifiedByUserPId,
                         IsStub = true
                     };
                 }))
                 .ForMember(dst => dst.DisabledBy, opt => opt.ResolveUsing(db =>
                 {
-                    if (!db.DisabledByUserId.HasValue) return null;
-                    return new Common.Models.Security.User()
+                    if (!db.DisabledByUserPId.HasValue) return null;
+                    return new Common.Models.Account.Users()
                     {
-                        Id = db.DisabledByUserId.Value,
+                        PId = db.DisabledByUserPId.Value,
                         IsStub = true
                     };
                 }))
@@ -1026,22 +1026,22 @@ namespace OpenLawOffice.Data.DBOs.Contacts
                 {
                     return db.Disabled.ToDbTime();
                 }))
-                .ForMember(dst => dst.CreatedByUserId, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.CreatedByUserPId, opt => opt.ResolveUsing(model =>
                 {
-                    if (model.CreatedBy == null || !model.CreatedBy.Id.HasValue)
-                        return 0;
-                    return model.CreatedBy.Id.Value;
+                    if (model.CreatedBy == null || !model.CreatedBy.PId.HasValue)
+                        return Guid.Empty;
+                    return model.CreatedBy.PId.Value;
                 }))
-                .ForMember(dst => dst.ModifiedByUserId, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.ModifiedByUserPId, opt => opt.ResolveUsing(model =>
                 {
-                    if (model.ModifiedBy == null || !model.ModifiedBy.Id.HasValue)
-                        return 0;
-                    return model.ModifiedBy.Id.Value;
+                    if (model.ModifiedBy == null || !model.ModifiedBy.PId.HasValue)
+                        return Guid.Empty;
+                    return model.ModifiedBy.PId.Value;
                 }))
-                .ForMember(dst => dst.DisabledByUserId, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.DisabledByUserPId, opt => opt.ResolveUsing(model =>
                 {
                     if (model.DisabledBy == null) return null;
-                    return model.DisabledBy.Id;
+                    return model.DisabledBy.PId;
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.IsOrganization, opt => opt.MapFrom(src => src.IsOrganization))

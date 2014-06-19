@@ -30,9 +30,8 @@ namespace OpenLawOffice.WebClient.Controllers
     [HandleError(View = "Errors/Index", Order = 10)]
     public class TasksController : BaseController
     {
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.List)]
         [HttpGet]
+        [Authorize(Roles = "Login, User")]
         public ActionResult ListChildrenJqGrid(long? id)
         {
             List<ViewModels.Tasks.TaskViewModel> modelList;
@@ -208,8 +207,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return viewModelList;
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Read)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Details(long id)
         {
             ViewModels.Tasks.TaskViewModel viewModel;
@@ -241,8 +239,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Modify)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Edit(long id)
         {
             ViewModels.Tasks.TaskViewModel viewModel;
@@ -271,17 +268,16 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Edit(long id, ViewModels.Tasks.TaskViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Tasks.Task model;
             Common.Models.Matters.Matter matterModel;
             Common.Models.Tasks.Task currentModel;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             model = Mapper.Map<Common.Models.Tasks.Task>(viewModel);
 
@@ -307,24 +303,22 @@ namespace OpenLawOffice.WebClient.Controllers
             return RedirectToAction("Details", new { Id = id });
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Create)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Create()
         {
             ViewData["MatterId"] = Request["MatterId"];
             return View();
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Create(ViewModels.Tasks.TaskViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Tasks.Task model;
             Guid matterid = Guid.Empty;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             model = Mapper.Map<Common.Models.Tasks.Task>(viewModel);
 
@@ -337,6 +331,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return RedirectToAction("Details", new { Id = model.Id });
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult TodoListForAll()
         {
             DateTime? start = null;
@@ -370,12 +365,13 @@ namespace OpenLawOffice.WebClient.Controllers
             return Json(jsonList, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult TodoListForUser(int? id)
+        [Authorize(Roles = "Login, User")]
+        public ActionResult TodoListForUser(Guid? id)
         {
             DateTime? start = null;
             DateTime? stop = null;
             List<dynamic> jsonList;
-            Common.Models.Security.User user;
+            Common.Models.Account.Users user;
             List<Common.Models.Settings.TagFilter> tagFilter;
             if (Request["start"] != null)
                 start = Common.Utilities.UnixTimeStampToDateTime(double.Parse(Request["start"]));
@@ -384,13 +380,13 @@ namespace OpenLawOffice.WebClient.Controllers
 
             if (!id.HasValue)
             {
-                if (string.IsNullOrEmpty(Request["UserId"]))
+                if (string.IsNullOrEmpty(Request["UserPId"]))
                     return null;
                 else
-                    id = int.Parse(Request["UserId"]);
+                    id = Guid.Parse(Request["UserPId"]);
             }
 
-            user = Data.Security.User.Get(id.Value);
+            user = Data.Account.Users.Get(id.Value);
 
             tagFilter = Data.Settings.UserTaskSettings.ListTagFiltersFor(user);
 
@@ -414,6 +410,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return Json(jsonList, JsonRequestBehavior.AllowGet);
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult TodoListForContact(int? id)
         {
             DateTime? start = null;
@@ -458,8 +455,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return Json(jsonList, JsonRequestBehavior.AllowGet);
         }
 
-        [SecurityFilter(SecurityAreaName = "Timing", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.List)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Time(long id)
         {
             List<ViewModels.Timing.TimeViewModel> viewModelList;
@@ -483,8 +479,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModelList);
         }
 
-        [SecurityFilter(SecurityAreaName = "Contacts", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.List)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Contacts(long id)
         {
             List<ViewModels.Tasks.TaskAssignedContactViewModel> viewModelList;
@@ -507,8 +502,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModelList);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.List)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Tags(long id)
         {
             List<ViewModels.Tasks.TaskTagViewModel> viewModelList;
@@ -523,23 +517,22 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModelList);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.List)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult ResponsibleUsers(long id)
         {
             List<ViewModels.Tasks.TaskResponsibleUserViewModel> viewModelList;
-            Common.Models.Security.User user;
+            Common.Models.Account.Users user;
             ViewModels.Tasks.TaskResponsibleUserViewModel viewModel;
 
             viewModelList = new List<ViewModels.Tasks.TaskResponsibleUserViewModel>();
 
             Data.Tasks.TaskResponsibleUser.ListForTask(id).ForEach(x =>
             {
-                user = Data.Security.User.Get(x.User.Id.Value);
+                user = Data.Account.Users.Get(x.User.PId.Value);
 
                 viewModel = Mapper.Map<ViewModels.Tasks.TaskResponsibleUserViewModel>(x);
 
-                viewModel.User = Mapper.Map<ViewModels.Security.UserViewModel>(user);
+                viewModel.User = Mapper.Map<ViewModels.Account.UsersViewModel>(user);
 
                 viewModelList.Add(viewModel);
             });
@@ -547,8 +540,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModelList);
         }
 
-        [SecurityFilter(SecurityAreaName = "Notes", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.List)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Notes(long id)
         {
             List<ViewModels.Notes.NoteViewModel> viewModelList;
@@ -566,8 +558,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModelList);
         }
 
-        [SecurityFilter(SecurityAreaName = "Documents", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.List)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Documents(long id)
         {
             Common.Models.Documents.Version version;
@@ -588,6 +579,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModelList);
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult Events(long id)
         {
             ViewModels.Events.EventViewModel viewModel;

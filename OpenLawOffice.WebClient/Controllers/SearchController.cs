@@ -28,6 +28,7 @@ namespace OpenLawOffice.WebClient.Controllers
     [HandleError(View = "Errors/Index", Order = 10)]
     public class SearchController : Controller
     {
+        [Authorize(Roles = "Login, User")]
         public ActionResult Tags()
         {
             return View(new ViewModels.Search.TagSearchViewModel()
@@ -38,6 +39,7 @@ namespace OpenLawOffice.WebClient.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Tags(ViewModels.Search.TagSearchViewModel viewModel)
         {
             List<Common.Models.Matters.MatterTag> matterTags;

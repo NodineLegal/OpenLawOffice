@@ -114,7 +114,7 @@ namespace OpenLawOffice.Data.Tasks
                 new { MatterId = matterId });
         }
 
-        public static List<Common.Models.Tasks.Task> GetTodoListFor(Common.Models.Security.User user, List<Common.Models.Settings.TagFilter> tagFilter, DateTime? start = null, DateTime? stop = null)
+        public static List<Common.Models.Tasks.Task> GetTodoListFor(Common.Models.Account.Users user, List<Common.Models.Settings.TagFilter> tagFilter, DateTime? start = null, DateTime? stop = null)
         {
             string sql;
 
@@ -131,7 +131,7 @@ namespace OpenLawOffice.Data.Tasks
                     tags.Add(x.Tag.ToLower());
             });
 
-            sql = "SELECT * FROM \"task\" WHERE \"active\"=true AND \"id\" IN (SELECT \"task_id\" FROM \"task_responsible_user\" WHERE \"user_id\"=@UserId) ";
+            sql = "SELECT * FROM \"task\" WHERE \"active\"=true AND \"id\" IN (SELECT \"task_id\" FROM \"task_responsible_user\" WHERE \"user_pid\"=@UserPId) ";
 
             if (cats.Count > 0 || tags.Count > 0)
             {
@@ -198,7 +198,7 @@ namespace OpenLawOffice.Data.Tasks
                 conn.Open();
                 using (Npgsql.NpgsqlCommand cmd = new Npgsql.NpgsqlCommand(sql, conn))
                 {
-                    cmd.Parameters.Add(new Npgsql.NpgsqlParameter("UserId", DbType.Int32) { Value = user.Id.Value });
+                    cmd.Parameters.Add(new Npgsql.NpgsqlParameter("UserPId", DbType.Guid) { Value = user.PId.Value });
                     parms.ForEach(x => cmd.Parameters.Add(x));
                     using (Npgsql.NpgsqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -527,7 +527,7 @@ namespace OpenLawOffice.Data.Tasks
         }
 
         public static Common.Models.Tasks.Task Create(Common.Models.Tasks.Task model,
-            Common.Models.Security.User creator)
+            Common.Models.Account.Users creator)
         {
             model.CreatedBy = model.ModifiedBy = creator;
             model.Created = model.Modified = DateTime.UtcNow;
@@ -537,18 +537,18 @@ namespace OpenLawOffice.Data.Tasks
             {
                 conn.Execute("INSERT INTO \"task\" (\"title\", \"description\", \"projected_start\", \"due_date\", \"projected_end\", " +
                     "\"actual_end\", \"parent_id\", \"is_grouping_task\", \"sequential_predecessor_id\", \"active\", \"utc_created\", " +
-                    "\"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                    "\"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
                     "VALUES (@Title, @Description, @ProjectedStart, @DueDate, @ProjectedEnd, @ActualEnd, @ParentId, @IsGroupingTask, " +
                     "@SequentialPredecessorId, @Active, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);
-                model.Id = conn.Query<DBOs.Security.Area>("SELECT currval(pg_get_serial_sequence('task', 'id')) AS \"id\"").Single().Id;
+                model.Id = conn.Query<DBOs.Tasks.Task>("SELECT currval(pg_get_serial_sequence('task', 'id')) AS \"id\"").Single().Id;
             }
 
             return model;
         }
 
         public static Common.Models.Tasks.TaskMatter RelateMatter(Common.Models.Tasks.Task taskModel,
-            Guid matterId, Common.Models.Security.User creator)
+            Guid matterId, Common.Models.Account.Users creator)
         {
             Common.Models.Tasks.TaskMatter taskMatter = new Common.Models.Tasks.TaskMatter()
             {
@@ -565,7 +565,7 @@ namespace OpenLawOffice.Data.Tasks
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("INSERT INTO \"task_matter\" (\"id\", \"task_id\", \"matter_id\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                conn.Execute("INSERT INTO \"task_matter\" (\"id\", \"task_id\", \"matter_id\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
                     "VALUES (@Id, @TaskId, @MatterId, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);
             }
@@ -574,7 +574,7 @@ namespace OpenLawOffice.Data.Tasks
         }
 
         public static Common.Models.Tasks.Task Edit(Common.Models.Tasks.Task model,
-            Common.Models.Security.User modifier)
+            Common.Models.Account.Users modifier)
         {
             /*
              * We need to consider how to handle the relationship modifications
@@ -622,7 +622,7 @@ namespace OpenLawOffice.Data.Tasks
                 conn.Execute("UPDATE \"task\" SET " +
                     "\"title\"=@Title, \"description\"=@Description, \"projected_start\"=@ProjectedStart, " +
                     "\"due_date\"=@DueDate, \"projected_end\"=@ProjectedEnd, \"actual_end\"=@ActualEnd, \"parent_id\"=@ParentId, " +
-                    "\"active\"=@Active, \"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId " +
+                    "\"active\"=@Active, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserId " +
                     "WHERE \"id\"=@Id", dbo);
             }
 

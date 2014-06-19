@@ -55,7 +55,7 @@ namespace OpenLawOffice.Data.Events
                 return List(Common.Utilities.UnixTimeStampToDateTime(start), null);
         }
 
-        public static List<Common.Models.Events.Event> ListForUser(int userId, double start, double? stop)
+        public static List<Common.Models.Events.Event> ListForUser(Guid userId, double start, double? stop)
         {
             if (stop.HasValue)
                 return ListForUser(userId, Common.Utilities.UnixTimeStampToDateTime(start),
@@ -89,18 +89,18 @@ namespace OpenLawOffice.Data.Events
             return events;
         }
 
-        public static List<Common.Models.Events.Event> ListForUser(int userId, DateTime start, DateTime? stop)
+        public static List<Common.Models.Events.Event> ListForUser(Guid userId, DateTime start, DateTime? stop)
         {
             List<Common.Models.Events.Event> events;
 
             if (stop.HasValue)
                 events = DataHelper.List<Common.Models.Events.Event, DBOs.Events.Event>(
-                    "SELECT * FROM \"event\" WHERE \"id\" IN (SELECT \"event_id\" FROM \"event_responsible_user\" WHERE \"user_id\"=@UserId) " +
+                    "SELECT * FROM \"event\" WHERE \"id\" IN (SELECT \"event_id\" FROM \"event_responsible_user\" WHERE \"user_pid\"=@UserId) " +
                     "AND \"utc_disabled\" is null AND \"start\" BETWEEN @Start AND @Stop ORDER BY \"start\" ASC",
                     new { UserId = userId, Start = start, Stop = stop });
             else
                 events = DataHelper.List<Common.Models.Events.Event, DBOs.Events.Event>(
-                    "SELECT * FROM \"event\" WHERE \"id\" IN (SELECT \"event_id\" FROM \"event_responsible_user\" WHERE \"user_id\"=@UserId) " +
+                    "SELECT * FROM \"event\" WHERE \"id\" IN (SELECT \"event_id\" FROM \"event_responsible_user\" WHERE \"user_pid\"=@UserId) " +
                     "AND \"utc_disabled\" is null AND \"start\">=@Start ORDER BY \"start\" ASC",
                     new { UserId = userId, Start = start });
 
@@ -171,7 +171,7 @@ namespace OpenLawOffice.Data.Events
         }
 
         public static Common.Models.Events.Event Create(Common.Models.Events.Event model,
-            Common.Models.Security.User creator)
+            Common.Models.Account.Users creator)
         {
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
             model.CreatedBy = model.ModifiedBy = creator;
@@ -182,7 +182,7 @@ namespace OpenLawOffice.Data.Events
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("INSERT INTO \"event\" (\"id\", \"title\", \"allday\", \"start\", \"end\", \"location\", \"description\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                conn.Execute("INSERT INTO \"event\" (\"id\", \"title\", \"allday\", \"start\", \"end\", \"location\", \"description\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
                     "VALUES (@Id, @Title, @AllDay, @Start, @End, @Location, @Description, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);
             }
@@ -191,7 +191,7 @@ namespace OpenLawOffice.Data.Events
         }
 
         public static Common.Models.Events.Event Edit(Common.Models.Events.Event model,
-            Common.Models.Security.User modifier)
+            Common.Models.Account.Users modifier)
         {
             model.ModifiedBy = modifier;
             model.Modified = DateTime.UtcNow;
@@ -202,7 +202,7 @@ namespace OpenLawOffice.Data.Events
                 conn.Execute("UPDATE \"event\" SET " +
                     "\"title\"=@Title, \"allday\"=@AllDay, \"start\"=@Start, " +
                     "\"end\"=@End, \"location\"=@Location, \"description\"=@Description, " +
-                    "\"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId " +
+                    "\"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserId " +
                     "WHERE \"id\"=@Id", dbo);
             }
 

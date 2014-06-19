@@ -55,7 +55,7 @@ namespace OpenLawOffice.Data.Tagging
         }
 
         public static Common.Models.Tagging.TagCategory Create(Common.Models.Tagging.TagCategory model,
-            Common.Models.Security.User creator)
+            Common.Models.Account.Users creator)
         {
             model.CreatedBy = model.ModifiedBy = creator;
             model.Created = model.Modified = DateTime.UtcNow;
@@ -63,7 +63,7 @@ namespace OpenLawOffice.Data.Tagging
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("INSERT INTO \"tag_category\" (\"name\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                conn.Execute("INSERT INTO \"tag_category\" (\"name\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
                     "VALUES (@Name, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);
                 model.Id = conn.Query<DBOs.Tagging.TagCategory>("SELECT currval(pg_get_serial_sequence('tag_category', 'id')) AS \"id\"").Single().Id;
@@ -73,19 +73,19 @@ namespace OpenLawOffice.Data.Tagging
         }
 
         public static Common.Models.Tagging.TagCategory Disable(Common.Models.Tagging.TagCategory model,
-            Common.Models.Security.User disabler)
+            Common.Models.Account.Users disabler)
         {
             model.DisabledBy = disabler;
             model.Disabled = DateTime.UtcNow;
 
             DataHelper.Disable<Common.Models.Tagging.TagCategory,
-                DBOs.Tagging.TagCategory>("tag_category", disabler.Id.Value, model.Id);
+                DBOs.Tagging.TagCategory>("tag_category", disabler.PId.Value, model.Id);
 
             return model;
         }
 
         public static Common.Models.Tagging.TagCategory Enable(Common.Models.Tagging.TagCategory model,
-            Common.Models.Security.User enabler)
+            Common.Models.Account.Users enabler)
         {
             model.ModifiedBy = enabler;
             model.Modified = DateTime.UtcNow;
@@ -93,7 +93,7 @@ namespace OpenLawOffice.Data.Tagging
             model.Disabled = null;
 
             DataHelper.Enable<Common.Models.Tagging.TagCategory,
-                DBOs.Tagging.TagCategory>("tag_category", enabler.Id.Value, model.Id);
+                DBOs.Tagging.TagCategory>("tag_category", enabler.PId.Value, model.Id);
 
             return model;
         }

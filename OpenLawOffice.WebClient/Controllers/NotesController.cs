@@ -29,8 +29,7 @@ namespace OpenLawOffice.WebClient.Controllers
     [HandleError(View = "Errors/Index", Order = 10)]
     public class NotesController : BaseController
     {
-        [SecurityFilter(SecurityAreaName = "Notes", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Read)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Details(Guid id)
         {
             ViewModels.Notes.NoteViewModel viewModel;
@@ -62,8 +61,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Notes", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Modify)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Edit(Guid id)
         {
             Common.Models.Notes.Note model;
@@ -85,15 +83,14 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Notes", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Edit(Guid id, ViewModels.Notes.NoteViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Notes.Note model;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             model = Mapper.Map<Common.Models.Notes.Note>(viewModel);
 
@@ -102,24 +99,22 @@ namespace OpenLawOffice.WebClient.Controllers
             return RedirectToAction("Details", new { Id = id });
         }
 
-        [SecurityFilter(SecurityAreaName = "Notes", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Create)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Create()
         {
             return View();
         }
 
-        [SecurityFilter(SecurityAreaName = "Notes", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Create(ViewModels.Notes.NoteViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Notes.Note model;
             Guid matterid, eventid;
             long taskid;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             model = Mapper.Map<Common.Models.Notes.Note>(viewModel);
 

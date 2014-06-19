@@ -49,6 +49,27 @@ namespace OpenLawOffice.Common.Settings
             get { return (TagFilterCollection)base["globalTaskTagFilters"]; }
         }
 
+        [ConfigurationProperty("passwordRetrievalFromEmail", IsRequired = true)]
+        public string PasswordRetrievalFromEmail
+        {
+            get { return (string)base["passwordRetrievalFromEmail"]; }
+            set { base["passwordRetrievalFromEmail"] = value; }
+        }
+
+        [ConfigurationProperty("websiteUrl", IsRequired = true)]
+        public Uri WebsiteUrl
+        {
+            get { return (Uri)new Uri((string)base["websiteUrl"]); }
+            set { base["websiteUrl"] = value.ToString(); }
+        }
+
+        [ConfigurationProperty("adminEmail", IsRequired = true)]
+        public string AdminEmail
+        {
+            get { return (string)base["adminEmail"]; }
+            set { base["adminEmail"] = value.ToString(); }
+        }
+
         public static SystemSettings Load()
         {
             return (SystemSettings)ConfigurationManager.GetSection("OpenLawOffice");

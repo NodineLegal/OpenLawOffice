@@ -28,8 +28,7 @@ namespace OpenLawOffice.WebClient.Controllers
 
     public class VersionsController : BaseController
     {
-        [SecurityFilter(SecurityAreaName = "Documents", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Read)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Details(Guid id)
         {
             ViewModels.Documents.VersionViewModel viewModel;
@@ -46,8 +45,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Documents", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Read)]
+        [Authorize(Roles = "Login, User")]
         public FileResult Download(Guid id)
         {
             Common.Models.Documents.Version version;
@@ -68,8 +66,7 @@ namespace OpenLawOffice.WebClient.Controllers
             }
         }
 
-        [SecurityFilter(SecurityAreaName = "Documents", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Create)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Create()
         {
             Guid documentId;
@@ -96,19 +93,18 @@ namespace OpenLawOffice.WebClient.Controllers
                 });
         }
 
-        [SecurityFilter(SecurityAreaName = "Documents", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Create(ViewModels.Documents.VersionViewModel viewModel, HttpPostedFileBase file)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Documents.Document docModel;
             Common.Models.Documents.Version currentVersion;
             Common.Models.Matters.Matter matter;
             Common.Models.Tasks.Task task;
             Common.Models.Documents.Version version;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
             docModel = Data.Documents.Document.Get(viewModel.Document.Id.Value);
             currentVersion = Data.Documents.Document.GetCurrentVersion(viewModel.Document.Id.Value);
             matter = Data.Documents.Document.GetMatter(docModel.Id.Value);

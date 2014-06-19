@@ -29,9 +29,7 @@ namespace OpenLawOffice.WebClient.Controllers
     [HandleError(View = "Errors/Index", Order = 10)]
     public class TaskAssignedContactsController : BaseController
     {
-        // Selects link based on Guid of Matter
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Create)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult SelectContactToAssign(long id)
         {
             List<ViewModels.Contacts.SelectableContactViewModel> modelList;
@@ -46,8 +44,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(modelList);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Create)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult AssignContact(int id)
         {
             long taskId = 0;
@@ -66,19 +63,18 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(vm);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult AssignContact(ViewModels.Tasks.TaskAssignedContactViewModel model)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Tasks.TaskAssignedContact taskContact;
 
             // We need to reset the Id of the model as it is picking up the id from the route,
             // which is incorrect
             model.Id = null;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             taskContact = Data.Tasks.TaskAssignedContact.Get(model.Task.Id.Value, model.Contact.Id.Value);
 
@@ -97,8 +93,7 @@ namespace OpenLawOffice.WebClient.Controllers
                 new { id = taskContact.Task.Id.Value.ToString() });
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Modify)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Edit(Guid id)
         {
             Common.Models.Tasks.TaskAssignedContact model;
@@ -115,16 +110,15 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Edit(Guid id, ViewModels.Tasks.TaskAssignedContactViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Tasks.TaskAssignedContact currentModel;
             Common.Models.Tasks.TaskAssignedContact model;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             currentModel = Data.Tasks.TaskAssignedContact.Get(id);
 
@@ -138,8 +132,7 @@ namespace OpenLawOffice.WebClient.Controllers
                 new { id = model.Task.Id.Value.ToString() });
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Read)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Details(Guid id)
         {
             ViewModels.Tasks.TaskAssignedContactViewModel viewModel;
@@ -158,23 +151,21 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Disable)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Delete(Guid id)
         {
             return Details(id);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Disable)]
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Delete(Guid id, ViewModels.Tasks.TaskAssignedContactViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Tasks.TaskAssignedContact currentModel;
             Common.Models.Tasks.TaskAssignedContact model;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             currentModel = Data.Tasks.TaskAssignedContact.Get(id);
 

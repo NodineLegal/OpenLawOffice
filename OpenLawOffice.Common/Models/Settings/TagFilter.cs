@@ -28,7 +28,7 @@ namespace OpenLawOffice.Common.Models.Settings
     {
         public long? Id { get; set; }
 
-        public Security.User User { get; set; }
+        public Account.Users User { get; set; }
 
         public string Category { get; set; }
 

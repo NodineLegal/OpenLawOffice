@@ -29,8 +29,7 @@ namespace OpenLawOffice.WebClient.Controllers
     [HandleError(View = "Errors/Index", Order = 10)]
     public class ResponsibleUsersController : BaseController
     {
-        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Read)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Details(int id)
         {
             Common.Models.Matters.ResponsibleUser model;
@@ -38,22 +37,21 @@ namespace OpenLawOffice.WebClient.Controllers
 
             model = Data.Matters.ResponsibleUser.Get(id);
             model.Matter = Data.Matters.Matter.Get(model.Matter.Id.Value);
-            model.User = Data.Security.User.Get(model.User.Id.Value);
+            model.User = Data.Account.Users.Get(model.User.PId.Value);
 
             viewModel = Mapper.Map<ViewModels.Matters.ResponsibleUserViewModel>(model);
             viewModel.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(model.Matter);
-            viewModel.User = Mapper.Map<ViewModels.Security.UserViewModel>(model.User);
+            viewModel.User = Mapper.Map<ViewModels.Account.UsersViewModel>(model.User);
 
             PopulateCoreDetails(viewModel);
 
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Create)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Create(Guid id)
         {
-            List<ViewModels.Security.UserViewModel> userViewModelList;
+            List<ViewModels.Account.UsersViewModel> userViewModelList;
             Common.Models.Matters.Matter matter;
             ViewModels.Matters.MatterViewModel matterViewModel;
 
@@ -61,11 +59,11 @@ namespace OpenLawOffice.WebClient.Controllers
 
             matterViewModel = Mapper.Map<ViewModels.Matters.MatterViewModel>(matter);
 
-            userViewModelList = new List<ViewModels.Security.UserViewModel>();
+            userViewModelList = new List<ViewModels.Account.UsersViewModel>();
 
-            Data.Security.User.List().ForEach(x =>
+            Data.Account.Users.List().ForEach(x =>
             {
-                userViewModelList.Add(Mapper.Map<ViewModels.Security.UserViewModel>(x));
+                userViewModelList.Add(Mapper.Map<ViewModels.Account.UsersViewModel>(x));
             });
 
             ViewData["UserList"] = userViewModelList;
@@ -73,26 +71,25 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(new ViewModels.Matters.ResponsibleUserViewModel() { Matter = matterViewModel });
         }
 
-        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Create(ViewModels.Matters.ResponsibleUserViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Matters.ResponsibleUser model;
             Common.Models.Matters.ResponsibleUser currentResponsibleUser;
-            List<ViewModels.Security.UserViewModel> userViewModelList;
+            List<ViewModels.Account.UsersViewModel> userViewModelList;
             Common.Models.Matters.Matter matter;
             ViewModels.Matters.MatterViewModel matterViewModel;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             model = Mapper.Map<Common.Models.Matters.ResponsibleUser>(viewModel);
             model.Matter = new Common.Models.Matters.Matter() { Id = Guid.Parse(RouteData.Values["Id"].ToString()) };
 
             // Is there already an entry for this user?
             currentResponsibleUser = Data.Matters.ResponsibleUser.GetIgnoringDisable(
-                Guid.Parse(RouteData.Values["Id"].ToString()), currentUser.Id.Value);
+                Guid.Parse(RouteData.Values["Id"].ToString()), currentUser.PId.Value);
 
             if (currentResponsibleUser != null)
             { // Update
@@ -104,11 +101,11 @@ namespace OpenLawOffice.WebClient.Controllers
 
                     matterViewModel = Mapper.Map<ViewModels.Matters.MatterViewModel>(matter);
 
-                    userViewModelList = new List<ViewModels.Security.UserViewModel>();
+                    userViewModelList = new List<ViewModels.Account.UsersViewModel>();
 
-                    Data.Security.User.List().ForEach(x =>
+                    Data.Account.Users.List().ForEach(x =>
                     {
-                        userViewModelList.Add(Mapper.Map<ViewModels.Security.UserViewModel>(x));
+                        userViewModelList.Add(Mapper.Map<ViewModels.Account.UsersViewModel>(x));
                     });
 
                     ViewData["UserList"] = userViewModelList;
@@ -131,27 +128,26 @@ namespace OpenLawOffice.WebClient.Controllers
             return RedirectToAction("ResponsibleUsers", "Matters", new { Id = model.Matter.Id.Value.ToString() });
         }
 
-        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Modify)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Edit(int id)
         {
             ViewModels.Matters.ResponsibleUserViewModel viewModel;
-            List<ViewModels.Security.UserViewModel> userViewModelList;
+            List<ViewModels.Account.UsersViewModel> userViewModelList;
             Common.Models.Matters.ResponsibleUser model;
 
-            userViewModelList = new List<ViewModels.Security.UserViewModel>();
+            userViewModelList = new List<ViewModels.Account.UsersViewModel>();
 
             model = Data.Matters.ResponsibleUser.Get(id);
             model.Matter = Data.Matters.Matter.Get(model.Matter.Id.Value);
-            model.User = Data.Security.User.Get(model.User.Id.Value);
+            model.User = Data.Account.Users.Get(model.User.PId.Value);
 
             viewModel = Mapper.Map<ViewModels.Matters.ResponsibleUserViewModel>(model);
             viewModel.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(model.Matter);
-            viewModel.User = Mapper.Map<ViewModels.Security.UserViewModel>(model.User);
+            viewModel.User = Mapper.Map<ViewModels.Account.UsersViewModel>(model.User);
 
-            Data.Security.User.List().ForEach(x =>
+            Data.Account.Users.List().ForEach(x =>
             {
-                userViewModelList.Add(Mapper.Map<ViewModels.Security.UserViewModel>(x));
+                userViewModelList.Add(Mapper.Map<ViewModels.Account.UsersViewModel>(x));
             });
 
             ViewData["UserList"] = userViewModelList;
@@ -159,15 +155,14 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Edit(int id, ViewModels.Matters.ResponsibleUserViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Matters.ResponsibleUser model;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             model = Mapper.Map<Common.Models.Matters.ResponsibleUser>(viewModel);
 
@@ -176,22 +171,20 @@ namespace OpenLawOffice.WebClient.Controllers
             return RedirectToAction("ResponsibleUsers", "Matters", new { Id = model.Matter.Id.Value });
         }
 
-        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Disable)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Delete(int id)
         {
             return Details(id);
         }
 
-        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Disable)]
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Delete(int id, ViewModels.Matters.ResponsibleUserViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Matters.ResponsibleUser model;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             model = Mapper.Map<Common.Models.Matters.ResponsibleUser>(viewModel);
 

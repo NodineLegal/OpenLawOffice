@@ -23,10 +23,10 @@ namespace OpenLawOffice.Common.Models
 {
     public abstract class Core : ModelWithDatesOnly
     {
-        public Security.User CreatedBy { get; set; }
+        public Account.Users CreatedBy { get; set; }
 
-        public Security.User ModifiedBy { get; set; }
+        public Account.Users ModifiedBy { get; set; }
 
-        public Security.User DisabledBy { get; set; }
+        public Account.Users DisabledBy { get; set; }
     }
 }

@@ -54,7 +54,7 @@ namespace OpenLawOffice.Data.Tasks
         }
 
         public static Common.Models.Tasks.TaskMatter Create(Common.Models.Tasks.TaskMatter model,
-            Common.Models.Security.User creator)
+            Common.Models.Account.Users creator)
         {
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
             model.Created = model.Modified = DateTime.UtcNow;
@@ -64,7 +64,7 @@ namespace OpenLawOffice.Data.Tasks
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("INSERT INTO \"task_matter\" (\"id\", \"task_id\", \"matter_id\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                conn.Execute("INSERT INTO \"task_matter\" (\"id\", \"task_id\", \"matter_id\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
                     "VALUES (@Id, @TaskId, @MatterId, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);
             }

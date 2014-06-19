@@ -86,7 +86,7 @@ namespace OpenLawOffice.Data.Documents
         }
 
         public static Common.Models.Documents.Document Create(Common.Models.Documents.Document model,
-            Common.Models.Security.User creator)
+            Common.Models.Account.Users creator)
         {
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
             model.CreatedBy = model.ModifiedBy = creator;
@@ -95,7 +95,7 @@ namespace OpenLawOffice.Data.Documents
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("INSERT INTO \"document\" (\"id\", \"date\", \"title\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                conn.Execute("INSERT INTO \"document\" (\"id\", \"date\", \"title\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
                     "VALUES (@Id, @Date, @Title, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);
             }
@@ -104,7 +104,7 @@ namespace OpenLawOffice.Data.Documents
         }
 
         public static Common.Models.Documents.DocumentMatter RelateMatter(Common.Models.Documents.Document model,
-            Guid matterId, Common.Models.Security.User creator)
+            Guid matterId, Common.Models.Account.Users creator)
         {
             return DocumentMatter.Create(new Common.Models.Documents.DocumentMatter()
             {
@@ -119,7 +119,7 @@ namespace OpenLawOffice.Data.Documents
         }
 
         public static Common.Models.Documents.DocumentTask RelateTask(Common.Models.Documents.Document model,
-            long taskId, Common.Models.Security.User creator)
+            long taskId, Common.Models.Account.Users creator)
         {
             Common.Models.Tasks.TaskMatter taskMatter = Tasks.TaskMatter.GetFor(taskId);
 
@@ -138,7 +138,7 @@ namespace OpenLawOffice.Data.Documents
         }
 
         public static Common.Models.Documents.Document Edit(Common.Models.Documents.Document model,
-            Common.Models.Security.User modifier)
+            Common.Models.Account.Users modifier)
         {
             model.ModifiedBy = modifier;
             model.Modified = DateTime.UtcNow;
@@ -147,7 +147,7 @@ namespace OpenLawOffice.Data.Documents
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("UPDATE \"document\" SET " +
-                    "\"date\"=@Date, \"title\"=@Title, \"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId " +
+                    "\"date\"=@Date, \"title\"=@Title, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserId " +
                     "WHERE \"id\"=@Id", dbo);
             }
 
@@ -169,7 +169,7 @@ namespace OpenLawOffice.Data.Documents
         }
 
         public static Common.Models.Documents.Version CreateNewVersion(Guid documentId,
-            Common.Models.Documents.Version model, Common.Models.Security.User creator)
+            Common.Models.Documents.Version model, Common.Models.Account.Users creator)
         {
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
             model.CreatedBy = model.ModifiedBy = creator;
@@ -186,7 +186,7 @@ namespace OpenLawOffice.Data.Documents
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("INSERT INTO \"version\" (\"id\", \"document_id\", \"version_number\", \"mime\", \"filename\", " +
-                    "\"extension\", \"size\", \"md5\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                    "\"extension\", \"size\", \"md5\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
                     "VALUES (@Id, @DocumentId, @VersionNumber, @Mime, @Filename, @Extension, @Size, @Md5, " +
                     "@UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);

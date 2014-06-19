@@ -28,8 +28,7 @@ namespace OpenLawOffice.WebClient.Controllers
     [HandleError(View = "Errors/Index", Order = 10)]
     public class TaskTagsController : BaseController
     {
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Read)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Details(Guid id)
         {
             ViewModels.Tasks.TaskTagViewModel viewModel;
@@ -46,8 +45,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Create)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Create(long id)
         {
             Common.Models.Tasks.Task model = Data.Tasks.Task.Get(id);
@@ -58,15 +56,14 @@ namespace OpenLawOffice.WebClient.Controllers
             });
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Create(ViewModels.Tasks.TaskTagViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Tasks.TaskTag model;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             model = Mapper.Map<Common.Models.Tasks.TaskTag>(viewModel);
 
@@ -82,8 +79,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return RedirectToAction("Tags", "Tasks", new { Id = model.Task.Id.Value.ToString() });
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Modify)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Edit(Guid id)
         {
             ViewModels.Tasks.TaskTagViewModel viewModel;
@@ -100,15 +96,14 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Edit(Guid id, ViewModels.Tasks.TaskTagViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Tasks.TaskTag model;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             model = Mapper.Map<Common.Models.Tasks.TaskTag>(viewModel);
             model.TagCategory = Mapper.Map<Common.Models.Tagging.TagCategory>(viewModel.TagCategory);
@@ -119,22 +114,20 @@ namespace OpenLawOffice.WebClient.Controllers
             return RedirectToAction("Tags", "Tasks", new { Id = model.Task.Id.Value.ToString() });
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Disable)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Delete(Guid id)
         {
             return Details(id);
         }
 
-        [SecurityFilter(SecurityAreaName = "Tasks", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Disable)]
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Delete(Guid id, ViewModels.Tasks.TaskTagViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Tasks.TaskTag model;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             model = Mapper.Map<Common.Models.Tasks.TaskTag>(viewModel);
 

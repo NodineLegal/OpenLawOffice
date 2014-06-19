@@ -30,8 +30,7 @@ namespace OpenLawOffice.WebClient.Controllers
     [HandleError(View = "Errors/Index", Order = 10)]
     public class DocumentsController : BaseController
     {
-        [SecurityFilter(SecurityAreaName = "Documents", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Read)]
+        [Authorize(Roles = "Login, User")]
         public FileResult Download(Guid id)
         {
             Common.Models.Documents.Version version = null;
@@ -42,8 +41,7 @@ namespace OpenLawOffice.WebClient.Controllers
                 version.Mime, version.Filename + "." + version.Extension);
         }
 
-        [SecurityFilter(SecurityAreaName = "Documents", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Read)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Details(Guid id)
         {
             Common.Models.Documents.Document model;
@@ -77,12 +75,9 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Documents", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Create)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Create()
         {
-            ViewModels.Documents.DocumentViewModel viewModel;
-
             if (Request["TaskId"] != null)
             { // The create request originated from a task
             }
@@ -92,21 +87,18 @@ namespace OpenLawOffice.WebClient.Controllers
             else
                 return View("Errors/InvalidRequest");
 
-
-
             return View();
         }
 
-        [SecurityFilter(SecurityAreaName = "Documents", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Create(ViewModels.Documents.DocumentViewModel viewModel, HttpPostedFileBase file)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Documents.Document model;
             Common.Models.Documents.Version version;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             model = Mapper.Map<Common.Models.Documents.Document>(viewModel);
 
@@ -149,8 +141,7 @@ namespace OpenLawOffice.WebClient.Controllers
                 throw new Exception("Must have a matter or task id.");
         }
 
-        [SecurityFilter(SecurityAreaName = "Documents", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Modify)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Edit(Guid id)
         {
             ViewModels.Documents.DocumentViewModel viewModel;
@@ -173,15 +164,14 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Documents", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Edit(Guid id, ViewModels.Documents.DocumentViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Documents.Document model;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             model = Mapper.Map<Common.Models.Documents.Document>(viewModel);
 

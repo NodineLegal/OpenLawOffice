@@ -43,10 +43,10 @@
                     OpenLawOffice</h1>
             </div>
             <div id="logindisplay">
-                <% if (Request.Cookies["Username"] != null)
+                <% if (Request.IsAuthenticated)
                    { %>
                 Logged in as:
-                <%= Request.Cookies["Username"].Value%>
+                <%= Page.User.Identity.Name %>
                 <% }
                    else
                    { %>

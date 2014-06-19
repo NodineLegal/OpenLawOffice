@@ -56,7 +56,7 @@ namespace OpenLawOffice.Data.Events
         }
 
         public static Common.Models.Events.EventAssignedContact Create(Common.Models.Events.EventAssignedContact model,
-            Common.Models.Security.User creator)
+            Common.Models.Account.Users creator)
         {
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
             model.Created = model.Modified = DateTime.UtcNow;
@@ -66,7 +66,7 @@ namespace OpenLawOffice.Data.Events
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("INSERT INTO \"event_assigned_contact\" (\"id\", \"event_id\", \"contact_id\", \"role\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                conn.Execute("INSERT INTO \"event_assigned_contact\" (\"id\", \"event_id\", \"contact_id\", \"role\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
                     "VALUES (@Id, @EventId, @ContactId, @Role, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);
             }
@@ -75,7 +75,7 @@ namespace OpenLawOffice.Data.Events
         }
 
         public static Common.Models.Events.EventAssignedContact Edit(Common.Models.Events.EventAssignedContact model,
-            Common.Models.Security.User modifier)
+            Common.Models.Account.Users modifier)
         {
             model.ModifiedBy = modifier;
             model.Modified = DateTime.UtcNow;
@@ -84,7 +84,7 @@ namespace OpenLawOffice.Data.Events
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("UPDATE \"event_assigned_contact\" SET " +
-                    "\"event_id\"=@EventId, \"contact_id\"=@ContactId, \"role\"=@Role, \"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId " +
+                    "\"event_id\"=@EventId, \"contact_id\"=@ContactId, \"role\"=@Role, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserId " +
                     "WHERE \"id\"=@Id", dbo);
             }
 
@@ -92,19 +92,19 @@ namespace OpenLawOffice.Data.Events
         }
 
         public static Common.Models.Events.EventAssignedContact Disable(Common.Models.Events.EventAssignedContact model,
-            Common.Models.Security.User disabler)
+            Common.Models.Account.Users disabler)
         {
             model.DisabledBy = disabler;
             model.Disabled = DateTime.UtcNow;
 
             DataHelper.Disable<Common.Models.Events.EventAssignedContact,
-                DBOs.Events.EventAssignedContact>("event_assigned_contact", disabler.Id.Value, model.Id);
+                DBOs.Events.EventAssignedContact>("event_assigned_contact", disabler.PId.Value, model.Id);
 
             return model;
         }
 
         public static Common.Models.Events.EventAssignedContact Enable(Common.Models.Events.EventAssignedContact model,
-            Common.Models.Security.User enabler)
+            Common.Models.Account.Users enabler)
         {
             model.ModifiedBy = enabler;
             model.Modified = DateTime.UtcNow;
@@ -112,7 +112,7 @@ namespace OpenLawOffice.Data.Events
             model.Disabled = null;
 
             DataHelper.Enable<Common.Models.Events.EventAssignedContact,
-                DBOs.Events.EventAssignedContact>("event_assigned_contact", enabler.Id.Value, model.Id);
+                DBOs.Events.EventAssignedContact>("event_assigned_contact", enabler.PId.Value, model.Id);
 
             return model;
         }

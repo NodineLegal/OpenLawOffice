@@ -55,7 +55,7 @@ namespace OpenLawOffice.Data.Tasks
         }
 
         public static Common.Models.Tasks.TaskAssignedContact Create(Common.Models.Tasks.TaskAssignedContact model,
-            Common.Models.Security.User creator)
+            Common.Models.Account.Users creator)
         {
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
             model.Created = model.Modified = DateTime.UtcNow;
@@ -65,7 +65,7 @@ namespace OpenLawOffice.Data.Tasks
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("INSERT INTO \"task_assigned_contact\" (\"id\", \"task_id\", \"contact_id\", \"assignment_type\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                conn.Execute("INSERT INTO \"task_assigned_contact\" (\"id\", \"task_id\", \"contact_id\", \"assignment_type\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
                     "VALUES (@Id, @TaskId, @ContactId, @AssignmentType, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);
             }
@@ -74,7 +74,7 @@ namespace OpenLawOffice.Data.Tasks
         }
 
         public static Common.Models.Tasks.TaskAssignedContact Edit(Common.Models.Tasks.TaskAssignedContact model,
-            Common.Models.Security.User modifier)
+            Common.Models.Account.Users modifier)
         {
             model.ModifiedBy = modifier;
             model.Modified = DateTime.UtcNow;
@@ -83,7 +83,7 @@ namespace OpenLawOffice.Data.Tasks
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("UPDATE \"task_assigned_contact\" SET " +
-                    "\"task_id\"=@TaskId, \"contact_id\"=@ContactId, \"assignment_type\"=@AssignmentType, \"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId " +
+                    "\"task_id\"=@TaskId, \"contact_id\"=@ContactId, \"assignment_type\"=@AssignmentType, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserId " +
                     "WHERE \"id\"=@Id", dbo);
             }
 
@@ -91,19 +91,19 @@ namespace OpenLawOffice.Data.Tasks
         }
 
         public static Common.Models.Tasks.TaskAssignedContact Disable(Common.Models.Tasks.TaskAssignedContact model,
-            Common.Models.Security.User disabler)
+            Common.Models.Account.Users disabler)
         {
             model.DisabledBy = disabler;
             model.Disabled = DateTime.UtcNow;
 
             DataHelper.Disable<Common.Models.Tasks.TaskAssignedContact,
-                DBOs.Tasks.TaskAssignedContact>("task_assigned_contact", disabler.Id.Value, model.Id);
+                DBOs.Tasks.TaskAssignedContact>("task_assigned_contact", disabler.PId.Value, model.Id);
 
             return model;
         }
 
         public static Common.Models.Tasks.TaskAssignedContact Enable(Common.Models.Tasks.TaskAssignedContact model,
-            Common.Models.Security.User enabler)
+            Common.Models.Account.Users enabler)
         {
             model.ModifiedBy = enabler;
             model.Modified = DateTime.UtcNow;
@@ -111,7 +111,7 @@ namespace OpenLawOffice.Data.Tasks
             model.Disabled = null;
 
             DataHelper.Enable<Common.Models.Tasks.TaskAssignedContact,
-                DBOs.Tasks.TaskAssignedContact>("task_assigned_contact", enabler.Id.Value, model.Id);
+                DBOs.Tasks.TaskAssignedContact>("task_assigned_contact", enabler.PId.Value, model.Id);
 
             return model;
         }

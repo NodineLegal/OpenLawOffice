@@ -137,7 +137,7 @@ namespace OpenLawOffice.Data.Matters
         }
 
         public static Common.Models.Matters.Matter Create(Common.Models.Matters.Matter model,
-            Common.Models.Security.User creator)
+            Common.Models.Account.Users creator)
         {
             // Matter
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
@@ -147,22 +147,16 @@ namespace OpenLawOffice.Data.Matters
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("INSERT INTO \"matter\" (\"id\", \"title\", \"parent_id\", \"synopsis\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                conn.Execute("INSERT INTO \"matter\" (\"id\", \"title\", \"parent_id\", \"synopsis\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
                     "VALUES (@Id, @Title, @ParentId, @Synopsis, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);
             }
-
-            // Secured Resource
-            Security.SecuredResource.Create(new Common.Models.Security.SecuredResource()
-            {
-                Id = model.Id
-            }, creator);
 
             return model;
         }
 
         public static Common.Models.Matters.Matter Edit(Common.Models.Matters.Matter model,
-            Common.Models.Security.User modifier)
+            Common.Models.Account.Users modifier)
         {
             model.ModifiedBy = modifier;
             model.Modified = DateTime.UtcNow;
@@ -171,17 +165,9 @@ namespace OpenLawOffice.Data.Matters
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("UPDATE \"matter\" SET " +
-                    "\"title\"=@Title, \"parent_id\"=@ParentId, \"synopsis\"=@Synopsis, \"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId " +
+                    "\"title\"=@Title, \"parent_id\"=@ParentId, \"synopsis\"=@Synopsis, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserId " +
                     "WHERE \"id\"=@Id", dbo);
             }
-
-            // Secured Resource
-            Security.SecuredResource.Edit(new Common.Models.Security.SecuredResource()
-            {
-                Id = model.Id,
-                ModifiedBy = modifier,
-                Modified = model.Modified
-            }, modifier);
 
             return model;
         }

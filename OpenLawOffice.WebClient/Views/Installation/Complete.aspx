@@ -6,8 +6,8 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <h2>
         Complete</h2>
-    Installation has completed. To login to the system, click the link below. Your initial
-    account information is as follows:
+    Installation has completed. After login, please make sure to update account profile for the Administrator user.
+    To login to the system, click the link below. Your initial account information is as follows:
     <br />
     <br />
     Username: Administrator<br />

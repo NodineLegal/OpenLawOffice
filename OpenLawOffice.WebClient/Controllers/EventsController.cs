@@ -28,20 +28,22 @@ namespace OpenLawOffice.WebClient.Controllers
 
     public class EventsController : BaseController
     {
+        [Authorize(Roles = "Login, User")]
         public ActionResult SelectUser()
         {
-            List<ViewModels.Security.UserViewModel> usersList;
+            List<ViewModels.Account.UsersViewModel> usersList;
 
-            usersList = new List<ViewModels.Security.UserViewModel>();
+            usersList = new List<ViewModels.Account.UsersViewModel>();
 
-            Data.Security.User.List().ForEach(x =>
+            Data.Account.Users.List().ForEach(x =>
             {
-                usersList.Add(Mapper.Map<ViewModels.Security.UserViewModel>(x));
+                usersList.Add(Mapper.Map<ViewModels.Account.UsersViewModel>(x));
             });
 
             return View(usersList);
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult SelectContact()
         {
             List<ViewModels.Contacts.ContactViewModel> contactList;
@@ -56,6 +58,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(contactList);
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult ContactAgenda(int id)
         {
             List<ViewModels.Events.EventViewModel> list;
@@ -75,12 +78,13 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(list);
         }
 
-        public ActionResult UserAgenda(int id)
+        [Authorize(Roles = "Login, User")]
+        public ActionResult UserAgenda(Guid id)
         {
             List<ViewModels.Events.EventViewModel> list;
-            Common.Models.Security.User user;
+            Common.Models.Account.Users user;
 
-            user = Data.Security.User.Get(id);
+            user = Data.Account.Users.Get(id);
 
             list = new List<ViewModels.Events.EventViewModel>();
 
@@ -89,23 +93,25 @@ namespace OpenLawOffice.WebClient.Controllers
                 list.Add(Mapper.Map<ViewModels.Events.EventViewModel>(x));
             });
 
-            ViewData["Username"] = Mapper.Map<ViewModels.Security.UserViewModel>(user).Username;
+            ViewData["Username"] = Mapper.Map<ViewModels.Account.UsersViewModel>(user).Username;
 
             return View(list);
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Create(ViewModels.Events.EventViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Events.Event model;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             model = Mapper.Map<Common.Models.Events.Event>(viewModel);
 
@@ -114,6 +120,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return RedirectToAction("Details", new { Id = model.Id });
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult Edit(Guid id)
         {
             ViewModels.Events.EventViewModel viewModel;
@@ -124,12 +131,13 @@ namespace OpenLawOffice.WebClient.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Edit(Guid id, ViewModels.Events.EventViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Events.Event model;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             model = Mapper.Map<Common.Models.Events.Event>(viewModel);
 
@@ -138,6 +146,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return RedirectToAction("Details", new { Id = id });
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult Details(Guid id)
         {
             ViewModels.Events.EventViewModel viewModel;
@@ -149,6 +158,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult Contacts(Guid id)
         {
             List<ViewModels.Events.EventAssignedContactViewModel> list;
@@ -165,6 +175,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(list);
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult ResponsibleUsers(Guid id)
         {
             List<ViewModels.Events.EventResponsibleUserViewModel> list;
@@ -174,13 +185,14 @@ namespace OpenLawOffice.WebClient.Controllers
             Data.Events.EventResponsibleUser.ListForEvent(id).ForEach(x =>
             {
                 ViewModels.Events.EventResponsibleUserViewModel vm = Mapper.Map<ViewModels.Events.EventResponsibleUserViewModel>(x);
-                vm.User = Mapper.Map<ViewModels.Security.UserViewModel>(Data.Security.User.Get(x.User.Id.Value));
+                vm.User = Mapper.Map<ViewModels.Account.UsersViewModel>(Data.Account.Users.Get(x.User.PId.Value));
                 list.Add(vm);
             });
 
             return View(list);
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult Matters(Guid id)
         {
             List<ViewModels.Matters.MatterViewModel> list;
@@ -196,6 +208,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(list);
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult Notes(Guid id)
         {
             List<ViewModels.Notes.NoteViewModel> list;
@@ -211,6 +224,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(list);
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult Tags(Guid id)
         {
             List<ViewModels.Events.EventTagViewModel> list;

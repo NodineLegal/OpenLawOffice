@@ -27,7 +27,7 @@ namespace OpenLawOffice.Common.Models.Matters
 
         public Matter Matter { get; set; }
 
-        public Security.User User { get; set; }
+        public Account.Users User { get; set; }
 
         public string Responsibility { get; set; }
     }

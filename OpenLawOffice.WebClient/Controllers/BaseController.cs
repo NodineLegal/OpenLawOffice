@@ -24,60 +24,74 @@ namespace OpenLawOffice.WebClient.Controllers
     using System;
     using System.Web.Mvc;
     using AutoMapper;
+    using System.IO;
+    using System.Net.Mail;
 
     public class BaseController : Controller
     {
-        public ViewModels.Security.UserViewModel GetUser(int id)
+        public ViewModels.Account.UsersViewModel GetUser(Guid id)
         {
-            Common.Models.Security.User user = null;
+            Common.Models.Account.Users user = null;
 
-            user = OpenLawOffice.Data.Security.User.Get(id);
+            user = Data.Account.Users.Get(id);
 
             if (user == null) return null;
 
-            return Mapper.Map<ViewModels.Security.UserViewModel>(user);
-        }
-
-        public ViewModels.Security.UserViewModel GetUser(Guid authToken)
-        {
-            Common.Models.Security.User user = null;
-
-            user = OpenLawOffice.Data.Security.User.Get(authToken);
-
-            if (user == null) return null;
-
-            return Mapper.Map<ViewModels.Security.UserViewModel>(user);
+            return Mapper.Map<ViewModels.Account.UsersViewModel>(user);
         }
 
         public void PopulateCoreDetails(ViewModels.CoreViewModel model)
         {
             if (model.CreatedBy != null)
             {
-                if (model.CreatedBy.Id.HasValue)
-                    model.CreatedBy = GetUser(model.CreatedBy.Id.Value);
-                else if (model.CreatedBy.UserAuthToken.HasValue)
-                    model.CreatedBy = GetUser(model.CreatedBy.UserAuthToken.Value);
+                if (model.CreatedBy.PId.HasValue)
+                    model.CreatedBy = GetUser(model.CreatedBy.PId.Value);
                 else
                     model.CreatedBy = null;
             }
             if (model.ModifiedBy != null)
             {
-                if (model.ModifiedBy.Id.HasValue)
-                    model.ModifiedBy = GetUser(model.ModifiedBy.Id.Value);
-                else if (model.ModifiedBy.UserAuthToken.HasValue)
-                    model.ModifiedBy = GetUser(model.ModifiedBy.UserAuthToken.Value);
+                if (model.ModifiedBy.PId.HasValue)
+                    model.ModifiedBy = GetUser(model.ModifiedBy.PId.Value);
                 else
                     model.ModifiedBy = null;
             }
             if (model.DisabledBy != null)
             {
-                if (model.DisabledBy.Id.HasValue)
-                    model.DisabledBy = GetUser(model.DisabledBy.Id.Value);
-                else if (model.DisabledBy.UserAuthToken.HasValue)
-                    model.DisabledBy = GetUser(model.DisabledBy.UserAuthToken.Value);
+                if (model.DisabledBy.PId.HasValue)
+                    model.DisabledBy = GetUser(model.DisabledBy.PId.Value);
                 else
                     model.DisabledBy = null;
             }
+        }
+
+        protected string RenderViewToString<T>(string viewPath, T model)
+        {
+            ViewData.Model = model;
+            using (var writer = new StringWriter())
+            {
+                var view = new WebFormView(viewPath);
+                var vdd = new ViewDataDictionary<T>(model);
+                var viewCxt = new ViewContext(ControllerContext, view, vdd, new TempDataDictionary(), writer);
+                viewCxt.View.Render(viewCxt, writer);
+                return writer.ToString();
+            }
+        }
+
+        protected void EmailView<T>(string viewPath, T model, string to, string subject)
+        {
+            SmtpClient smtpClient = new SmtpClient();
+            smtpClient.SendCompleted += (sender, e) =>
+            {
+                return;
+            };
+            MailMessage msg = new System.Net.Mail.MailMessage(
+                Common.Settings.Manager.Instance.System.PasswordRetrievalFromEmail,
+                to, subject,
+                RenderViewToString<T>(viewPath, model));
+            msg.IsBodyHtml = true;
+
+            smtpClient.SendAsync(msg, null);
         }
     }
 }

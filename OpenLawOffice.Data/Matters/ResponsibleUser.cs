@@ -40,18 +40,18 @@ namespace OpenLawOffice.Data.Matters
                 new { id = id });
         }
 
-        public static Common.Models.Matters.ResponsibleUser Get(Guid matterId, int userId)
+        public static Common.Models.Matters.ResponsibleUser Get(Guid matterId, Guid userPId)
         {
             return DataHelper.Get<Common.Models.Matters.ResponsibleUser, DBOs.Matters.ResponsibleUser>(
-                "SELECT * FROM \"responsible_user\" WHERE \"matter_id\"=@MatterId AND \"user_id\"=@UserId AND \"utc_disabled\" is null",
-                new { MatterId = matterId, UserId = userId });
+                "SELECT * FROM \"responsible_user\" WHERE \"matter_id\"=@MatterId AND \"user_pid\"=@UserPId AND \"utc_disabled\" is null",
+                new { MatterId = matterId, UserPId = userPId });
         }
 
-        public static Common.Models.Matters.ResponsibleUser GetIgnoringDisable(Guid matterId, int userId)
+        public static Common.Models.Matters.ResponsibleUser GetIgnoringDisable(Guid matterId, Guid userPId)
         {
             return DataHelper.Get<Common.Models.Matters.ResponsibleUser, DBOs.Matters.ResponsibleUser>(
-                "SELECT * FROM \"responsible_user\" WHERE \"matter_id\"=@MatterId AND \"user_id\"=@UserId",
-                new { MatterId = matterId, UserId = userId });
+                "SELECT * FROM \"responsible_user\" WHERE \"matter_id\"=@MatterId AND \"user_pid\"=@UserPId",
+                new { MatterId = matterId, UserPId = userPId });
         }
 
         public static List<Common.Models.Matters.ResponsibleUser> ListForMatter(Guid matterId)
@@ -63,14 +63,14 @@ namespace OpenLawOffice.Data.Matters
 
             list.ForEach(x =>
             {
-                x.User = Security.User.Get(x.User.Id.Value);
+                x.User = Account.Users.Get(x.User.PId.Value);
             });
 
             return list;
         }
 
         public static Common.Models.Matters.ResponsibleUser Create(Common.Models.Matters.ResponsibleUser model,
-            Common.Models.Security.User creator)
+            Common.Models.Account.Users creator)
         {
             model.Created = model.Modified = DateTime.UtcNow;
             model.CreatedBy = model.ModifiedBy = creator;
@@ -79,7 +79,7 @@ namespace OpenLawOffice.Data.Matters
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("INSERT INTO \"responsible_user\" (\"matter_id\", \"user_id\", \"responsibility\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                conn.Execute("INSERT INTO \"responsible_user\" (\"matter_id\", \"user_pid\", \"responsibility\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
                     "VALUES (@MatterId, @UserId, @Responsibility, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);
                 model.Id = conn.Query<DBOs.Matters.ResponsibleUser>("SELECT currval(pg_get_serial_sequence('responsible_user', 'id')) AS \"id\"").Single().Id;
@@ -89,7 +89,7 @@ namespace OpenLawOffice.Data.Matters
         }
 
         public static Common.Models.Matters.ResponsibleUser Edit(Common.Models.Matters.ResponsibleUser model,
-            Common.Models.Security.User modifier)
+            Common.Models.Account.Users modifier)
         {
             model.ModifiedBy = modifier;
             model.Modified = DateTime.UtcNow;
@@ -98,7 +98,7 @@ namespace OpenLawOffice.Data.Matters
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("UPDATE \"responsible_user\" SET " +
-                    "\"matter_id\"=@MatterId, \"user_id\"=@UserId, \"responsibility\"=@Responsibility, \"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId " +
+                    "\"matter_id\"=@MatterId, \"user_pid\"=@UserId, \"responsibility\"=@Responsibility, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserId " +
                     "WHERE \"id\"=@Id", dbo);
             }
 
@@ -106,19 +106,19 @@ namespace OpenLawOffice.Data.Matters
         }
 
         public static Common.Models.Matters.ResponsibleUser Disable(Common.Models.Matters.ResponsibleUser model,
-            Common.Models.Security.User disabler)
+            Common.Models.Account.Users disabler)
         {
             model.DisabledBy = disabler;
             model.Disabled = DateTime.UtcNow;
 
             DataHelper.Disable<Common.Models.Matters.MatterContact,
-                DBOs.Matters.MatterContact>("responsible_user", disabler.Id.Value, model.Id);
+                DBOs.Matters.MatterContact>("responsible_user", disabler.PId.Value, model.Id);
 
             return model;
         }
 
         public static Common.Models.Matters.ResponsibleUser Enable(Common.Models.Matters.ResponsibleUser model,
-            Common.Models.Security.User enabler)
+            Common.Models.Account.Users enabler)
         {
             model.ModifiedBy = enabler;
             model.Modified = DateTime.UtcNow;
@@ -126,7 +126,7 @@ namespace OpenLawOffice.Data.Matters
             model.Disabled = null;
 
             DataHelper.Enable<Common.Models.Matters.MatterContact,
-                DBOs.Matters.MatterContact>("responsible_user", enabler.Id.Value, model.Id);
+                DBOs.Matters.MatterContact>("responsible_user", enabler.PId.Value, model.Id);
 
             return model;
         }

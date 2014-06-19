@@ -21,58 +21,253 @@
 
 namespace OpenLawOffice.WebClient.Controllers
 {
-    using System.Collections.Generic;
-    using System.Web;
     using System.Web.Mvc;
-    using OpenLawOffice.WebClient.ViewModels.Account;
+    using System.Web.Routing;
+    using System.Collections.Generic;
+    using System.Web.Security;
+    using System;
 
     [HandleError(View = "Errors/Index", Order = 10)]
     public class AccountController : BaseController
     {
+        public IFormsAuthenticationService FormsService { get; set; }
+        public AccountMembershipService MembershipService { get; set; }
+
+        protected override void Initialize(RequestContext requestContext)
+        {
+            if (FormsService == null) { FormsService = new FormsAuthenticationService(); }
+            if (MembershipService == null) { MembershipService = new AccountMembershipService(); }
+
+            base.Initialize(requestContext);
+        }
+
         public ActionResult Login()
         {
-            List<Common.Models.Security.User> users = null;
+            List<Common.Models.Account.Users> users = null;
 
-            users = Data.Security.User.List();
+            try
+            {
+                users = Data.Account.Users.List();
+            }
+            catch
+            {
+                return RedirectToAction("Index", "Installation");
+            }
 
             if (users == null || users.Count < 1)
-                return RedirectToAction("Index", "Installation");
+                return RedirectToAction("Register", "Account");
 
             return View();
         }
 
         [HttpPost]
-        public ActionResult Login(LoginModel viewModel)
+        public ActionResult Login(ViewModels.Account.LoginViewModel viewModel, string returnUrl)
         {
             if (ModelState.IsValid)
             {
-                string hashedPassword;
-                OpenLawOffice.Data.Authentication.LoginResult result;
-                HttpCookie cookie;
-
-                // Apply client hash (ideally this will be done on the client side in javascript eventually)
-                hashedPassword = WebClient.Security.ClientHashPassword(viewModel.Password);
-
-                result = OpenLawOffice.Data.Authentication.Login(viewModel.Username, hashedPassword);
-
-                if (!result.Success)
+                if (MembershipService.ValidateUser(viewModel.Username, viewModel.Password))
                 {
-                    ModelState.AddModelError(string.Empty, result.FailReason);
-                    return View(viewModel);
+                    FormsService.SignIn(viewModel.Username, viewModel.RememberMe);
+                    if (!string.IsNullOrEmpty(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
                 }
-
-                cookie = new HttpCookie("UserAuthToken", result.UserAuthToken);
-                HttpContext.Response.AppendCookie(cookie);
-                HttpContext.Response.AppendCookie(new HttpCookie("Username", viewModel.Username));
-
-                UserCache.Instance.Add(result.User);
-
-                Response.Redirect("~/Home", false);
-
-                return View();
+                else
+                {
+                    ModelState.AddModelError("", "The user name or password provided is incorrect.");
+                }
             }
 
+            // If we got this far, something failed, redisplay form
             return View(viewModel);
+        }
+
+        public ActionResult LogOff()
+        {
+            FormsService.SignOut();
+
+            return RedirectToAction("Login", "Account");
+        }
+
+        public ActionResult Register()
+        {
+            ViewData["PasswordLength"] = MembershipService.MinPasswordLength;
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Register(ViewModels.Account.RegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Attempt to register the user
+                MembershipCreateStatus createStatus = MembershipService.CreateUser(model.UserName, model.Password, model.Email);
+
+                if (createStatus == MembershipCreateStatus.Success)
+                {
+                    FormsService.SignIn(model.UserName, false /* createPersistentCookie */);
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError("", ViewModels.AccountValidation.ErrorCodeToString(createStatus));
+                }
+            }
+
+            // If we got this far, something failed, redisplay form
+            ViewData["PasswordLength"] = MembershipService.MinPasswordLength;
+            return View(model);
+        }
+
+        [Authorize(Roles="Administrators, Users, Clients")]
+        public ActionResult ChangePassword(string currentPassword)
+        {
+            ViewData["PasswordLength"] = MembershipService.MinPasswordLength;
+            if (!string.IsNullOrEmpty(currentPassword))
+                return View(new ViewModels.Account.ChangePasswordViewModel()
+                {
+                    OldPassword = currentPassword
+                });
+            else
+                return View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Login, User")]
+        public ActionResult ChangePassword(ViewModels.Account.ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (MembershipService.ChangePassword(User.Identity.Name, model.OldPassword, model.NewPassword))
+                {
+                    return RedirectToAction("ChangePasswordSuccess");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "The current password is incorrect or the new password is invalid.");
+                }
+            }
+
+            // If we got this far, something failed, redisplay form
+            ViewData["PasswordLength"] = MembershipService.MinPasswordLength;
+            return View(model);
+        }
+
+        public ActionResult ChangePasswordSuccess()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Login, User")]
+        public ActionResult Profile()
+        {
+            return View(new ViewModels.Account.ProfileViewModel() { Email = Membership.GetUser().Email });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Login, User")]
+        public ActionResult Profile(ViewModels.Account.ProfileViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                MembershipUser user = Membership.GetUser();
+                user.Email = model.Email;
+                try
+                {
+                    Membership.UpdateUser(user);
+                }
+                catch (System.Configuration.Provider.ProviderException ex)
+                {
+                    if (ex.Message == "Duplicate E-mail address. The E-mail supplied is invalid.")
+                        return RedirectToAction("Index", "Home");
+                }
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        public ActionResult Recovery(string reset, string username)
+        {
+            if ((reset != null) && (username != null))
+            {
+                MembershipUser currentUser = Membership.GetUser(username);
+                if (HashResetParams(currentUser.UserName, currentUser.ProviderUserKey.ToString()) == reset)
+                {
+                    string tempPw = currentUser.ResetPassword();
+                    FormsService.SignIn(currentUser.UserName, true);
+                    return RedirectToAction("ChangePassword", new { currentPassword = tempPw });
+                }
+            }
+
+            return View();
+        }
+
+        public static string HashResetParams(string username, string guid)
+        {
+            byte[] bytesofLink = System.Text.Encoding.UTF8.GetBytes(username + guid);
+            System.Security.Cryptography.MD5 md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
+            string HashParams = BitConverter.ToString(md5.ComputeHash(bytesofLink)).Replace("-", "").ToLower();
+
+            return HashParams;
+        }
+
+        public void SendResetEmail(System.Web.Security.MembershipUser user)
+        {
+            string site = Common.Settings.Manager.Instance.System.WebsiteUrl.ToString();
+
+            if (!site.EndsWith("\\") && !site.EndsWith("/"))
+                site += "/";
+
+            EmailView<ViewModels.Account.RecoveryViewModel>("~/Views/Templates/AccountRecoveryEmail.aspx",
+                new ViewModels.Account.RecoveryViewModel()
+                {
+                    Email = user.Email,
+                    ResetPwAddress = site + "Account/Recovery/?username=" + user.UserName + "&reset=" + HashResetParams(user.UserName, user.ProviderUserKey.ToString()),
+                    IpAddress = Common.Utilities.GetClientIpAddress(Request),
+                    UserName = user.UserName
+                }, user.Email, "Account Recovery");
+        }
+
+        [HttpPost]
+        public ActionResult Recovery(ViewModels.Account.RecoveryViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                if (!string.IsNullOrEmpty(viewModel.UserName))
+                {
+                    MembershipUser user = Membership.GetUser(viewModel.UserName);
+                    if (user == null)
+                        ViewData["Error"] = "username";
+                    else
+                    {
+                        SendResetEmail(user);
+                        return View("RecoveryEmailSent");
+                    }
+                }
+                else
+                {
+                    MembershipUserCollection coll = Membership.FindUsersByEmail(viewModel.Email);
+                    if (coll.Count != 1)
+                    {
+                        ViewData["Error"] = "email";
+                    }
+                    else
+                    {
+                        foreach (MembershipUser user in coll)
+                        {
+                            SendResetEmail(user);
+                            return View("RecoveryEmailSent");
+                        }
+                    }
+                }
+            }
+
+            return View();
         }
     }
 }

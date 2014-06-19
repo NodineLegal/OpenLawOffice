@@ -21,15 +21,17 @@
 
 namespace OpenLawOffice.Data.DBOs
 {
+    using System;
+
     public abstract class Core : DboWithDatesOnly
     {
-        [ColumnMapping(Name = "created_by_user_id")]
-        public int CreatedByUserId { get; set; }
+        [ColumnMapping(Name = "created_by_user_pid")]
+        public Guid CreatedByUserPId { get; set; }
 
-        [ColumnMapping(Name = "modified_by_user_id")]
-        public int ModifiedByUserId { get; set; }
+        [ColumnMapping(Name = "modified_by_user_pid")]
+        public Guid ModifiedByUserPId { get; set; }
 
-        [ColumnMapping(Name = "disabled_by_user_id")]
-        public int? DisabledByUserId { get; set; }
+        [ColumnMapping(Name = "disabled_by_user_pid")]
+        public Guid? DisabledByUserPId { get; set; }
     }
 }

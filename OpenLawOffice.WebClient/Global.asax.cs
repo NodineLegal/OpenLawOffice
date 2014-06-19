@@ -28,7 +28,7 @@ namespace OpenLawOffice.WebClient
         protected void Application_Start()
         {
             Common.ObjectMapper.MapAssembly(typeof(MvcApplication).Assembly);
-            Common.ObjectMapper.MapAssembly(typeof(Data.Authentication).Assembly);
+            Common.ObjectMapper.MapAssembly(typeof(Data.Database).Assembly);
 
             AreaRegistration.RegisterAllAreas();
 

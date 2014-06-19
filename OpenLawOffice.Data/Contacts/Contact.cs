@@ -116,7 +116,7 @@ namespace OpenLawOffice.Data.Contacts
         }
 
         public static Common.Models.Contacts.Contact Create(Common.Models.Contacts.Contact model,
-            Common.Models.Security.User creator)
+            Common.Models.Account.Users creator)
         {
             model.CreatedBy = model.ModifiedBy = creator;
             model.Created = model.Modified = DateTime.UtcNow;
@@ -151,7 +151,7 @@ namespace OpenLawOffice.Data.Contacts
                     "\"email2_display_name\", \"email1_email_address\", \"email1_display_name\", " +
                     "\"display_name\", \"initials\", \"given_name\", \"middle_name\", \"surname\", " +
                     "\"display_name_prefix\", \"generation\", \"nickname\", \"is_organization\", \"is_our_employee\", " +
-                    "\"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") VALUES (" +
+                    "\"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") VALUES (" +
                     "@ReferredByName, @Gender, @BusinessHomePage, " +
                     "@PersonalHomePage, @InstantMessagingAddress, @Language, @SpouseName, @Profession, " +
                     "@AssistantName, @ManagerName, @OfficeLocation, @DepartmentName, @CompanyName, " +
@@ -183,7 +183,7 @@ namespace OpenLawOffice.Data.Contacts
         }
 
         public static Common.Models.Contacts.Contact Edit(Common.Models.Contacts.Contact model,
-            Common.Models.Security.User modifier)
+            Common.Models.Account.Users modifier)
         {
             model.ModifiedBy = modifier;
             model.Modified = DateTime.UtcNow;
@@ -191,7 +191,7 @@ namespace OpenLawOffice.Data.Contacts
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("UPDATE \"contact\" SET \"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId, " +
+                conn.Execute("UPDATE \"contact\" SET \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserId, " +
                     "\"referred_by_name\"=@ReferredByName, \"gender\"=@Gender, \"business_home_page\"=@BusinessHomePage, " +
                     "\"personal_home_page\"=@PersonalHomePage, \"instant_messaging_address\"=@InstantMessagingAddress, " +
                     "\"language\"=@Language, \"spouse_name\"=@SpouseName, \"profession\"=@Profession, \"assistant_name\"=@AssistantName, " +

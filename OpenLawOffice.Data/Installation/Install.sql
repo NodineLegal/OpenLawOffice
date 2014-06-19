@@ -4,7 +4,7 @@
 
 -- Dumped from database version 9.2.4
 -- Dumped by pg_dump version 9.2.4
--- Started on 2014-06-13 20:11:58
+-- Started on 2014-06-15 21:46:58
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
@@ -13,7 +13,7 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 
 --
--- TOC entry 212 (class 3079 OID 11727)
+-- TOC entry 211 (class 3079 OID 11727)
 -- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
 --
 
@@ -21,8 +21,8 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- TOC entry 2326 (class 0 OID 0)
--- Dependencies: 212
+-- TOC entry 2239 (class 0 OID 0)
+-- Dependencies: 211
 -- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
 --
 
@@ -36,98 +36,136 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- TOC entry 168 (class 1259 OID 114050)
--- Name: area; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- TOC entry 170 (class 1259 OID 115506)
+-- Name: ProfileData; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
-CREATE TABLE area (
-    id integer NOT NULL,
-    parent_id integer,
-    name text NOT NULL,
-    description text NOT NULL,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
+CREATE TABLE "ProfileData" (
+    "pId" uuid NOT NULL,
+    "Profile" uuid NOT NULL,
+    "Name" character varying(255) NOT NULL,
+    "ValueString" text,
+    "ValueBinary" bytea
+);
+
+
+ALTER TABLE public."ProfileData" OWNER TO postgres;
+
+--
+-- TOC entry 169 (class 1259 OID 115480)
+-- Name: Profiles; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "Profiles" (
+    "pId" uuid NOT NULL,
+    "Username" character varying(255) NOT NULL,
+    "ApplicationName" character varying(255) NOT NULL,
+    "IsAnonymous" boolean,
+    "LastActivityDate" timestamp with time zone,
+    "LastUpdatedDate" timestamp with time zone
+);
+
+
+ALTER TABLE public."Profiles" OWNER TO postgres;
+
+--
+-- TOC entry 171 (class 1259 OID 115521)
+-- Name: Roles; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "Roles" (
+    "Rolename" character varying(255) NOT NULL,
+    "ApplicationName" character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public."Roles" OWNER TO postgres;
+
+--
+-- TOC entry 172 (class 1259 OID 115529)
+-- Name: Sessions; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "Sessions" (
+    "SessionId" character varying(80) NOT NULL,
+    "ApplicationName" character varying(255) NOT NULL,
+    "Created" timestamp with time zone NOT NULL,
+    "Expires" timestamp with time zone NOT NULL,
+    "Timeout" integer NOT NULL,
+    "Locked" boolean NOT NULL,
+    "LockId" integer NOT NULL,
+    "LockDate" timestamp with time zone NOT NULL,
+    "Data" text,
+    "Flags" integer NOT NULL
+);
+
+
+ALTER TABLE public."Sessions" OWNER TO postgres;
+
+--
+-- TOC entry 168 (class 1259 OID 115468)
+-- Name: Users; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "Users" (
+    "pId" uuid NOT NULL,
+    "Username" character varying(255) NOT NULL,
+    "ApplicationName" character varying(255) NOT NULL,
+    "Email" character varying(128),
+    "Comment" character varying(128),
+    "Password" character varying(255) NOT NULL,
+    "PasswordQuestion" character varying(255),
+    "PasswordAnswer" character varying(255),
+    "IsApproved" boolean,
+    "LastActivityDate" timestamp with time zone,
+    "LastLoginDate" timestamp with time zone,
+    "LastPasswordChangedDate" timestamp with time zone,
+    "CreationDate" timestamp with time zone,
+    "IsOnLine" boolean,
+    "IsLockedOut" boolean,
+    "LastLockedOutDate" timestamp with time zone,
+    "FailedPasswordAttemptCount" integer,
+    "FailedPasswordAttemptWindowStart" timestamp with time zone,
+    "FailedPasswordAnswerAttemptCount" integer,
+    "FailedPasswordAnswerAttemptWindowStart" timestamp with time zone
+);
+
+
+ALTER TABLE public."Users" OWNER TO postgres;
+
+--
+-- TOC entry 173 (class 1259 OID 115537)
+-- Name: UsersInRoles; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "UsersInRoles" (
+    "Username" character varying(255) NOT NULL,
+    "Rolename" character varying(255) NOT NULL,
+    "ApplicationName" character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public."UsersInRoles" OWNER TO postgres;
+
+--
+-- TOC entry 174 (class 1259 OID 115555)
+-- Name: core; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE core (
+    created_by_user_pid uuid NOT NULL,
+    modified_by_user_pid uuid NOT NULL,
+    disabled_by_user_pid uuid,
     utc_created timestamp without time zone NOT NULL,
     utc_modified timestamp without time zone NOT NULL,
     utc_disabled timestamp without time zone
 );
 
 
-ALTER TABLE public.area OWNER TO postgres;
+ALTER TABLE public.core OWNER TO postgres;
 
 --
--- TOC entry 169 (class 1259 OID 114056)
--- Name: area_acl; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
---
-
-CREATE TABLE area_acl (
-    id integer NOT NULL,
-    security_area_id integer NOT NULL,
-    user_id integer NOT NULL,
-    allow_flags integer NOT NULL,
-    deny_flags integer NOT NULL,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
-
-
-ALTER TABLE public.area_acl OWNER TO postgres;
-
---
--- TOC entry 170 (class 1259 OID 114059)
--- Name: area_acl_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE area_acl_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.area_acl_id_seq OWNER TO postgres;
-
---
--- TOC entry 2327 (class 0 OID 0)
--- Dependencies: 170
--- Name: area_acl_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE area_acl_id_seq OWNED BY area_acl.id;
-
-
---
--- TOC entry 171 (class 1259 OID 114061)
--- Name: area_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE area_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.area_id_seq OWNER TO postgres;
-
---
--- TOC entry 2328 (class 0 OID 0)
--- Dependencies: 171
--- Name: area_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE area_id_seq OWNED BY area.id;
-
-
---
--- TOC entry 172 (class 1259 OID 114063)
+-- TOC entry 188 (class 1259 OID 115696)
 -- Name: contact; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -214,20 +252,15 @@ CREATE TABLE contact (
     personal_home_page text,
     business_home_page text,
     gender text,
-    referred_by_name text,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
+    referred_by_name text
+)
+INHERITS (core);
 
 
 ALTER TABLE public.contact OWNER TO postgres;
 
 --
--- TOC entry 173 (class 1259 OID 114069)
+-- TOC entry 187 (class 1259 OID 115694)
 -- Name: contact_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -242,8 +275,8 @@ CREATE SEQUENCE contact_id_seq
 ALTER TABLE public.contact_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2329 (class 0 OID 0)
--- Dependencies: 173
+-- TOC entry 2240 (class 0 OID 0)
+-- Dependencies: 187
 -- Name: contact_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -251,67 +284,52 @@ ALTER SEQUENCE contact_id_seq OWNED BY contact.id;
 
 
 --
--- TOC entry 174 (class 1259 OID 114071)
+-- TOC entry 175 (class 1259 OID 115573)
 -- Name: document; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE document (
     id uuid NOT NULL,
     title text NOT NULL,
-    date timestamp without time zone,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
+    date timestamp without time zone
+)
+INHERITS (core);
 
 
 ALTER TABLE public.document OWNER TO postgres;
 
 --
--- TOC entry 175 (class 1259 OID 114077)
+-- TOC entry 191 (class 1259 OID 115727)
 -- Name: document_matter; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE document_matter (
     id uuid NOT NULL,
     document_id uuid NOT NULL,
-    matter_id uuid NOT NULL,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
+    matter_id uuid NOT NULL
+)
+INHERITS (core);
 
 
 ALTER TABLE public.document_matter OWNER TO postgres;
 
 --
--- TOC entry 176 (class 1259 OID 114080)
+-- TOC entry 192 (class 1259 OID 115742)
 -- Name: document_task; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE document_task (
     id uuid NOT NULL,
     document_id uuid NOT NULL,
-    task_id bigint NOT NULL,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
+    task_id bigint NOT NULL
+)
+INHERITS (core);
 
 
 ALTER TABLE public.document_task OWNER TO postgres;
 
 --
--- TOC entry 177 (class 1259 OID 114083)
+-- TOC entry 176 (class 1259 OID 115584)
 -- Name: elmah_error_sequence; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -326,7 +344,7 @@ CREATE SEQUENCE elmah_error_sequence
 ALTER TABLE public.elmah_error_sequence OWNER TO postgres;
 
 --
--- TOC entry 178 (class 1259 OID 114085)
+-- TOC entry 177 (class 1259 OID 115586)
 -- Name: elmah_error; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -348,7 +366,7 @@ CREATE TABLE elmah_error (
 ALTER TABLE public.elmah_error OWNER TO postgres;
 
 --
--- TOC entry 179 (class 1259 OID 114092)
+-- TOC entry 178 (class 1259 OID 115596)
 -- Name: event; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -359,20 +377,15 @@ CREATE TABLE event (
     start timestamp without time zone NOT NULL,
     "end" timestamp without time zone,
     location text,
-    description text,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
+    description text
+)
+INHERITS (core);
 
 
 ALTER TABLE public.event OWNER TO postgres;
 
 --
--- TOC entry 180 (class 1259 OID 114098)
+-- TOC entry 193 (class 1259 OID 115757)
 -- Name: event_assigned_contact; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -380,81 +393,61 @@ CREATE TABLE event_assigned_contact (
     id uuid NOT NULL,
     event_id uuid NOT NULL,
     contact_id integer NOT NULL,
-    role text NOT NULL,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
+    role text NOT NULL
+)
+INHERITS (core);
 
 
 ALTER TABLE public.event_assigned_contact OWNER TO postgres;
 
 --
--- TOC entry 181 (class 1259 OID 114104)
+-- TOC entry 194 (class 1259 OID 115775)
 -- Name: event_matter; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE event_matter (
     id uuid NOT NULL,
     event_id uuid NOT NULL,
-    matter_id uuid NOT NULL,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
+    matter_id uuid NOT NULL
+)
+INHERITS (core);
 
 
 ALTER TABLE public.event_matter OWNER TO postgres;
 
 --
--- TOC entry 182 (class 1259 OID 114107)
+-- TOC entry 195 (class 1259 OID 115790)
 -- Name: event_note; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE event_note (
     id uuid NOT NULL,
     event_id uuid NOT NULL,
-    note_id uuid NOT NULL,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
+    note_id uuid NOT NULL
+)
+INHERITS (core);
 
 
 ALTER TABLE public.event_note OWNER TO postgres;
 
 --
--- TOC entry 183 (class 1259 OID 114110)
+-- TOC entry 196 (class 1259 OID 115831)
 -- Name: event_responsible_user; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE event_responsible_user (
     id uuid NOT NULL,
     event_id uuid NOT NULL,
-    user_id integer NOT NULL,
-    responsibility text NOT NULL,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
+    user_pid uuid NOT NULL,
+    responsibility text NOT NULL
+)
+INHERITS (core);
 
 
 ALTER TABLE public.event_responsible_user OWNER TO postgres;
 
 --
--- TOC entry 184 (class 1259 OID 114116)
+-- TOC entry 197 (class 1259 OID 115849)
 -- Name: event_tag; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -462,61 +455,47 @@ CREATE TABLE event_tag (
     id uuid NOT NULL,
     event_id uuid NOT NULL,
     tag_category_id integer,
-    tag text NOT NULL,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
+    tag text NOT NULL
+)
+INHERITS (core);
 
 
 ALTER TABLE public.event_tag OWNER TO postgres;
 
 --
--- TOC entry 185 (class 1259 OID 114122)
+-- TOC entry 198 (class 1259 OID 115867)
 -- Name: event_task; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE event_task (
     id uuid NOT NULL,
     event_id uuid NOT NULL,
-    task_id bigint NOT NULL,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
+    task_id bigint NOT NULL
+)
+INHERITS (core);
 
 
 ALTER TABLE public.event_task OWNER TO postgres;
 
 --
--- TOC entry 186 (class 1259 OID 114125)
+-- TOC entry 179 (class 1259 OID 115605)
 -- Name: matter; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE matter (
-    title text NOT NULL,
-    parent_id uuid,
-    synopsis text NOT NULL,
     id uuid NOT NULL,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
+    title text NOT NULL,
+    active boolean NOT NULL,
+    parent_id uuid,
+    synopsis text NOT NULL
+)
+INHERITS (core);
 
 
 ALTER TABLE public.matter OWNER TO postgres;
 
 --
--- TOC entry 187 (class 1259 OID 114131)
+-- TOC entry 200 (class 1259 OID 115884)
 -- Name: matter_contact; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -524,20 +503,15 @@ CREATE TABLE matter_contact (
     id integer NOT NULL,
     matter_id uuid NOT NULL,
     contact_id integer NOT NULL,
-    role text NOT NULL,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
+    role text NOT NULL
+)
+INHERITS (core);
 
 
 ALTER TABLE public.matter_contact OWNER TO postgres;
 
 --
--- TOC entry 188 (class 1259 OID 114137)
+-- TOC entry 199 (class 1259 OID 115882)
 -- Name: matter_contact_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -552,8 +526,8 @@ CREATE SEQUENCE matter_contact_id_seq
 ALTER TABLE public.matter_contact_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2330 (class 0 OID 0)
--- Dependencies: 188
+-- TOC entry 2241 (class 0 OID 0)
+-- Dependencies: 199
 -- Name: matter_contact_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -561,7 +535,7 @@ ALTER SEQUENCE matter_contact_id_seq OWNED BY matter_contact.id;
 
 
 --
--- TOC entry 189 (class 1259 OID 114139)
+-- TOC entry 201 (class 1259 OID 115903)
 -- Name: matter_tag; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -569,101 +543,76 @@ CREATE TABLE matter_tag (
     id uuid NOT NULL,
     matter_id uuid NOT NULL,
     tag_category_id integer,
-    tag text NOT NULL,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
+    tag text NOT NULL
+)
+INHERITS (core);
 
 
 ALTER TABLE public.matter_tag OWNER TO postgres;
 
 --
--- TOC entry 190 (class 1259 OID 114145)
+-- TOC entry 180 (class 1259 OID 115618)
 -- Name: note; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE note (
     id uuid NOT NULL,
     title text NOT NULL,
-    body text NOT NULL,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
+    body text NOT NULL
+)
+INHERITS (core);
 
 
 ALTER TABLE public.note OWNER TO postgres;
 
 --
--- TOC entry 191 (class 1259 OID 114151)
+-- TOC entry 202 (class 1259 OID 115921)
 -- Name: note_matter; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE note_matter (
     id uuid NOT NULL,
     note_id uuid NOT NULL,
-    matter_id uuid NOT NULL,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
+    matter_id uuid NOT NULL
+)
+INHERITS (core);
 
 
 ALTER TABLE public.note_matter OWNER TO postgres;
 
 --
--- TOC entry 192 (class 1259 OID 114154)
+-- TOC entry 203 (class 1259 OID 115936)
 -- Name: note_task; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE note_task (
     id uuid NOT NULL,
     note_id uuid NOT NULL,
-    task_id bigint NOT NULL,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
+    task_id bigint NOT NULL
+)
+INHERITS (core);
 
 
 ALTER TABLE public.note_task OWNER TO postgres;
 
 --
--- TOC entry 193 (class 1259 OID 114157)
+-- TOC entry 205 (class 1259 OID 115969)
 -- Name: responsible_user; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE responsible_user (
     id integer NOT NULL,
     matter_id uuid NOT NULL,
-    user_id integer NOT NULL,
-    responsibility text NOT NULL,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
+    user_pid uuid NOT NULL,
+    responsibility text NOT NULL
+)
+INHERITS (core);
 
 
 ALTER TABLE public.responsible_user OWNER TO postgres;
 
 --
--- TOC entry 194 (class 1259 OID 114163)
+-- TOC entry 204 (class 1259 OID 115967)
 -- Name: responsible_user_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -678,8 +627,8 @@ CREATE SEQUENCE responsible_user_id_seq
 ALTER TABLE public.responsible_user_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2331 (class 0 OID 0)
--- Dependencies: 194
+-- TOC entry 2242 (class 0 OID 0)
+-- Dependencies: 204
 -- Name: responsible_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -687,66 +636,21 @@ ALTER SEQUENCE responsible_user_id_seq OWNED BY responsible_user.id;
 
 
 --
--- TOC entry 195 (class 1259 OID 114165)
--- Name: secured_resource; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
---
-
-CREATE TABLE secured_resource (
-    id uuid NOT NULL,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
-
-
-ALTER TABLE public.secured_resource OWNER TO postgres;
-
---
--- TOC entry 196 (class 1259 OID 114168)
--- Name: secured_resource_acl; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
---
-
-CREATE TABLE secured_resource_acl (
-    id uuid NOT NULL,
-    secured_resource_id uuid NOT NULL,
-    user_id integer NOT NULL,
-    allow_flags integer NOT NULL,
-    deny_flags integer NOT NULL,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
-
-
-ALTER TABLE public.secured_resource_acl OWNER TO postgres;
-
---
--- TOC entry 197 (class 1259 OID 114171)
+-- TOC entry 182 (class 1259 OID 115628)
 -- Name: tag_category; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE tag_category (
     id integer NOT NULL,
-    name text NOT NULL,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
+    name text NOT NULL
+)
+INHERITS (core);
 
 
 ALTER TABLE public.tag_category OWNER TO postgres;
 
 --
--- TOC entry 198 (class 1259 OID 114177)
+-- TOC entry 181 (class 1259 OID 115626)
 -- Name: tag_category_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -761,8 +665,8 @@ CREATE SEQUENCE tag_category_id_seq
 ALTER TABLE public.tag_category_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2332 (class 0 OID 0)
--- Dependencies: 198
+-- TOC entry 2243 (class 0 OID 0)
+-- Dependencies: 181
 -- Name: tag_category_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -770,28 +674,23 @@ ALTER SEQUENCE tag_category_id_seq OWNED BY tag_category.id;
 
 
 --
--- TOC entry 199 (class 1259 OID 114179)
+-- TOC entry 184 (class 1259 OID 115651)
 -- Name: tag_filter; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE tag_filter (
     id bigint NOT NULL,
-    user_id integer NOT NULL,
+    user_pid uuid NOT NULL,
     category text,
-    tag text NOT NULL,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
+    tag text NOT NULL
+)
+INHERITS (core);
 
 
 ALTER TABLE public.tag_filter OWNER TO postgres;
 
 --
--- TOC entry 200 (class 1259 OID 114185)
+-- TOC entry 183 (class 1259 OID 115649)
 -- Name: tag_filter_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -806,8 +705,8 @@ CREATE SEQUENCE tag_filter_id_seq
 ALTER TABLE public.tag_filter_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2333 (class 0 OID 0)
--- Dependencies: 200
+-- TOC entry 2244 (class 0 OID 0)
+-- Dependencies: 183
 -- Name: tag_filter_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -815,7 +714,7 @@ ALTER SEQUENCE tag_filter_id_seq OWNED BY tag_filter.id;
 
 
 --
--- TOC entry 201 (class 1259 OID 114187)
+-- TOC entry 186 (class 1259 OID 115667)
 -- Name: task; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -830,20 +729,15 @@ CREATE TABLE task (
     parent_id bigint,
     is_grouping_task boolean NOT NULL,
     sequential_predecessor_id bigint,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone,
     active boolean NOT NULL
-);
+)
+INHERITS (core);
 
 
 ALTER TABLE public.task OWNER TO postgres;
 
 --
--- TOC entry 202 (class 1259 OID 114193)
+-- TOC entry 206 (class 1259 OID 115988)
 -- Name: task_assigned_contact; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -851,20 +745,15 @@ CREATE TABLE task_assigned_contact (
     id uuid NOT NULL,
     task_id bigint NOT NULL,
     contact_id integer NOT NULL,
-    assignment_type smallint DEFAULT 1 NOT NULL,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
+    assignment_type smallint DEFAULT 1 NOT NULL
+)
+INHERITS (core);
 
 
 ALTER TABLE public.task_assigned_contact OWNER TO postgres;
 
 --
--- TOC entry 203 (class 1259 OID 114197)
+-- TOC entry 185 (class 1259 OID 115665)
 -- Name: task_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -879,8 +768,8 @@ CREATE SEQUENCE task_id_seq
 ALTER TABLE public.task_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2334 (class 0 OID 0)
--- Dependencies: 203
+-- TOC entry 2245 (class 0 OID 0)
+-- Dependencies: 185
 -- Name: task_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -888,48 +777,38 @@ ALTER SEQUENCE task_id_seq OWNED BY task.id;
 
 
 --
--- TOC entry 204 (class 1259 OID 114199)
+-- TOC entry 207 (class 1259 OID 116004)
 -- Name: task_matter; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE task_matter (
     id uuid NOT NULL,
     task_id bigint NOT NULL,
-    matter_id uuid NOT NULL,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
+    matter_id uuid NOT NULL
+)
+INHERITS (core);
 
 
 ALTER TABLE public.task_matter OWNER TO postgres;
 
 --
--- TOC entry 205 (class 1259 OID 114202)
+-- TOC entry 208 (class 1259 OID 116022)
 -- Name: task_responsible_user; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE task_responsible_user (
     id uuid NOT NULL,
     task_id bigint NOT NULL,
-    user_id integer NOT NULL,
-    responsibility text NOT NULL,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
+    user_pid uuid NOT NULL,
+    responsibility text NOT NULL
+)
+INHERITS (core);
 
 
 ALTER TABLE public.task_responsible_user OWNER TO postgres;
 
 --
--- TOC entry 206 (class 1259 OID 114208)
+-- TOC entry 209 (class 1259 OID 116040)
 -- Name: task_tag; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -937,40 +816,30 @@ CREATE TABLE task_tag (
     id uuid NOT NULL,
     task_id bigint NOT NULL,
     tag_category_id integer,
-    tag text NOT NULL,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
+    tag text NOT NULL
+)
+INHERITS (core);
 
 
 ALTER TABLE public.task_tag OWNER TO postgres;
 
 --
--- TOC entry 207 (class 1259 OID 114214)
+-- TOC entry 210 (class 1259 OID 116058)
 -- Name: task_time; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE task_time (
     id uuid NOT NULL,
     task_id bigint NOT NULL,
-    time_id uuid NOT NULL,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
+    time_id uuid NOT NULL
+)
+INHERITS (core);
 
 
 ALTER TABLE public.task_time OWNER TO postgres;
 
 --
--- TOC entry 208 (class 1259 OID 114217)
+-- TOC entry 189 (class 1259 OID 115705)
 -- Name: time; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -979,64 +848,15 @@ CREATE TABLE "time" (
     start timestamp without time zone NOT NULL,
     stop timestamp without time zone NOT NULL,
     worker_contact_id integer NOT NULL,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone,
     details text
-);
+)
+INHERITS (core);
 
 
 ALTER TABLE public."time" OWNER TO postgres;
 
 --
--- TOC entry 209 (class 1259 OID 114220)
--- Name: user; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
---
-
-CREATE TABLE "user" (
-    id integer NOT NULL,
-    username text NOT NULL,
-    password text NOT NULL,
-    password_salt text NOT NULL,
-    user_auth_token uuid,
-    user_auth_token_expiry timestamp without time zone,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
-
-
-ALTER TABLE public."user" OWNER TO postgres;
-
---
--- TOC entry 210 (class 1259 OID 114226)
--- Name: user_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE user_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.user_id_seq OWNER TO postgres;
-
---
--- TOC entry 2335 (class 0 OID 0)
--- Dependencies: 210
--- Name: user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE user_id_seq OWNED BY "user".id;
-
-
---
--- TOC entry 211 (class 1259 OID 114228)
+-- TOC entry 190 (class 1259 OID 115718)
 -- Name: version; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1048,36 +868,15 @@ CREATE TABLE version (
     filename text NOT NULL,
     extension text NOT NULL,
     size bigint NOT NULL,
-    md5 text NOT NULL,
-    created_by_user_id integer NOT NULL,
-    modified_by_user_id integer NOT NULL,
-    disabled_by_user_id integer,
-    utc_created timestamp without time zone NOT NULL,
-    utc_modified timestamp without time zone NOT NULL,
-    utc_disabled timestamp without time zone
-);
+    md5 text NOT NULL
+)
+INHERITS (core);
 
 
 ALTER TABLE public.version OWNER TO postgres;
 
 --
--- TOC entry 2087 (class 2604 OID 114234)
--- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY area ALTER COLUMN id SET DEFAULT nextval('area_id_seq'::regclass);
-
-
---
--- TOC entry 2088 (class 2604 OID 114235)
--- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY area_acl ALTER COLUMN id SET DEFAULT nextval('area_acl_id_seq'::regclass);
-
-
---
--- TOC entry 2089 (class 2604 OID 114236)
+-- TOC entry 2097 (class 2604 OID 115699)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1085,7 +884,7 @@ ALTER TABLE ONLY contact ALTER COLUMN id SET DEFAULT nextval('contact_id_seq'::r
 
 
 --
--- TOC entry 2091 (class 2604 OID 114237)
+-- TOC entry 2098 (class 2604 OID 115887)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1093,7 +892,7 @@ ALTER TABLE ONLY matter_contact ALTER COLUMN id SET DEFAULT nextval('matter_cont
 
 
 --
--- TOC entry 2092 (class 2604 OID 114238)
+-- TOC entry 2099 (class 2604 OID 115972)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1101,7 +900,7 @@ ALTER TABLE ONLY responsible_user ALTER COLUMN id SET DEFAULT nextval('responsib
 
 
 --
--- TOC entry 2093 (class 2604 OID 114239)
+-- TOC entry 2094 (class 2604 OID 115631)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1109,7 +908,7 @@ ALTER TABLE ONLY tag_category ALTER COLUMN id SET DEFAULT nextval('tag_category_
 
 
 --
--- TOC entry 2094 (class 2604 OID 114240)
+-- TOC entry 2095 (class 2604 OID 115654)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1117,7 +916,7 @@ ALTER TABLE ONLY tag_filter ALTER COLUMN id SET DEFAULT nextval('tag_filter_id_s
 
 
 --
--- TOC entry 2095 (class 2604 OID 114241)
+-- TOC entry 2096 (class 2604 OID 115670)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1125,33 +924,7 @@ ALTER TABLE ONLY task ALTER COLUMN id SET DEFAULT nextval('task_id_seq'::regclas
 
 
 --
--- TOC entry 2097 (class 2604 OID 114242)
--- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY "user" ALTER COLUMN id SET DEFAULT nextval('user_id_seq'::regclass);
-
-
---
--- TOC entry 2102 (class 2606 OID 114244)
--- Name: UQ_area_acl_Area_User; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
---
-
-ALTER TABLE ONLY area_acl
-    ADD CONSTRAINT "UQ_area_acl_Area_User" UNIQUE (security_area_id, user_id);
-
-
---
--- TOC entry 2147 (class 2606 OID 114246)
--- Name: UQ_secured_resource_acl_SecuredResource_User; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
---
-
-ALTER TABLE ONLY secured_resource_acl
-    ADD CONSTRAINT "UQ_secured_resource_acl_SecuredResource_User" UNIQUE (secured_resource_id, user_id);
-
-
---
--- TOC entry 2160 (class 2606 OID 114248)
+-- TOC entry 2175 (class 2606 OID 116010)
 -- Name: UQ_task_matter_Task_Matter; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1160,25 +933,16 @@ ALTER TABLE ONLY task_matter
 
 
 --
--- TOC entry 2104 (class 2606 OID 114250)
--- Name: area_acl_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- TOC entry 2102 (class 2606 OID 115475)
+-- Name: Users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
-ALTER TABLE ONLY area_acl
-    ADD CONSTRAINT area_acl_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 2099 (class 2606 OID 114252)
--- Name: area_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
---
-
-ALTER TABLE ONLY area
-    ADD CONSTRAINT area_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY "Users"
+    ADD CONSTRAINT "Users_pkey" PRIMARY KEY ("pId");
 
 
 --
--- TOC entry 2106 (class 2606 OID 114254)
+-- TOC entry 2141 (class 2606 OID 115704)
 -- Name: contact_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1187,7 +951,7 @@ ALTER TABLE ONLY contact
 
 
 --
--- TOC entry 2110 (class 2606 OID 114256)
+-- TOC entry 2147 (class 2606 OID 115731)
 -- Name: document_matter_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1196,7 +960,7 @@ ALTER TABLE ONLY document_matter
 
 
 --
--- TOC entry 2108 (class 2606 OID 114258)
+-- TOC entry 2123 (class 2606 OID 115580)
 -- Name: document_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1205,7 +969,7 @@ ALTER TABLE ONLY document
 
 
 --
--- TOC entry 2112 (class 2606 OID 114260)
+-- TOC entry 2149 (class 2606 OID 115746)
 -- Name: document_task_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1214,7 +978,7 @@ ALTER TABLE ONLY document_task
 
 
 --
--- TOC entry 2119 (class 2606 OID 114262)
+-- TOC entry 2151 (class 2606 OID 115764)
 -- Name: event_assigned_contact_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1223,7 +987,7 @@ ALTER TABLE ONLY event_assigned_contact
 
 
 --
--- TOC entry 2121 (class 2606 OID 114264)
+-- TOC entry 2153 (class 2606 OID 115779)
 -- Name: event_matter_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1232,7 +996,7 @@ ALTER TABLE ONLY event_matter
 
 
 --
--- TOC entry 2123 (class 2606 OID 114266)
+-- TOC entry 2155 (class 2606 OID 115794)
 -- Name: event_note_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1241,7 +1005,7 @@ ALTER TABLE ONLY event_note
 
 
 --
--- TOC entry 2117 (class 2606 OID 114268)
+-- TOC entry 2128 (class 2606 OID 115603)
 -- Name: event_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1250,7 +1014,7 @@ ALTER TABLE ONLY event
 
 
 --
--- TOC entry 2125 (class 2606 OID 114270)
+-- TOC entry 2157 (class 2606 OID 115838)
 -- Name: event_responsible_user_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1259,7 +1023,7 @@ ALTER TABLE ONLY event_responsible_user
 
 
 --
--- TOC entry 2127 (class 2606 OID 114272)
+-- TOC entry 2159 (class 2606 OID 115856)
 -- Name: event_tag_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1268,7 +1032,7 @@ ALTER TABLE ONLY event_tag
 
 
 --
--- TOC entry 2129 (class 2606 OID 114274)
+-- TOC entry 2161 (class 2606 OID 115871)
 -- Name: event_task_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1277,7 +1041,7 @@ ALTER TABLE ONLY event_task
 
 
 --
--- TOC entry 2133 (class 2606 OID 114276)
+-- TOC entry 2163 (class 2606 OID 115892)
 -- Name: matter_contact_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1286,7 +1050,7 @@ ALTER TABLE ONLY matter_contact
 
 
 --
--- TOC entry 2131 (class 2606 OID 114278)
+-- TOC entry 2130 (class 2606 OID 115612)
 -- Name: matter_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1295,7 +1059,7 @@ ALTER TABLE ONLY matter
 
 
 --
--- TOC entry 2135 (class 2606 OID 114280)
+-- TOC entry 2165 (class 2606 OID 115910)
 -- Name: matter_tag_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1304,7 +1068,7 @@ ALTER TABLE ONLY matter_tag
 
 
 --
--- TOC entry 2139 (class 2606 OID 114282)
+-- TOC entry 2167 (class 2606 OID 115925)
 -- Name: note_matter_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1313,7 +1077,7 @@ ALTER TABLE ONLY note_matter
 
 
 --
--- TOC entry 2137 (class 2606 OID 114284)
+-- TOC entry 2132 (class 2606 OID 115625)
 -- Name: note_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1322,7 +1086,7 @@ ALTER TABLE ONLY note
 
 
 --
--- TOC entry 2141 (class 2606 OID 114286)
+-- TOC entry 2169 (class 2606 OID 115940)
 -- Name: note_task_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1331,7 +1095,7 @@ ALTER TABLE ONLY note_task
 
 
 --
--- TOC entry 2115 (class 2606 OID 114288)
+-- TOC entry 2126 (class 2606 OID 115594)
 -- Name: pk_elmah_error; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1340,7 +1104,43 @@ ALTER TABLE ONLY elmah_error
 
 
 --
--- TOC entry 2143 (class 2606 OID 114290)
+-- TOC entry 2113 (class 2606 OID 115513)
+-- Name: profiledata_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "ProfileData"
+    ADD CONSTRAINT profiledata_pkey PRIMARY KEY ("pId");
+
+
+--
+-- TOC entry 2115 (class 2606 OID 115515)
+-- Name: profiledata_profile_name_unique; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "ProfileData"
+    ADD CONSTRAINT profiledata_profile_name_unique UNIQUE ("Profile", "Name");
+
+
+--
+-- TOC entry 2109 (class 2606 OID 115487)
+-- Name: profiles_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "Profiles"
+    ADD CONSTRAINT profiles_pkey PRIMARY KEY ("pId");
+
+
+--
+-- TOC entry 2111 (class 2606 OID 115489)
+-- Name: profiles_username_application_unique; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "Profiles"
+    ADD CONSTRAINT profiles_username_application_unique UNIQUE ("Username", "ApplicationName");
+
+
+--
+-- TOC entry 2171 (class 2606 OID 115977)
 -- Name: responsible_user_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1349,25 +1149,25 @@ ALTER TABLE ONLY responsible_user
 
 
 --
--- TOC entry 2149 (class 2606 OID 114292)
--- Name: secured_resource_acl_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- TOC entry 2117 (class 2606 OID 115528)
+-- Name: roles_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
-ALTER TABLE ONLY secured_resource_acl
-    ADD CONSTRAINT secured_resource_acl_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 2145 (class 2606 OID 114294)
--- Name: secured_resource_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
---
-
-ALTER TABLE ONLY secured_resource
-    ADD CONSTRAINT secured_resource_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY "Roles"
+    ADD CONSTRAINT roles_pkey PRIMARY KEY ("Rolename", "ApplicationName");
 
 
 --
--- TOC entry 2151 (class 2606 OID 114296)
+-- TOC entry 2119 (class 2606 OID 115536)
+-- Name: sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "Sessions"
+    ADD CONSTRAINT sessions_pkey PRIMARY KEY ("SessionId", "ApplicationName");
+
+
+--
+-- TOC entry 2134 (class 2606 OID 115636)
 -- Name: tag_category_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1376,7 +1176,7 @@ ALTER TABLE ONLY tag_category
 
 
 --
--- TOC entry 2154 (class 2606 OID 114298)
+-- TOC entry 2137 (class 2606 OID 115659)
 -- Name: tag_filter_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1385,7 +1185,7 @@ ALTER TABLE ONLY tag_filter
 
 
 --
--- TOC entry 2158 (class 2606 OID 114300)
+-- TOC entry 2173 (class 2606 OID 115993)
 -- Name: task_assigned_contact_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1394,7 +1194,7 @@ ALTER TABLE ONLY task_assigned_contact
 
 
 --
--- TOC entry 2162 (class 2606 OID 114302)
+-- TOC entry 2177 (class 2606 OID 116008)
 -- Name: task_matter_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1403,7 +1203,7 @@ ALTER TABLE ONLY task_matter
 
 
 --
--- TOC entry 2156 (class 2606 OID 114304)
+-- TOC entry 2139 (class 2606 OID 115675)
 -- Name: task_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1412,7 +1212,7 @@ ALTER TABLE ONLY task
 
 
 --
--- TOC entry 2164 (class 2606 OID 114306)
+-- TOC entry 2179 (class 2606 OID 116029)
 -- Name: task_responsible_user_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1421,7 +1221,7 @@ ALTER TABLE ONLY task_responsible_user
 
 
 --
--- TOC entry 2166 (class 2606 OID 114308)
+-- TOC entry 2181 (class 2606 OID 116047)
 -- Name: task_tag_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1430,7 +1230,7 @@ ALTER TABLE ONLY task_tag
 
 
 --
--- TOC entry 2168 (class 2606 OID 114310)
+-- TOC entry 2183 (class 2606 OID 116062)
 -- Name: task_time_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1439,7 +1239,7 @@ ALTER TABLE ONLY task_time
 
 
 --
--- TOC entry 2170 (class 2606 OID 114312)
+-- TOC entry 2143 (class 2606 OID 115712)
 -- Name: time_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1448,16 +1248,25 @@ ALTER TABLE ONLY "time"
 
 
 --
--- TOC entry 2174 (class 2606 OID 114314)
--- Name: user_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- TOC entry 2106 (class 2606 OID 115477)
+-- Name: users_username_application_unique; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
-ALTER TABLE ONLY "user"
-    ADD CONSTRAINT user_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY "Users"
+    ADD CONSTRAINT users_username_application_unique UNIQUE ("Username", "ApplicationName");
 
 
 --
--- TOC entry 2176 (class 2606 OID 114316)
+-- TOC entry 2121 (class 2606 OID 115544)
+-- Name: usersinroles_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "UsersInRoles"
+    ADD CONSTRAINT usersinroles_pkey PRIMARY KEY ("Username", "Rolename", "ApplicationName");
+
+
+--
+-- TOC entry 2145 (class 2606 OID 115725)
 -- Name: version_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1466,7 +1275,7 @@ ALTER TABLE ONLY version
 
 
 --
--- TOC entry 2113 (class 1259 OID 114317)
+-- TOC entry 2124 (class 1259 OID 115595)
 -- Name: ix_elmah_error_app_time_seq; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1474,15 +1283,15 @@ CREATE INDEX ix_elmah_error_app_time_seq ON elmah_error USING btree (application
 
 
 --
--- TOC entry 2100 (class 1259 OID 114318)
--- Name: uidx_area_name; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
+-- TOC entry 2107 (class 1259 OID 115495)
+-- Name: profiles_isanonymous_index; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
-CREATE UNIQUE INDEX uidx_area_name ON area USING btree (name);
+CREATE INDEX profiles_isanonymous_index ON "Profiles" USING btree ("IsAnonymous");
 
 
 --
--- TOC entry 2152 (class 1259 OID 114319)
+-- TOC entry 2135 (class 1259 OID 115637)
 -- Name: uidx_tagcategory_name; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1490,131 +1299,50 @@ CREATE UNIQUE INDEX uidx_tagcategory_name ON tag_category USING btree (name);
 
 
 --
--- TOC entry 2171 (class 1259 OID 114320)
--- Name: uidx_user_userauthtoken; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
+-- TOC entry 2103 (class 1259 OID 115478)
+-- Name: users_email_index; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
-CREATE UNIQUE INDEX uidx_user_userauthtoken ON "user" USING btree (user_auth_token);
-
-
---
--- TOC entry 2172 (class 1259 OID 114321)
--- Name: uidx_user_username; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
---
-
-CREATE UNIQUE INDEX uidx_user_username ON "user" USING btree (username);
+CREATE INDEX users_email_index ON "Users" USING btree ("Email");
 
 
 --
--- TOC entry 2185 (class 2606 OID 114322)
--- Name: FK_area_acl_area_SecurityAreaId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 2104 (class 1259 OID 115479)
+-- Name: users_islockedout_index; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
-ALTER TABLE ONLY area_acl
-    ADD CONSTRAINT "FK_area_acl_area_SecurityAreaId" FOREIGN KEY (security_area_id) REFERENCES area(id);
-
-
---
--- TOC entry 2184 (class 2606 OID 114327)
--- Name: FK_area_acl_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY area_acl
-    ADD CONSTRAINT "FK_area_acl_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
+CREATE INDEX users_islockedout_index ON "Users" USING btree ("IsLockedOut");
 
 
 --
--- TOC entry 2183 (class 2606 OID 114332)
--- Name: FK_area_acl_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 2188 (class 2606 OID 115558)
+-- Name: FK_core_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY area_acl
-    ADD CONSTRAINT "FK_area_acl_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2182 (class 2606 OID 114337)
--- Name: FK_area_acl_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY area_acl
-    ADD CONSTRAINT "FK_area_acl_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
+ALTER TABLE ONLY core
+    ADD CONSTRAINT "FK_core_user_CreatedByUserId" FOREIGN KEY (created_by_user_pid) REFERENCES "Users"("pId");
 
 
 --
--- TOC entry 2181 (class 2606 OID 114342)
--- Name: FK_area_acl_user_UserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 2189 (class 2606 OID 115563)
+-- Name: FK_core_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY area_acl
-    ADD CONSTRAINT "FK_area_acl_user_UserId" FOREIGN KEY (user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2180 (class 2606 OID 114347)
--- Name: FK_area_area_ParentId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY area
-    ADD CONSTRAINT "FK_area_area_ParentId" FOREIGN KEY (parent_id) REFERENCES area(id);
+ALTER TABLE ONLY core
+    ADD CONSTRAINT "FK_core_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_pid) REFERENCES "Users"("pId");
 
 
 --
--- TOC entry 2179 (class 2606 OID 114352)
--- Name: FK_area_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 2190 (class 2606 OID 115568)
+-- Name: FK_core_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY area
-    ADD CONSTRAINT "FK_area_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2178 (class 2606 OID 114357)
--- Name: FK_area_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY area
-    ADD CONSTRAINT "FK_area_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
+ALTER TABLE ONLY core
+    ADD CONSTRAINT "FK_core_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_pid) REFERENCES "Users"("pId");
 
 
 --
--- TOC entry 2177 (class 2606 OID 114362)
--- Name: FK_area_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY area
-    ADD CONSTRAINT "FK_area_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2188 (class 2606 OID 114367)
--- Name: FK_contact_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY contact
-    ADD CONSTRAINT "FK_contact_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2187 (class 2606 OID 114372)
--- Name: FK_contact_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY contact
-    ADD CONSTRAINT "FK_contact_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2186 (class 2606 OID 114377)
--- Name: FK_contact_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY contact
-    ADD CONSTRAINT "FK_contact_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2196 (class 2606 OID 114382)
+-- TOC entry 2196 (class 2606 OID 115732)
 -- Name: FK_document_matter_document_DocumentId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1623,7 +1351,7 @@ ALTER TABLE ONLY document_matter
 
 
 --
--- TOC entry 2195 (class 2606 OID 114387)
+-- TOC entry 2197 (class 2606 OID 115737)
 -- Name: FK_document_matter_matter_MatterId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1632,34 +1360,7 @@ ALTER TABLE ONLY document_matter
 
 
 --
--- TOC entry 2194 (class 2606 OID 114392)
--- Name: FK_document_matter_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY document_matter
-    ADD CONSTRAINT "FK_document_matter_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2193 (class 2606 OID 114397)
--- Name: FK_document_matter_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY document_matter
-    ADD CONSTRAINT "FK_document_matter_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2192 (class 2606 OID 114402)
--- Name: FK_document_matter_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY document_matter
-    ADD CONSTRAINT "FK_document_matter_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2201 (class 2606 OID 114407)
+-- TOC entry 2198 (class 2606 OID 115747)
 -- Name: FK_document_task_document_DocumentId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1668,7 +1369,7 @@ ALTER TABLE ONLY document_task
 
 
 --
--- TOC entry 2200 (class 2606 OID 114412)
+-- TOC entry 2199 (class 2606 OID 115752)
 -- Name: FK_document_task_matter_MatterId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1677,61 +1378,7 @@ ALTER TABLE ONLY document_task
 
 
 --
--- TOC entry 2199 (class 2606 OID 114417)
--- Name: FK_document_task_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY document_task
-    ADD CONSTRAINT "FK_document_task_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2198 (class 2606 OID 114422)
--- Name: FK_document_task_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY document_task
-    ADD CONSTRAINT "FK_document_task_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2197 (class 2606 OID 114427)
--- Name: FK_document_task_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY document_task
-    ADD CONSTRAINT "FK_document_task_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2191 (class 2606 OID 114432)
--- Name: FK_document_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY document
-    ADD CONSTRAINT "FK_document_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2190 (class 2606 OID 114437)
--- Name: FK_document_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY document
-    ADD CONSTRAINT "FK_document_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2189 (class 2606 OID 114442)
--- Name: FK_document_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY document
-    ADD CONSTRAINT "FK_document_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2209 (class 2606 OID 114447)
+-- TOC entry 2200 (class 2606 OID 115765)
 -- Name: FK_event_assigned_contact_contact_ContactId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1740,7 +1387,7 @@ ALTER TABLE ONLY event_assigned_contact
 
 
 --
--- TOC entry 2208 (class 2606 OID 114452)
+-- TOC entry 2201 (class 2606 OID 115770)
 -- Name: FK_event_assigned_contact_event_EventId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1749,34 +1396,7 @@ ALTER TABLE ONLY event_assigned_contact
 
 
 --
--- TOC entry 2207 (class 2606 OID 114457)
--- Name: FK_event_assigned_contact_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY event_assigned_contact
-    ADD CONSTRAINT "FK_event_assigned_contact_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2206 (class 2606 OID 114462)
--- Name: FK_event_assigned_contact_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY event_assigned_contact
-    ADD CONSTRAINT "FK_event_assigned_contact_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2205 (class 2606 OID 114467)
--- Name: FK_event_assigned_contact_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY event_assigned_contact
-    ADD CONSTRAINT "FK_event_assigned_contact_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2214 (class 2606 OID 114472)
+-- TOC entry 2202 (class 2606 OID 115780)
 -- Name: FK_event_matter_event_EventId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1785,7 +1405,7 @@ ALTER TABLE ONLY event_matter
 
 
 --
--- TOC entry 2213 (class 2606 OID 114477)
+-- TOC entry 2203 (class 2606 OID 115785)
 -- Name: FK_event_matter_matter_MatterId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1794,34 +1414,7 @@ ALTER TABLE ONLY event_matter
 
 
 --
--- TOC entry 2212 (class 2606 OID 114482)
--- Name: FK_event_matter_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY event_matter
-    ADD CONSTRAINT "FK_event_matter_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2211 (class 2606 OID 114487)
--- Name: FK_event_matter_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY event_matter
-    ADD CONSTRAINT "FK_event_matter_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2210 (class 2606 OID 114492)
--- Name: FK_event_matter_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY event_matter
-    ADD CONSTRAINT "FK_event_matter_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2219 (class 2606 OID 114497)
+-- TOC entry 2204 (class 2606 OID 115795)
 -- Name: FK_event_note_event_EventId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1830,7 +1423,7 @@ ALTER TABLE ONLY event_note
 
 
 --
--- TOC entry 2218 (class 2606 OID 114502)
+-- TOC entry 2205 (class 2606 OID 115800)
 -- Name: FK_event_note_note_NoteId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1839,34 +1432,7 @@ ALTER TABLE ONLY event_note
 
 
 --
--- TOC entry 2217 (class 2606 OID 114507)
--- Name: FK_event_note_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY event_note
-    ADD CONSTRAINT "FK_event_note_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2216 (class 2606 OID 114512)
--- Name: FK_event_note_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY event_note
-    ADD CONSTRAINT "FK_event_note_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2215 (class 2606 OID 114517)
--- Name: FK_event_note_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY event_note
-    ADD CONSTRAINT "FK_event_note_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2224 (class 2606 OID 114522)
+-- TOC entry 2206 (class 2606 OID 115839)
 -- Name: FK_event_responsible_user_task_TaskId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1875,43 +1441,16 @@ ALTER TABLE ONLY event_responsible_user
 
 
 --
--- TOC entry 2223 (class 2606 OID 114527)
--- Name: FK_event_responsible_user_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY event_responsible_user
-    ADD CONSTRAINT "FK_event_responsible_user_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2222 (class 2606 OID 114532)
--- Name: FK_event_responsible_user_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY event_responsible_user
-    ADD CONSTRAINT "FK_event_responsible_user_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2221 (class 2606 OID 114537)
+-- TOC entry 2207 (class 2606 OID 115844)
 -- Name: FK_event_responsible_user_user_MatterId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY event_responsible_user
-    ADD CONSTRAINT "FK_event_responsible_user_user_MatterId" FOREIGN KEY (user_id) REFERENCES "user"(id);
+    ADD CONSTRAINT "FK_event_responsible_user_user_MatterId" FOREIGN KEY (user_pid) REFERENCES "Users"("pId");
 
 
 --
--- TOC entry 2220 (class 2606 OID 114542)
--- Name: FK_event_responsible_user_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY event_responsible_user
-    ADD CONSTRAINT "FK_event_responsible_user_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2229 (class 2606 OID 114547)
+-- TOC entry 2208 (class 2606 OID 115857)
 -- Name: FK_event_tag_event_EventId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1920,7 +1459,7 @@ ALTER TABLE ONLY event_tag
 
 
 --
--- TOC entry 2228 (class 2606 OID 114552)
+-- TOC entry 2209 (class 2606 OID 115862)
 -- Name: FK_event_tag_tag_category_TagCategoryId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1929,34 +1468,7 @@ ALTER TABLE ONLY event_tag
 
 
 --
--- TOC entry 2227 (class 2606 OID 114557)
--- Name: FK_event_tag_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY event_tag
-    ADD CONSTRAINT "FK_event_tag_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2226 (class 2606 OID 114562)
--- Name: FK_event_tag_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY event_tag
-    ADD CONSTRAINT "FK_event_tag_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2225 (class 2606 OID 114567)
--- Name: FK_event_tag_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY event_tag
-    ADD CONSTRAINT "FK_event_tag_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2234 (class 2606 OID 114572)
+-- TOC entry 2210 (class 2606 OID 115872)
 -- Name: FK_event_task_event_EventId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1965,7 +1477,7 @@ ALTER TABLE ONLY event_task
 
 
 --
--- TOC entry 2233 (class 2606 OID 114577)
+-- TOC entry 2211 (class 2606 OID 115877)
 -- Name: FK_event_task_task_TaskId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1974,61 +1486,7 @@ ALTER TABLE ONLY event_task
 
 
 --
--- TOC entry 2232 (class 2606 OID 114582)
--- Name: FK_event_task_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY event_task
-    ADD CONSTRAINT "FK_event_task_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2231 (class 2606 OID 114587)
--- Name: FK_event_task_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY event_task
-    ADD CONSTRAINT "FK_event_task_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2230 (class 2606 OID 114592)
--- Name: FK_event_task_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY event_task
-    ADD CONSTRAINT "FK_event_task_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2204 (class 2606 OID 114597)
--- Name: FK_event_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY event
-    ADD CONSTRAINT "FK_event_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2203 (class 2606 OID 114602)
--- Name: FK_event_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY event
-    ADD CONSTRAINT "FK_event_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2202 (class 2606 OID 114607)
--- Name: FK_event_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY event
-    ADD CONSTRAINT "FK_event_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2243 (class 2606 OID 114612)
+-- TOC entry 2212 (class 2606 OID 115893)
 -- Name: FK_matter_contact_matter_MatterId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2037,7 +1495,7 @@ ALTER TABLE ONLY matter_contact
 
 
 --
--- TOC entry 2242 (class 2606 OID 114617)
+-- TOC entry 2213 (class 2606 OID 115898)
 -- Name: FK_matter_contact_user_ContactId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2046,34 +1504,7 @@ ALTER TABLE ONLY matter_contact
 
 
 --
--- TOC entry 2241 (class 2606 OID 114622)
--- Name: FK_matter_contact_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY matter_contact
-    ADD CONSTRAINT "FK_matter_contact_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2240 (class 2606 OID 114627)
--- Name: FK_matter_contact_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY matter_contact
-    ADD CONSTRAINT "FK_matter_contact_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2239 (class 2606 OID 114632)
--- Name: FK_matter_contact_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY matter_contact
-    ADD CONSTRAINT "FK_matter_contact_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2238 (class 2606 OID 114637)
+-- TOC entry 2191 (class 2606 OID 115613)
 -- Name: FK_matter_matter_ParentId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2082,7 +1513,7 @@ ALTER TABLE ONLY matter
 
 
 --
--- TOC entry 2248 (class 2606 OID 114642)
+-- TOC entry 2214 (class 2606 OID 115911)
 -- Name: FK_matter_tag_matter_MatterId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2091,7 +1522,7 @@ ALTER TABLE ONLY matter_tag
 
 
 --
--- TOC entry 2247 (class 2606 OID 114647)
+-- TOC entry 2215 (class 2606 OID 115916)
 -- Name: FK_matter_tag_tag_category_TagCategoryId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2100,61 +1531,7 @@ ALTER TABLE ONLY matter_tag
 
 
 --
--- TOC entry 2246 (class 2606 OID 114652)
--- Name: FK_matter_tag_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY matter_tag
-    ADD CONSTRAINT "FK_matter_tag_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2245 (class 2606 OID 114657)
--- Name: FK_matter_tag_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY matter_tag
-    ADD CONSTRAINT "FK_matter_tag_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2244 (class 2606 OID 114662)
--- Name: FK_matter_tag_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY matter_tag
-    ADD CONSTRAINT "FK_matter_tag_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2237 (class 2606 OID 114667)
--- Name: FK_matter_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY matter
-    ADD CONSTRAINT "FK_matter_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2236 (class 2606 OID 114672)
--- Name: FK_matter_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY matter
-    ADD CONSTRAINT "FK_matter_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2235 (class 2606 OID 114677)
--- Name: FK_matter_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY matter
-    ADD CONSTRAINT "FK_matter_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2256 (class 2606 OID 114682)
+-- TOC entry 2216 (class 2606 OID 115926)
 -- Name: FK_note_matter_matter_MatterId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2163,7 +1540,7 @@ ALTER TABLE ONLY note_matter
 
 
 --
--- TOC entry 2255 (class 2606 OID 114687)
+-- TOC entry 2217 (class 2606 OID 115931)
 -- Name: FK_note_matter_note_NoteId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2172,34 +1549,7 @@ ALTER TABLE ONLY note_matter
 
 
 --
--- TOC entry 2254 (class 2606 OID 114692)
--- Name: FK_note_matter_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY note_matter
-    ADD CONSTRAINT "FK_note_matter_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2253 (class 2606 OID 114697)
--- Name: FK_note_matter_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY note_matter
-    ADD CONSTRAINT "FK_note_matter_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2252 (class 2606 OID 114702)
--- Name: FK_note_matter_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY note_matter
-    ADD CONSTRAINT "FK_note_matter_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2261 (class 2606 OID 114707)
+-- TOC entry 2218 (class 2606 OID 115941)
 -- Name: FK_note_task_note_NoteId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2208,7 +1558,7 @@ ALTER TABLE ONLY note_task
 
 
 --
--- TOC entry 2260 (class 2606 OID 114712)
+-- TOC entry 2219 (class 2606 OID 115946)
 -- Name: FK_note_task_task_TaskId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2217,61 +1567,7 @@ ALTER TABLE ONLY note_task
 
 
 --
--- TOC entry 2259 (class 2606 OID 114717)
--- Name: FK_note_task_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY note_task
-    ADD CONSTRAINT "FK_note_task_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2258 (class 2606 OID 114722)
--- Name: FK_note_task_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY note_task
-    ADD CONSTRAINT "FK_note_task_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2257 (class 2606 OID 114727)
--- Name: FK_note_task_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY note_task
-    ADD CONSTRAINT "FK_note_task_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2251 (class 2606 OID 114732)
--- Name: FK_note_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY note
-    ADD CONSTRAINT "FK_note_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2250 (class 2606 OID 114737)
--- Name: FK_note_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY note
-    ADD CONSTRAINT "FK_note_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2249 (class 2606 OID 114742)
--- Name: FK_note_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY note
-    ADD CONSTRAINT "FK_note_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2266 (class 2606 OID 114747)
+-- TOC entry 2220 (class 2606 OID 115978)
 -- Name: FK_responsible_user_matter_MatterId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2280,178 +1576,25 @@ ALTER TABLE ONLY responsible_user
 
 
 --
--- TOC entry 2265 (class 2606 OID 114752)
--- Name: FK_responsible_user_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY responsible_user
-    ADD CONSTRAINT "FK_responsible_user_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2264 (class 2606 OID 114757)
--- Name: FK_responsible_user_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY responsible_user
-    ADD CONSTRAINT "FK_responsible_user_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2263 (class 2606 OID 114762)
--- Name: FK_responsible_user_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY responsible_user
-    ADD CONSTRAINT "FK_responsible_user_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2262 (class 2606 OID 114767)
+-- TOC entry 2221 (class 2606 OID 115983)
 -- Name: FK_responsible_user_user_UserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY responsible_user
-    ADD CONSTRAINT "FK_responsible_user_user_UserId" FOREIGN KEY (user_id) REFERENCES "user"(id);
+    ADD CONSTRAINT "FK_responsible_user_user_UserId" FOREIGN KEY (user_pid) REFERENCES "Users"("pId");
 
 
 --
--- TOC entry 2274 (class 2606 OID 114772)
--- Name: FK_secured_resource_acl_secured_resource_SecuredResourceId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY secured_resource_acl
-    ADD CONSTRAINT "FK_secured_resource_acl_secured_resource_SecuredResourceId" FOREIGN KEY (secured_resource_id) REFERENCES secured_resource(id);
-
-
---
--- TOC entry 2273 (class 2606 OID 114777)
--- Name: FK_secured_resource_acl_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY secured_resource_acl
-    ADD CONSTRAINT "FK_secured_resource_acl_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2272 (class 2606 OID 114782)
--- Name: FK_secured_resource_acl_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY secured_resource_acl
-    ADD CONSTRAINT "FK_secured_resource_acl_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2271 (class 2606 OID 114787)
--- Name: FK_secured_resource_acl_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY secured_resource_acl
-    ADD CONSTRAINT "FK_secured_resource_acl_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2270 (class 2606 OID 114792)
--- Name: FK_secured_resource_acl_user_UserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY secured_resource_acl
-    ADD CONSTRAINT "FK_secured_resource_acl_user_UserId" FOREIGN KEY (user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2269 (class 2606 OID 114797)
--- Name: FK_secured_resource_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY secured_resource
-    ADD CONSTRAINT "FK_secured_resource_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2268 (class 2606 OID 114802)
--- Name: FK_secured_resource_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY secured_resource
-    ADD CONSTRAINT "FK_secured_resource_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2267 (class 2606 OID 114807)
--- Name: FK_secured_resource_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY secured_resource
-    ADD CONSTRAINT "FK_secured_resource_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2277 (class 2606 OID 114812)
--- Name: FK_tag_category_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY tag_category
-    ADD CONSTRAINT "FK_tag_category_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2276 (class 2606 OID 114817)
--- Name: FK_tag_category_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY tag_category
-    ADD CONSTRAINT "FK_tag_category_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2275 (class 2606 OID 114822)
--- Name: FK_tag_category_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY tag_category
-    ADD CONSTRAINT "FK_tag_category_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2281 (class 2606 OID 114827)
--- Name: FK_tag_filter_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY tag_filter
-    ADD CONSTRAINT "FK_tag_filter_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2280 (class 2606 OID 114832)
--- Name: FK_tag_filter_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY tag_filter
-    ADD CONSTRAINT "FK_tag_filter_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2279 (class 2606 OID 114837)
--- Name: FK_tag_filter_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY tag_filter
-    ADD CONSTRAINT "FK_tag_filter_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2278 (class 2606 OID 114842)
+-- TOC entry 2192 (class 2606 OID 115660)
 -- Name: FK_tag_filter_user_UserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY tag_filter
-    ADD CONSTRAINT "FK_tag_filter_user_UserId" FOREIGN KEY (user_id) REFERENCES "user"(id);
+    ADD CONSTRAINT "FK_tag_filter_user_UserId" FOREIGN KEY (user_pid) REFERENCES "Users"("pId");
 
 
 --
--- TOC entry 2291 (class 2606 OID 114847)
+-- TOC entry 2222 (class 2606 OID 115994)
 -- Name: FK_task_assigned_contact_contact_ContactId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2460,7 +1603,7 @@ ALTER TABLE ONLY task_assigned_contact
 
 
 --
--- TOC entry 2290 (class 2606 OID 114852)
+-- TOC entry 2223 (class 2606 OID 115999)
 -- Name: FK_task_assigned_contact_task_TaskId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2469,34 +1612,7 @@ ALTER TABLE ONLY task_assigned_contact
 
 
 --
--- TOC entry 2289 (class 2606 OID 114857)
--- Name: FK_task_assigned_contact_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY task_assigned_contact
-    ADD CONSTRAINT "FK_task_assigned_contact_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2288 (class 2606 OID 114862)
--- Name: FK_task_assigned_contact_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY task_assigned_contact
-    ADD CONSTRAINT "FK_task_assigned_contact_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2287 (class 2606 OID 114867)
--- Name: FK_task_assigned_contact_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY task_assigned_contact
-    ADD CONSTRAINT "FK_task_assigned_contact_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2296 (class 2606 OID 114872)
+-- TOC entry 2224 (class 2606 OID 116011)
 -- Name: FK_task_matter_matter_MatterId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2505,7 +1621,7 @@ ALTER TABLE ONLY task_matter
 
 
 --
--- TOC entry 2295 (class 2606 OID 114877)
+-- TOC entry 2225 (class 2606 OID 116016)
 -- Name: FK_task_matter_task_TaskId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2514,34 +1630,7 @@ ALTER TABLE ONLY task_matter
 
 
 --
--- TOC entry 2294 (class 2606 OID 114882)
--- Name: FK_task_matter_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY task_matter
-    ADD CONSTRAINT "FK_task_matter_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2293 (class 2606 OID 114887)
--- Name: FK_task_matter_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY task_matter
-    ADD CONSTRAINT "FK_task_matter_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2292 (class 2606 OID 114892)
--- Name: FK_task_matter_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY task_matter
-    ADD CONSTRAINT "FK_task_matter_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2301 (class 2606 OID 114897)
+-- TOC entry 2226 (class 2606 OID 116030)
 -- Name: FK_task_responsible_user_task_TaskId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2550,43 +1639,16 @@ ALTER TABLE ONLY task_responsible_user
 
 
 --
--- TOC entry 2300 (class 2606 OID 114902)
--- Name: FK_task_responsible_user_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY task_responsible_user
-    ADD CONSTRAINT "FK_task_responsible_user_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2299 (class 2606 OID 114907)
--- Name: FK_task_responsible_user_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY task_responsible_user
-    ADD CONSTRAINT "FK_task_responsible_user_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2298 (class 2606 OID 114912)
+-- TOC entry 2227 (class 2606 OID 116035)
 -- Name: FK_task_responsible_user_user_MatterId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY task_responsible_user
-    ADD CONSTRAINT "FK_task_responsible_user_user_MatterId" FOREIGN KEY (user_id) REFERENCES "user"(id);
+    ADD CONSTRAINT "FK_task_responsible_user_user_MatterId" FOREIGN KEY (user_pid) REFERENCES "Users"("pId");
 
 
 --
--- TOC entry 2297 (class 2606 OID 114917)
--- Name: FK_task_responsible_user_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY task_responsible_user
-    ADD CONSTRAINT "FK_task_responsible_user_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2306 (class 2606 OID 114922)
+-- TOC entry 2228 (class 2606 OID 116048)
 -- Name: FK_task_tag_tag_category_TagCategoryId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2595,7 +1657,7 @@ ALTER TABLE ONLY task_tag
 
 
 --
--- TOC entry 2305 (class 2606 OID 114927)
+-- TOC entry 2229 (class 2606 OID 116053)
 -- Name: FK_task_tag_task_TaskId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2604,34 +1666,7 @@ ALTER TABLE ONLY task_tag
 
 
 --
--- TOC entry 2304 (class 2606 OID 114932)
--- Name: FK_task_tag_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY task_tag
-    ADD CONSTRAINT "FK_task_tag_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2303 (class 2606 OID 114937)
--- Name: FK_task_tag_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY task_tag
-    ADD CONSTRAINT "FK_task_tag_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2302 (class 2606 OID 114942)
--- Name: FK_task_tag_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY task_tag
-    ADD CONSTRAINT "FK_task_tag_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2286 (class 2606 OID 115115)
+-- TOC entry 2193 (class 2606 OID 115676)
 -- Name: FK_task_task_ParentId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2640,7 +1675,7 @@ ALTER TABLE ONLY task
 
 
 --
--- TOC entry 2285 (class 2606 OID 115120)
+-- TOC entry 2194 (class 2606 OID 115681)
 -- Name: FK_task_task_SequentialPredecessorId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2649,7 +1684,7 @@ ALTER TABLE ONLY task
 
 
 --
--- TOC entry 2311 (class 2606 OID 114957)
+-- TOC entry 2230 (class 2606 OID 116063)
 -- Name: FK_task_time_task_TaskId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2658,34 +1693,7 @@ ALTER TABLE ONLY task_time
 
 
 --
--- TOC entry 2310 (class 2606 OID 114962)
--- Name: FK_task_time_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY task_time
-    ADD CONSTRAINT "FK_task_time_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2309 (class 2606 OID 114967)
--- Name: FK_task_time_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY task_time
-    ADD CONSTRAINT "FK_task_time_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2308 (class 2606 OID 114972)
--- Name: FK_task_time_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY task_time
-    ADD CONSTRAINT "FK_task_time_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2307 (class 2606 OID 114977)
+-- TOC entry 2231 (class 2606 OID 116068)
 -- Name: FK_task_time_user_TimeId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2694,61 +1702,7 @@ ALTER TABLE ONLY task_time
 
 
 --
--- TOC entry 2284 (class 2606 OID 115125)
--- Name: FK_task_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY task
-    ADD CONSTRAINT "FK_task_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2283 (class 2606 OID 115130)
--- Name: FK_task_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY task
-    ADD CONSTRAINT "FK_task_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2282 (class 2606 OID 115135)
--- Name: FK_task_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY task
-    ADD CONSTRAINT "FK_task_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2315 (class 2606 OID 115043)
--- Name: FK_time_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY "time"
-    ADD CONSTRAINT "FK_time_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2314 (class 2606 OID 115048)
--- Name: FK_time_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY "time"
-    ADD CONSTRAINT "FK_time_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2313 (class 2606 OID 115053)
--- Name: FK_time_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY "time"
-    ADD CONSTRAINT "FK_time_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2312 (class 2606 OID 115058)
+-- TOC entry 2195 (class 2606 OID 115713)
 -- Name: FK_time_user_WorkerContactId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2757,35 +1711,44 @@ ALTER TABLE ONLY "time"
 
 
 --
--- TOC entry 2318 (class 2606 OID 115017)
--- Name: FK_version_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 2185 (class 2606 OID 115516)
+-- Name: profiledata_profile_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY version
-    ADD CONSTRAINT "FK_version_user_CreatedByUserId" FOREIGN KEY (created_by_user_id) REFERENCES "user"(id);
-
-
---
--- TOC entry 2317 (class 2606 OID 115022)
--- Name: FK_version_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY version
-    ADD CONSTRAINT "FK_version_user_DisabledByUserId" FOREIGN KEY (disabled_by_user_id) REFERENCES "user"(id);
+ALTER TABLE ONLY "ProfileData"
+    ADD CONSTRAINT profiledata_profile_fkey FOREIGN KEY ("Profile") REFERENCES "Profiles"("pId") ON DELETE CASCADE;
 
 
 --
--- TOC entry 2316 (class 2606 OID 115027)
--- Name: FK_version_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 2184 (class 2606 OID 115490)
+-- Name: profiles_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY version
-    ADD CONSTRAINT "FK_version_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_id) REFERENCES "user"(id);
+ALTER TABLE ONLY "Profiles"
+    ADD CONSTRAINT profiles_username_fkey FOREIGN KEY ("Username", "ApplicationName") REFERENCES "Users"("Username", "ApplicationName") ON DELETE CASCADE;
 
 
 --
--- TOC entry 2325 (class 0 OID 0)
--- Dependencies: 6
+-- TOC entry 2186 (class 2606 OID 115545)
+-- Name: usersinroles_rolename_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "UsersInRoles"
+    ADD CONSTRAINT usersinroles_rolename_fkey FOREIGN KEY ("Rolename", "ApplicationName") REFERENCES "Roles"("Rolename", "ApplicationName") ON DELETE CASCADE;
+
+
+--
+-- TOC entry 2187 (class 2606 OID 115550)
+-- Name: usersinroles_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "UsersInRoles"
+    ADD CONSTRAINT usersinroles_username_fkey FOREIGN KEY ("Username", "ApplicationName") REFERENCES "Users"("Username", "ApplicationName") ON DELETE CASCADE;
+
+
+--
+-- TOC entry 2238 (class 0 OID 0)
+-- Dependencies: 5
 -- Name: public; Type: ACL; Schema: -; Owner: postgres
 --
 
@@ -2795,7 +1758,7 @@ GRANT ALL ON SCHEMA public TO postgres;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
--- Completed on 2014-06-13 20:11:58
+-- Completed on 2014-06-15 21:46:59
 
 --
 -- PostgreSQL database dump complete

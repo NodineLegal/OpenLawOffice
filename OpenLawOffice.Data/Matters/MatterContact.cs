@@ -63,7 +63,7 @@ namespace OpenLawOffice.Data.Matters
         }
 
         public static Common.Models.Matters.MatterContact Create(Common.Models.Matters.MatterContact model,
-            Common.Models.Security.User creator)
+            Common.Models.Account.Users creator)
         {
             model.Created = model.Modified = DateTime.UtcNow;
             model.CreatedBy = model.ModifiedBy = creator;
@@ -72,7 +72,7 @@ namespace OpenLawOffice.Data.Matters
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("INSERT INTO \"matter_contact\" (\"matter_id\", \"contact_id\", \"role\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                conn.Execute("INSERT INTO \"matter_contact\" (\"matter_id\", \"contact_id\", \"role\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
                     "VALUES (@MatterId, @ContactId, @Role, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);
                 model.Id = conn.Query<DBOs.Matters.MatterContact>("SELECT currval(pg_get_serial_sequence('matter_contact', 'id')) AS \"id\"").Single().Id;
@@ -82,7 +82,7 @@ namespace OpenLawOffice.Data.Matters
         }
 
         public static Common.Models.Matters.MatterContact Edit(Common.Models.Matters.MatterContact model,
-            Common.Models.Security.User modifier)
+            Common.Models.Account.Users modifier)
         {
             model.ModifiedBy = modifier;
             model.Modified = DateTime.UtcNow;
@@ -91,7 +91,7 @@ namespace OpenLawOffice.Data.Matters
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("UPDATE \"matter_contact\" SET " +
-                    "\"matter_id\"=@MatterId, \"contact_id\"=@ContactId, \"role\"=@Role, \"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId " +
+                    "\"matter_id\"=@MatterId, \"contact_id\"=@ContactId, \"role\"=@Role, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserId " +
                     "WHERE \"id\"=@Id", dbo);
             }
 
@@ -99,19 +99,19 @@ namespace OpenLawOffice.Data.Matters
         }
 
         public static Common.Models.Matters.MatterContact Disable(Common.Models.Matters.MatterContact model,
-            Common.Models.Security.User disabler)
+            Common.Models.Account.Users disabler)
         {
             model.DisabledBy = disabler;
             model.Disabled = DateTime.UtcNow;
 
             DataHelper.Disable<Common.Models.Matters.MatterContact,
-                DBOs.Matters.MatterContact>("matter_contact", disabler.Id.Value, model.Id);
+                DBOs.Matters.MatterContact>("matter_contact", disabler.PId.Value, model.Id);
 
             return model;
         }
 
         public static Common.Models.Matters.MatterContact Enable(Common.Models.Matters.MatterContact model,
-            Common.Models.Security.User enabler)
+            Common.Models.Account.Users enabler)
         {
             model.ModifiedBy = enabler;
             model.Modified = DateTime.UtcNow;
@@ -119,7 +119,7 @@ namespace OpenLawOffice.Data.Matters
             model.Disabled = null;
 
             DataHelper.Enable<Common.Models.Matters.MatterContact,
-                DBOs.Matters.MatterContact>("matter_contact", enabler.Id.Value, model.Id);
+                DBOs.Matters.MatterContact>("matter_contact", enabler.PId.Value, model.Id);
 
             return model;
         }

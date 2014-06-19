@@ -28,6 +28,7 @@ namespace OpenLawOffice.WebClient.Controllers
     [HandleError(View = "Errors/Index", Order = 10)]
     public class EventTagsController : BaseController
     {
+        [Authorize(Roles = "Login, User")]
         public ActionResult Details(Guid id)
         {
             ViewModels.Events.EventTagViewModel viewModel;
@@ -44,6 +45,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult Create(Guid id)
         {
             Common.Models.Events.Event model = Data.Events.Event.Get(id);
@@ -55,12 +57,13 @@ namespace OpenLawOffice.WebClient.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Create(ViewModels.Events.EventTagViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Events.EventTag model;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             model = Mapper.Map<Common.Models.Events.EventTag>(viewModel);
 
@@ -76,6 +79,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return RedirectToAction("Tags", "Events", new { Id = model.Event.Id.Value.ToString() });
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult Edit(Guid id)
         {
             ViewModels.Events.EventTagViewModel viewModel;
@@ -93,12 +97,13 @@ namespace OpenLawOffice.WebClient.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Edit(Guid id, ViewModels.Events.EventTagViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Events.EventTag model;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             model = Mapper.Map<Common.Models.Events.EventTag>(viewModel);
             model.TagCategory = Mapper.Map<Common.Models.Tagging.TagCategory>(viewModel.TagCategory);
@@ -109,18 +114,20 @@ namespace OpenLawOffice.WebClient.Controllers
             return RedirectToAction("Tags", "Events", new { Id = model.Event.Id.Value.ToString() });
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult Delete(Guid id)
         {
             return Details(id);
         }
 
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Delete(Guid id, ViewModels.Events.EventTagViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Events.EventTag model;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             model = Mapper.Map<Common.Models.Events.EventTag>(viewModel);
 

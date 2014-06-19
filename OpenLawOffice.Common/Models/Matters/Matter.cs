@@ -23,7 +23,7 @@ namespace OpenLawOffice.Common.Models.Matters
 {
     using System;
 
-    public class Matter : Core, Security.ISecuredResource
+    public class Matter : Core
     {
         public Guid? Id { get; set; }
 
@@ -32,7 +32,5 @@ namespace OpenLawOffice.Common.Models.Matters
         public string Title { get; set; }
 
         public string Synopsis { get; set; }
-
-        public Security.SecuredResource SecuredResource { get; set; }
     }
 }

@@ -15,6 +15,7 @@
         Database: <a href="http://www.postgresql.org/">PostgreSQL</a><br />
         Database ORM: <a href="https://code.google.com/p/dapper-dot-net/">Dapper-dot-net</a><br />
         Database Provider: <a href="http://npgsql.projects.pgfoundry.org/index.html">Npgsql</a><br />
+        Membership, Role, Profile and Session-State Store Provider: <a href="http://dev.nauck-it.de/projects/aspsqlprovider">NauckIT.PostgreSQLProvider</a><br />
         Object Mapping: <a href="http://automapper.org/">AutoMapper</a><br />
         Error Logging: <a href="https://code.google.com/p/elmah/">ELMAH</a><br />
         Zip Support: <a href="https://github.com/haf/DotNetZip.Semverd">DotNetZip.Semverd</a><br />

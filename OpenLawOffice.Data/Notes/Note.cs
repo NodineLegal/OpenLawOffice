@@ -79,7 +79,7 @@ namespace OpenLawOffice.Data.Notes
                 new { TaskId = taskId });
         }
 
-        public static Common.Models.Notes.Note Create(Common.Models.Notes.Note model, Common.Models.Security.User creator)
+        public static Common.Models.Notes.Note Create(Common.Models.Notes.Note model, Common.Models.Account.Users creator)
         {
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
             model.CreatedBy = model.ModifiedBy = creator;
@@ -88,7 +88,7 @@ namespace OpenLawOffice.Data.Notes
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("INSERT INTO \"note\" (\"id\", \"title\", \"body\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                conn.Execute("INSERT INTO \"note\" (\"id\", \"title\", \"body\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
                     "VALUES (@Id, @Title, @Body, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);
             }
@@ -97,7 +97,7 @@ namespace OpenLawOffice.Data.Notes
         }
 
         public static Common.Models.Notes.NoteMatter RelateMatter(Common.Models.Notes.Note model,
-            Guid matterId, Common.Models.Security.User creator)
+            Guid matterId, Common.Models.Account.Users creator)
         {
             return NoteMatter.Create(new Common.Models.Notes.NoteMatter()
             {
@@ -112,7 +112,7 @@ namespace OpenLawOffice.Data.Notes
         }
 
         public static Common.Models.Notes.NoteTask RelateTask(Common.Models.Notes.Note model,
-            long taskId, Common.Models.Security.User creator)
+            long taskId, Common.Models.Account.Users creator)
         {
             return NoteTask.Create(new Common.Models.Notes.NoteTask()
             {
@@ -127,7 +127,7 @@ namespace OpenLawOffice.Data.Notes
         }
 
         public static Common.Models.Events.EventNote RelateEvent(Common.Models.Notes.Note model,
-            Guid eventId, Common.Models.Security.User creator)
+            Guid eventId, Common.Models.Account.Users creator)
         {
             return Events.EventNote.Create(new Common.Models.Events.EventNote()
             {
@@ -142,7 +142,7 @@ namespace OpenLawOffice.Data.Notes
         }
 
         public static Common.Models.Notes.Note Edit(Common.Models.Notes.Note model,
-            Common.Models.Security.User modifier)
+            Common.Models.Account.Users modifier)
         {
             model.ModifiedBy = modifier;
             model.Modified = DateTime.UtcNow;
@@ -151,7 +151,7 @@ namespace OpenLawOffice.Data.Notes
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("UPDATE \"note\" SET " +
-                    "\"title\"=@Title, \"body\"=@Body, \"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId " +
+                    "\"title\"=@Title, \"body\"=@Body, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserId " +
                     "WHERE \"id\"=@Id", dbo);
             }
 

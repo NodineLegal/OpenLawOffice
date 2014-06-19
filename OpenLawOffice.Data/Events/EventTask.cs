@@ -61,7 +61,7 @@ namespace OpenLawOffice.Data.Events
         }
 
         public static Common.Models.Events.EventTask Create(Common.Models.Events.EventTask model,
-            Common.Models.Security.User creator)
+            Common.Models.Account.Users creator)
         {
             DBOs.Events.EventTask dbo;
             Common.Models.Events.EventTask currentModel;
@@ -79,7 +79,7 @@ namespace OpenLawOffice.Data.Events
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("INSERT INTO \"event_task\" (\"id\", \"task_id\", \"event_id\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                conn.Execute("INSERT INTO \"event_task\" (\"id\", \"task_id\", \"event_id\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
                     "VALUES (@Id, @TaskId, @EventId, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);
             }
@@ -87,7 +87,7 @@ namespace OpenLawOffice.Data.Events
             return model;
         }
 
-        public static void Delete(Common.Models.Events.EventTask model, Common.Models.Security.User deleter)
+        public static void Delete(Common.Models.Events.EventTask model, Common.Models.Account.Users deleter)
         {
             using (IDbConnection conn = Database.Instance.GetConnection())
             {

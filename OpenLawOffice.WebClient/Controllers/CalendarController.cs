@@ -28,35 +28,40 @@ namespace OpenLawOffice.WebClient.Controllers
 
     public class CalendarController : Controller
     {
+        [Authorize(Roles = "Login, User")]
         public ActionResult Index()
         {
             return View();
         }
 
+        [Authorize(Roles = "Login, User")]
         public new ActionResult User()
         {
             return View();
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult Contact()
         {
             return View();
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult SelectUser()
         {
-            List<ViewModels.Security.UserViewModel> usersList;
+            List<ViewModels.Account.UsersViewModel> usersList;
 
-            usersList = new List<ViewModels.Security.UserViewModel>();
+            usersList = new List<ViewModels.Account.UsersViewModel>();
 
-            Data.Security.User.List().ForEach(x =>
+            Data.Account.Users.List().ForEach(x =>
             {
-                usersList.Add(Mapper.Map<ViewModels.Security.UserViewModel>(x));
+                usersList.Add(Mapper.Map<ViewModels.Account.UsersViewModel>(x));
             });
 
             return View(usersList);
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult SelectContact()
         {
             List<ViewModels.Contacts.ContactViewModel> contactList;
@@ -71,6 +76,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(contactList);
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult ListAllEvents()
         {
             double start = 0;
@@ -108,7 +114,8 @@ namespace OpenLawOffice.WebClient.Controllers
             return Json(jsonList, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult ListEventsForUser(int id)
+        [Authorize(Roles = "Login, User")]
+        public ActionResult ListEventsForUser(Guid id)
         {
             double start = 0;
             double? stop = null;
@@ -145,6 +152,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return Json(jsonList, JsonRequestBehavior.AllowGet);
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult ListEventsForContact(int id)
         {
             double start = 0;

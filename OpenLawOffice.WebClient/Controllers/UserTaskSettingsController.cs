@@ -28,15 +28,16 @@ namespace OpenLawOffice.WebClient.Controllers
     [HandleError(View = "Errors/Index", Order = 10)]
     public class UserTaskSettingsController : BaseController
     {
+        [Authorize(Roles = "Login, User")]
         public ActionResult Index()
         {
             List<Common.Models.Settings.TagFilter> taskTagFilterList;
             ViewModels.Settings.UserTaskSettingsViewModel viewModel;
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
 
             viewModel = new ViewModels.Settings.UserTaskSettingsViewModel();
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             taskTagFilterList = Data.Settings.UserTaskSettings.ListTagFiltersFor(currentUser);
 
@@ -50,6 +51,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult DetailsFilter(long id)
         {
             ViewModels.Settings.TagFilterViewModel viewModel;
@@ -64,20 +66,22 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult CreateFilter()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult CreateFilter(ViewModels.Settings.TagFilterViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Settings.TagFilter model;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
-            viewModel.User = new ViewModels.Security.UserViewModel() { Id = currentUser.Id };
+            viewModel.User = new ViewModels.Account.UsersViewModel() { PId = currentUser.PId };
 
             model = Mapper.Map<Common.Models.Settings.TagFilter>(viewModel);
             model.User = currentUser;
@@ -87,16 +91,17 @@ namespace OpenLawOffice.WebClient.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult EditFilter(long id)
         {
             ViewModels.Settings.TagFilterViewModel viewModel;
             Common.Models.Settings.TagFilter model;
 
             model = Data.Settings.UserTaskSettings.GetTagFilter(id);
-            model.User = Data.Security.User.Get(model.User.Id.Value);
+            model.User = Data.Account.Users.Get(model.User.PId.Value);
 
             viewModel = Mapper.Map<ViewModels.Settings.TagFilterViewModel>(model);
-            viewModel.User = Mapper.Map<ViewModels.Security.UserViewModel>(model.User);
+            viewModel.User = Mapper.Map<ViewModels.Account.UsersViewModel>(model.User);
 
             PopulateCoreDetails(viewModel);
 
@@ -104,14 +109,15 @@ namespace OpenLawOffice.WebClient.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult EditFilter(long id, ViewModels.Settings.TagFilterViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Settings.TagFilter model;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
-            viewModel.User = new ViewModels.Security.UserViewModel() { Id = currentUser.Id };
+            viewModel.User = new ViewModels.Account.UsersViewModel() { PId = currentUser.PId };
 
             model = Mapper.Map<Common.Models.Settings.TagFilter>(viewModel);
             model.User = currentUser;
@@ -121,20 +127,22 @@ namespace OpenLawOffice.WebClient.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult DeleteFilter(long id)
         {
             return DetailsFilter(id);
         }
 
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult DeleteFilter(long id, ViewModels.Settings.TagFilterViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Settings.TagFilter model;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
-            viewModel.User = new ViewModels.Security.UserViewModel() { Id = currentUser.Id };
+            viewModel.User = new ViewModels.Account.UsersViewModel() { PId = currentUser.PId };
 
             model = Mapper.Map<Common.Models.Settings.TagFilter>(viewModel);
 

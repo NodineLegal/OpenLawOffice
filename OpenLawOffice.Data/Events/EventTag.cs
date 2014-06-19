@@ -70,7 +70,7 @@ namespace OpenLawOffice.Data.Events
         }
 
         public static Common.Models.Events.EventTag Create(Common.Models.Events.EventTag model,
-            Common.Models.Security.User creator)
+            Common.Models.Account.Users creator)
         {
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
             model.CreatedBy = model.ModifiedBy = creator;
@@ -88,7 +88,7 @@ namespace OpenLawOffice.Data.Events
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("INSERT INTO \"event_tag\" (\"id\", \"event_id\", \"tag_category_id\", \"tag\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                conn.Execute("INSERT INTO \"event_tag\" (\"id\", \"event_id\", \"tag_category_id\", \"tag\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
                     "VALUES (@Id, @EventId, @TagCategoryId, @Tag, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);
             }
@@ -97,7 +97,7 @@ namespace OpenLawOffice.Data.Events
         }
 
         public static Common.Models.Events.EventTag Edit(Common.Models.Events.EventTag model,
-            Common.Models.Security.User modifier)
+            Common.Models.Account.Users modifier)
         {
             model.ModifiedBy = modifier;
             model.Modified = DateTime.UtcNow;
@@ -106,7 +106,7 @@ namespace OpenLawOffice.Data.Events
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("UPDATE \"event_tag\" SET " +
-                    "\"event_id\"=@EventId, \"tag\"=@Tag, \"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId " +
+                    "\"event_id\"=@EventId, \"tag\"=@Tag, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserId " +
                     "WHERE \"id\"=@Id", dbo);
             }
 
@@ -117,7 +117,7 @@ namespace OpenLawOffice.Data.Events
 
         private static Common.Models.Tagging.TagCategory UpdateTagCategory(
             Common.Models.Events.EventTag model,
-            Common.Models.Security.User modifier)
+            Common.Models.Account.Users modifier)
         {
             Common.Models.Events.EventTag currentTag = Get(model.Id.Value);
 
@@ -161,7 +161,7 @@ namespace OpenLawOffice.Data.Events
 
         private static Common.Models.Tagging.TagCategory AddOrChangeTagCategory(
             Common.Models.Events.EventTag tag,
-            Common.Models.Security.User modifier)
+            Common.Models.Account.Users modifier)
         {
             Common.Models.Tagging.TagCategory newTagCat = null;
 
@@ -200,19 +200,19 @@ namespace OpenLawOffice.Data.Events
         }
 
         public static Common.Models.Events.EventTag Disable(Common.Models.Events.EventTag model,
-            Common.Models.Security.User disabler)
+            Common.Models.Account.Users disabler)
         {
             model.DisabledBy = disabler;
             model.Disabled = DateTime.UtcNow;
 
             DataHelper.Disable<Common.Models.Events.EventTag,
-                DBOs.Events.EventTag>("event_tag", disabler.Id.Value, model.Id);
+                DBOs.Events.EventTag>("event_tag", disabler.PId.Value, model.Id);
 
             return model;
         }
 
         public static Common.Models.Events.EventTag Enable(Common.Models.Events.EventTag model,
-            Common.Models.Security.User enabler)
+            Common.Models.Account.Users enabler)
         {
             model.ModifiedBy = enabler;
             model.Modified = DateTime.UtcNow;
@@ -220,7 +220,7 @@ namespace OpenLawOffice.Data.Events
             model.Disabled = null;
 
             DataHelper.Enable<Common.Models.Events.EventTag,
-                DBOs.Events.EventTag>("event_tag", enabler.Id.Value, model.Id);
+                DBOs.Events.EventTag>("event_tag", enabler.PId.Value, model.Id);
 
             return model;
         }

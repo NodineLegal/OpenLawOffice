@@ -28,11 +28,13 @@ namespace OpenLawOffice.WebClient.Controllers
 
     public class EventTaskController : BaseController
     {
+        [Authorize(Roles = "Login, User")]
         public ActionResult SelectTask(Guid id)
         {
             return View();
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult SelectEvent(Guid id)
         {
             List<ViewModels.Events.EventViewModel> list;
@@ -47,6 +49,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(list);
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult AssignTask(Guid id)
         {
             long taskId;
@@ -66,6 +69,7 @@ namespace OpenLawOffice.WebClient.Controllers
             });
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult AssignEvent(long id)
         {
             Guid eventId;
@@ -86,12 +90,13 @@ namespace OpenLawOffice.WebClient.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult AssignTask(Guid id, ViewModels.Events.EventTaskViewModel viewModel)
         {
             long taskId;
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             taskId = long.Parse(Request["TaskId"]);
 
@@ -111,12 +116,13 @@ namespace OpenLawOffice.WebClient.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult AssignEvent(long id, ViewModels.Events.EventTaskViewModel viewModel)
         {
             Guid eventId;
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             eventId = Guid.Parse(Request["EventId"]);
 
@@ -135,6 +141,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return RedirectToAction("Events", "Tasks", new { id = id });
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult UnlinkMatter(long id)
         {
             Guid eventId;
@@ -154,13 +161,14 @@ namespace OpenLawOffice.WebClient.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult UnlinkMatter(long id, ViewModels.Events.EventTaskViewModel viewModel)
         {
             Guid eventId;
             Common.Models.Events.EventTask model;
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             eventId = Guid.Parse(Request["EventId"]);
 
@@ -171,6 +179,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return RedirectToAction("Tasks", "Events", new { id = model.Event.Id.Value });
         }
 
+        [Authorize(Roles = "Login, User")]
         public ActionResult UnlinkEvent(Guid id)
         {
             long taskId;
@@ -190,13 +199,14 @@ namespace OpenLawOffice.WebClient.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult UnlinkEvent(Guid id, ViewModels.Events.EventTaskViewModel viewModel)
         {
             long taskId;
             Common.Models.Events.EventTask model;
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             taskId = long.Parse(Request["TaskId"]);
 

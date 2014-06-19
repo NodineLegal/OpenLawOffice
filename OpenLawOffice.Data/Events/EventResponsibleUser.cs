@@ -40,18 +40,18 @@ namespace OpenLawOffice.Data.Events
                 new { id = id });
         }
 
-        public static Common.Models.Events.EventResponsibleUser Get(Guid eventId, int userId)
+        public static Common.Models.Events.EventResponsibleUser Get(Guid eventId, Guid userPId)
         {
             return DataHelper.Get<Common.Models.Events.EventResponsibleUser, DBOs.Events.EventResponsibleUser>(
-                "SELECT * FROM \"event_responsible_user\" WHERE \"event_id\"=@EventId AND \"user_id\"=@UserId AND \"utc_disabled\" is null",
-                new { EventId = eventId, UserId = userId });
+                "SELECT * FROM \"event_responsible_user\" WHERE \"event_id\"=@EventId AND \"user_pid\"=@userPId AND \"utc_disabled\" is null",
+                new { EventId = eventId, UserPId = userPId });
         }
 
-        public static Common.Models.Events.EventResponsibleUser GetIgnoringDisable(Guid eventId, int userId)
+        public static Common.Models.Events.EventResponsibleUser GetIgnoringDisable(Guid eventId, Guid userPId)
         {
             return DataHelper.Get<Common.Models.Events.EventResponsibleUser, DBOs.Events.EventResponsibleUser>(
-                "SELECT * FROM \"event_responsible_user\" WHERE \"event_id\"=@EventId AND \"user_id\"=@UserId",
-                new { EventId = eventId, UserId = userId });
+                "SELECT * FROM \"event_responsible_user\" WHERE \"event_id\"=@EventId AND \"user_pid\"=@userPId",
+                new { EventId = eventId, UserPId = userPId });
         }
 
         public static List<Common.Models.Events.EventResponsibleUser> ListForEvent(Guid eventId)
@@ -63,14 +63,14 @@ namespace OpenLawOffice.Data.Events
 
             list.ForEach(x =>
             {
-                x.User = Security.User.Get(x.User.Id.Value);
+                x.User = Account.Users.Get(x.User.PId.Value);
             });
 
             return list;
         }
 
         public static Common.Models.Events.EventResponsibleUser Create(Common.Models.Events.EventResponsibleUser model,
-            Common.Models.Security.User creator)
+            Common.Models.Account.Users creator)
         {
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
             model.Created = model.Modified = DateTime.UtcNow;
@@ -80,7 +80,7 @@ namespace OpenLawOffice.Data.Events
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("INSERT INTO \"event_responsible_user\" (\"id\", \"event_id\", \"user_id\", \"responsibility\", \"utc_created\", \"utc_modified\", \"created_by_user_id\", \"modified_by_user_id\") " +
+                conn.Execute("INSERT INTO \"event_responsible_user\" (\"id\", \"event_id\", \"user_pid\", \"responsibility\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
                     "VALUES (@Id, @EventId, @UserId, @Responsibility, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
                     dbo);
             }
@@ -89,7 +89,7 @@ namespace OpenLawOffice.Data.Events
         }
 
         public static Common.Models.Events.EventResponsibleUser Edit(Common.Models.Events.EventResponsibleUser model,
-            Common.Models.Security.User modifier)
+            Common.Models.Account.Users modifier)
         {
             model.ModifiedBy = modifier;
             model.Modified = DateTime.UtcNow;
@@ -100,7 +100,7 @@ namespace OpenLawOffice.Data.Events
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("UPDATE \"event_responsible_user\" SET " +
-                    "\"event_id\"=@EventId, \"user_id\"=@UserId, \"responsibility\"=@Responsibility, \"utc_modified\"=@UtcModified, \"modified_by_user_id\"=@ModifiedByUserId " +
+                    "\"event_id\"=@EventId, \"user_pid\"=@UserId, \"responsibility\"=@Responsibility, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserId " +
                     "WHERE \"id\"=@Id", dbo);
             }
 
@@ -108,19 +108,19 @@ namespace OpenLawOffice.Data.Events
         }
 
         public static Common.Models.Events.EventResponsibleUser Disable(Common.Models.Events.EventResponsibleUser model,
-            Common.Models.Security.User disabler)
+            Common.Models.Account.Users disabler)
         {
             model.DisabledBy = disabler;
             model.Disabled = DateTime.UtcNow;
 
             DataHelper.Disable<Common.Models.Events.EventResponsibleUser,
-                DBOs.Events.EventResponsibleUser>("event_responsible_user", disabler.Id.Value, model.Id);
+                DBOs.Events.EventResponsibleUser>("event_responsible_user", disabler.PId.Value, model.Id);
 
             return model;
         }
 
         public static Common.Models.Events.EventResponsibleUser Enable(Common.Models.Events.EventResponsibleUser model,
-            Common.Models.Security.User enabler)
+            Common.Models.Account.Users enabler)
         {
             model.ModifiedBy = enabler;
             model.Modified = DateTime.UtcNow;
@@ -128,7 +128,7 @@ namespace OpenLawOffice.Data.Events
             model.Disabled = null;
 
             DataHelper.Enable<Common.Models.Events.EventResponsibleUser,
-                DBOs.Events.EventResponsibleUser>("event_responsible_user", enabler.Id.Value, model.Id);
+                DBOs.Events.EventResponsibleUser>("event_responsible_user", enabler.PId.Value, model.Id);
 
             return model;
         }

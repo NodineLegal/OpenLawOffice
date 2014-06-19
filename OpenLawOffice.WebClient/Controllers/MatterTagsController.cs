@@ -28,8 +28,7 @@ namespace OpenLawOffice.WebClient.Controllers
     [HandleError(View = "Errors/Index", Order = 10)]
     public class MatterTagsController : BaseController
     {
-        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Read)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Details(Guid id)
         {
             ViewModels.Matters.MatterTagViewModel viewModel;
@@ -46,8 +45,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Create)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Create(Guid id)
         {
             Common.Models.Matters.Matter matter;
@@ -60,15 +58,14 @@ namespace OpenLawOffice.WebClient.Controllers
             });
         }
 
-        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Create)]
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Create(ViewModels.Matters.MatterTagViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Matters.MatterTag model;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             model = Mapper.Map<Common.Models.Matters.MatterTag>(viewModel);
 
@@ -84,8 +81,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return RedirectToAction("Tags", "Matters", new { Id = model.Matter.Id.Value.ToString() });
         }
 
-        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Modify)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Edit(Guid id)
         {
             ViewModels.Matters.MatterTagViewModel viewModel;
@@ -102,15 +98,14 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
-        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Modify)]
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Edit(Guid id, ViewModels.Matters.MatterTagViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Matters.MatterTag model;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             model = Mapper.Map<Common.Models.Matters.MatterTag>(viewModel);
             model.TagCategory = Mapper.Map<Common.Models.Tagging.TagCategory>(viewModel.TagCategory);
@@ -121,22 +116,20 @@ namespace OpenLawOffice.WebClient.Controllers
             return RedirectToAction("Tags", "Matters", new { Id = model.Matter.Id.Value.ToString() });
         }
 
-        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Disable)]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Delete(Guid id)
         {
             return Details(id);
         }
 
-        [SecurityFilter(SecurityAreaName = "Matters", IsSecuredResource = false,
-            Permission = Common.Models.PermissionType.Disable)]
         [HttpPost]
+        [Authorize(Roles = "Login, User")]
         public ActionResult Delete(Guid id, ViewModels.Matters.MatterTagViewModel viewModel)
         {
-            Common.Models.Security.User currentUser;
+            Common.Models.Account.Users currentUser;
             Common.Models.Matters.MatterTag model;
 
-            currentUser = UserCache.Instance.Lookup(Request);
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             model = Mapper.Map<Common.Models.Matters.MatterTag>(viewModel);
 

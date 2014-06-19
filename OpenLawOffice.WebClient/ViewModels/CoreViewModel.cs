@@ -2,10 +2,10 @@
 {
     public abstract class CoreViewModel : DateOnlyViewModelBase
     {
-        public Security.UserViewModel CreatedBy { get; set; }
+        public Account.UsersViewModel CreatedBy { get; set; }
 
-        public Security.UserViewModel ModifiedBy { get; set; }
+        public Account.UsersViewModel ModifiedBy { get; set; }
 
-        public Security.UserViewModel DisabledBy { get; set; }
+        public Account.UsersViewModel DisabledBy { get; set; }
     }
 }
