@@ -356,6 +356,7 @@
     <Content Include="Views\TaskTags\Edit.aspx" />
     <Content Include="Views\TaskTime\Create.aspx" />
     <Content Include="Views\TaskTime\SelectContactToAssign.aspx" />
+    <Content Include="Views\Templates\AccountRecoveryEmail.aspx" />
     <Content Include="Views\Timing\Details.aspx" />
     <Content Include="Views\Timing\Edit.aspx" />
     <Content Include="Views\UserTaskSettings\CreateFilter.aspx" />

@@ -87,7 +87,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
-        public ActionResult LogOff()
+        public ActionResult Logout()
         {
             FormsService.SignOut();
 
@@ -124,7 +124,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(model);
         }
 
-        [Authorize(Roles="Administrators, Users, Clients")]
+        [Authorize(Roles="Login")]
         public ActionResult ChangePassword(string currentPassword)
         {
             ViewData["PasswordLength"] = MembershipService.MinPasswordLength;
@@ -138,7 +138,7 @@ namespace OpenLawOffice.WebClient.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Login, User")]
+        [Authorize(Roles = "Login")]
         public ActionResult ChangePassword(ViewModels.Account.ChangePasswordViewModel model)
         {
             if (ModelState.IsValid)

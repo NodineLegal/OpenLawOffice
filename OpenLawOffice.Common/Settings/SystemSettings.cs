@@ -59,7 +59,7 @@ namespace OpenLawOffice.Common.Settings
         [ConfigurationProperty("websiteUrl", IsRequired = true)]
         public Uri WebsiteUrl
         {
-            get { return (Uri)new Uri((string)base["websiteUrl"]); }
+            get { return (Uri)base["websiteUrl"]; }
             set { base["websiteUrl"] = value.ToString(); }
         }
 

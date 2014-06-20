@@ -46,7 +46,7 @@
                 <% if (Request.IsAuthenticated)
                    { %>
                 Logged in as:
-                <%= Page.User.Identity.Name %>
+                <%= Page.User.Identity.Name %> [<%: Html.ActionLink("Logout", "Logout", "Account", null, null) %>]
                 <% }
                    else
                    { %>
