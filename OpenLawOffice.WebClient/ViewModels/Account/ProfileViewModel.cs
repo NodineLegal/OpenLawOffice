@@ -26,9 +26,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Account
 
     public class ProfileViewModel
     {
-        [Required]
-        [DataType(DataType.EmailAddress)]
-        [DisplayName("Email Address")]
-        public string Email { get; set; }
+        [DataType(DataType.Text)]
+        [DisplayName("Contact Info.")]
+        public int? ContactId { get; set; }
     }
 }

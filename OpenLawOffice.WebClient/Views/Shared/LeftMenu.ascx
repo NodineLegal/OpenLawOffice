@@ -56,21 +56,14 @@
     <li>Billing</li>
     <ul>
     </ul>
-    <li>Security</li>
-    <ul>
-        <%--<li>
-            <%: Html.ActionLink("Areas", "", "SecurityAreas") %></li>
-        <li>
-            <%: Html.ActionLink("Area Access", "", "SecurityAreaAcls") %></li>--%>
-        <li>
-            <%: Html.ActionLink("Users", "", "Users")%></li>
-    </ul>
-    <ul>
-    </ul>
     <li>Settings</li>
     <ul>
         <li>
-            <%: Html.ActionLink("Tasks", "Index", "UserTaskSettings")%></li>
+            <%: Html.ActionLink("My Email", "EditUser", "Account")%></li>
+        <li>
+            <%: Html.ActionLink("My Profile", "Profile", "Account")%></li>
+        <li>
+            <%: Html.ActionLink("My Tasks", "Index", "UserTaskSettings")%></li>
     </ul>
     <ul>
     </ul>

@@ -25,6 +25,8 @@ namespace OpenLawOffice.WebClient.Controllers
     using System.Web.Mvc;
     using AutoMapper;
     using System.Collections.Generic;
+    using System.Web.Profile;
+    using System.Web.Security;
 
     [HandleError(View = "Errors/Index", Order = 10)]
     public class TimingController : BaseController
@@ -94,13 +96,25 @@ namespace OpenLawOffice.WebClient.Controllers
         }
 
         [Authorize(Roles = "Login, User")]
-        public ActionResult DayView(int id)
+        public ActionResult DayView()
         {
+            int id;
             List<ViewModels.Timing.TimeViewModel> list;
+
+            if (RouteData.Values["Id"] != null)
+                id = int.Parse((string)RouteData.Values["Id"]);
+            else
+            {
+                dynamic profile = ProfileBase.Create(Membership.GetUser().UserName);
+                if (profile.ContactId != null && !string.IsNullOrEmpty(profile.ContactId))
+                    id = int.Parse(profile.ContactId);
+                else
+                    throw new ArgumentNullException("Must supply an Id or have a ContactId set in profile.");
+            }
 
             list = new List<ViewModels.Timing.TimeViewModel>();
 
-            Data.Timing.Time.ListForDay(id).ForEach(x =>
+            Data.Timing.Time.ListForDay(id, DateTime.Today).ForEach(x =>
             {
                 list.Add(Mapper.Map<ViewModels.Timing.TimeViewModel>(x));
             });

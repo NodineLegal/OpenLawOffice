@@ -115,6 +115,12 @@ namespace OpenLawOffice.Data.Contacts
                 "SELECT * FROM \"contact\" WHERE \"utc_disabled\" is null");
         }
 
+        public static List<Common.Models.Contacts.Contact> ListEmployeesOnly()
+        {
+            return DataHelper.List<Common.Models.Contacts.Contact, DBOs.Contacts.Contact>(
+                "SELECT * FROM \"contact\" WHERE \"is_our_employee\"=true AND \"utc_disabled\" is null ORDER BY \"display_name\" ASC");
+        }
+
         public static Common.Models.Contacts.Contact Create(Common.Models.Contacts.Contact model,
             Common.Models.Account.Users creator)
         {

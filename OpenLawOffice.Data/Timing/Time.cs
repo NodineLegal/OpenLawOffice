@@ -48,11 +48,13 @@ namespace OpenLawOffice.Data.Timing
                 new { TaskId = taskId });
         }
 
-        public static List<Common.Models.Timing.Time> ListForDay(int workerContactId)
+        public static List<Common.Models.Timing.Time> ListForDay(int workerContactId, DateTime date)
         {
+            if (date.Kind != DateTimeKind.Utc)
+                date = date.ToDbTime();
             return DataHelper.List<Common.Models.Timing.Time, DBOs.Timing.Time>(
-                "SELECT * FROM \"time\" WHERE \"worker_contact_id\"=@WorkerContactId AND \"utc_disabled\" is null ORDER BY \"start\" ASC",
-                new { WorkerContactId = workerContactId });
+                "SELECT * FROM \"time\" WHERE \"worker_contact_id\"=@WorkerContactId AND \"start\" BETWEEN @Start AND @Stop AND \"utc_disabled\" is null ORDER BY \"start\" ASC",
+                new { WorkerContactId = workerContactId, Start = date, Stop = date.AddDays(1).AddMilliseconds(-1) });
         }
 
         public static Common.Models.Tasks.Task GetRelatedTask(Guid timeId)

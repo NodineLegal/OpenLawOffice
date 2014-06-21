@@ -252,7 +252,7 @@ namespace OpenLawOffice.Data.PostgreSQLProvider
 
                     insertCommand.CommandText = string.Format(CultureInfo.InvariantCulture, "INSERT INTO \"{0}\" (\"pId\", \"Profile\", \"Name\", \"ValueString\", \"ValueBinary\") VALUES (@pId, (SELECT \"pId\" FROM \"{1}\" WHERE \"Username\" = @Username AND \"ApplicationName\" = @ApplicationName AND \"IsAnonymous\" = @IsAuthenticated), @Name, @ValueString, @ValueBinary)", s_profileDataTableName, s_profilesTableName);
 
-                    insertCommand.Parameters.Add("@pId", NpgsqlDbType.Varchar, 36);
+                    insertCommand.Parameters.Add("@pId", NpgsqlDbType.Uuid);
                     insertCommand.Parameters.Add("@Name", NpgsqlDbType.Varchar, 255);
                     insertCommand.Parameters.Add("@ValueString", NpgsqlDbType.Text);
                     insertCommand.Parameters["@ValueString"].IsNullable = true;
@@ -357,7 +357,7 @@ namespace OpenLawOffice.Data.PostgreSQLProvider
                 {
                     dbCommand.CommandText = string.Format(CultureInfo.InvariantCulture, "INSERT INTO \"{0}\" (\"pId\", \"Username\", \"ApplicationName\", \"IsAnonymous\", \"LastActivityDate\", \"LastUpdatedDate\") Values (@pId, @Username, @ApplicationName, @IsAuthenticated, @LastActivityDate, @LastUpdatedDate)", s_profilesTableName);
 
-                    dbCommand.Parameters.Add("@pId", NpgsqlDbType.Varchar, 36).Value = Guid.NewGuid().ToString();
+                    dbCommand.Parameters.Add("@pId", NpgsqlDbType.Uuid).Value = Guid.NewGuid().ToString();
                     dbCommand.Parameters.Add("@Username", NpgsqlDbType.Varchar, 255).Value = username;
                     dbCommand.Parameters.Add("@ApplicationName", NpgsqlDbType.Varchar, 255).Value = m_applicationName;
                     dbCommand.Parameters.Add("@IsAuthenticated", NpgsqlDbType.Boolean).Value = !isAuthenticated;

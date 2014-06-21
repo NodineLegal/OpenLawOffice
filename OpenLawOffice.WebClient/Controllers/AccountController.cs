@@ -26,6 +26,8 @@ namespace OpenLawOffice.WebClient.Controllers
     using System.Collections.Generic;
     using System.Web.Security;
     using System;
+    using System.Web.Profile;
+    using AutoMapper;
 
     [HandleError(View = "Errors/Index", Order = 10)]
     public class AccountController : BaseController
@@ -164,28 +166,90 @@ namespace OpenLawOffice.WebClient.Controllers
         }
 
         [Authorize(Roles = "Login, User")]
-        public ActionResult Profile()
+        public ActionResult EditUser()
         {
-            return View(new ViewModels.Account.ProfileViewModel() { Email = Membership.GetUser().Email });
+            Common.Models.Account.Users model;
+            ViewModels.Account.UsersViewModel viewModel;
+
+            model = Data.Account.Users.Get(Membership.GetUser().UserName);
+
+            viewModel = Mapper.Map<ViewModels.Account.UsersViewModel>(model);
+
+            viewModel.Password = null;
+
+            ViewData["PasswordLength"] = MembershipService.MinPasswordLength;
+            return View(viewModel);
         }
 
         [HttpPost]
         [Authorize(Roles = "Login, User")]
-        public ActionResult Profile(ViewModels.Account.ProfileViewModel model)
+        public ActionResult EditUser(string username, ViewModels.Account.UsersViewModel viewModel)
+        {
+            MembershipUser user;
+
+            user = MembershipService.GetUser(Membership.GetUser().UserName);
+
+            user.Email = viewModel.Email;
+
+            MembershipService.UpdateUser(user);
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        [Authorize(Roles = "Login, User")]
+        public ActionResult Profile()
+        {
+            int? contactId = null;
+            dynamic profile;
+            List<ViewModels.Contacts.ContactViewModel> employeeList;
+            
+            profile = ProfileBase.Create(Membership.GetUser().UserName);
+
+            if (profile != null && profile.ContactId != null 
+                && !string.IsNullOrEmpty(profile.ContactId))
+                contactId = int.Parse(profile.ContactId);
+
+            employeeList = new List<ViewModels.Contacts.ContactViewModel>();
+            employeeList.Add(new ViewModels.Contacts.ContactViewModel()
+            {
+                Id = null,
+                DisplayName = "< None >"
+            });
+
+            Data.Contacts.Contact.ListEmployeesOnly().ForEach(x =>
+            {
+                employeeList.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(x));
+            });
+
+            ViewData["EmployeeContactList"] = employeeList;
+
+            return View(new ViewModels.Account.ProfileViewModel() { ContactId = contactId });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Login, User")]
+        public ActionResult Profile(ViewModels.Account.ProfileViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                MembershipUser user = Membership.GetUser();
-                user.Email = model.Email;
-                try
+                bool update = false;
+                dynamic profile;
+
+                profile = ProfileBase.Create(Membership.GetUser().UserName);
+
+                if (viewModel.ContactId != null && viewModel.ContactId.HasValue)
                 {
-                    Membership.UpdateUser(user);
+                    profile.ContactId = viewModel.ContactId.Value.ToString();
+                    update = true;
                 }
-                catch (System.Configuration.Provider.ProviderException ex)
+                else
                 {
-                    if (ex.Message == "Duplicate E-mail address. The E-mail supplied is invalid.")
-                        return RedirectToAction("Index", "Home");
+                    profile.ContactId = "";
+                    update = true;
                 }
+
+                if (update)
+                    profile.Save();
             }
 
             return RedirectToAction("Index", "Home");
