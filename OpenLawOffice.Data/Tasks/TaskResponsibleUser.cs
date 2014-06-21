@@ -43,15 +43,15 @@ namespace OpenLawOffice.Data.Tasks
         public static Common.Models.Tasks.TaskResponsibleUser Get(long taskId, Guid userId)
         {
             return DataHelper.Get<Common.Models.Tasks.TaskResponsibleUser, DBOs.Tasks.TaskResponsibleUser>(
-                "SELECT * FROM \"task_responsible_user\" WHERE \"task_id\"=@TaskId AND \"user_pid\"=@UserId AND \"utc_disabled\" is null",
-                new { TaskId = taskId, UserId = userId });
+                "SELECT * FROM \"task_responsible_user\" WHERE \"task_id\"=@TaskId AND \"user_pid\"=@UserPId AND \"utc_disabled\" is null",
+                new { TaskId = taskId, UserPId = userId });
         }
 
         public static Common.Models.Tasks.TaskResponsibleUser GetIgnoringDisable(long taskId, Guid userId)
         {
             return DataHelper.Get<Common.Models.Tasks.TaskResponsibleUser, DBOs.Tasks.TaskResponsibleUser>(
-                "SELECT * FROM \"task_responsible_user\" WHERE \"task_id\"=@TaskId AND \"user_pid\"=@UserId",
-                new { TaskId = taskId, UserId = userId });
+                "SELECT * FROM \"task_responsible_user\" WHERE \"task_id\"=@TaskId AND \"user_pid\"=@UserPId",
+                new { TaskId = taskId, UserPId = userId });
         }
 
         public static List<Common.Models.Tasks.TaskResponsibleUser> ListForTask(long taskId)
@@ -81,7 +81,7 @@ namespace OpenLawOffice.Data.Tasks
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("INSERT INTO \"task_responsible_user\" (\"id\", \"task_id\", \"user_pid\", \"responsibility\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
-                    "VALUES (@Id, @TaskId, @UserId, @Responsibility, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
+                    "VALUES (@Id, @TaskId, @UserPId, @Responsibility, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
                     dbo);
             }
 
@@ -100,7 +100,7 @@ namespace OpenLawOffice.Data.Tasks
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("UPDATE \"task_responsible_user\" SET " +
-                    "\"task_id\"=@TaskId, \"user_pid\"=@UserId, \"responsibility\"=@Responsibility, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserPId " +
+                    "\"task_id\"=@TaskId, \"user_pid\"=@UserPId, \"responsibility\"=@Responsibility, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserPId " +
                     "WHERE \"id\"=@Id", dbo);
             }
 

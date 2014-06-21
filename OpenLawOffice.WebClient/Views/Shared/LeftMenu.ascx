@@ -7,6 +7,8 @@
         <li>
             <%: Html.ActionLink("Dashboard", "Index", "Home") %></li>
         <li>
+            <%: Html.ActionLink("Calendar", "User", "Calendar", new { Id = "" }, null)%></li>
+        <li>
             <%: Html.ActionLink("Daily Time", "DayView", "Timing") %></li>
     </ul>
     <ul>

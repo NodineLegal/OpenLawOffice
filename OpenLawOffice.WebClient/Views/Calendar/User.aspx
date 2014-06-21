@@ -59,11 +59,11 @@
                 eventSources: [
                     {
                         name: 'Event',
-                        url: '/Calendar/ListEventsForUser/<%: RouteData.Values["Id"] %>'
+                        url: '/Calendar/ListEventsForUser/<%: ViewData["UserPId"] %>?ContactId=<%: ViewData["ContactId"] %>'
                     },
                     {
                         name: 'Task',
-                        url: '/Tasks/TodoListForUser/<%: RouteData.Values["Id"] %>',
+                        url: '/Tasks/TodoListForUser/<%: ViewData["UserPId"] %>?ContactId=<%: ViewData["ContactId"] %>',
                         color: 'rgb(22, 167, 101)'
                     }
                 ],

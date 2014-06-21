@@ -19,7 +19,7 @@
     
         <tr>
             <td>
-                <%: Html.ActionLink(item.Username, "User", "Calendar", new { id = item.Id.Value }, null) %>
+                <%: Html.ActionLink(item.Username, "User", "Calendar", new { id = item.PId.Value }, null) %>
             </td>
         </tr>
     

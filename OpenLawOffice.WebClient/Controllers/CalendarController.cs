@@ -25,6 +25,8 @@ namespace OpenLawOffice.WebClient.Controllers
     using System.Collections.Generic;
     using System.Web.Mvc;
     using AutoMapper;
+    using System.Web.Security;
+    using System.Web.Profile;
 
     public class CalendarController : Controller
     {
@@ -37,6 +39,16 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public new ActionResult User()
         {
+            Guid userId;
+
+            if (RouteData.Values["Id"] != null)
+                userId = Guid.Parse((string)RouteData.Values["Id"]);
+            else
+                userId = (Guid)Membership.GetUser().ProviderUserKey;
+
+            dynamic profile = ProfileBase.Create(Membership.GetUser(userId).UserName);
+            ViewData["UserPId"] = userId;
+            ViewData["ContactId"] = profile.ContactId;
             return View();
         }
 
@@ -117,6 +129,7 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult ListEventsForUser(Guid id)
         {
+            // This method WILL COMBINE the user's contact's events, if the pairing has been made in the profile.
             double start = 0;
             double? stop = null;
             List<Common.Models.Events.Event> list;
@@ -127,7 +140,13 @@ namespace OpenLawOffice.WebClient.Controllers
             if (Request["stop"] != null)
                 stop = double.Parse(Request["stop"]);
 
-            list = Data.Events.Event.ListForUser(id, start, stop);
+            if (Request["ContactId"] == null || string.IsNullOrEmpty(Request["ContactId"]))
+                list = Data.Events.Event.ListForUser(id, start, stop);
+            else
+            {
+                int contactId = int.Parse(Request["ContactId"]);
+                list = Data.Events.Event.ListForUserAndContact(id, contactId, start, stop);
+            }
 
             jsonList = new List<dynamic>();
 

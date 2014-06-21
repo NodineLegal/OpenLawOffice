@@ -372,6 +372,7 @@ namespace OpenLawOffice.WebClient.Controllers
             DateTime? stop = null;
             List<dynamic> jsonList;
             Common.Models.Account.Users user;
+            List<Common.Models.Tasks.Task> taskList;
             List<Common.Models.Settings.TagFilter> tagFilter;
             if (Request["start"] != null)
                 start = Common.Utilities.UnixTimeStampToDateTime(double.Parse(Request["start"]));
@@ -392,7 +393,16 @@ namespace OpenLawOffice.WebClient.Controllers
 
             jsonList = new List<dynamic>();
 
-            Data.Tasks.Task.GetTodoListFor(user, tagFilter, start, stop).ForEach(x =>
+            if (Request["ContactId"] == null || string.IsNullOrEmpty(Request["ContactId"]))
+                taskList = Data.Tasks.Task.GetTodoListFor(user, tagFilter, start, stop);
+            else
+            {
+                int contactId = int.Parse(Request["ContactId"]);
+                taskList = Data.Tasks.Task.GetTodoListFor(user, 
+                    new Common.Models.Contacts.Contact() { Id = contactId }, tagFilter, start, stop);
+            }
+
+            taskList.ForEach(x =>
             {
                 if (x.DueDate.HasValue)
                 {

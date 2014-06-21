@@ -131,7 +131,8 @@ namespace OpenLawOffice.Data.Tasks
                     tags.Add(x.Tag.ToLower());
             });
 
-            sql = "SELECT * FROM \"task\" WHERE \"active\"=true AND \"id\" IN (SELECT \"task_id\" FROM \"task_responsible_user\" WHERE \"user_pid\"=@UserPId) ";
+            sql = "SELECT * FROM \"task\" WHERE \"active\"=true AND " +
+                  "\"id\" IN (SELECT \"task_id\" FROM \"task_responsible_user\" WHERE \"user_pid\"=@UserPId) ";
 
             if (cats.Count > 0 || tags.Count > 0)
             {
@@ -316,6 +317,121 @@ namespace OpenLawOffice.Data.Tasks
             return list;
         }
 
+        public static List<Common.Models.Tasks.Task> GetTodoListFor(Common.Models.Account.Users user, Common.Models.Contacts.Contact contact, List<Common.Models.Settings.TagFilter> tagFilter, DateTime? start = null, DateTime? stop = null)
+        {
+            string sql;
+
+            List<string> cats = new List<string>();
+            List<string> tags = new List<string>();
+            List<Npgsql.NpgsqlParameter> parms = new List<Npgsql.NpgsqlParameter>();
+            List<Common.Models.Tasks.Task> list = new List<Common.Models.Tasks.Task>();
+
+            tagFilter.ForEach(x =>
+            {
+                if (!string.IsNullOrWhiteSpace(x.Category))
+                    cats.Add(x.Category.ToLower());
+                if (!string.IsNullOrWhiteSpace(x.Tag))
+                    tags.Add(x.Tag.ToLower());
+            });
+
+            sql = "SELECT DISTINCT * FROM \"task\" WHERE \"active\"=true AND " +
+                  "(\"id\" IN (SELECT \"task_id\" FROM \"task_responsible_user\" WHERE \"user_pid\"=@UserPId) " +
+                  "OR \"id\" IN (SELECT \"task_id\" FROM \"task_assigned_contact\" WHERE \"contact_id\"=@ContactId)) ";
+
+            if (cats.Count > 0 || tags.Count > 0)
+            {
+                sql += " AND \"id\" IN (SELECT \"task_id\" FROM \"task_tag\" WHERE \"tag_category_id\" " +
+                        "IN (SELECT \"id\" FROM \"tag_category\" WHERE ";
+
+                if (cats.Count > 0)
+                {
+                    sql += " LOWER(\"name\") IN (";
+
+                    cats.ForEach(x =>
+                    {
+                        string parmName = parms.Count.ToString();
+                        parms.Add(new Npgsql.NpgsqlParameter(parmName, NpgsqlTypes.NpgsqlDbType.Text) { Value = x });
+                        sql += ":" + parmName + ",";
+                    });
+
+                    sql = sql.TrimEnd(',') + ") ";
+                }
+
+                sql += ") ";
+
+                if (tags.Count > 0)
+                {
+                    if (cats.Count > 0)
+                        sql += " AND ";
+
+                    sql += " LOWER(\"tag\") IN (";
+
+                    tags.ForEach(x =>
+                    {
+                        string parmName = parms.Count.ToString();
+                        parms.Add(new Npgsql.NpgsqlParameter(parmName, NpgsqlTypes.NpgsqlDbType.Text) { Value = x });
+                        sql += ":" + parmName + ",";
+                    });
+
+                    sql = sql.TrimEnd(',');
+                    sql += ")";
+                }
+
+                sql += ") ";
+            }
+
+            sql += " AND \"utc_disabled\" is null ";
+
+            if (start.HasValue)
+            {
+                parms.Add(new Npgsql.NpgsqlParameter("Start", DbType.DateTime) { Value = start.Value });
+                if (stop.HasValue)
+                {
+                    sql += "AND \"due_date\" BETWEEN @Start AND @Stop ";
+                    parms.Add(new Npgsql.NpgsqlParameter("Stop", DbType.DateTime) { Value = stop.Value });
+                }
+                else
+                {
+                    sql += "AND \"due_date\">=@Start ";
+                }
+            }
+
+            sql += "ORDER BY \"due_date\" ASC";
+
+            using (Npgsql.NpgsqlConnection conn = (Npgsql.NpgsqlConnection)Database.Instance.GetConnection())
+            {
+                conn.Open();
+                using (Npgsql.NpgsqlCommand cmd = new Npgsql.NpgsqlCommand(sql, conn))
+                {
+                    cmd.Parameters.Add(new Npgsql.NpgsqlParameter("UserPId", DbType.Guid) { Value = user.PId.Value });
+                    cmd.Parameters.Add(new Npgsql.NpgsqlParameter("ContactId", DbType.Int32) { Value = contact.Id.Value });
+                    parms.ForEach(x => cmd.Parameters.Add(x));
+                    using (Npgsql.NpgsqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            DBOs.Tasks.Task dbo = new DBOs.Tasks.Task();
+
+                            dbo.Id = Database.GetDbColumnValue<long>("id", reader);
+                            dbo.Title = Database.GetDbColumnValue<string>("title", reader);
+                            dbo.Description = Database.GetDbColumnValue<string>("description", reader);
+                            dbo.ProjectedStart = Database.GetDbColumnValue<DateTime?>("projected_start", reader);
+                            dbo.DueDate = Database.GetDbColumnValue<DateTime?>("due_date", reader);
+                            dbo.ProjectedEnd = Database.GetDbColumnValue<DateTime?>("projected_end", reader);
+                            dbo.ActualEnd = Database.GetDbColumnValue<DateTime?>("actual_end", reader);
+                            dbo.ParentId = Database.GetDbColumnValue<long?>("parent_id", reader);
+                            dbo.IsGroupingTask = Database.GetDbColumnValue<bool>("is_grouping_task", reader);
+                            dbo.SequentialPredecessorId = Database.GetDbColumnValue<long?>("sequential_predecessor_id", reader);
+
+                            list.Add(Mapper.Map<Common.Models.Tasks.Task>(dbo));
+                        }
+                    }
+                }
+            }
+
+            return list;
+        }
+        
         public static List<Common.Models.Tasks.Task> GetTodoListForAll(List<Common.Models.Settings.TagFilter> tagFilter, DateTime? start = null, DateTime? stop = null)
         {
             string sql;

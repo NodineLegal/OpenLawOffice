@@ -64,6 +64,15 @@ namespace OpenLawOffice.Data.Events
                 return ListForUser(userId, Common.Utilities.UnixTimeStampToDateTime(start), null);
         }
 
+        public static List<Common.Models.Events.Event> ListForUserAndContact(Guid userId, int contactId, double start, double? stop)
+        {
+            if (stop.HasValue)
+                return ListForUserAndContact(userId, contactId, Common.Utilities.UnixTimeStampToDateTime(start),
+                    Common.Utilities.UnixTimeStampToDateTime(stop.Value));
+            else
+                return ListForUserAndContact(userId, contactId, Common.Utilities.UnixTimeStampToDateTime(start), null);
+        }
+
         public static List<Common.Models.Events.Event> ListForContact(int contactId, double start, double? stop)
         {
             if (stop.HasValue)
@@ -95,14 +104,34 @@ namespace OpenLawOffice.Data.Events
 
             if (stop.HasValue)
                 events = DataHelper.List<Common.Models.Events.Event, DBOs.Events.Event>(
-                    "SELECT * FROM \"event\" WHERE \"id\" IN (SELECT \"event_id\" FROM \"event_responsible_user\" WHERE \"user_pid\"=@UserId) " +
+                    "SELECT * FROM \"event\" WHERE \"id\" IN (SELECT \"event_id\" FROM \"event_responsible_user\" WHERE \"user_pid\"=@UserPId) " +
                     "AND \"utc_disabled\" is null AND \"start\" BETWEEN @Start AND @Stop ORDER BY \"start\" ASC",
-                    new { UserId = userId, Start = start, Stop = stop });
+                    new { UserPId = userId, Start = start, Stop = stop });
             else
                 events = DataHelper.List<Common.Models.Events.Event, DBOs.Events.Event>(
-                    "SELECT * FROM \"event\" WHERE \"id\" IN (SELECT \"event_id\" FROM \"event_responsible_user\" WHERE \"user_pid\"=@UserId) " +
+                    "SELECT * FROM \"event\" WHERE \"id\" IN (SELECT \"event_id\" FROM \"event_responsible_user\" WHERE \"user_pid\"=@UserPId) " +
                     "AND \"utc_disabled\" is null AND \"start\">=@Start ORDER BY \"start\" ASC",
-                    new { UserId = userId, Start = start });
+                    new { UserPId = userId, Start = start });
+
+            return events;
+        }
+
+        public static List<Common.Models.Events.Event> ListForUserAndContact(Guid userId, int contactId, DateTime start, DateTime? stop)
+        {
+            List<Common.Models.Events.Event> events;
+
+            if (stop.HasValue)
+                events = DataHelper.List<Common.Models.Events.Event, DBOs.Events.Event>(
+                    "SELECT DISTINCT * FROM \"event\" WHERE (\"id\" IN (SELECT \"event_id\" FROM \"event_responsible_user\" WHERE \"user_pid\"=@UserPId) " +
+                    "OR \"id\" IN (SELECT \"event_id\" FROM \"event_assigned_contact\" WHERE \"contact_id\"=@ContactId)) " +
+                    "AND \"utc_disabled\" is null AND \"start\" BETWEEN @Start AND @Stop ORDER BY \"start\" ASC",
+                    new { UserPId = userId, ContactId = contactId, Start = start, Stop = stop });
+            else
+                events = DataHelper.List<Common.Models.Events.Event, DBOs.Events.Event>(
+                    "SELECT DISTINCT * FROM \"event\" WHERE (\"id\" IN (SELECT \"event_id\" FROM \"event_responsible_user\" WHERE \"user_pid\"=@UserPId) " +
+                    "OR \"id\" IN (SELECT \"event_id\" FROM \"event_assigned_contact\" WHERE \"contact_id\"=@ContactId)) " +
+                    "AND \"utc_disabled\" is null AND \"start\">=@Start ORDER BY \"start\" ASC",
+                    new { UserPId = userId, ContactId = contactId, Start = start });
 
             return events;
         }

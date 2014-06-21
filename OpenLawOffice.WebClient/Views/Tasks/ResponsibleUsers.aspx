@@ -21,7 +21,7 @@
            { %>
         <tr>
             <td>
-                <%: Html.ActionLink(item.User.Username, "Details", "Users", new { id = item.User.Id.Value }, null)%>
+                <%: Html.ActionLink(item.User.Username, "Details", "Users", new { id = item.User.PId.Value }, null)%>
             </td>
             <td>
                 <%: Html.ActionLink(item.Responsibility, "Details", "TaskResponsibleUsers", new { id = item.Id }, null)%>

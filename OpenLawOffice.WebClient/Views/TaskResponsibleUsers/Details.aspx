@@ -28,7 +28,7 @@
                 User
             </td>
             <td class="display-field">
-                <%: Html.ActionLink(Model.User.Username, "Details", "Users", new { id = Model.User.Id }, null) %>
+                <%: Html.ActionLink(Model.User.Username, "Details", "Users", new { id = Model.User.PId }, null)%>
             </td>
         </tr>
         <tr>
