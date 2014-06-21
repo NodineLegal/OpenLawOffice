@@ -4,7 +4,7 @@
 
 -- Dumped from database version 9.2.4
 -- Dumped by pg_dump version 9.2.4
--- Started on 2014-06-15 21:46:58
+-- Started on 2014-06-21 13:28:44
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
@@ -36,7 +36,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- TOC entry 170 (class 1259 OID 115506)
+-- TOC entry 168 (class 1259 OID 118747)
 -- Name: ProfileData; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -52,7 +52,7 @@ CREATE TABLE "ProfileData" (
 ALTER TABLE public."ProfileData" OWNER TO postgres;
 
 --
--- TOC entry 169 (class 1259 OID 115480)
+-- TOC entry 169 (class 1259 OID 118753)
 -- Name: Profiles; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -69,7 +69,7 @@ CREATE TABLE "Profiles" (
 ALTER TABLE public."Profiles" OWNER TO postgres;
 
 --
--- TOC entry 171 (class 1259 OID 115521)
+-- TOC entry 170 (class 1259 OID 118759)
 -- Name: Roles; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -82,7 +82,7 @@ CREATE TABLE "Roles" (
 ALTER TABLE public."Roles" OWNER TO postgres;
 
 --
--- TOC entry 172 (class 1259 OID 115529)
+-- TOC entry 171 (class 1259 OID 118765)
 -- Name: Sessions; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -103,7 +103,7 @@ CREATE TABLE "Sessions" (
 ALTER TABLE public."Sessions" OWNER TO postgres;
 
 --
--- TOC entry 168 (class 1259 OID 115468)
+-- TOC entry 172 (class 1259 OID 118771)
 -- Name: Users; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -134,7 +134,7 @@ CREATE TABLE "Users" (
 ALTER TABLE public."Users" OWNER TO postgres;
 
 --
--- TOC entry 173 (class 1259 OID 115537)
+-- TOC entry 173 (class 1259 OID 118777)
 -- Name: UsersInRoles; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -148,7 +148,7 @@ CREATE TABLE "UsersInRoles" (
 ALTER TABLE public."UsersInRoles" OWNER TO postgres;
 
 --
--- TOC entry 174 (class 1259 OID 115555)
+-- TOC entry 174 (class 1259 OID 118783)
 -- Name: core; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -165,7 +165,7 @@ CREATE TABLE core (
 ALTER TABLE public.core OWNER TO postgres;
 
 --
--- TOC entry 188 (class 1259 OID 115696)
+-- TOC entry 175 (class 1259 OID 118786)
 -- Name: contact; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -260,7 +260,7 @@ INHERITS (core);
 ALTER TABLE public.contact OWNER TO postgres;
 
 --
--- TOC entry 187 (class 1259 OID 115694)
+-- TOC entry 176 (class 1259 OID 118792)
 -- Name: contact_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -276,7 +276,7 @@ ALTER TABLE public.contact_id_seq OWNER TO postgres;
 
 --
 -- TOC entry 2240 (class 0 OID 0)
--- Dependencies: 187
+-- Dependencies: 176
 -- Name: contact_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -284,7 +284,7 @@ ALTER SEQUENCE contact_id_seq OWNED BY contact.id;
 
 
 --
--- TOC entry 175 (class 1259 OID 115573)
+-- TOC entry 177 (class 1259 OID 118794)
 -- Name: document; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -299,7 +299,7 @@ INHERITS (core);
 ALTER TABLE public.document OWNER TO postgres;
 
 --
--- TOC entry 191 (class 1259 OID 115727)
+-- TOC entry 178 (class 1259 OID 118800)
 -- Name: document_matter; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -314,7 +314,7 @@ INHERITS (core);
 ALTER TABLE public.document_matter OWNER TO postgres;
 
 --
--- TOC entry 192 (class 1259 OID 115742)
+-- TOC entry 179 (class 1259 OID 118803)
 -- Name: document_task; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -329,7 +329,7 @@ INHERITS (core);
 ALTER TABLE public.document_task OWNER TO postgres;
 
 --
--- TOC entry 176 (class 1259 OID 115584)
+-- TOC entry 180 (class 1259 OID 118806)
 -- Name: elmah_error_sequence; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -344,7 +344,7 @@ CREATE SEQUENCE elmah_error_sequence
 ALTER TABLE public.elmah_error_sequence OWNER TO postgres;
 
 --
--- TOC entry 177 (class 1259 OID 115586)
+-- TOC entry 181 (class 1259 OID 118808)
 -- Name: elmah_error; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -366,7 +366,7 @@ CREATE TABLE elmah_error (
 ALTER TABLE public.elmah_error OWNER TO postgres;
 
 --
--- TOC entry 178 (class 1259 OID 115596)
+-- TOC entry 182 (class 1259 OID 118815)
 -- Name: event; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -385,7 +385,7 @@ INHERITS (core);
 ALTER TABLE public.event OWNER TO postgres;
 
 --
--- TOC entry 193 (class 1259 OID 115757)
+-- TOC entry 183 (class 1259 OID 118821)
 -- Name: event_assigned_contact; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -401,7 +401,7 @@ INHERITS (core);
 ALTER TABLE public.event_assigned_contact OWNER TO postgres;
 
 --
--- TOC entry 194 (class 1259 OID 115775)
+-- TOC entry 184 (class 1259 OID 118827)
 -- Name: event_matter; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -416,7 +416,7 @@ INHERITS (core);
 ALTER TABLE public.event_matter OWNER TO postgres;
 
 --
--- TOC entry 195 (class 1259 OID 115790)
+-- TOC entry 185 (class 1259 OID 118830)
 -- Name: event_note; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -431,7 +431,7 @@ INHERITS (core);
 ALTER TABLE public.event_note OWNER TO postgres;
 
 --
--- TOC entry 196 (class 1259 OID 115831)
+-- TOC entry 186 (class 1259 OID 118833)
 -- Name: event_responsible_user; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -447,7 +447,7 @@ INHERITS (core);
 ALTER TABLE public.event_responsible_user OWNER TO postgres;
 
 --
--- TOC entry 197 (class 1259 OID 115849)
+-- TOC entry 187 (class 1259 OID 118839)
 -- Name: event_tag; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -463,7 +463,7 @@ INHERITS (core);
 ALTER TABLE public.event_tag OWNER TO postgres;
 
 --
--- TOC entry 198 (class 1259 OID 115867)
+-- TOC entry 188 (class 1259 OID 118845)
 -- Name: event_task; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -478,7 +478,7 @@ INHERITS (core);
 ALTER TABLE public.event_task OWNER TO postgres;
 
 --
--- TOC entry 179 (class 1259 OID 115605)
+-- TOC entry 189 (class 1259 OID 118848)
 -- Name: matter; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -495,7 +495,7 @@ INHERITS (core);
 ALTER TABLE public.matter OWNER TO postgres;
 
 --
--- TOC entry 200 (class 1259 OID 115884)
+-- TOC entry 190 (class 1259 OID 118854)
 -- Name: matter_contact; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -511,7 +511,7 @@ INHERITS (core);
 ALTER TABLE public.matter_contact OWNER TO postgres;
 
 --
--- TOC entry 199 (class 1259 OID 115882)
+-- TOC entry 191 (class 1259 OID 118860)
 -- Name: matter_contact_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -527,7 +527,7 @@ ALTER TABLE public.matter_contact_id_seq OWNER TO postgres;
 
 --
 -- TOC entry 2241 (class 0 OID 0)
--- Dependencies: 199
+-- Dependencies: 191
 -- Name: matter_contact_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -535,7 +535,7 @@ ALTER SEQUENCE matter_contact_id_seq OWNED BY matter_contact.id;
 
 
 --
--- TOC entry 201 (class 1259 OID 115903)
+-- TOC entry 192 (class 1259 OID 118862)
 -- Name: matter_tag; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -551,7 +551,7 @@ INHERITS (core);
 ALTER TABLE public.matter_tag OWNER TO postgres;
 
 --
--- TOC entry 180 (class 1259 OID 115618)
+-- TOC entry 193 (class 1259 OID 118868)
 -- Name: note; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -566,7 +566,7 @@ INHERITS (core);
 ALTER TABLE public.note OWNER TO postgres;
 
 --
--- TOC entry 202 (class 1259 OID 115921)
+-- TOC entry 194 (class 1259 OID 118874)
 -- Name: note_matter; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -581,7 +581,7 @@ INHERITS (core);
 ALTER TABLE public.note_matter OWNER TO postgres;
 
 --
--- TOC entry 203 (class 1259 OID 115936)
+-- TOC entry 195 (class 1259 OID 118877)
 -- Name: note_task; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -596,7 +596,7 @@ INHERITS (core);
 ALTER TABLE public.note_task OWNER TO postgres;
 
 --
--- TOC entry 205 (class 1259 OID 115969)
+-- TOC entry 196 (class 1259 OID 118880)
 -- Name: responsible_user; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -612,7 +612,7 @@ INHERITS (core);
 ALTER TABLE public.responsible_user OWNER TO postgres;
 
 --
--- TOC entry 204 (class 1259 OID 115967)
+-- TOC entry 197 (class 1259 OID 118886)
 -- Name: responsible_user_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -628,7 +628,7 @@ ALTER TABLE public.responsible_user_id_seq OWNER TO postgres;
 
 --
 -- TOC entry 2242 (class 0 OID 0)
--- Dependencies: 204
+-- Dependencies: 197
 -- Name: responsible_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -636,7 +636,7 @@ ALTER SEQUENCE responsible_user_id_seq OWNED BY responsible_user.id;
 
 
 --
--- TOC entry 182 (class 1259 OID 115628)
+-- TOC entry 198 (class 1259 OID 118888)
 -- Name: tag_category; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -650,7 +650,7 @@ INHERITS (core);
 ALTER TABLE public.tag_category OWNER TO postgres;
 
 --
--- TOC entry 181 (class 1259 OID 115626)
+-- TOC entry 199 (class 1259 OID 118894)
 -- Name: tag_category_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -666,7 +666,7 @@ ALTER TABLE public.tag_category_id_seq OWNER TO postgres;
 
 --
 -- TOC entry 2243 (class 0 OID 0)
--- Dependencies: 181
+-- Dependencies: 199
 -- Name: tag_category_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -674,7 +674,7 @@ ALTER SEQUENCE tag_category_id_seq OWNED BY tag_category.id;
 
 
 --
--- TOC entry 184 (class 1259 OID 115651)
+-- TOC entry 200 (class 1259 OID 118896)
 -- Name: tag_filter; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -690,7 +690,7 @@ INHERITS (core);
 ALTER TABLE public.tag_filter OWNER TO postgres;
 
 --
--- TOC entry 183 (class 1259 OID 115649)
+-- TOC entry 201 (class 1259 OID 118902)
 -- Name: tag_filter_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -706,7 +706,7 @@ ALTER TABLE public.tag_filter_id_seq OWNER TO postgres;
 
 --
 -- TOC entry 2244 (class 0 OID 0)
--- Dependencies: 183
+-- Dependencies: 201
 -- Name: tag_filter_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -714,7 +714,7 @@ ALTER SEQUENCE tag_filter_id_seq OWNED BY tag_filter.id;
 
 
 --
--- TOC entry 186 (class 1259 OID 115667)
+-- TOC entry 202 (class 1259 OID 118904)
 -- Name: task; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -737,7 +737,7 @@ INHERITS (core);
 ALTER TABLE public.task OWNER TO postgres;
 
 --
--- TOC entry 206 (class 1259 OID 115988)
+-- TOC entry 203 (class 1259 OID 118910)
 -- Name: task_assigned_contact; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -753,7 +753,7 @@ INHERITS (core);
 ALTER TABLE public.task_assigned_contact OWNER TO postgres;
 
 --
--- TOC entry 185 (class 1259 OID 115665)
+-- TOC entry 204 (class 1259 OID 118914)
 -- Name: task_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -769,7 +769,7 @@ ALTER TABLE public.task_id_seq OWNER TO postgres;
 
 --
 -- TOC entry 2245 (class 0 OID 0)
--- Dependencies: 185
+-- Dependencies: 204
 -- Name: task_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -777,7 +777,7 @@ ALTER SEQUENCE task_id_seq OWNED BY task.id;
 
 
 --
--- TOC entry 207 (class 1259 OID 116004)
+-- TOC entry 205 (class 1259 OID 118916)
 -- Name: task_matter; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -792,7 +792,7 @@ INHERITS (core);
 ALTER TABLE public.task_matter OWNER TO postgres;
 
 --
--- TOC entry 208 (class 1259 OID 116022)
+-- TOC entry 206 (class 1259 OID 118919)
 -- Name: task_responsible_user; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -808,7 +808,7 @@ INHERITS (core);
 ALTER TABLE public.task_responsible_user OWNER TO postgres;
 
 --
--- TOC entry 209 (class 1259 OID 116040)
+-- TOC entry 207 (class 1259 OID 118925)
 -- Name: task_tag; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -824,7 +824,7 @@ INHERITS (core);
 ALTER TABLE public.task_tag OWNER TO postgres;
 
 --
--- TOC entry 210 (class 1259 OID 116058)
+-- TOC entry 208 (class 1259 OID 118931)
 -- Name: task_time; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -839,14 +839,14 @@ INHERITS (core);
 ALTER TABLE public.task_time OWNER TO postgres;
 
 --
--- TOC entry 189 (class 1259 OID 115705)
+-- TOC entry 209 (class 1259 OID 118934)
 -- Name: time; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE "time" (
     id uuid NOT NULL,
     start timestamp without time zone NOT NULL,
-    stop timestamp without time zone NOT NULL,
+    stop timestamp without time zone,
     worker_contact_id integer NOT NULL,
     details text
 )
@@ -856,7 +856,7 @@ INHERITS (core);
 ALTER TABLE public."time" OWNER TO postgres;
 
 --
--- TOC entry 190 (class 1259 OID 115718)
+-- TOC entry 210 (class 1259 OID 118940)
 -- Name: version; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -876,7 +876,7 @@ INHERITS (core);
 ALTER TABLE public.version OWNER TO postgres;
 
 --
--- TOC entry 2097 (class 2604 OID 115699)
+-- TOC entry 2093 (class 2604 OID 118946)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -884,7 +884,7 @@ ALTER TABLE ONLY contact ALTER COLUMN id SET DEFAULT nextval('contact_id_seq'::r
 
 
 --
--- TOC entry 2098 (class 2604 OID 115887)
+-- TOC entry 2095 (class 2604 OID 118947)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -892,7 +892,7 @@ ALTER TABLE ONLY matter_contact ALTER COLUMN id SET DEFAULT nextval('matter_cont
 
 
 --
--- TOC entry 2099 (class 2604 OID 115972)
+-- TOC entry 2096 (class 2604 OID 118948)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -900,7 +900,7 @@ ALTER TABLE ONLY responsible_user ALTER COLUMN id SET DEFAULT nextval('responsib
 
 
 --
--- TOC entry 2094 (class 2604 OID 115631)
+-- TOC entry 2097 (class 2604 OID 118949)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -908,7 +908,7 @@ ALTER TABLE ONLY tag_category ALTER COLUMN id SET DEFAULT nextval('tag_category_
 
 
 --
--- TOC entry 2095 (class 2604 OID 115654)
+-- TOC entry 2098 (class 2604 OID 118950)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -916,7 +916,7 @@ ALTER TABLE ONLY tag_filter ALTER COLUMN id SET DEFAULT nextval('tag_filter_id_s
 
 
 --
--- TOC entry 2096 (class 2604 OID 115670)
+-- TOC entry 2099 (class 2604 OID 118951)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -924,7 +924,7 @@ ALTER TABLE ONLY task ALTER COLUMN id SET DEFAULT nextval('task_id_seq'::regclas
 
 
 --
--- TOC entry 2175 (class 2606 OID 116010)
+-- TOC entry 2171 (class 2606 OID 118953)
 -- Name: UQ_task_matter_Task_Matter; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -933,7 +933,7 @@ ALTER TABLE ONLY task_matter
 
 
 --
--- TOC entry 2102 (class 2606 OID 115475)
+-- TOC entry 2115 (class 2606 OID 118955)
 -- Name: Users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -942,7 +942,7 @@ ALTER TABLE ONLY "Users"
 
 
 --
--- TOC entry 2141 (class 2606 OID 115704)
+-- TOC entry 2123 (class 2606 OID 118957)
 -- Name: contact_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -951,7 +951,7 @@ ALTER TABLE ONLY contact
 
 
 --
--- TOC entry 2147 (class 2606 OID 115731)
+-- TOC entry 2127 (class 2606 OID 118959)
 -- Name: document_matter_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -960,7 +960,7 @@ ALTER TABLE ONLY document_matter
 
 
 --
--- TOC entry 2123 (class 2606 OID 115580)
+-- TOC entry 2125 (class 2606 OID 118961)
 -- Name: document_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -969,7 +969,7 @@ ALTER TABLE ONLY document
 
 
 --
--- TOC entry 2149 (class 2606 OID 115746)
+-- TOC entry 2129 (class 2606 OID 118963)
 -- Name: document_task_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -978,7 +978,7 @@ ALTER TABLE ONLY document_task
 
 
 --
--- TOC entry 2151 (class 2606 OID 115764)
+-- TOC entry 2136 (class 2606 OID 118965)
 -- Name: event_assigned_contact_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -987,7 +987,7 @@ ALTER TABLE ONLY event_assigned_contact
 
 
 --
--- TOC entry 2153 (class 2606 OID 115779)
+-- TOC entry 2138 (class 2606 OID 118967)
 -- Name: event_matter_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -996,7 +996,7 @@ ALTER TABLE ONLY event_matter
 
 
 --
--- TOC entry 2155 (class 2606 OID 115794)
+-- TOC entry 2140 (class 2606 OID 118969)
 -- Name: event_note_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1005,7 +1005,7 @@ ALTER TABLE ONLY event_note
 
 
 --
--- TOC entry 2128 (class 2606 OID 115603)
+-- TOC entry 2134 (class 2606 OID 118971)
 -- Name: event_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1014,7 +1014,7 @@ ALTER TABLE ONLY event
 
 
 --
--- TOC entry 2157 (class 2606 OID 115838)
+-- TOC entry 2142 (class 2606 OID 118973)
 -- Name: event_responsible_user_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1023,7 +1023,7 @@ ALTER TABLE ONLY event_responsible_user
 
 
 --
--- TOC entry 2159 (class 2606 OID 115856)
+-- TOC entry 2144 (class 2606 OID 118975)
 -- Name: event_tag_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1032,7 +1032,7 @@ ALTER TABLE ONLY event_tag
 
 
 --
--- TOC entry 2161 (class 2606 OID 115871)
+-- TOC entry 2146 (class 2606 OID 118977)
 -- Name: event_task_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1041,7 +1041,7 @@ ALTER TABLE ONLY event_task
 
 
 --
--- TOC entry 2163 (class 2606 OID 115892)
+-- TOC entry 2150 (class 2606 OID 118979)
 -- Name: matter_contact_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1050,7 +1050,7 @@ ALTER TABLE ONLY matter_contact
 
 
 --
--- TOC entry 2130 (class 2606 OID 115612)
+-- TOC entry 2148 (class 2606 OID 118981)
 -- Name: matter_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1059,7 +1059,7 @@ ALTER TABLE ONLY matter
 
 
 --
--- TOC entry 2165 (class 2606 OID 115910)
+-- TOC entry 2152 (class 2606 OID 118983)
 -- Name: matter_tag_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1068,7 +1068,7 @@ ALTER TABLE ONLY matter_tag
 
 
 --
--- TOC entry 2167 (class 2606 OID 115925)
+-- TOC entry 2156 (class 2606 OID 118985)
 -- Name: note_matter_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1077,7 +1077,7 @@ ALTER TABLE ONLY note_matter
 
 
 --
--- TOC entry 2132 (class 2606 OID 115625)
+-- TOC entry 2154 (class 2606 OID 118987)
 -- Name: note_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1086,7 +1086,7 @@ ALTER TABLE ONLY note
 
 
 --
--- TOC entry 2169 (class 2606 OID 115940)
+-- TOC entry 2158 (class 2606 OID 118989)
 -- Name: note_task_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1095,7 +1095,7 @@ ALTER TABLE ONLY note_task
 
 
 --
--- TOC entry 2126 (class 2606 OID 115594)
+-- TOC entry 2132 (class 2606 OID 118991)
 -- Name: pk_elmah_error; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1104,7 +1104,7 @@ ALTER TABLE ONLY elmah_error
 
 
 --
--- TOC entry 2113 (class 2606 OID 115513)
+-- TOC entry 2102 (class 2606 OID 118993)
 -- Name: profiledata_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1113,7 +1113,7 @@ ALTER TABLE ONLY "ProfileData"
 
 
 --
--- TOC entry 2115 (class 2606 OID 115515)
+-- TOC entry 2104 (class 2606 OID 118995)
 -- Name: profiledata_profile_name_unique; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1122,7 +1122,7 @@ ALTER TABLE ONLY "ProfileData"
 
 
 --
--- TOC entry 2109 (class 2606 OID 115487)
+-- TOC entry 2107 (class 2606 OID 118997)
 -- Name: profiles_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1131,7 +1131,7 @@ ALTER TABLE ONLY "Profiles"
 
 
 --
--- TOC entry 2111 (class 2606 OID 115489)
+-- TOC entry 2109 (class 2606 OID 118999)
 -- Name: profiles_username_application_unique; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1140,7 +1140,7 @@ ALTER TABLE ONLY "Profiles"
 
 
 --
--- TOC entry 2171 (class 2606 OID 115977)
+-- TOC entry 2160 (class 2606 OID 119001)
 -- Name: responsible_user_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1149,7 +1149,7 @@ ALTER TABLE ONLY responsible_user
 
 
 --
--- TOC entry 2117 (class 2606 OID 115528)
+-- TOC entry 2111 (class 2606 OID 119003)
 -- Name: roles_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1158,7 +1158,7 @@ ALTER TABLE ONLY "Roles"
 
 
 --
--- TOC entry 2119 (class 2606 OID 115536)
+-- TOC entry 2113 (class 2606 OID 119005)
 -- Name: sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1167,7 +1167,7 @@ ALTER TABLE ONLY "Sessions"
 
 
 --
--- TOC entry 2134 (class 2606 OID 115636)
+-- TOC entry 2162 (class 2606 OID 119007)
 -- Name: tag_category_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1176,7 +1176,7 @@ ALTER TABLE ONLY tag_category
 
 
 --
--- TOC entry 2137 (class 2606 OID 115659)
+-- TOC entry 2165 (class 2606 OID 119009)
 -- Name: tag_filter_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1185,7 +1185,7 @@ ALTER TABLE ONLY tag_filter
 
 
 --
--- TOC entry 2173 (class 2606 OID 115993)
+-- TOC entry 2169 (class 2606 OID 119011)
 -- Name: task_assigned_contact_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1194,7 +1194,7 @@ ALTER TABLE ONLY task_assigned_contact
 
 
 --
--- TOC entry 2177 (class 2606 OID 116008)
+-- TOC entry 2173 (class 2606 OID 119013)
 -- Name: task_matter_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1203,7 +1203,7 @@ ALTER TABLE ONLY task_matter
 
 
 --
--- TOC entry 2139 (class 2606 OID 115675)
+-- TOC entry 2167 (class 2606 OID 119015)
 -- Name: task_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1212,7 +1212,7 @@ ALTER TABLE ONLY task
 
 
 --
--- TOC entry 2179 (class 2606 OID 116029)
+-- TOC entry 2175 (class 2606 OID 119017)
 -- Name: task_responsible_user_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1221,7 +1221,7 @@ ALTER TABLE ONLY task_responsible_user
 
 
 --
--- TOC entry 2181 (class 2606 OID 116047)
+-- TOC entry 2177 (class 2606 OID 119019)
 -- Name: task_tag_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1230,7 +1230,7 @@ ALTER TABLE ONLY task_tag
 
 
 --
--- TOC entry 2183 (class 2606 OID 116062)
+-- TOC entry 2179 (class 2606 OID 119021)
 -- Name: task_time_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1239,7 +1239,7 @@ ALTER TABLE ONLY task_time
 
 
 --
--- TOC entry 2143 (class 2606 OID 115712)
+-- TOC entry 2181 (class 2606 OID 119023)
 -- Name: time_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1248,7 +1248,7 @@ ALTER TABLE ONLY "time"
 
 
 --
--- TOC entry 2106 (class 2606 OID 115477)
+-- TOC entry 2119 (class 2606 OID 119025)
 -- Name: users_username_application_unique; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1257,7 +1257,7 @@ ALTER TABLE ONLY "Users"
 
 
 --
--- TOC entry 2121 (class 2606 OID 115544)
+-- TOC entry 2121 (class 2606 OID 119027)
 -- Name: usersinroles_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1266,7 +1266,7 @@ ALTER TABLE ONLY "UsersInRoles"
 
 
 --
--- TOC entry 2145 (class 2606 OID 115725)
+-- TOC entry 2183 (class 2606 OID 119029)
 -- Name: version_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1275,7 +1275,7 @@ ALTER TABLE ONLY version
 
 
 --
--- TOC entry 2124 (class 1259 OID 115595)
+-- TOC entry 2130 (class 1259 OID 119030)
 -- Name: ix_elmah_error_app_time_seq; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1283,7 +1283,7 @@ CREATE INDEX ix_elmah_error_app_time_seq ON elmah_error USING btree (application
 
 
 --
--- TOC entry 2107 (class 1259 OID 115495)
+-- TOC entry 2105 (class 1259 OID 119031)
 -- Name: profiles_isanonymous_index; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1291,7 +1291,7 @@ CREATE INDEX profiles_isanonymous_index ON "Profiles" USING btree ("IsAnonymous"
 
 
 --
--- TOC entry 2135 (class 1259 OID 115637)
+-- TOC entry 2163 (class 1259 OID 119032)
 -- Name: uidx_tagcategory_name; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1299,7 +1299,7 @@ CREATE UNIQUE INDEX uidx_tagcategory_name ON tag_category USING btree (name);
 
 
 --
--- TOC entry 2103 (class 1259 OID 115478)
+-- TOC entry 2116 (class 1259 OID 119033)
 -- Name: users_email_index; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1307,7 +1307,7 @@ CREATE INDEX users_email_index ON "Users" USING btree ("Email");
 
 
 --
--- TOC entry 2104 (class 1259 OID 115479)
+-- TOC entry 2117 (class 1259 OID 119034)
 -- Name: users_islockedout_index; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1315,16 +1315,16 @@ CREATE INDEX users_islockedout_index ON "Users" USING btree ("IsLockedOut");
 
 
 --
--- TOC entry 2188 (class 2606 OID 115558)
--- Name: FK_core_user_CreatedByUserPId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 2188 (class 2606 OID 119035)
+-- Name: FK_core_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY core
-    ADD CONSTRAINT "FK_core_user_CreatedByUserPId" FOREIGN KEY (created_by_user_pid) REFERENCES "Users"("pId");
+    ADD CONSTRAINT "FK_core_user_CreatedByUserId" FOREIGN KEY (created_by_user_pid) REFERENCES "Users"("pId");
 
 
 --
--- TOC entry 2189 (class 2606 OID 115563)
+-- TOC entry 2189 (class 2606 OID 119040)
 -- Name: FK_core_user_DisabledByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1333,16 +1333,16 @@ ALTER TABLE ONLY core
 
 
 --
--- TOC entry 2190 (class 2606 OID 115568)
--- Name: FK_core_user_ModifiedByUserPId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 2190 (class 2606 OID 119045)
+-- Name: FK_core_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY core
-    ADD CONSTRAINT "FK_core_user_ModifiedByUserPId" FOREIGN KEY (modified_by_user_pid) REFERENCES "Users"("pId");
+    ADD CONSTRAINT "FK_core_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_pid) REFERENCES "Users"("pId");
 
 
 --
--- TOC entry 2196 (class 2606 OID 115732)
+-- TOC entry 2191 (class 2606 OID 119050)
 -- Name: FK_document_matter_document_DocumentId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1351,7 +1351,7 @@ ALTER TABLE ONLY document_matter
 
 
 --
--- TOC entry 2197 (class 2606 OID 115737)
+-- TOC entry 2192 (class 2606 OID 119055)
 -- Name: FK_document_matter_matter_MatterId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1360,7 +1360,7 @@ ALTER TABLE ONLY document_matter
 
 
 --
--- TOC entry 2198 (class 2606 OID 115747)
+-- TOC entry 2193 (class 2606 OID 119060)
 -- Name: FK_document_task_document_DocumentId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1369,7 +1369,7 @@ ALTER TABLE ONLY document_task
 
 
 --
--- TOC entry 2199 (class 2606 OID 115752)
+-- TOC entry 2194 (class 2606 OID 119065)
 -- Name: FK_document_task_matter_MatterId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1378,7 +1378,7 @@ ALTER TABLE ONLY document_task
 
 
 --
--- TOC entry 2200 (class 2606 OID 115765)
+-- TOC entry 2195 (class 2606 OID 119070)
 -- Name: FK_event_assigned_contact_contact_ContactId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1387,7 +1387,7 @@ ALTER TABLE ONLY event_assigned_contact
 
 
 --
--- TOC entry 2201 (class 2606 OID 115770)
+-- TOC entry 2196 (class 2606 OID 119075)
 -- Name: FK_event_assigned_contact_event_EventId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1396,7 +1396,7 @@ ALTER TABLE ONLY event_assigned_contact
 
 
 --
--- TOC entry 2202 (class 2606 OID 115780)
+-- TOC entry 2197 (class 2606 OID 119080)
 -- Name: FK_event_matter_event_EventId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1405,7 +1405,7 @@ ALTER TABLE ONLY event_matter
 
 
 --
--- TOC entry 2203 (class 2606 OID 115785)
+-- TOC entry 2198 (class 2606 OID 119085)
 -- Name: FK_event_matter_matter_MatterId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1414,7 +1414,7 @@ ALTER TABLE ONLY event_matter
 
 
 --
--- TOC entry 2204 (class 2606 OID 115795)
+-- TOC entry 2199 (class 2606 OID 119090)
 -- Name: FK_event_note_event_EventId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1423,7 +1423,7 @@ ALTER TABLE ONLY event_note
 
 
 --
--- TOC entry 2205 (class 2606 OID 115800)
+-- TOC entry 2200 (class 2606 OID 119095)
 -- Name: FK_event_note_note_NoteId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1432,7 +1432,7 @@ ALTER TABLE ONLY event_note
 
 
 --
--- TOC entry 2206 (class 2606 OID 115839)
+-- TOC entry 2201 (class 2606 OID 119100)
 -- Name: FK_event_responsible_user_task_TaskId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1441,7 +1441,7 @@ ALTER TABLE ONLY event_responsible_user
 
 
 --
--- TOC entry 2207 (class 2606 OID 115844)
+-- TOC entry 2202 (class 2606 OID 119105)
 -- Name: FK_event_responsible_user_user_MatterId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1450,7 +1450,7 @@ ALTER TABLE ONLY event_responsible_user
 
 
 --
--- TOC entry 2208 (class 2606 OID 115857)
+-- TOC entry 2203 (class 2606 OID 119110)
 -- Name: FK_event_tag_event_EventId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1459,7 +1459,7 @@ ALTER TABLE ONLY event_tag
 
 
 --
--- TOC entry 2209 (class 2606 OID 115862)
+-- TOC entry 2204 (class 2606 OID 119115)
 -- Name: FK_event_tag_tag_category_TagCategoryId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1468,7 +1468,7 @@ ALTER TABLE ONLY event_tag
 
 
 --
--- TOC entry 2210 (class 2606 OID 115872)
+-- TOC entry 2205 (class 2606 OID 119120)
 -- Name: FK_event_task_event_EventId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1477,7 +1477,7 @@ ALTER TABLE ONLY event_task
 
 
 --
--- TOC entry 2211 (class 2606 OID 115877)
+-- TOC entry 2206 (class 2606 OID 119125)
 -- Name: FK_event_task_task_TaskId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1486,7 +1486,7 @@ ALTER TABLE ONLY event_task
 
 
 --
--- TOC entry 2212 (class 2606 OID 115893)
+-- TOC entry 2208 (class 2606 OID 119130)
 -- Name: FK_matter_contact_matter_MatterId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1495,7 +1495,7 @@ ALTER TABLE ONLY matter_contact
 
 
 --
--- TOC entry 2213 (class 2606 OID 115898)
+-- TOC entry 2209 (class 2606 OID 119135)
 -- Name: FK_matter_contact_user_ContactId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1504,7 +1504,7 @@ ALTER TABLE ONLY matter_contact
 
 
 --
--- TOC entry 2191 (class 2606 OID 115613)
+-- TOC entry 2207 (class 2606 OID 119140)
 -- Name: FK_matter_matter_ParentId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1513,7 +1513,7 @@ ALTER TABLE ONLY matter
 
 
 --
--- TOC entry 2214 (class 2606 OID 115911)
+-- TOC entry 2210 (class 2606 OID 119145)
 -- Name: FK_matter_tag_matter_MatterId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1522,7 +1522,7 @@ ALTER TABLE ONLY matter_tag
 
 
 --
--- TOC entry 2215 (class 2606 OID 115916)
+-- TOC entry 2211 (class 2606 OID 119150)
 -- Name: FK_matter_tag_tag_category_TagCategoryId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1531,7 +1531,7 @@ ALTER TABLE ONLY matter_tag
 
 
 --
--- TOC entry 2216 (class 2606 OID 115926)
+-- TOC entry 2212 (class 2606 OID 119155)
 -- Name: FK_note_matter_matter_MatterId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1540,7 +1540,7 @@ ALTER TABLE ONLY note_matter
 
 
 --
--- TOC entry 2217 (class 2606 OID 115931)
+-- TOC entry 2213 (class 2606 OID 119160)
 -- Name: FK_note_matter_note_NoteId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1549,7 +1549,7 @@ ALTER TABLE ONLY note_matter
 
 
 --
--- TOC entry 2218 (class 2606 OID 115941)
+-- TOC entry 2214 (class 2606 OID 119165)
 -- Name: FK_note_task_note_NoteId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1558,7 +1558,7 @@ ALTER TABLE ONLY note_task
 
 
 --
--- TOC entry 2219 (class 2606 OID 115946)
+-- TOC entry 2215 (class 2606 OID 119170)
 -- Name: FK_note_task_task_TaskId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1567,7 +1567,7 @@ ALTER TABLE ONLY note_task
 
 
 --
--- TOC entry 2220 (class 2606 OID 115978)
+-- TOC entry 2216 (class 2606 OID 119175)
 -- Name: FK_responsible_user_matter_MatterId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1576,7 +1576,7 @@ ALTER TABLE ONLY responsible_user
 
 
 --
--- TOC entry 2221 (class 2606 OID 115983)
+-- TOC entry 2217 (class 2606 OID 119180)
 -- Name: FK_responsible_user_user_UserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1585,7 +1585,7 @@ ALTER TABLE ONLY responsible_user
 
 
 --
--- TOC entry 2192 (class 2606 OID 115660)
+-- TOC entry 2218 (class 2606 OID 119185)
 -- Name: FK_tag_filter_user_UserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1594,7 +1594,7 @@ ALTER TABLE ONLY tag_filter
 
 
 --
--- TOC entry 2222 (class 2606 OID 115994)
+-- TOC entry 2221 (class 2606 OID 119190)
 -- Name: FK_task_assigned_contact_contact_ContactId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1603,7 +1603,7 @@ ALTER TABLE ONLY task_assigned_contact
 
 
 --
--- TOC entry 2223 (class 2606 OID 115999)
+-- TOC entry 2222 (class 2606 OID 119195)
 -- Name: FK_task_assigned_contact_task_TaskId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1612,7 +1612,7 @@ ALTER TABLE ONLY task_assigned_contact
 
 
 --
--- TOC entry 2224 (class 2606 OID 116011)
+-- TOC entry 2223 (class 2606 OID 119200)
 -- Name: FK_task_matter_matter_MatterId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1621,7 +1621,7 @@ ALTER TABLE ONLY task_matter
 
 
 --
--- TOC entry 2225 (class 2606 OID 116016)
+-- TOC entry 2224 (class 2606 OID 119205)
 -- Name: FK_task_matter_task_TaskId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1630,7 +1630,7 @@ ALTER TABLE ONLY task_matter
 
 
 --
--- TOC entry 2226 (class 2606 OID 116030)
+-- TOC entry 2225 (class 2606 OID 119210)
 -- Name: FK_task_responsible_user_task_TaskId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1639,7 +1639,7 @@ ALTER TABLE ONLY task_responsible_user
 
 
 --
--- TOC entry 2227 (class 2606 OID 116035)
+-- TOC entry 2226 (class 2606 OID 119215)
 -- Name: FK_task_responsible_user_user_MatterId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1648,7 +1648,7 @@ ALTER TABLE ONLY task_responsible_user
 
 
 --
--- TOC entry 2228 (class 2606 OID 116048)
+-- TOC entry 2227 (class 2606 OID 119220)
 -- Name: FK_task_tag_tag_category_TagCategoryId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1657,7 +1657,7 @@ ALTER TABLE ONLY task_tag
 
 
 --
--- TOC entry 2229 (class 2606 OID 116053)
+-- TOC entry 2228 (class 2606 OID 119225)
 -- Name: FK_task_tag_task_TaskId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1666,7 +1666,7 @@ ALTER TABLE ONLY task_tag
 
 
 --
--- TOC entry 2193 (class 2606 OID 115676)
+-- TOC entry 2219 (class 2606 OID 119230)
 -- Name: FK_task_task_ParentId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1675,7 +1675,7 @@ ALTER TABLE ONLY task
 
 
 --
--- TOC entry 2194 (class 2606 OID 115681)
+-- TOC entry 2220 (class 2606 OID 119235)
 -- Name: FK_task_task_SequentialPredecessorId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1684,7 +1684,7 @@ ALTER TABLE ONLY task
 
 
 --
--- TOC entry 2230 (class 2606 OID 116063)
+-- TOC entry 2229 (class 2606 OID 119240)
 -- Name: FK_task_time_task_TaskId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1693,7 +1693,7 @@ ALTER TABLE ONLY task_time
 
 
 --
--- TOC entry 2231 (class 2606 OID 116068)
+-- TOC entry 2230 (class 2606 OID 119245)
 -- Name: FK_task_time_user_TimeId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1702,7 +1702,7 @@ ALTER TABLE ONLY task_time
 
 
 --
--- TOC entry 2195 (class 2606 OID 115713)
+-- TOC entry 2231 (class 2606 OID 119319)
 -- Name: FK_time_user_WorkerContactId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1711,7 +1711,7 @@ ALTER TABLE ONLY "time"
 
 
 --
--- TOC entry 2185 (class 2606 OID 115516)
+-- TOC entry 2184 (class 2606 OID 119255)
 -- Name: profiledata_profile_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1720,7 +1720,7 @@ ALTER TABLE ONLY "ProfileData"
 
 
 --
--- TOC entry 2184 (class 2606 OID 115490)
+-- TOC entry 2185 (class 2606 OID 119260)
 -- Name: profiles_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1729,7 +1729,7 @@ ALTER TABLE ONLY "Profiles"
 
 
 --
--- TOC entry 2186 (class 2606 OID 115545)
+-- TOC entry 2186 (class 2606 OID 119265)
 -- Name: usersinroles_rolename_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1738,7 +1738,7 @@ ALTER TABLE ONLY "UsersInRoles"
 
 
 --
--- TOC entry 2187 (class 2606 OID 115550)
+-- TOC entry 2187 (class 2606 OID 119270)
 -- Name: usersinroles_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1748,7 +1748,7 @@ ALTER TABLE ONLY "UsersInRoles"
 
 --
 -- TOC entry 2238 (class 0 OID 0)
--- Dependencies: 5
+-- Dependencies: 6
 -- Name: public; Type: ACL; Schema: -; Owner: postgres
 --
 
@@ -1758,7 +1758,7 @@ GRANT ALL ON SCHEMA public TO postgres;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
--- Completed on 2014-06-15 21:46:59
+-- Completed on 2014-06-21 13:28:45
 
 --
 -- PostgreSQL database dump complete
