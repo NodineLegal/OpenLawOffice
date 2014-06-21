@@ -2,10 +2,16 @@
 
 <ul>
     <li>
-        <%: Html.ActionLink("Dashboard", "Index", "Home") %></li>
+        My</li>
+    <ul>
+        <li>
+            <%: Html.ActionLink("Dashboard", "Index", "Home") %></li>
+        <li>
+            <%: Html.ActionLink("Daily Time", "DayView", "Timing") %></li>
+    </ul>
     <ul>
     </ul>
-    <% if (Page.User.IsInRole("Users"))
+    <% if (Page.User.IsInRole("User"))
        {  %>
     <li>
         Calendar</li>

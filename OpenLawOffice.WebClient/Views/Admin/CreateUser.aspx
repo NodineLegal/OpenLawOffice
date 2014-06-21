@@ -62,4 +62,6 @@
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
+    <li>
+        <%: Html.ActionLink("User List", "Index") %></li>
 </asp:Content>

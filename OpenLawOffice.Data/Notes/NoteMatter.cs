@@ -75,7 +75,7 @@ namespace OpenLawOffice.Data.Notes
 
                 if (currentModel != null)
                 { // Update
-                    conn.Execute("UPDATE \"note_matter\" SET \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserId " +
+                    conn.Execute("UPDATE \"note_matter\" SET \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserPId " +
                         "\"utc_disabled\"=null, \"disabled_by_user_pid\"=null WHERE \"id\"=@Id", dbo);
                     model.Created = currentModel.Created;
                     model.CreatedBy = currentModel.CreatedBy;
@@ -83,7 +83,7 @@ namespace OpenLawOffice.Data.Notes
                 else
                 { // Create
                     conn.Execute("INSERT INTO \"note_matter\" (\"id\", \"note_id\", \"matter_id\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
-                        "VALUES (@Id, @NoteId, @MatterId, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
+                        "VALUES (@Id, @NoteId, @MatterId, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
                         dbo);
                 }
             }

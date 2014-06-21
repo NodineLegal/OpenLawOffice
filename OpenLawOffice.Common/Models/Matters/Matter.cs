@@ -32,5 +32,7 @@ namespace OpenLawOffice.Common.Models.Matters
         public string Title { get; set; }
 
         public string Synopsis { get; set; }
+
+        public bool Active { get; set; }
     }
 }

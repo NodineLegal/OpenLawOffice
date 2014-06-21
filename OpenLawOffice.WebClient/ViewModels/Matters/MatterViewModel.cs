@@ -36,6 +36,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
 
         public string Synopsis { get; set; }
 
+        public bool Active { get; set; }
+
         public void BuildMappings()
         {
             Mapper.CreateMap<Common.Models.Matters.Matter, MatterViewModel>()
@@ -79,32 +81,38 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
                     };
                 }))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
-                .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis));
+                .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis))
+                .ForMember(dst => dst.Active, opt => opt.MapFrom(src => src.Active));
 
             Mapper.CreateMap<MatterViewModel, Common.Models.Matters.Matter>()
                 .ForMember(dst => dst.Created, opt => opt.MapFrom(src => src.Created))
                 .ForMember(dst => dst.Modified, opt => opt.MapFrom(src => src.Modified))
                 .ForMember(dst => dst.Disabled, opt => opt.MapFrom(src => src.Disabled))
-                .ForMember(dst => dst.CreatedBy, opt => opt.ResolveUsing(db =>
+                .ForMember(dst => dst.CreatedBy, opt => opt.ResolveUsing(x =>
                 {
+                    if (x.CreatedBy == null || !x.CreatedBy.PId.HasValue)
+                        return null;
                     return new ViewModels.Account.UsersViewModel()
                     {
-                        PId = db.CreatedBy.PId
+                        PId = x.CreatedBy.PId
                     };
                 }))
-                .ForMember(dst => dst.ModifiedBy, opt => opt.ResolveUsing(db =>
+                .ForMember(dst => dst.ModifiedBy, opt => opt.ResolveUsing(x =>
                 {
+                    if (x.CreatedBy == null || !x.CreatedBy.PId.HasValue)
+                        return null;
                     return new ViewModels.Account.UsersViewModel()
                     {
-                        PId = db.ModifiedBy.PId
+                        PId = x.ModifiedBy.PId
                     };
                 }))
-                .ForMember(dst => dst.DisabledBy, opt => opt.ResolveUsing(db =>
+                .ForMember(dst => dst.DisabledBy, opt => opt.ResolveUsing(x =>
                 {
-                    if (db.DisabledBy == null || !db.DisabledBy.PId.HasValue) return null;
+                    if (x.DisabledBy == null || !x.DisabledBy.PId.HasValue)
+                        return null;
                     return new ViewModels.Account.UsersViewModel()
                     {
-                        PId = db.DisabledBy.PId.Value
+                        PId = x.DisabledBy.PId.Value
                     };
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
@@ -115,7 +123,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
                     return model.Parent.Id.Value;
                 }))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
-                .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis));
+                .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis))
+                .ForMember(dst => dst.Active, opt => opt.MapFrom(src => src.Active));
         }
     }
 }

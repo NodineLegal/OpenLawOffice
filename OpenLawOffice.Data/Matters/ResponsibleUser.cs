@@ -80,7 +80,7 @@ namespace OpenLawOffice.Data.Matters
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("INSERT INTO \"responsible_user\" (\"matter_id\", \"user_pid\", \"responsibility\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
-                    "VALUES (@MatterId, @UserId, @Responsibility, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
+                    "VALUES (@MatterId, @UserId, @Responsibility, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
                     dbo);
                 model.Id = conn.Query<DBOs.Matters.ResponsibleUser>("SELECT currval(pg_get_serial_sequence('responsible_user', 'id')) AS \"id\"").Single().Id;
             }
@@ -98,7 +98,7 @@ namespace OpenLawOffice.Data.Matters
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("UPDATE \"responsible_user\" SET " +
-                    "\"matter_id\"=@MatterId, \"user_pid\"=@UserId, \"responsibility\"=@Responsibility, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserId " +
+                    "\"matter_id\"=@MatterId, \"user_pid\"=@UserId, \"responsibility\"=@Responsibility, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserPId " +
                     "WHERE \"id\"=@Id", dbo);
             }
 

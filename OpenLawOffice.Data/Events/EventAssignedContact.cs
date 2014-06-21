@@ -67,7 +67,7 @@ namespace OpenLawOffice.Data.Events
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("INSERT INTO \"event_assigned_contact\" (\"id\", \"event_id\", \"contact_id\", \"role\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
-                    "VALUES (@Id, @EventId, @ContactId, @Role, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
+                    "VALUES (@Id, @EventId, @ContactId, @Role, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
                     dbo);
             }
 
@@ -84,7 +84,7 @@ namespace OpenLawOffice.Data.Events
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("UPDATE \"event_assigned_contact\" SET " +
-                    "\"event_id\"=@EventId, \"contact_id\"=@ContactId, \"role\"=@Role, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserId " +
+                    "\"event_id\"=@EventId, \"contact_id\"=@ContactId, \"role\"=@Role, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserPId " +
                     "WHERE \"id\"=@Id", dbo);
             }
 

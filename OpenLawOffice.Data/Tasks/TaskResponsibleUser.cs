@@ -81,7 +81,7 @@ namespace OpenLawOffice.Data.Tasks
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("INSERT INTO \"task_responsible_user\" (\"id\", \"task_id\", \"user_pid\", \"responsibility\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
-                    "VALUES (@Id, @TaskId, @UserId, @Responsibility, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
+                    "VALUES (@Id, @TaskId, @UserId, @Responsibility, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
                     dbo);
             }
 
@@ -100,7 +100,7 @@ namespace OpenLawOffice.Data.Tasks
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("UPDATE \"task_responsible_user\" SET " +
-                    "\"task_id\"=@TaskId, \"user_pid\"=@UserId, \"responsibility\"=@Responsibility, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserId " +
+                    "\"task_id\"=@TaskId, \"user_pid\"=@UserId, \"responsibility\"=@Responsibility, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserPId " +
                     "WHERE \"id\"=@Id", dbo);
             }
 

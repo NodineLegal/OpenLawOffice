@@ -174,7 +174,7 @@ namespace OpenLawOffice.Data.Contacts
                     "@Fax1DisplayName, @Email3EmailAddress, @Email3DisplayName, @Email2EmailAddress, @Email2DisplayName, " +
                     "@Email1EmailAddress, @Email1DisplayName, @DisplayName, @Initials, @GivenName, " +
                     "@MiddleName, @Surname, @DisplayNamePrefix, @Generation, @Nickname, @IsOrganization, @IsOurEmployee, " +
-                    "@UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)", dbo);
+                    "@UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)", dbo);
 
                 model.Id = conn.Query<DBOs.Contacts.Contact>("SELECT currval(pg_get_serial_sequence('contact', 'id')) AS \"id\"").Single().Id;
             }
@@ -191,7 +191,7 @@ namespace OpenLawOffice.Data.Contacts
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("UPDATE \"contact\" SET \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserId, " +
+                conn.Execute("UPDATE \"contact\" SET \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserPId, " +
                     "\"referred_by_name\"=@ReferredByName, \"gender\"=@Gender, \"business_home_page\"=@BusinessHomePage, " +
                     "\"personal_home_page\"=@PersonalHomePage, \"instant_messaging_address\"=@InstantMessagingAddress, " +
                     "\"language\"=@Language, \"spouse_name\"=@SpouseName, \"profession\"=@Profession, \"assistant_name\"=@AssistantName, " +

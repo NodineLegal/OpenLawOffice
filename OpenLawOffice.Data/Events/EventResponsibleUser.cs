@@ -81,7 +81,7 @@ namespace OpenLawOffice.Data.Events
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("INSERT INTO \"event_responsible_user\" (\"id\", \"event_id\", \"user_pid\", \"responsibility\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
-                    "VALUES (@Id, @EventId, @UserId, @Responsibility, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
+                    "VALUES (@Id, @EventId, @UserId, @Responsibility, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
                     dbo);
             }
 
@@ -100,7 +100,7 @@ namespace OpenLawOffice.Data.Events
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("UPDATE \"event_responsible_user\" SET " +
-                    "\"event_id\"=@EventId, \"user_pid\"=@UserId, \"responsibility\"=@Responsibility, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserId " +
+                    "\"event_id\"=@EventId, \"user_pid\"=@UserId, \"responsibility\"=@Responsibility, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserPId " +
                     "WHERE \"id\"=@Id", dbo);
             }
 

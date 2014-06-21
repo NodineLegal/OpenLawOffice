@@ -39,6 +39,9 @@ namespace OpenLawOffice.Data.DBOs.Matters
         [ColumnMapping(Name = "synopsis")]
         public string Synopsis { get; set; }
 
+        [ColumnMapping(Name = "active")]
+        public bool Active { get; set; }
+
         public void BuildMappings()
         {
             Dapper.SqlMapper.SetTypeMap(typeof(Matter), new ColumnAttributeTypeMapper<Matter>());
@@ -84,7 +87,8 @@ namespace OpenLawOffice.Data.DBOs.Matters
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.ParentId, opt => opt.MapFrom(src => src.ParentId))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
-                .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis));
+                .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis))
+                .ForMember(dst => dst.Active, opt => opt.MapFrom(src => src.Active));
 
             Mapper.CreateMap<Common.Models.Matters.Matter, DBOs.Matters.Matter>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.ResolveUsing(db =>
@@ -119,7 +123,8 @@ namespace OpenLawOffice.Data.DBOs.Matters
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.ParentId, opt => opt.MapFrom(src => src.ParentId))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
-                .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis));
+                .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis))
+                .ForMember(dst => dst.Active, opt => opt.MapFrom(src => src.Active));
         }
     }
 }

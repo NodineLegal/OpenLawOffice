@@ -539,7 +539,7 @@ namespace OpenLawOffice.Data.Tasks
                     "\"actual_end\", \"parent_id\", \"is_grouping_task\", \"sequential_predecessor_id\", \"active\", \"utc_created\", " +
                     "\"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
                     "VALUES (@Title, @Description, @ProjectedStart, @DueDate, @ProjectedEnd, @ActualEnd, @ParentId, @IsGroupingTask, " +
-                    "@SequentialPredecessorId, @Active, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
+                    "@SequentialPredecessorId, @Active, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
                     dbo);
                 model.Id = conn.Query<DBOs.Tasks.Task>("SELECT currval(pg_get_serial_sequence('task', 'id')) AS \"id\"").Single().Id;
             }
@@ -566,7 +566,7 @@ namespace OpenLawOffice.Data.Tasks
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("INSERT INTO \"task_matter\" (\"id\", \"task_id\", \"matter_id\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
-                    "VALUES (@Id, @TaskId, @MatterId, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
+                    "VALUES (@Id, @TaskId, @MatterId, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
                     dbo);
             }
 
@@ -622,7 +622,7 @@ namespace OpenLawOffice.Data.Tasks
                 conn.Execute("UPDATE \"task\" SET " +
                     "\"title\"=@Title, \"description\"=@Description, \"projected_start\"=@ProjectedStart, " +
                     "\"due_date\"=@DueDate, \"projected_end\"=@ProjectedEnd, \"actual_end\"=@ActualEnd, \"parent_id\"=@ParentId, " +
-                    "\"active\"=@Active, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserId " +
+                    "\"active\"=@Active, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserPId " +
                     "WHERE \"id\"=@Id", dbo);
             }
 

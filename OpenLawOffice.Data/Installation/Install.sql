@@ -1316,11 +1316,11 @@ CREATE INDEX users_islockedout_index ON "Users" USING btree ("IsLockedOut");
 
 --
 -- TOC entry 2188 (class 2606 OID 115558)
--- Name: FK_core_user_CreatedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: FK_core_user_CreatedByUserPId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY core
-    ADD CONSTRAINT "FK_core_user_CreatedByUserId" FOREIGN KEY (created_by_user_pid) REFERENCES "Users"("pId");
+    ADD CONSTRAINT "FK_core_user_CreatedByUserPId" FOREIGN KEY (created_by_user_pid) REFERENCES "Users"("pId");
 
 
 --
@@ -1334,11 +1334,11 @@ ALTER TABLE ONLY core
 
 --
 -- TOC entry 2190 (class 2606 OID 115568)
--- Name: FK_core_user_ModifiedByUserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: FK_core_user_ModifiedByUserPId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY core
-    ADD CONSTRAINT "FK_core_user_ModifiedByUserId" FOREIGN KEY (modified_by_user_pid) REFERENCES "Users"("pId");
+    ADD CONSTRAINT "FK_core_user_ModifiedByUserPId" FOREIGN KEY (modified_by_user_pid) REFERENCES "Users"("pId");
 
 
 --

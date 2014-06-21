@@ -48,6 +48,13 @@ namespace OpenLawOffice.Data.Timing
                 new { TaskId = taskId });
         }
 
+        public static List<Common.Models.Timing.Time> ListForDay(int workerContactId)
+        {
+            return DataHelper.List<Common.Models.Timing.Time, DBOs.Timing.Time>(
+                "SELECT * FROM \"time\" WHERE \"worker_contact_id\"=@WorkerContactId AND \"utc_disabled\" is null ORDER BY \"start\" ASC",
+                new { WorkerContactId = workerContactId });
+        }
+
         public static Common.Models.Tasks.Task GetRelatedTask(Guid timeId)
         {
             return DataHelper.Get<Common.Models.Tasks.Task, DBOs.Tasks.Task>(
@@ -67,7 +74,7 @@ namespace OpenLawOffice.Data.Timing
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("INSERT INTO \"time\" (\"id\", \"start\", \"stop\", \"worker_contact_id\", \"details\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
-                    "VALUES (@Id, @Start, @Stop, @WorkerContactId, @Details, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
+                    "VALUES (@Id, @Start, @Stop, @WorkerContactId, @Details, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
                     dbo);
             }
 
@@ -84,7 +91,7 @@ namespace OpenLawOffice.Data.Timing
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("UPDATE \"time\" SET " +
-                    "\"start\"=@Start, \"stop\"=@Stop, \"worker_contact_id\"=@WorkerContactId, \"details\"=@Details, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserId " +
+                    "\"start\"=@Start, \"stop\"=@Stop, \"worker_contact_id\"=@WorkerContactId, \"details\"=@Details, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserPId " +
                     "WHERE \"id\"=@Id", dbo);
             }
 
@@ -110,7 +117,7 @@ namespace OpenLawOffice.Data.Timing
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("INSERT INTO \"task_time\" (\"id\", \"task_id\", \"time_id\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
-                    "VALUES (@Id, @TaskId, @TimeId, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
+                    "VALUES (@Id, @TaskId, @TimeId, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
                     dbo);
             }
 

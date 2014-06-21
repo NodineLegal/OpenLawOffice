@@ -53,21 +53,13 @@ namespace OpenLawOffice.Data.Matters
             {
                 if (parentId.HasValue)
                     ie = conn.Query<DBOs.Matters.Matter>(
-                        "SELECT \"matter\".* FROM \"matter\" JOIN \"secured_resource_acl\" ON " +
-                        "\"matter\".\"id\"=\"secured_resource_acl\".\"secured_resource_id\" " +
-                        "WHERE \"secured_resource_acl\".\"allow_flags\" & 2 > 0 " +
-                        "AND NOT \"secured_resource_acl\".\"deny_flags\" & 2 > 0 " +
-                        "AND \"matter\".\"utc_disabled\" is null  " +
-                        "AND \"secured_resource_acl\".\"utc_disabled\" is null " +
+                        "SELECT \"matter\".* FROM \"matter\" " +
+                        "WHERE \"matter\".\"utc_disabled\" is null  " +
                         "AND \"matter\".\"parent_id\"=@ParentId", new { ParentId = parentId.Value });
                 else
                     ie = conn.Query<DBOs.Matters.Matter>(
-                        "SELECT \"matter\".* FROM \"matter\" JOIN \"secured_resource_acl\" ON " +
-                        "\"matter\".\"id\"=\"secured_resource_acl\".\"secured_resource_id\" " +
-                        "WHERE \"secured_resource_acl\".\"allow_flags\" & 2 > 0 " +
-                        "AND NOT \"secured_resource_acl\".\"deny_flags\" & 2 > 0 " +
-                        "AND \"matter\".\"utc_disabled\" is null  " +
-                        "AND \"secured_resource_acl\".\"utc_disabled\" is null " +
+                        "SELECT \"matter\".* FROM \"matter\" " +
+                        "WHERE \"matter\".\"utc_disabled\" is null  " +
                         "AND \"matter\".\"parent_id\" is null");
             }
 
@@ -85,23 +77,15 @@ namespace OpenLawOffice.Data.Matters
             {
                 if (parentId.HasValue)
                     ie = conn.Query<DBOs.Matters.Matter>(
-                        "SELECT \"matter\".* FROM \"matter\" JOIN \"secured_resource_acl\" ON " +
-                        "\"matter\".\"id\"=\"secured_resource_acl\".\"secured_resource_id\" " +
-                        "WHERE \"secured_resource_acl\".\"allow_flags\" & 2 > 0 " +
-                        "AND NOT \"secured_resource_acl\".\"deny_flags\" & 2 > 0 " +
-                        "AND \"matter\".\"utc_disabled\" is null  " +
-                        "AND \"secured_resource_acl\".\"utc_disabled\" is null " +
+                        "SELECT \"matter\".* FROM \"matter\" " +
+                        "WHERE \"matter\".\"utc_disabled\" is null  " +
                         "AND \"matter\".\"parent_id\"=@ParentId " + 
                         "AND \"matter\".\"id\" IN (SELECT \"matter_id\" FROM \"matter_contact\" WHERE \"contact_id\"=@ContactId)", 
                         new { ParentId = parentId.Value, ContactId = contactId });
                 else
                     ie = conn.Query<DBOs.Matters.Matter>(
-                        "SELECT \"matter\".* FROM \"matter\" JOIN \"secured_resource_acl\" ON " +
-                        "\"matter\".\"id\"=\"secured_resource_acl\".\"secured_resource_id\" " +
-                        "WHERE \"secured_resource_acl\".\"allow_flags\" & 2 > 0 " +
-                        "AND NOT \"secured_resource_acl\".\"deny_flags\" & 2 > 0 " +
-                        "AND \"matter\".\"utc_disabled\" is null  " +
-                        "AND \"secured_resource_acl\".\"utc_disabled\" is null " +
+                        "SELECT \"matter\".* FROM \"matter\" " +
+                        "WHERE\"matter\".\"utc_disabled\" is null  " +
                         "AND \"matter\".\"parent_id\" is null " +
                         "AND \"matter\".\"id\" IN (SELECT \"matter_id\" FROM \"matter_contact\" WHERE \"contact_id\"=@ContactId)",
                         new { ContactId = contactId });
@@ -120,12 +104,8 @@ namespace OpenLawOffice.Data.Matters
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 ie = conn.Query<DBOs.Matters.Matter>(
-                    "SELECT \"matter\".* FROM \"matter\" JOIN \"secured_resource_acl\" ON " +
-                    "\"matter\".\"id\"=\"secured_resource_acl\".\"secured_resource_id\" " +
-                    "WHERE \"secured_resource_acl\".\"allow_flags\" & 2 > 0 " +
-                    "AND NOT \"secured_resource_acl\".\"deny_flags\" & 2 > 0 " +
+                    "SELECT \"matter\".* FROM \"matter\" " +
                     "AND \"matter\".\"utc_disabled\" is null  " +
-                    "AND \"secured_resource_acl\".\"utc_disabled\" is null " +
                     "AND \"matter\".\"id\" IN (SELECT \"matter_id\" FROM \"matter_contact\" WHERE \"contact_id\"=@ContactId)",
                     new { ContactId = contactId });
             }
@@ -147,8 +127,8 @@ namespace OpenLawOffice.Data.Matters
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("INSERT INTO \"matter\" (\"id\", \"title\", \"parent_id\", \"synopsis\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
-                    "VALUES (@Id, @Title, @ParentId, @Synopsis, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
+                conn.Execute("INSERT INTO \"matter\" (\"id\", \"title\", \"active\", \"parent_id\", \"synopsis\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
+                    "VALUES (@Id, @Title, @Active, @ParentId, @Synopsis, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
                     dbo);
             }
 
@@ -165,7 +145,7 @@ namespace OpenLawOffice.Data.Matters
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("UPDATE \"matter\" SET " +
-                    "\"title\"=@Title, \"parent_id\"=@ParentId, \"synopsis\"=@Synopsis, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserId " +
+                    "\"title\"=@Title, \"active\"=@Active, \"parent_id\"=@ParentId, \"synopsis\"=@Synopsis, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserPId " +
                     "WHERE \"id\"=@Id", dbo);
             }
 

@@ -181,6 +181,8 @@
     <Compile Include="ViewModels\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\alarm-clock-pencil.png" />
+    <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\alarm-clock-plus.png" />
     <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\alarm-clock-select.png" />
     <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\calendar-arrow.png" />
     <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\cross.png" />
@@ -357,6 +359,7 @@
     <Content Include="Views\TaskTime\Create.aspx" />
     <Content Include="Views\TaskTime\SelectContactToAssign.aspx" />
     <Content Include="Views\Templates\AccountRecoveryEmail.aspx" />
+    <Content Include="Views\Timing\DayView.aspx" />
     <Content Include="Views\Timing\Details.aspx" />
     <Content Include="Views\Timing\Edit.aspx" />
     <Content Include="Views\UserTaskSettings\CreateFilter.aspx" />

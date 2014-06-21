@@ -83,26 +83,31 @@ namespace OpenLawOffice.WebClient.ViewModels.Settings
                 .ForMember(dst => dst.Created, opt => opt.MapFrom(src => src.Created))
                 .ForMember(dst => dst.Modified, opt => opt.MapFrom(src => src.Modified))
                 .ForMember(dst => dst.Disabled, opt => opt.MapFrom(src => src.Disabled))
-                .ForMember(dst => dst.CreatedBy, opt => opt.ResolveUsing(db =>
+                .ForMember(dst => dst.CreatedBy, opt => opt.ResolveUsing(x =>
                 {
+                    if (x.CreatedBy == null || !x.CreatedBy.PId.HasValue)
+                        return null;
                     return new ViewModels.Account.UsersViewModel()
                     {
-                        PId = db.CreatedBy.PId
+                        PId = x.CreatedBy.PId
                     };
                 }))
-                .ForMember(dst => dst.ModifiedBy, opt => opt.ResolveUsing(db =>
+                .ForMember(dst => dst.ModifiedBy, opt => opt.ResolveUsing(x =>
                 {
+                    if (x.CreatedBy == null || !x.CreatedBy.PId.HasValue)
+                        return null;
                     return new ViewModels.Account.UsersViewModel()
                     {
-                        PId = db.ModifiedBy.PId
+                        PId = x.ModifiedBy.PId
                     };
                 }))
-                .ForMember(dst => dst.DisabledBy, opt => opt.ResolveUsing(db =>
+                .ForMember(dst => dst.DisabledBy, opt => opt.ResolveUsing(x =>
                 {
-                    if (db.DisabledBy == null || !db.DisabledBy.PId.HasValue) return null;
+                    if (x.DisabledBy == null || !x.DisabledBy.PId.HasValue)
+                        return null;
                     return new ViewModels.Account.UsersViewModel()
                     {
-                        PId = db.DisabledBy.PId.Value
+                        PId = x.DisabledBy.PId.Value
                     };
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))

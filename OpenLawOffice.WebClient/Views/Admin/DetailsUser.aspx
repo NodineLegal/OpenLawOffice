@@ -133,4 +133,19 @@
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
+    <li>Actions</li>
+    <ul style="list-style: none outside none; padding-left: 1em;">
+        <li>
+            <%: Html.ActionLink("New User", "CreateUser") %></li>
+        <li>
+            <%: Html.ActionLink("Edit", "EditUser", new { id = Model.Username })%></li>
+        <li>
+            <%: Html.ActionLink("Roles", "UserRoles", new { id = Model.Username })%></li>
+        <li>
+            <%: Html.ActionLink("Disable", "DisableUser", new { id = Model.Username })%></li>
+        <li>
+            <%: Html.ActionLink("Unlock", "UnlockUser", new { id = Model.Username })%></li>
+        <li>
+            <%: Html.ActionLink("List", "Index") %></li>
+    </ul>
 </asp:Content>

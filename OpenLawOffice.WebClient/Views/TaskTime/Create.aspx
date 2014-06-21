@@ -46,6 +46,15 @@
                 <%: Html.ValidationMessageFor(model => model.Time.Stop)%>
             </td>
         </tr>
+        <tr>
+            <td class="display-label">
+                Details
+            </td>
+            <td class="display-field">
+                <%: Html.TextBoxFor(model => model.Time.Details)%>
+                <%: Html.ValidationMessageFor(model => model.Time.Details)%>
+            </td>
+        </tr>
     </table>
     <p>
         <input type="submit" value="Save" />

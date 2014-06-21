@@ -24,6 +24,7 @@ namespace OpenLawOffice.WebClient.Controllers
     using System;
     using System.Web.Mvc;
     using AutoMapper;
+    using System.Collections.Generic;
 
     [HandleError(View = "Errors/Index", Order = 10)]
     public class TimingController : BaseController
@@ -90,6 +91,21 @@ namespace OpenLawOffice.WebClient.Controllers
             model = Data.Timing.Time.Edit(model, currentUser);
 
             return RedirectToAction("Details", new { Id = id });
+        }
+
+        [Authorize(Roles = "Login, User")]
+        public ActionResult DayView(int id)
+        {
+            List<ViewModels.Timing.TimeViewModel> list;
+
+            list = new List<ViewModels.Timing.TimeViewModel>();
+
+            Data.Timing.Time.ListForDay(id).ForEach(x =>
+            {
+                list.Add(Mapper.Map<ViewModels.Timing.TimeViewModel>(x));
+            });
+
+            return View(list);
         }
     }
 }

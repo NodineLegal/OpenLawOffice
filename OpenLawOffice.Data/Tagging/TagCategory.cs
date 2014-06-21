@@ -64,7 +64,7 @@ namespace OpenLawOffice.Data.Tagging
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("INSERT INTO \"tag_category\" (\"name\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
-                    "VALUES (@Name, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
+                    "VALUES (@Name, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
                     dbo);
                 model.Id = conn.Query<DBOs.Tagging.TagCategory>("SELECT currval(pg_get_serial_sequence('tag_category', 'id')) AS \"id\"").Single().Id;
             }

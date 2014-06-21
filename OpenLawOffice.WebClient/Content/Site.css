@@ -238,6 +238,11 @@ table th
     width: 100%;
 }
 
+#main table.listing_table th
+{
+    text-align: center;
+}
+
 #main table.detail_table
 {
     width: 100%;
@@ -431,6 +436,28 @@ a.btn-conflictcheck
 a.btn-assigncontact
 {
     background-image: url('fugue-icons-3.5.6/icons-shadowless/user-arrow.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    text-indent: -9999px; /* hide text */
+}
+
+a.btn-addtimeentry
+{
+    background-image: url('fugue-icons-3.5.6/icons-shadowless/alarm-clock-plus.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    text-indent: -9999px; /* hide text */
+}
+
+a.btn-edittimeentry
+{
+    background-image: url('fugue-icons-3.5.6/icons-shadowless/alarm-clock-pencil.png');
     background-repeat: no-repeat;
     background-position: center center;
     display: inline-block;

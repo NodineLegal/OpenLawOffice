@@ -183,7 +183,7 @@ namespace OpenLawOffice.Data.Events
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("INSERT INTO \"event\" (\"id\", \"title\", \"allday\", \"start\", \"end\", \"location\", \"description\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
-                    "VALUES (@Id, @Title, @AllDay, @Start, @End, @Location, @Description, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
+                    "VALUES (@Id, @Title, @AllDay, @Start, @End, @Location, @Description, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
                     dbo);
             }
 
@@ -202,7 +202,7 @@ namespace OpenLawOffice.Data.Events
                 conn.Execute("UPDATE \"event\" SET " +
                     "\"title\"=@Title, \"allday\"=@AllDay, \"start\"=@Start, " +
                     "\"end\"=@End, \"location\"=@Location, \"description\"=@Description, " +
-                    "\"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserId " +
+                    "\"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserPId " +
                     "WHERE \"id\"=@Id", dbo);
             }
 

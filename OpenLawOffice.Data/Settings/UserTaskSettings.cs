@@ -60,7 +60,7 @@ namespace OpenLawOffice.Data.Settings
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("INSERT INTO \"tag_filter\" (\"user_pid\", \"category\", \"tag\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
-                    "VALUES (@UserId, @Category, @Tag, @UtcCreated, @UtcModified, @CreatedByUserId, @ModifiedByUserId)",
+                    "VALUES (@UserId, @Category, @Tag, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
                     dbo);
                 model.Id = conn.Query<DBOs.Settings.TagFilter>("SELECT currval(pg_get_serial_sequence('tag_filter', 'id')) AS \"id\"").Single().Id;
             }
@@ -79,7 +79,7 @@ namespace OpenLawOffice.Data.Settings
             {
                 conn.Execute("UPDATE \"tag_filter\" SET " +
                     "\"user_pid\"=@UserId, \"category\"=@Category, \"tag\"=@Tag, " +
-                    "\"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserId " +
+                    "\"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserPId " +
                     "WHERE \"id\"=@Id", dbo);
             }
 
