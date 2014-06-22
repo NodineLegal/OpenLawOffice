@@ -99,6 +99,7 @@ namespace OpenLawOffice.WebClient.Controllers
         public ActionResult DayView()
         {
             int id;
+            DateTime date;
             List<ViewModels.Timing.TimeViewModel> list;
 
             if (RouteData.Values["Id"] != null)
@@ -112,13 +113,20 @@ namespace OpenLawOffice.WebClient.Controllers
                     throw new ArgumentNullException("Must supply an Id or have a ContactId set in profile.");
             }
 
+            if (Request["Date"] != null)
+                date = DateTime.Parse(Request["Date"]);
+            else
+                date = DateTime.Today;
+
             list = new List<ViewModels.Timing.TimeViewModel>();
 
-            Data.Timing.Time.ListForDay(id, DateTime.Today).ForEach(x =>
+            Data.Timing.Time.ListForDay(id, date).ForEach(x =>
             {
                 list.Add(Mapper.Map<ViewModels.Timing.TimeViewModel>(x));
             });
 
+
+            ViewData["Date"] = date;
             return View(list);
         }
     }

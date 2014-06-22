@@ -6,7 +6,26 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
-    <h2>DayView</h2>
+    <h2>Daily Time</h2>
+    
+    <% using (Html.BeginForm())
+       {%>
+    <%: Html.ValidationSummary(true) %>
+
+    <script>
+        $(function () {
+            $("#date").datepicker({
+                autoSize: true,
+                onSelect: function (date) {
+                    $("form").submit();
+                }
+            });
+        });
+    </script>
+    
+    <p>
+        Date: <input type="text" id="date" name="date" value="<%: ((DateTime)ViewData["Date"]).ToString("MM/dd/yyyy") %>" />
+    </p>
 
     <table class="listing_table">
         <tr>
@@ -110,6 +129,7 @@
             <td style="background-color: #D6F8DE;">Gap of over ten minutes, make sure you are not missing an entry.</td>
         </tr>
     </table>
+    <% } %>   
 
 </asp:Content>
 
