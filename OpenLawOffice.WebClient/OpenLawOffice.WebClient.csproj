@@ -357,12 +357,16 @@
     <Content Include="Views\TaskTags\Delete.aspx" />
     <Content Include="Views\TaskTags\Details.aspx" />
     <Content Include="Views\TaskTags\Edit.aspx" />
+    <Content Include="Views\TaskTime\AssignFastTime.aspx" />
     <Content Include="Views\TaskTime\Create.aspx" />
+    <Content Include="Views\TaskTime\RelateTask.aspx" />
     <Content Include="Views\TaskTime\SelectContactToAssign.aspx" />
     <Content Include="Views\Templates\AccountRecoveryEmail.aspx" />
     <Content Include="Views\Timing\DayView.aspx" />
     <Content Include="Views\Timing\Details.aspx" />
     <Content Include="Views\Timing\Edit.aspx" />
+    <Content Include="Views\Timing\FastTime.aspx" />
+    <Content Include="Views\Timing\FastTimeList.aspx" />
     <Content Include="Views\UserTaskSettings\CreateFilter.aspx" />
     <Content Include="Views\UserTaskSettings\DeleteFilter.aspx" />
     <Content Include="Views\UserTaskSettings\DetailsFilter.aspx" />

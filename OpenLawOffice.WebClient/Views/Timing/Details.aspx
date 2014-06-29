@@ -20,8 +20,10 @@
                 Duration
             </td>
             <td class="display-field">
-                <%: Math.Round(((TimeSpan)(Model.Stop - Model.Start)).TotalMinutes, 0) %>
-                min.
+                <% if (Model.Stop.HasValue)
+                   { %>
+                    <%: Math.Round(((TimeSpan)(Model.Stop - Model.Start)).TotalMinutes, 0)%> min.
+                <% } %>
             </td>
         </tr>
         <tr>
@@ -37,7 +39,10 @@
                 Stop
             </td>
             <td class="display-field">
-                <%: String.Format("{0:g}", Model.Stop.Value)%>
+                <% if (Model.Stop.HasValue)
+                   { %>
+                    <%: String.Format("{0:g}", Model.Stop.Value)%>
+                <% } %>
             </td>
         </tr>
         <tr>
@@ -75,8 +80,13 @@
     <% if (ViewData["TaskId"] != null)
         { %>
     <li>
-        <%: Html.ActionLink("Task ", "Details", "Tasks", new { id = ViewData["TaskId"] }, null)%></li>
+        <%: Html.ActionLink("Task", "Details", "Tasks", new { id = ViewData["TaskId"] }, null)%></li>
     <li>
         <%: Html.ActionLink("Times for Task", "Time", "Tasks", new { id = ViewData["TaskId"] }, null)%></li>
+    <% }
+        if ((bool)ViewData["IsFastTime"])
+        { %>
+    <li>
+        <%: Html.ActionLink("Relate Task", "RelateTask", "TaskTime", new { id = ViewData["TaskId"] }, null)%></li>
     <% } %>
 </asp:Content>

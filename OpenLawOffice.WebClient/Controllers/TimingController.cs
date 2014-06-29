@@ -51,7 +51,10 @@ namespace OpenLawOffice.WebClient.Controllers
 
             PopulateCoreDetails(viewModel);
 
-            ViewData["TaskId"] = task.Id.Value;
+            if (task != null && task.Id.HasValue)
+                ViewData["TaskId"] = task.Id.Value;
+
+            ViewData["IsFastTime"] = Data.Timing.Time.IsFastTime(id);
 
             return View(viewModel);
         }
@@ -93,6 +96,51 @@ namespace OpenLawOffice.WebClient.Controllers
             model = Data.Timing.Time.Edit(model, currentUser);
 
             return RedirectToAction("Details", new { Id = id });
+        }
+
+        [Authorize(Roles = "Login, User")]
+        public ActionResult FastTime()
+        {
+            return View(new ViewModels.Timing.TimeViewModel() { Start = DateTime.Now });
+        }
+        
+        [HttpPost]
+        [Authorize(Roles = "Login, User")]
+        public ActionResult FastTime(ViewModels.Timing.TimeViewModel viewModel)
+        {
+            Common.Models.Account.Users currentUser;
+            Common.Models.Timing.Time model;
+
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
+
+            model = Mapper.Map<Common.Models.Timing.Time>(viewModel);
+
+            model = Data.Timing.Time.Create(model, currentUser);
+
+            return RedirectToAction("Details", new { Id = model.Id });
+        }
+
+        [Authorize(Roles = "Login, User")]
+        public ActionResult FastTimeList()
+        {
+            List<ViewModels.Timing.TimeViewModel> list;
+
+            list = new List<ViewModels.Timing.TimeViewModel>();
+
+            Data.Timing.Time.FastTimeList().ForEach(x =>
+            {
+                ViewModels.Timing.TimeViewModel viewModel;
+                Common.Models.Contacts.Contact worker;
+
+                worker = Data.Contacts.Contact.Get(x.Worker.Id.Value);
+
+                viewModel = Mapper.Map<ViewModels.Timing.TimeViewModel>(x);
+                viewModel.WorkerDisplayName = worker.DisplayName;
+
+                list.Add(viewModel);
+            });
+
+            return View(list);
         }
 
         [Authorize(Roles = "Login, User")]

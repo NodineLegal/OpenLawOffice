@@ -65,6 +65,17 @@ namespace OpenLawOffice.Data.Timing
                 new { TimeId = timeId });
         }
 
+        public static bool IsFastTime(Guid timeId)
+        {
+            return (GetRelatedTask(timeId) == null);
+        }
+
+        public static List<Common.Models.Timing.Time> FastTimeList()
+        {
+            return DataHelper.List<Common.Models.Timing.Time, DBOs.Timing.Time>(
+                "SELECT * FROM \"time\" WHERE id NOT IN (SELECT \"time_id\" FROM \"task_time\")");
+        }
+
         public static Common.Models.Timing.Time Create(Common.Models.Timing.Time model,
             Common.Models.Account.Users creator)
         {

@@ -57,6 +57,12 @@
     </ul>
     <li>Billing</li>
     <ul>
+        <li>
+            <%: Html.ActionLink("FastTime", "FastTime", "Timing")%></li>
+        <li>
+            <%: Html.ActionLink("Unrelated FastTime", "FastTimeList", "Timing")%></li>
+    </ul>
+    <ul>
     </ul>
     <li>Settings</li>
     <ul>

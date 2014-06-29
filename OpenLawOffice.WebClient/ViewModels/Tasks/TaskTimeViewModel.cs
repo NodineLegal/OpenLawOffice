@@ -92,7 +92,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasks
                 {
                     if (x.CreatedBy == null || !x.CreatedBy.PId.HasValue)
                         return null;
-                    return new ViewModels.Account.UsersViewModel()
+                    return new Common.Models.Account.Users()
                     {
                         PId = x.CreatedBy.PId
                     };
@@ -101,7 +101,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasks
                 {
                     if (x.CreatedBy == null || !x.CreatedBy.PId.HasValue)
                         return null;
-                    return new ViewModels.Account.UsersViewModel()
+                    return new Common.Models.Account.Users()
                     {
                         PId = x.ModifiedBy.PId
                     };
@@ -110,7 +110,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasks
                 {
                     if (x.DisabledBy == null || !x.DisabledBy.PId.HasValue)
                         return null;
-                    return new ViewModels.Account.UsersViewModel()
+                    return new Common.Models.Account.Users()
                     {
                         PId = x.DisabledBy.PId.Value
                     };

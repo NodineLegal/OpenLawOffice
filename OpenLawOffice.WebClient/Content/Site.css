@@ -498,3 +498,14 @@ a.btn-assignevent
     height: 16px;
     text-indent: -9999px; /* hide text */
 }
+
+a.btn-assigntask
+{
+    background-image: url('fugue-icons-3.5.6/icons-shadowless/task-arrow.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    text-indent: -9999px; /* hide text */
+}
