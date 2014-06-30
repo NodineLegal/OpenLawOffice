@@ -157,6 +157,10 @@
         <li>
             <%: Html.ActionLink("Unlock", "UnlockUser", new { id = Model.Username })%></li>
         <li>
-            <%: Html.ActionLink("List", "Index") %></li>
+            <%: Html.ActionLink("Change Password", "ChangePassword", new { id = Model.Username })%></li>
+        <li>
+            <%: Html.ActionLink("Reset Password", "ResetPassword", new { id = Model.Username })%></li>
     </ul>
+    <li>
+        <%: Html.ActionLink("List", "Index") %></li>
 </asp:Content>

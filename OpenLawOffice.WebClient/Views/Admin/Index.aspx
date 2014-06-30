@@ -48,22 +48,23 @@
                    { %> No <% } %>
             </td>
             <td>
-                <%: Html.ActionLink("Edit", "EditUser", new { Username = item.Username })%><br />
-                <%: Html.ActionLink("Roles", "UserRoles", new { Username = item.Username })%><br />
+                <%: Html.ActionLink("Edit", "EditUser", new { Id = item.Username })%><br />
+                <%: Html.ActionLink("Roles", "UserRoles", new { Id = item.Username })%><br />
 
                 <% 
                     if (item.IsLockedOut)
                 { %>
-                <%: Html.ActionLink("Unlock", "UnlockUser", new { Username = item.Username })%><br />
+                <%: Html.ActionLink("Unlock", "UnlockUser", new { Id = item.Username })%><br />
                 <% } %>
 
                 <% 
                     if (item.IsApproved)
                 { %>
-                <%: Html.ActionLink("Disable", "DisableUser", new { Username = item.Username })%><br />
+                <%: Html.ActionLink("Disable", "DisableUser", new { Id = item.Username })%><br />
                 <% } %>
                 
-                <%: Html.ActionLink("Reset Password", "ResetPassword", new { Username = item.Username })%>
+                <%: Html.ActionLink("Reset Password", "ResetPassword", new { Id = item.Username })%>
+                <%: Html.ActionLink("Change Password", "ChangePassword", new { Id = item.Username })%>
             </td>
         </tr>
     

@@ -67,7 +67,7 @@ namespace OpenLawOffice.WebClient.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public ActionResult UserRoles(string username)
+        public ActionResult UserRoles(string id)
         {
             ViewModels.Account.SelectableUserRoleViewModel viewModel;
             List<ViewModels.Account.SelectableUserRoleViewModel> rolesList;
@@ -76,12 +76,12 @@ namespace OpenLawOffice.WebClient.Controllers
 
             Roles.GetAllRoles().ToList().ForEach(x =>
             {
-                bool a = Roles.IsUserInRole(username, x);
+                bool a = Roles.IsUserInRole(id, x);
                 viewModel = new ViewModels.Account.SelectableUserRoleViewModel()
                 {
-                    Username = username,
+                    Username = id,
                     Rolename = x,
-                    IsSelected = Roles.IsUserInRole(username, x)
+                    IsSelected = Roles.IsUserInRole(id, x)
                 };
 
                 rolesList.Add(viewModel);
@@ -92,7 +92,7 @@ namespace OpenLawOffice.WebClient.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public ActionResult UserRoles(string username, List<ViewModels.Account.SelectableUserRoleViewModel> nullViewModel)
+        public ActionResult UserRoles(string id, List<ViewModels.Account.SelectableUserRoleViewModel> nullViewModel)
         {
             List<ViewModels.Account.SelectableUserRoleViewModel> rolesList;
 
@@ -100,15 +100,15 @@ namespace OpenLawOffice.WebClient.Controllers
 
             Roles.GetAllRoles().ToList().ForEach(x =>
             {
-                if (Request["CB_" + username + "_" + x] == "on")
+                if (Request["CB_" + id + "_" + x] == "on")
                 {
-                    if (!Roles.IsUserInRole(username, x))
-                        Roles.AddUserToRole(username, x);
+                    if (!Roles.IsUserInRole(id, x))
+                        Roles.AddUserToRole(id, x);
                 }
                 else
                 {
-                    if (Roles.IsUserInRole(username, x))
-                        Roles.RemoveUserFromRole(username, x);
+                    if (Roles.IsUserInRole(id, x))
+                        Roles.RemoveUserFromRole(id, x);
                 }
             });
 
@@ -162,12 +162,12 @@ namespace OpenLawOffice.WebClient.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public ActionResult EditUser(string username)
+        public ActionResult EditUser(string id)
         {
             Common.Models.Account.Users model;
             ViewModels.Account.UsersViewModel viewModel;
 
-            model = Data.Account.Users.Get(username);
+            model = Data.Account.Users.Get(id);
 
             viewModel = Mapper.Map<ViewModels.Account.UsersViewModel>(model);
 
@@ -179,11 +179,11 @@ namespace OpenLawOffice.WebClient.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public ActionResult EditUser(string username, ViewModels.Account.UsersViewModel viewModel)
+        public ActionResult EditUser(string id, ViewModels.Account.UsersViewModel viewModel)
         {
             MembershipUser user;            
             
-            user = MembershipService.GetUser(username);
+            user = MembershipService.GetUser(id);
 
             user.Email = viewModel.Email;
             user.Comment = viewModel.Comment;
@@ -191,16 +191,16 @@ namespace OpenLawOffice.WebClient.Controllers
 
             MembershipService.UpdateUser(user);
 
-            return RedirectToAction("DetailsUser", new { Username = username });
+            return RedirectToAction("DetailsUser", new { Username = id });
         }
 
         [Authorize(Roles = "Admin")]
-        public ActionResult DisableUser(string username)
+        public ActionResult DisableUser(string id)
         {
             Common.Models.Account.Users model;
             ViewModels.Account.UsersViewModel viewModel;
 
-            model = Data.Account.Users.Get(username);
+            model = Data.Account.Users.Get(id);
 
             viewModel = Mapper.Map<ViewModels.Account.UsersViewModel>(model);
 
@@ -211,26 +211,26 @@ namespace OpenLawOffice.WebClient.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public ActionResult DisableUser(string username, ViewModels.Account.UsersViewModel viewModel)
+        public ActionResult DisableUser(string id, ViewModels.Account.UsersViewModel viewModel)
         {
             MembershipUser user;
 
-            user = MembershipService.GetUser(username);
+            user = MembershipService.GetUser(id);
 
             user.IsApproved = false;
 
             MembershipService.UpdateUser(user);
 
-            return RedirectToAction("DetailsUser", new { Username = username });
+            return RedirectToAction("DetailsUser", new { Username = id });
         }
 
         [Authorize(Roles = "Admin")]
-        public ActionResult UnlockUser(string username)
+        public ActionResult UnlockUser(string id)
         {
             Common.Models.Account.Users model;
             ViewModels.Account.UsersViewModel viewModel;
 
-            model = Data.Account.Users.Get(username);
+            model = Data.Account.Users.Get(id);
 
             viewModel = Mapper.Map<ViewModels.Account.UsersViewModel>(model);
 
@@ -241,15 +241,38 @@ namespace OpenLawOffice.WebClient.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public ActionResult UnlockUser(string username, ViewModels.Account.UsersViewModel viewModel)
+        public ActionResult UnlockUser(string id, ViewModels.Account.UsersViewModel viewModel)
         {
             MembershipUser user;
 
-            user = MembershipService.GetUser(username);
+            user = MembershipService.GetUser(id);
 
             user.UnlockUser();
 
-            return RedirectToAction("DetailsUser", new { Username = username });
+            return RedirectToAction("DetailsUser", new { Username = id });
+        }
+
+        [Authorize(Roles = "Admin")]
+        public ActionResult ChangePassword(string id)
+        {
+            ViewModels.Account.UsersViewModel viewModel;
+
+            viewModel = Mapper.Map<ViewModels.Account.UsersViewModel>(Data.Account.Users.Get(id));
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public ActionResult ChangePassword(string id, ViewModels.Account.UsersViewModel viewModel)
+        {
+            MembershipUser user;
+
+            user = MembershipService.GetUser(id);
+
+            user.ChangePassword(user.ResetPassword(), viewModel.Password);
+
+            return RedirectToAction("DetailsUser", new { Username = id });
         }
     }
 }

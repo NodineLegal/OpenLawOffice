@@ -236,6 +236,7 @@
     <Content Include="Views\Account\RecoveryEmailSent.aspx" />
     <Content Include="Views\Account\Register.aspx" />
     <Content Include="Views\Account\EditUser.aspx" />
+    <Content Include="Views\Admin\ChangePassword.aspx" />
     <Content Include="Views\Admin\CreateUser.aspx" />
     <Content Include="Views\Admin\DetailsUser.aspx" />
     <Content Include="Views\Admin\DisableUser.aspx" />

@@ -33,7 +33,16 @@ namespace OpenLawOffice.WebClient.Controllers
         {
             ViewModels.Home.DashboardViewModel viewModel;
             Common.Models.Account.Users currentUser;
-            List<Common.Models.Settings.TagFilter> tagFilter;            
+            List<Common.Models.Settings.TagFilter> tagFilter;
+
+            try
+            {
+                Data.Account.Users.List();
+            }
+            catch
+            {
+                return RedirectToAction("Index", "Installation");
+            }
 
             viewModel = new ViewModels.Home.DashboardViewModel();
 
