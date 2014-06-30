@@ -25,6 +25,8 @@ namespace OpenLawOffice.WebClient.Controllers
     using System.Web.Mvc;
     using AutoMapper;
     using System.Collections.Generic;
+    using System.Web.Profile;
+    using System.Web.Security;
 
     public class EventsController : BaseController
     {
@@ -79,19 +81,41 @@ namespace OpenLawOffice.WebClient.Controllers
         }
 
         [Authorize(Roles = "Login, User")]
-        public ActionResult UserAgenda(Guid id)
+        public ActionResult UserAgenda()
         {
+            Guid userId;
+            int contactId;
             List<ViewModels.Events.EventViewModel> list;
             Common.Models.Account.Users user;
 
-            user = Data.Account.Users.Get(id);
 
             list = new List<ViewModels.Events.EventViewModel>();
 
-            Data.Events.Event.ListForUser(id, DateTime.Now, null).ForEach(x =>
+            if (RouteData.Values["Id"] != null)
             {
-                list.Add(Mapper.Map<ViewModels.Events.EventViewModel>(x));
-            });
+                userId = Guid.Parse((string)RouteData.Values["Id"]);
+
+                Data.Events.Event.ListForUser(userId, DateTime.Now, null).ForEach(x =>
+                {
+                    list.Add(Mapper.Map<ViewModels.Events.EventViewModel>(x));
+                });
+
+                user = Data.Account.Users.Get(userId);
+            }
+            else
+            {
+                userId = (Guid)Membership.GetUser().ProviderUserKey;
+
+                user = Data.Account.Users.Get(userId);
+
+                dynamic profile = ProfileBase.Create(Membership.GetUser(userId).UserName);
+                contactId = int.Parse(profile.ContactId);
+
+                Data.Events.Event.ListForUserAndContact(userId, contactId, DateTime.Now, null).ForEach(x =>
+                {
+                    list.Add(Mapper.Map<ViewModels.Events.EventViewModel>(x));
+                });
+            }
 
             ViewData["Username"] = Mapper.Map<ViewModels.Account.UsersViewModel>(user).Username;
 
@@ -116,6 +140,18 @@ namespace OpenLawOffice.WebClient.Controllers
             model = Mapper.Map<Common.Models.Events.Event>(viewModel);
 
             model = Data.Events.Event.Create(model, currentUser);
+
+            if (Request["MatterId"] != null)
+            {
+                Guid matterId = Guid.Parse(Request["MatterId"]);
+                Data.Events.Event.RelateToMatter(model, matterId, currentUser);
+            }
+
+            if (Request["TaskId"] != null)
+            {
+                long taskId = long.Parse(Request["TaskId"]);
+                Data.Events.Event.RelateToTask(model, taskId, currentUser);
+            }
 
             return RedirectToAction("Details", new { Id = model.Id });
         }

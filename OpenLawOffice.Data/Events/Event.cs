@@ -237,5 +237,81 @@ namespace OpenLawOffice.Data.Events
 
             return model;
         }
+
+        public static Common.Models.Events.EventMatter RelateToMatter(Common.Models.Events.Event model,
+            Guid matterId,
+            Common.Models.Account.Users actor)
+        {
+            return RelateToMatter(model, new Common.Models.Matters.Matter() { Id = matterId }, actor);
+        }
+
+        public static Common.Models.Events.EventMatter RelateToMatter(Common.Models.Events.Event model,
+            Common.Models.Matters.Matter matter,
+            Common.Models.Account.Users actor)
+        {
+            Common.Models.Events.EventMatter em;
+            DBOs.Events.EventMatter dbo = null;
+
+            em = Data.Events.EventMatter.Get(model.Id.Value, matter.Id.Value);
+
+            if (em != null)
+                return em;
+
+            em = new Common.Models.Events.EventMatter();
+            em.Id = Guid.NewGuid();
+            em.CreatedBy = em.ModifiedBy = actor;
+            em.Created = em.Modified = DateTime.UtcNow;
+            em.Event = model;
+            em.Matter = matter;
+
+            dbo = Mapper.Map<DBOs.Events.EventMatter>(em);
+
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                conn.Execute("INSERT INTO \"event_matter\" (\"id\", \"event_id\", \"matter_id\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
+                    "VALUES (@Id, @EventId, @MatterId, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
+                    dbo);
+            }
+
+            return em;
+        }
+
+        public static Common.Models.Events.EventTask RelateToTask(Common.Models.Events.Event model,
+            long taskId,
+            Common.Models.Account.Users actor)
+        {
+            return RelateToTask(model, new Common.Models.Tasks.Task() { Id = taskId }, actor);
+        }
+
+        public static Common.Models.Events.EventTask RelateToTask(Common.Models.Events.Event model,
+            Common.Models.Tasks.Task task,
+            Common.Models.Account.Users actor)
+        {
+            Common.Models.Events.EventTask et;
+            DBOs.Events.EventTask dbo = null;
+
+            et = Data.Events.EventTask.Get(task.Id.Value, model.Id.Value);
+
+            if (et != null)
+                return et;
+
+            et = new Common.Models.Events.EventTask();
+            et.Id = Guid.NewGuid();
+            et.CreatedBy = et.ModifiedBy = actor;
+            et.Created = et.Modified = DateTime.UtcNow;
+            et.Event = model;
+            et.Task = task;
+
+            dbo = Mapper.Map<DBOs.Events.EventTask>(et);
+
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                conn.Execute("INSERT INTO \"event_task\" (\"id\", \"event_id\", \"task_id\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
+                    "VALUES (@Id, @EventId, @TaskId, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
+                    dbo);
+            }
+
+            return et;
+        }
     }
 }
