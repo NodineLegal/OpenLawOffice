@@ -245,6 +245,22 @@ namespace OpenLawOffice.WebClient.Controllers
         }
 
         [Authorize(Roles = "Login, User")]
+        public ActionResult Tasks(Guid id)
+        {
+            List<ViewModels.Tasks.TaskViewModel> list;
+
+            list = new List<ViewModels.Tasks.TaskViewModel>();
+
+            Data.Events.EventTask.ListForEvent(id).ForEach(x =>
+            {
+                ViewModels.Tasks.TaskViewModel vm = Mapper.Map<ViewModels.Tasks.TaskViewModel>(x);
+                list.Add(vm);
+            });
+
+            return View(list);
+        }
+
+        [Authorize(Roles = "Login, User")]
         public ActionResult Notes(Guid id)
         {
             List<ViewModels.Notes.NoteViewModel> list;

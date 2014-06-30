@@ -26,6 +26,7 @@ namespace OpenLawOffice.Data.Events
     using System.Linq;
     using AutoMapper;
     using Dapper;
+    using System.Collections.Generic;
 
     /// <summary>
     /// TODO: Update summary.
@@ -58,6 +59,16 @@ namespace OpenLawOffice.Data.Events
             return DataHelper.Get<Common.Models.Events.EventTask, DBOs.Events.EventTask>(
                 "SELECT * FROM \"event_task\" WHERE \"event_id\"=@EventId AND \"utc_disabled\" is null",
                 new { EventId = eventId });
+        }
+
+        public static List<Common.Models.Tasks.Task> ListForEvent(Guid eventId)
+        {
+            List<Common.Models.Tasks.Task> list =
+                DataHelper.List<Common.Models.Tasks.Task, DBOs.Tasks.Task>(
+                "SELECT * FROM \"task\" WHERE \"id\" IN (SELECT \"task_id\" FROM \"event_task\" WHERE \"event_id\"=@EventId AND \"utc_disabled\" is null)",
+                new { EventId = eventId });
+
+            return list;
         }
 
         public static Common.Models.Events.EventTask Create(Common.Models.Events.EventTask model,
