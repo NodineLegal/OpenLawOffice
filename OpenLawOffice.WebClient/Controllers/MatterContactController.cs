@@ -113,10 +113,17 @@ namespace OpenLawOffice.WebClient.Controllers
         public ActionResult Edit(int id, ViewModels.Matters.MatterContactViewModel viewModel)
         {
             Common.Models.Account.Users currentUser;
-            Common.Models.Matters.MatterContact model;
+            Common.Models.Matters.MatterContact model, modelCurrent;
 
             currentUser = Data.Account.Users.Get(User.Identity.Name);
+
+            modelCurrent = Data.Matters.MatterContact.Get(id);
+
             model = Mapper.Map<Common.Models.Matters.MatterContact>(viewModel);
+
+            model.Matter = modelCurrent.Matter;
+            model.Contact = modelCurrent.Contact;
+
             model = Data.Matters.MatterContact.Edit(model, currentUser);
 
             return RedirectToAction("Contacts", "Matters",

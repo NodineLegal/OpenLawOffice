@@ -67,6 +67,8 @@ namespace OpenLawOffice.WebClient.Controllers
 
             currentUser = Data.Account.Users.Get(User.Identity.Name);
 
+            // Need to overwrite the ID received as it pertains to the MatterId
+            viewModel.Id = Guid.NewGuid();
             model = Mapper.Map<Common.Models.Matters.MatterTag>(viewModel);
 
             model.Matter = new Common.Models.Matters.Matter()

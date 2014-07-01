@@ -85,7 +85,7 @@ namespace OpenLawOffice.Data.Matters
                 else
                     ie = conn.Query<DBOs.Matters.Matter>(
                         "SELECT \"matter\".* FROM \"matter\" " +
-                        "WHERE\"matter\".\"utc_disabled\" is null  " +
+                        "WHERE \"matter\".\"utc_disabled\" is null  " +
                         "AND \"matter\".\"parent_id\" is null " +
                         "AND \"matter\".\"id\" IN (SELECT \"matter_id\" FROM \"matter_contact\" WHERE \"contact_id\"=@ContactId)",
                         new { ContactId = contactId });
@@ -104,8 +104,7 @@ namespace OpenLawOffice.Data.Matters
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 ie = conn.Query<DBOs.Matters.Matter>(
-                    "SELECT \"matter\".* FROM \"matter\" " +
-                    "AND \"matter\".\"utc_disabled\" is null  " +
+                    "SELECT \"matter\".* FROM \"matter\" WHERE \"matter\".\"utc_disabled\" is null  " +
                     "AND \"matter\".\"id\" IN (SELECT \"matter_id\" FROM \"matter_contact\" WHERE \"contact_id\"=@ContactId)",
                     new { ContactId = contactId });
             }
