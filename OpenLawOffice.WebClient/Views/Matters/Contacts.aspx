@@ -21,7 +21,7 @@
            { %>
         <tr>
             <td>
-                <%: Html.ActionLink(item.Contact.DisplayName, "Details", "Contacts", new { id = item.Id }, null)%>
+                <%: Html.ActionLink(item.Contact.DisplayName, "Details", "Contacts", new { id = item.Contact.Id }, null)%>
             </td>
             <td>
                 <%: Html.ActionLink(item.Role, "Details", "MatterContact", new { id = item.Id }, null)%>

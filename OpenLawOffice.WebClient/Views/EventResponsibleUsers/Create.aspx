@@ -25,8 +25,8 @@
                 User<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                <%: Html.DropDownListFor(x => x.User.Id,
-                                new SelectList((IList)ViewData["UserList"], "Id", "Username")) %>
+                <%: Html.DropDownListFor(x => x.User.PId,
+                                new SelectList((IList)ViewData["UserList"], "PId", "Username")) %>
                 <%: Html.ValidationMessageFor(x => x.User) %>
             </td>
         </tr>
