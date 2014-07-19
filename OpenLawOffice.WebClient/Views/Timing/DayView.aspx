@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<IEnumerable<OpenLawOffice.WebClient.ViewModels.Timing.TimeViewModel>>" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<IEnumerable<OpenLawOffice.WebClient.ViewModels.Timing.DayViewModel>>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
 	DayView
@@ -39,6 +39,12 @@
                 Duration
             </th>
             <th>
+                Matter
+            </th>
+            <th>
+                Task
+            </th>
+            <th>
                 Details
             </th>
             <th></th>
@@ -46,62 +52,73 @@
 
     <% 
         double totalMinutes = 0;
-        DateTime lastTimestampStart = DateTime.Today;
-        DateTime lastTimestampStop = DateTime.Today;
+        DateTime lastTimestampStart = (DateTime)ViewData["Date"];// DateTime.Today;
+        DateTime lastTimestampStop = (DateTime)ViewData["Date"];// DateTime.Today;
         
         foreach (var item in Model) {
 
-            totalMinutes += item.Duration.TotalMinutes;
-                
-            if (item.Start.Hour > lastTimestampStart.Hour && lastTimestampStart > DateTime.Today)
-            { %>
+            totalMinutes += item.Time.Duration.TotalMinutes;
+
+            bool b = item.Time.Start.Hour > lastTimestampStart.Hour;
+            b = lastTimestampStart > DateTime.Today;
+
+            if (item.Time.Start.Hour > lastTimestampStart.Hour && lastTimestampStart > (DateTime)ViewData["Date"])
+            {
+                string a = "";
+                %>
             <tr>
-                <td style="background-color: Black; height: 0px; padding: 2px;" colspan="5" />
+                <td style="background-color: Black; height: 0px; padding: 2px;" colspan="7" />
             </tr>
             <%
             }
-            if (item.Start.Subtract(lastTimestampStop).TotalMinutes > 10)
+            if (item.Time.Start.Subtract(lastTimestampStop).TotalMinutes > 10)
             {
             %>
             <tr>
-                <td style="background-color: #D6F8DE; padding: 2px;" colspan="4" />
+                <td style="background-color: #D6F8DE; padding: 2px;" colspan="6" />
                 <td style="background-color: #D6F8DE; padding: 2px; text-align:center;">
                     <%: Html.ActionLink("QuickEnter", "QuickEnter", "Timing", new { ContactId = RouteData.Values["Id"] }, new { @class = "btn-addtimeentry", title = "QuickEnter" })%>
                 </td>
             </tr>
             <% } %>
             
-            <tr <% if (lastTimestampStop > item.Start) { %>style="background-color: #FFCECE;"<% } %>>
-                <td>
-                    <%: String.Format("{0:g}", item.Start) %>
+            <tr <% if (lastTimestampStop > item.Time.Start) { %>style="background-color: #FFCECE;"<% } %>>
+                <td style="width: 120px;">
+                    <%: String.Format("{0:g}", item.Time.Start) %>
                 </td>
-                <% if (item.Stop.HasValue)
+                <% if (item.Time.Stop.HasValue)
                    { %>
-                    <td>
-                        <%: String.Format("{0:g}", item.Stop)%>
+                    <td style="width: 120px;">
+                        <%: String.Format("{0:g}", item.Time.Stop)%>
                     </td>
                     <% }
                    else
                    { %>
-                   <td style="background-color: #FFFFC8;">
+                   <td style="width: 120px; background-color: #FFFFC8;">
                    ???
                    </td>
                    <% } %>
-                <td>
-                    <%: item.Duration %>
+                <td style="width: 80px;">
+                    <%: item.Time.Duration %>
                 </td>
                 <td>
-                    <%: item.Details %>
+                    <%: item.Matter.Title %>
                 </td>
-                <td style="text-align:center;">
-                    <%: Html.ActionLink("Edit", "Edit", "Timing", new { Id = item.Id.Value }, new { @class = "btn-edit", title = "Edit" })%>
+                <td>
+                    <%: item.Task.Title %>
+                </td>
+                <td>
+                    <%: item.Time.Details%>
+                </td>
+                <td style="text-align:center; width: 16px;">
+                    <%: Html.ActionLink("Edit", "Edit", "Timing", new { Id = item.Time.Id.Value }, new { @class = "btn-edit", title = "Edit" })%>
                 </td>
             </tr>
     
             <% 
-            lastTimestampStart = item.Start;
-            if (item.Stop.HasValue)
-                lastTimestampStop = item.Stop.Value;
+            lastTimestampStart = item.Time.Start;
+            if (item.Time.Stop.HasValue)
+                lastTimestampStop = item.Time.Stop.Value;
         } %>
         
         <tr>
@@ -111,7 +128,7 @@
             <td style="text-align: center; font-weight: bold;">
                 <%: TimeSpan.FromMinutes(Math.Round(totalMinutes, 0)).ToString(@"d'd 'hh'h 'mm'm'") %>
             </td>
-            <td colspan="2">
+            <td colspan="4">
             </td>
         </tr>
     </table>

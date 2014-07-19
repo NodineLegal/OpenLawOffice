@@ -148,7 +148,7 @@ namespace OpenLawOffice.WebClient.Controllers
         {
             int id;
             DateTime date;
-            List<ViewModels.Timing.TimeViewModel> list;
+            List<ViewModels.Timing.DayViewModel> list;
 
             if (RouteData.Values["Id"] != null)
                 id = int.Parse((string)RouteData.Values["Id"]);
@@ -166,11 +166,21 @@ namespace OpenLawOffice.WebClient.Controllers
             else
                 date = DateTime.Today;
 
-            list = new List<ViewModels.Timing.TimeViewModel>();
+            list = new List<ViewModels.Timing.DayViewModel>();
 
             Data.Timing.Time.ListForDay(id, date).ForEach(x =>
             {
-                list.Add(Mapper.Map<ViewModels.Timing.TimeViewModel>(x));
+                ViewModels.Timing.DayViewModel dayVM;
+
+                dayVM = new ViewModels.Timing.DayViewModel();
+
+                dayVM.Time = Mapper.Map<ViewModels.Timing.TimeViewModel>(x);
+
+                dayVM.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(Data.Timing.Time.GetRelatedTask(dayVM.Time.Id.Value));
+
+                dayVM.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(Data.Tasks.Task.GetRelatedMatter(dayVM.Task.Id.Value));
+
+                list.Add(dayVM);
             });
 
 
