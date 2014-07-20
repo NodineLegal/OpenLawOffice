@@ -37,7 +37,7 @@ namespace OpenLawOffice.WebClient.Controllers
 
             modelList = new List<ViewModels.Contacts.SelectableContactViewModel>();
 
-            Data.Contacts.Contact.List().ForEach(x =>
+            Data.Contacts.Contact.ListEmployeesOnly().ForEach(x =>
             {
                 modelList.Add(Mapper.Map<ViewModels.Contacts.SelectableContactViewModel>(x));
             });
