@@ -161,23 +161,55 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult Create()
         {
+            List<ViewModels.Account.UsersViewModel> userList;
+            List<ViewModels.Contacts.ContactViewModel> employeeContactList;
+
+            userList = new List<ViewModels.Account.UsersViewModel>();
+            employeeContactList = new List<ViewModels.Contacts.ContactViewModel>();
+
+            Data.Account.Users.List().ForEach(x =>
+            {
+                userList.Add(Mapper.Map<ViewModels.Account.UsersViewModel>(x));
+            });
+
+            Data.Contacts.Contact.ListEmployeesOnly().ForEach(x =>
+            {
+                employeeContactList.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(x));
+            });
+
+            ViewData["UserList"] = userList;
+            ViewData["EmployeeContactList"] = employeeContactList;
+
             return View();
         }
 
         [HttpPost]
         [Authorize(Roles = "Login, User")]
-        public ActionResult Create(ViewModels.Matters.MatterViewModel viewModel)
+        public ActionResult Create(ViewModels.Matters.CreateMatterViewModel viewModel)
         {
             Common.Models.Account.Users currentUser;
             Common.Models.Matters.Matter model;
 
             currentUser = Data.Account.Users.Get(User.Identity.Name);
 
-            model = Mapper.Map<Common.Models.Matters.Matter>(viewModel);
+            model = Mapper.Map<Common.Models.Matters.Matter>(viewModel.Matter);
 
             model = Data.Matters.Matter.Create(model, currentUser);
 
-            return RedirectToAction("Index");
+            Data.Matters.ResponsibleUser.Create(new Common.Models.Matters.ResponsibleUser()
+            {
+                Matter = model,
+                User = new Common.Models.Account.Users() { PId = viewModel.ResponsibleUser.User.PId },
+                Responsibility = viewModel.ResponsibleUser.Responsibility
+            }, currentUser);
+            Data.Matters.MatterContact.Create(new Common.Models.Matters.MatterContact()
+            {
+                Matter = model,
+                Contact = new Common.Models.Contacts.Contact() { Id = viewModel.MatterContact.Contact.Id },
+                Role = viewModel.MatterContact.Role
+            }, currentUser);
+
+            return RedirectToAction("Details", new { Id = model.Id });
         }
 
         [Authorize(Roles = "Login, User")]

@@ -29,6 +29,7 @@
             $("#list").jqGrid({
                 treeGrid: true,
                 autowidth: true,
+                height: '100%',
                 url: '../Matters/ListChildrenJqGrid',
                 datatype: 'json',
                 jsonReader: {

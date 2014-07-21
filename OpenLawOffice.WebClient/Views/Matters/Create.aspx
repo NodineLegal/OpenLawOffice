@@ -1,5 +1,6 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Matters.MatterViewModel>" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Matters.CreateMatterViewModel>" %>
 
+<%@ Import Namespace="OpenLawOffice.WebClient.Helpers" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
     Create Matter
 </asp:Content>
@@ -27,8 +28,8 @@
                 Title<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Title) %>
-                <%: Html.ValidationMessageFor(model => model.Title) %>
+                <%: Html.TextBoxFor(model => model.Matter.Title) %>
+                <%: Html.ValidationMessageFor(model => model.Matter.Title)%>
             </td>
         </tr>
         <tr>
@@ -36,8 +37,8 @@
                 Synopsis<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Synopsis) %>
-                <%: Html.ValidationMessageFor(model => model.Synopsis) %>
+                <%: Html.TextBoxFor(model => model.Matter.Synopsis)%>
+                <%: Html.ValidationMessageFor(model => model.Matter.Synopsis)%>
             </td>
         </tr>
         <tr>
@@ -45,8 +46,46 @@
                 Active<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                <%: Html.CheckBoxFor(model => model.Active, new { Checked = true })%>
+                <%: Html.CheckBoxFor(model => model.Matter.Active, new { Checked = true })%>
                 Uncheck if the matter is already completed
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
+                Responsible User
+            </td>
+            <td class="display-field">
+                <%: Html.DropDownListFor(x => x.ResponsibleUser.User.PId,
+                        new SelectList((IList)ViewData["UserList"], "PId", "Username"),
+                        new { @size = 5, @style = "width: 100%" })%>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
+                Responsiblity<span class="required-field" title="Required Field">*</span>
+            </td>
+            <td class="display-field">
+                <%: Html.TextBoxFor(model => model.ResponsibleUser.Responsibility) %>
+                <%: Html.ValidationMessageFor(model => model.ResponsibleUser.Responsibility)%>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
+                Assigned Contact
+            </td>
+            <td class="display-field">
+                <%: Html.DropDownListFor(x => x.MatterContact.Contact.Id,
+                        new SelectList((IList)ViewData["EmployeeContactList"], "Id", "DisplayName"),
+                        new { @size = 5, @style = "width: 100%" })%>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
+                Role<span class="required-field" title="Required Field">*</span>
+            </td>
+            <td class="display-field">
+                <%: Html.TextBoxFor(model => model.MatterContact.Role) %>
+                <%: Html.ValidationMessageFor(model => model.MatterContact.Role)%>
             </td>
         </tr>
         <tr>
@@ -54,7 +93,7 @@
                 Parent
             </td>
             <td class="display-field">
-                <%: Html.HiddenFor(model => model.Parent.Id) %>
+                <%: Html.HiddenFor(model => model.Matter.Parent.Id) %>
                 <table id="list">
                 </table>
                 <div id="pager">

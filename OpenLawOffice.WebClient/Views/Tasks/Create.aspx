@@ -1,5 +1,6 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Tasks.TaskViewModel>" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Tasks.CreateTaskViewModel>" %>
 
+<%@ Import Namespace="OpenLawOffice.WebClient.Helpers" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
     Create Task
 </asp:Content>
@@ -18,8 +19,8 @@
                 Title<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Title) %>
-                <%: Html.ValidationMessageFor(model => model.Title) %>
+                <%: Html.TextBoxFor(model => model.Task.Title) %>
+                <%: Html.ValidationMessageFor(model => model.Task.Title)%>
             </td>
         </tr>
         <tr>
@@ -27,8 +28,8 @@
                 Description<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Description)%>
-                <%: Html.ValidationMessageFor(model => model.Description)%>
+                <%: Html.TextBoxFor(model => model.Task.Description)%>
+                <%: Html.ValidationMessageFor(model => model.Task.Description)%>
             </td>
         </tr>
         <tr>
@@ -36,7 +37,7 @@
                 Active<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                <%: Html.CheckBoxFor(model => model.Active, new { Checked = true })%>
+                <%: Html.CheckBoxFor(model => model.Task.Active, new { Checked = true })%>
                 Uncheck if the task is already completed
             </td>
         </tr>
@@ -45,8 +46,8 @@
                 Projected Start
             </td>
             <td class="display-field">
-                <%: Html.EditorFor(model => model.ProjectedStart)%>
-                <%: Html.ValidationMessageFor(model => model.ProjectedStart)%>
+                <%: Html.EditorFor(model => model.Task.ProjectedStart)%>
+                <%: Html.ValidationMessageFor(model => model.Task.ProjectedStart)%>
             </td>
         </tr>
         <tr>
@@ -54,8 +55,8 @@
                 Due Date
             </td>
             <td class="display-field">
-                <%: Html.EditorFor(model => model.DueDate)%>
-                <%: Html.ValidationMessageFor(model => model.DueDate)%>
+                <%: Html.EditorFor(model => model.Task.DueDate)%>
+                <%: Html.ValidationMessageFor(model => model.Task.DueDate)%>
             </td>
         </tr>
         <tr>
@@ -63,8 +64,8 @@
                 Projected End
             </td>
             <td class="display-field">
-                <%: Html.EditorFor(model => model.ProjectedEnd)%>
-                <%: Html.ValidationMessageFor(model => model.ProjectedEnd)%>
+                <%: Html.EditorFor(model => model.Task.ProjectedEnd)%>
+                <%: Html.ValidationMessageFor(model => model.Task.ProjectedEnd)%>
             </td>
         </tr>
         <tr>
@@ -72,16 +73,54 @@
                 Actual End
             </td>
             <td class="display-field">
-                <%: Html.EditorFor(model => model.ActualEnd)%>
-                <%: Html.ValidationMessageFor(model => model.ActualEnd)%>
+                <%: Html.EditorFor(model => model.Task.ActualEnd)%>
+                <%: Html.ValidationMessageFor(model => model.Task.ActualEnd)%>
             </td>
         </tr>
+        <tr>
+            <td class="display-label">
+                Responsible User
+            </td>
+            <td class="display-field">
+                <%: Html.DropDownListFor(x => x.ResponsibleUser.User.PId,
+                        new SelectList((IList)ViewData["UserList"], "PId", "Username"),
+                        new { @size = 5, @style = "width: 100%" })%>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
+                Responsiblity<span class="required-field" title="Required Field">*</span>
+            </td>
+            <td class="display-field">
+                <%: Html.TextBoxFor(model => model.ResponsibleUser.Responsibility) %>
+                <%: Html.ValidationMessageFor(model => model.ResponsibleUser.Responsibility)%>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
+                Assigned Contact
+            </td>
+            <td class="display-field">
+                <%: Html.DropDownListFor(x => x.TaskContact.Contact.Id,
+                        new SelectList((IList)ViewData["EmployeeContactList"], "Id", "DisplayName"),
+                        new { @size = 5, @style = "width: 100%" })%>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
+                Assignment<span class="required-field" title="Required Field">*</span>
+            </td>
+            <td class="display-field">
+                <%: Html.EnumDropDownListFor(model => model.TaskContact.AssignmentType) %>
+            </td>
+        </tr>
+        
         <tr>
             <td class="display-label">
                 Group
             </td>
             <td class="display-field">
-                <%: Html.CheckBoxFor(model => model.IsGroupingTask) %>
+                <%: Html.CheckBoxFor(model => model.Task.IsGroupingTask)%>
                 Would you like to make this task a grouping task? A grouping task is capable of
                 having subtasks and will automatically calculate it's own projected start, end,
                 due and actual end dates.
@@ -93,8 +132,8 @@
             </td>
             <td class="display-field">
                 Parent:
-                <%: Html.TextBoxFor(model => model.Parent.Id, new { @readonly = true })%>
-                <%: Html.ValidationMessageFor(model => model.Parent.Id)%>
+                <%: Html.TextBoxFor(model => model.Task.Parent.Id, new { @readonly = true })%>
+                <%: Html.ValidationMessageFor(model => model.Task.Parent.Id)%>
                 <br />
                 <br />
                 <table id="parentlist">

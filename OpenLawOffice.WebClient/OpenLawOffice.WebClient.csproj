@@ -158,6 +158,7 @@
     <Compile Include="ViewModels\Home\DashboardViewModel.cs" />
     <Compile Include="IFormsAuthenticationService.cs" />
     <Compile Include="ViewModels\JqGridObject.cs" />
+    <Compile Include="ViewModels\Matters\CreateMatterViewModel.cs" />
     <Compile Include="ViewModels\Matters\MatterContactViewModel.cs" />
     <Compile Include="ViewModels\Matters\MatterTagViewModel.cs" />
     <Compile Include="ViewModels\Matters\MatterTimeViewModel.cs" />
@@ -171,6 +172,7 @@
     <Compile Include="ViewModels\Settings\UserTaskSettingsViewModel.cs" />
     <Compile Include="ViewModels\Tagging\TagBaseViewModel.cs" />
     <Compile Include="ViewModels\Tagging\TagCategoryViewModel.cs" />
+    <Compile Include="ViewModels\Tasks\CreateTaskViewModel.cs" />
     <Compile Include="ViewModels\Tasks\TaskAssignedContactViewModel.cs" />
     <Compile Include="ViewModels\Tasks\TaskMatterViewModel.cs" />
     <Compile Include="ViewModels\Tasks\TaskResponsibleUserViewModel.cs" />

@@ -306,13 +306,32 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult Create()
         {
+            List<ViewModels.Account.UsersViewModel> userList;
+            List<ViewModels.Contacts.ContactViewModel> employeeContactList;
+
+            userList = new List<ViewModels.Account.UsersViewModel>();
+            employeeContactList = new List<ViewModels.Contacts.ContactViewModel>();
+
+            Data.Account.Users.List().ForEach(x =>
+            {
+                userList.Add(Mapper.Map<ViewModels.Account.UsersViewModel>(x));
+            });
+
+            Data.Contacts.Contact.ListEmployeesOnly().ForEach(x =>
+            {
+                employeeContactList.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(x));
+            });
+
             ViewData["MatterId"] = Request["MatterId"];
+            ViewData["UserList"] = userList;
+            ViewData["EmployeeContactList"] = employeeContactList;
+
             return View();
         }
 
         [HttpPost]
         [Authorize(Roles = "Login, User")]
-        public ActionResult Create(ViewModels.Tasks.TaskViewModel viewModel)
+        public ActionResult Create(ViewModels.Tasks.CreateTaskViewModel viewModel)
         {
             Common.Models.Account.Users currentUser;
             Common.Models.Tasks.Task model;
@@ -320,13 +339,25 @@ namespace OpenLawOffice.WebClient.Controllers
 
             currentUser = Data.Account.Users.Get(User.Identity.Name);
 
-            model = Mapper.Map<Common.Models.Tasks.Task>(viewModel);
+            model = Mapper.Map<Common.Models.Tasks.Task>(viewModel.Task);
 
             model = Data.Tasks.Task.Create(model, currentUser);
 
             matterid = Guid.Parse(Request["MatterId"]);
 
             Data.Tasks.Task.RelateMatter(model, matterid, currentUser);
+            Data.Tasks.TaskResponsibleUser.Create(new Common.Models.Tasks.TaskResponsibleUser()
+            {
+                Task = model,
+                User = new Common.Models.Account.Users() { PId = viewModel.ResponsibleUser.User.PId },
+                Responsibility = viewModel.ResponsibleUser.Responsibility
+            }, currentUser);
+            Data.Tasks.TaskAssignedContact.Create(new Common.Models.Tasks.TaskAssignedContact()
+            {
+                Task = model,
+                Contact = new Common.Models.Contacts.Contact() { Id = viewModel.TaskContact.Contact.Id },
+                AssignmentType = (Common.Models.Tasks.AssignmentType)(int)viewModel.TaskContact.AssignmentType
+            }, currentUser);
 
             return RedirectToAction("Details", new { Id = model.Id });
         }
