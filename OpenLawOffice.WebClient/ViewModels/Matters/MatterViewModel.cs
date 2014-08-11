@@ -24,6 +24,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
     using System;
     using AutoMapper;
     using OpenLawOffice.Common.Models;
+    using System.Collections.Generic;
 
     [MapMe]
     public class MatterViewModel : CoreViewModel
@@ -37,6 +38,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
         public string Synopsis { get; set; }
 
         public bool Active { get; set; }
+
+        public List<ViewModels.Tasks.TaskViewModel> Tasks { get; set; }
 
         public void BuildMappings()
         {
@@ -82,7 +85,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
                 }))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis))
-                .ForMember(dst => dst.Active, opt => opt.MapFrom(src => src.Active));
+                .ForMember(dst => dst.Active, opt => opt.MapFrom(src => src.Active))
+                .ForMember(dst => dst.Tasks, opt => opt.Ignore());
 
             Mapper.CreateMap<MatterViewModel, Common.Models.Matters.Matter>()
                 .ForMember(dst => dst.Created, opt => opt.MapFrom(src => src.Created))

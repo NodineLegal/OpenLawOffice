@@ -176,6 +176,7 @@ namespace OpenLawOffice.WebClient.Controllers
             model = Data.Matters.Matter.Get(id);
 
             viewModel = Mapper.Map<ViewModels.Matters.MatterViewModel>(model);
+            viewModel.Tasks = TasksController.GetListForMatter(id, true);
 
             PopulateCoreDetails(viewModel);
 

@@ -78,8 +78,40 @@
             </td>
         </tr>
     </table>
-<% Html.RenderPartial("CoreDetailsView"); %>
+    <% Html.RenderPartial("CoreDetailsView"); %>
 
+    <table class="listing_table">    
+        <tr>
+            <td colspan="3" style="font-weight: bold;">
+                Active Tasks
+            </td>
+        </tr>
+        <tr>
+            <th style="text-align: center;">
+                Title
+            </th>
+            <th style="text-align: center;">
+                Due Date
+            </th>
+            <th style="text-align: center; width: 25px;">
+                
+            </th>
+        </tr>
+        <% foreach (var item in Model.Tasks)
+           { %>
+        <tr>
+            <td>
+                <%: Html.ActionLink(item.Title, "Details", "Tasks", new { id = item.Id.Value }, null) %>
+            </td>
+            <td>
+                <%: item.DueDate %>
+            </td>
+            <td>
+                <%: Html.ActionLink("Edit", "Edit", "Tasks", new { id = item.Id.Value }, new { @class = "btn-edit", title = "Edit" })%>
+            </td>
+        </tr>
+        <% } %>
+    </table>
     <div id="pageInfoDialog" title="Help">
         <p>
         <span style="font-weight: bold; text-decoration: underline;">Info:</span>
