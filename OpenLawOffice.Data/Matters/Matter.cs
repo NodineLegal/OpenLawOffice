@@ -39,10 +39,15 @@ namespace OpenLawOffice.Data.Matters
                 new { id = id });
         }
 
-        public static List<Common.Models.Matters.Matter> List()
+        public static List<Common.Models.Matters.Matter> List(bool? active)
         {
-            return DataHelper.List<Common.Models.Matters.Matter, DBOs.Matters.Matter>(
-                "SELECT * FROM \"matter\" WHERE \"utc_disabled\" is null");
+            if (!active.HasValue)
+                return DataHelper.List<Common.Models.Matters.Matter, DBOs.Matters.Matter>(
+                    "SELECT * FROM \"matter\" WHERE \"utc_disabled\" is null");
+            else
+                return DataHelper.List<Common.Models.Matters.Matter, DBOs.Matters.Matter>(
+                    "SELECT * FROM \"matter\" WHERE \"utc_disabled\" is null AND \"active\"=@Active",
+                    new { Active = active.Value });
         }
 
         public static List<Common.Models.Matters.Matter> ListChildren(Guid? parentId)

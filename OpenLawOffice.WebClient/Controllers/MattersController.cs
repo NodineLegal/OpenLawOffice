@@ -33,7 +33,31 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult Index()
         {
-            return View();
+            List<ViewModels.Matters.MatterViewModel> viewModelList;
+            bool? active;
+            string activeStr;
+
+            switch (activeStr = Request["active"])
+            {
+                case "inactive":
+                    active = false;
+                    break;
+                case "both":
+                    active = null;
+                    break;
+                default:
+                    active = true;
+                    break;
+            }
+
+            viewModelList = new List<ViewModels.Matters.MatterViewModel>();
+
+            Data.Matters.Matter.List(active).ForEach(x =>
+            {
+                viewModelList.Add(Mapper.Map<ViewModels.Matters.MatterViewModel>(x));
+            });
+
+            return View(viewModelList);
         }
 
         [HttpGet]

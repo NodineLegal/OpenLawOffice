@@ -83,7 +83,7 @@
                 <% } %>
             </td>
         </tr>
-        <tr>
+        <%--<tr>
             <td class="display-label">
                 Is a Grouping Task
             </td>
@@ -112,7 +112,7 @@
                 <%: Model.SequentialPredecessor.Title%>
                 <% } %>
             </td>
-        </tr>
+        </tr>--%>
     </table>
 <% Html.RenderPartial("CoreDetailsView"); %>
 

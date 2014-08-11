@@ -89,7 +89,7 @@
                 <%: Html.ValidationMessageFor(model => model.ActualEnd)%>
             </td>
         </tr>
-        <tr>
+        <%--<tr>
             <td class="display-label">
                 Parent
             </td>
@@ -150,7 +150,7 @@
                 </div>
             </td>
         </tr>
-        <%--<tr>
+        <tr>
             <td class="display-label">Sequence</td>
             <td class="display-field">
 

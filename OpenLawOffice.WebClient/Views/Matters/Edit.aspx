@@ -85,7 +85,7 @@
                 Uncheck if the matter is already completed
             </td>
         </tr>
-        <tr>
+        <%--<tr>
             <td class="display-label">
                 Parent
             </td>
@@ -137,7 +137,7 @@
                     });
                 </script>
             </td>
-        </tr>
+        </tr>--%>
     </table>
     <p>
         <input type="submit" value="Save" />

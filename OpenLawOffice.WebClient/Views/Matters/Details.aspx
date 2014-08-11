@@ -50,7 +50,7 @@
                 <%: Model.Id %>
             </td>
         </tr>
-        <tr>
+        <%--<tr>
             <td class="display-label">
                 Parent
             </td>
@@ -60,7 +60,7 @@
                 <%: Model.Parent.Title%>
                 <% } %>
             </td>
-        </tr>
+        </tr>--%>
         <tr>
             <td class="display-label">
                 Title
