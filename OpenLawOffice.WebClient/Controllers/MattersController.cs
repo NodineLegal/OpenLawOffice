@@ -305,7 +305,21 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult Tasks(Guid id)
         {
-            return View(TasksController.GetListForMatter(id));
+            bool? active;
+            string activeStr = Request["active"];
+            switch (activeStr)
+            {
+                case "inactive":
+                    active = false;
+                    break;
+                case "both":
+                    active = null;
+                    break;
+                default:
+                    active = true;
+                    break;
+            }
+            return View(TasksController.GetListForMatter(id, active));
         }
 
         [Authorize(Roles = "Login, User")]
@@ -433,7 +447,7 @@ namespace OpenLawOffice.WebClient.Controllers
             viewModel = new ViewModels.Matters.MatterTimeViewModel();
             viewModel.Tasks = new List<ViewModels.Matters.MatterTimeViewModel.Task>();
 
-            Data.Tasks.Task.ListForMatter(id).ForEach(x =>
+            Data.Tasks.Task.ListForMatter(id, null).ForEach(x =>
             {
                 times = Data.Timing.Time.ListForTask(x.Id.Value);
 

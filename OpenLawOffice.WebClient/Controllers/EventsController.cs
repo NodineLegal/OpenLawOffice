@@ -43,7 +43,7 @@ namespace OpenLawOffice.WebClient.Controllers
             });
 
             return View(usersList);
-        }
+        } 
 
         [Authorize(Roles = "Login, User")]
         public ActionResult SelectContact()

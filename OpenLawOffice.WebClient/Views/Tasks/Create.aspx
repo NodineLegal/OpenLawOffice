@@ -115,7 +115,7 @@
             </td>
         </tr>
         
-        <tr>
+        <%--<tr>
             <td class="display-label">
                 Group
             </td>
@@ -180,7 +180,7 @@
                     });
                 </script>
             </td>
-        </tr>
+        </tr>--%>
     </table>
     <p>
         <input type="submit" value="Save" />

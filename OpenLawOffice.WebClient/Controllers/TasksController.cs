@@ -30,84 +30,84 @@ namespace OpenLawOffice.WebClient.Controllers
     [HandleError(View = "Errors/Index", Order = 10)]
     public class TasksController : BaseController
     {
-        [HttpGet]
-        [Authorize(Roles = "Login, User")]
-        public ActionResult ListChildrenJqGrid(long? id)
-        {
-            List<ViewModels.Tasks.TaskViewModel> modelList;
-            ViewModels.JqGridObject jqObject;
-            List<object> anonList;
-            int level = 0;
+        //[HttpGet]
+        //[Authorize(Roles = "Login, User")]
+        //public ActionResult ListChildrenJqGrid(long? id)
+        //{
+        //    List<ViewModels.Tasks.TaskViewModel> modelList;
+        //    ViewModels.JqGridObject jqObject;
+        //    List<object> anonList;
+        //    int level = 0;
 
-            if (id == null)
-            {
-                // jqGrid uses nodeid by default
-                if (!string.IsNullOrEmpty(Request["nodeid"]))
-                    id = long.Parse(Request["nodeid"]);
-            }
+        //    if (id == null)
+        //    {
+        //        // jqGrid uses nodeid by default
+        //        if (!string.IsNullOrEmpty(Request["nodeid"]))
+        //            id = long.Parse(Request["nodeid"]);
+        //    }
 
-            anonList = new List<object>();
+        //    anonList = new List<object>();
 
-            if (!string.IsNullOrEmpty(Request["n_level"]))
-                level = int.Parse(Request["n_level"]) + 1;
+        //    if (!string.IsNullOrEmpty(Request["n_level"]))
+        //        level = int.Parse(Request["n_level"]) + 1;
 
-            if (!id.HasValue)
-            {
-                string matterid = Request["MatterId"];
-                if (string.IsNullOrEmpty(matterid))
-                    modelList = GetList();
-                else
-                    modelList = GetListForMatter(Guid.Parse(matterid));
-            }
-            else
-            {
-                modelList = GetChildrenList(id.Value);
-            }
+        //    if (!id.HasValue)
+        //    {
+        //        string matterid = Request["MatterId"];
+        //        if (string.IsNullOrEmpty(matterid))
+        //            modelList = GetList();
+        //        else
+        //            modelList = GetListForMatter(Guid.Parse(matterid));
+        //    }
+        //    else
+        //    {
+        //        modelList = GetChildrenList(id.Value);
+        //    }
 
-            modelList.ForEach(x =>
-            {
-                if (x.IsGroupingTask)
-                {
-                    // isLeaf = false
-                    anonList.Add(new
-                    {
-                        Id = x.Id,
-                        Title = x.Title,
-                        Type = x.Type,
-                        DueDate = x.DueDate,
-                        Description = x.Description,
-                        level = level,
-                        isLeaf = false,
-                        expanded = false
-                    });
-                }
-                else
-                {
-                    // isLeaf = true
-                    anonList.Add(new
-                    {
-                        Id = x.Id,
-                        Title = x.Title,
-                        Type = x.Type,
-                        DueDate = x.DueDate,
-                        Description = x.Description,
-                        level = level,
-                        isLeaf = true,
-                        expanded = false
-                    });
-                }
-            });
+        //    modelList.ForEach(x =>
+        //    {
+        //        if (x.IsGroupingTask)
+        //        {
+        //            // isLeaf = false
+        //            anonList.Add(new
+        //            {
+        //                Id = x.Id,
+        //                Title = x.Title,
+        //                Type = x.Type,
+        //                DueDate = x.DueDate,
+        //                Description = x.Description,
+        //                level = level,
+        //                isLeaf = false,
+        //                expanded = false
+        //            });
+        //        }
+        //        else
+        //        {
+        //            // isLeaf = true
+        //            anonList.Add(new
+        //            {
+        //                Id = x.Id,
+        //                Title = x.Title,
+        //                Type = x.Type,
+        //                DueDate = x.DueDate,
+        //                Description = x.Description,
+        //                level = level,
+        //                isLeaf = true,
+        //                expanded = false
+        //            });
+        //        }
+        //    });
 
-            jqObject = new ViewModels.JqGridObject()
-            {
-                TotalPages = 1,
-                CurrentPage = 1,
-                TotalRecords = modelList.Count,
-                Rows = anonList.ToArray()
-            };
+        //    jqObject = new ViewModels.JqGridObject()
+        //    {
+        //        TotalPages = 1,
+        //        CurrentPage = 1,
+        //        TotalRecords = modelList.Count,
+        //        Rows = anonList.ToArray()
+        //    };
 
-            return Json(jqObject, JsonRequestBehavior.AllowGet);
-        }
+        //    return Json(jqObject, JsonRequestBehavior.AllowGet);
+        //}
 
         public static List<ViewModels.Tasks.TaskViewModel> GetChildrenList(long id)
         {
@@ -141,14 +141,14 @@ namespace OpenLawOffice.WebClient.Controllers
             return viewModelList;
         }
 
-        public static List<ViewModels.Tasks.TaskViewModel> GetListForMatter(Guid matterid)
+        public static List<ViewModels.Tasks.TaskViewModel> GetListForMatter(Guid matterid, bool? active)
         {
             List<ViewModels.Tasks.TaskViewModel> viewModelList;
             ViewModels.Tasks.TaskViewModel viewModel;
 
             viewModelList = new List<ViewModels.Tasks.TaskViewModel>();
 
-            Data.Tasks.Task.ListForMatter(matterid).ForEach(x =>
+            Data.Tasks.Task.ListForMatter(matterid, active).ForEach(x =>
             {
                 viewModel = Mapper.Map<ViewModels.Tasks.TaskViewModel>(x);
 

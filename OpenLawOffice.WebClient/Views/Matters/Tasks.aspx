@@ -14,7 +14,71 @@
     </style>
     <h2>
         Tasks for Matter<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
-    <table id="list">
+
+    <div class="options_div">
+        Active: 
+        <select id="activeSelector">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="both">Both</option>
+        </select>
+
+<script language="javascript">
+    var vars = [], hash;
+        var q = document.URL.split('?')[1];
+        if(q != undefined){
+            q = q.split('&');
+            for(var i = 0; i < q.length; i++){
+                hash = q[i].split('=');
+                vars.push(hash[1]);
+                vars[hash[0]] = hash[1];
+            }
+    }
+    $(document).ready(function () {
+        if (vars['active'] != null)
+            $('#activeSelector').val(vars['active'])
+    });
+    $("#activeSelector").change(function () {
+        var base;
+        var qMarkAt = window.location.href.lastIndexOf('?');
+        if (qMarkAt > 0)
+            base = window.location.href.substr(0, qMarkAt);
+        else
+            base = window.location.href;
+        window.location.href = base + '?active=' + $("#activeSelector").val();
+    });
+</script>
+    </div>
+
+    <table class="listing_table">
+        <tr>
+            <th style="text-align: center;">
+                Title
+            </th>
+            <th style="text-align: center;">
+                Due Date
+            </th>
+            <th style="text-align: center;">
+                
+            </th>
+        </tr>
+        <% foreach (var item in Model)
+           { %>
+        <tr>
+            <td>
+                <%: Html.ActionLink(item.Title, "Details", "Tasks", new { id = item.Id.Value }, null) %>
+            </td>
+            <td>
+                <%: item.DueDate %>
+            </td>
+            <td>
+                <%: Html.ActionLink("Edit", "Edit", "Tasks", new { id = item.Id.Value }, new { @class = "btn-edit", title = "Edit" })%>
+            </td>
+        </tr>
+        <% } %>
+    </table>
+
+    <%--<table id="list">
     </table>
     <div id="pager">
     </div>
@@ -23,6 +87,7 @@
             $("#list").jqGrid({
                 treeGrid: true,
                 autowidth: true,
+                height: '100%',
                 url: '/Tasks/ListChildrenJqGrid?MatterId=<%: RouteData.Values["Id"].ToString() %>',
                 datatype: 'json',
                 jsonReader: {
@@ -61,7 +126,7 @@
             return '<a href="/Tasks/Details/' + options.rowId + '">' + cellvalue + '</a>';
         }
     </script>
-
+--%>
     <div id="pageInfoDialog" title="Help">
         <p>
         <span style="font-weight: bold; text-decoration: underline;">Info:</span>

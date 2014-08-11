@@ -233,6 +233,14 @@ table th
     border: solid 1px #e8eef4;
 }
 
+#main div.options_div
+{
+    width: 100%;
+    background-color: #e8eef4;
+    margin: 0 0 5px 0;
+    padding: 3px;
+}
+
 #main table.listing_table
 {
     width: 100%;

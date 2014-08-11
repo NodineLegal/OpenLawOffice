@@ -64,7 +64,7 @@ namespace OpenLawOffice.Data.Tasks
             return list;
         }
 
-        public static List<Common.Models.Tasks.Task> ListForMatter(Guid matterId)
+        public static List<Common.Models.Tasks.Task> ListForMatter(Guid matterId, bool? active)
         {
             /* Standard Tasks are neither hierarchical or sequenced - not is_grouping_task, no parent_id
              *  We do not need to test for sequential followers as we can infer this from the fact that a
@@ -107,11 +107,19 @@ namespace OpenLawOffice.Data.Tasks
              * ST8
              *
              */
-            return DataHelper.List<Common.Models.Tasks.Task, DBOs.Tasks.Task>(
-                "SELECT * FROM \"task\" WHERE \"parent_id\" is null AND " +
-                "\"id\" in (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId) AND " +
-                "\"utc_disabled\" is null",
-                new { MatterId = matterId });
+
+            if (!active.HasValue)
+                return DataHelper.List<Common.Models.Tasks.Task, DBOs.Tasks.Task>(
+                    "SELECT * FROM \"task\" WHERE \"parent_id\" is null AND " +
+                    "\"id\" in (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId) AND " +
+                    "\"utc_disabled\" is null",
+                    new { MatterId = matterId });
+            else
+                return DataHelper.List<Common.Models.Tasks.Task, DBOs.Tasks.Task>(
+                    "SELECT * FROM \"task\" WHERE \"parent_id\" is null AND " +
+                    "\"id\" in (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId) AND " +
+                    "\"utc_disabled\" is null AND \"active\"=@Active",
+                    new { MatterId = matterId, Active = active.Value });
         }
 
         public static List<Common.Models.Tasks.Task> GetTodoListFor(Common.Models.Account.Users user, List<Common.Models.Settings.TagFilter> tagFilter, DateTime? start = null, DateTime? stop = null)
