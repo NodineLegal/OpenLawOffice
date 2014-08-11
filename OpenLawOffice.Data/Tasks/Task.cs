@@ -112,13 +112,13 @@ namespace OpenLawOffice.Data.Tasks
                 return DataHelper.List<Common.Models.Tasks.Task, DBOs.Tasks.Task>(
                     "SELECT * FROM \"task\" WHERE \"parent_id\" is null AND " +
                     "\"id\" in (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId) AND " +
-                    "\"utc_disabled\" is null ORDER BY \"DueDate\" ASC",
+                    "\"utc_disabled\" is null ORDER BY \"due_date\" ASC",
                     new { MatterId = matterId });
             else
                 return DataHelper.List<Common.Models.Tasks.Task, DBOs.Tasks.Task>(
                     "SELECT * FROM \"task\" WHERE \"parent_id\" is null AND " +
                     "\"id\" in (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId) AND " +
-                    "\"utc_disabled\" is null AND \"active\"=@Active ORDER BY \"DueDate\" ASC",
+                    "\"utc_disabled\" is null AND \"active\"=@Active ORDER BY \"due_date\" ASC",
                     new { MatterId = matterId, Active = active.Value });
         }
 
