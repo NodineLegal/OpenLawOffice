@@ -159,6 +159,7 @@
     <Compile Include="IFormsAuthenticationService.cs" />
     <Compile Include="ViewModels\JqGridObject.cs" />
     <Compile Include="ViewModels\Matters\CreateMatterViewModel.cs" />
+    <Compile Include="ViewModels\Matters\EditMatterViewModel.cs" />
     <Compile Include="ViewModels\Matters\MatterContactViewModel.cs" />
     <Compile Include="ViewModels\Matters\MatterTagViewModel.cs" />
     <Compile Include="ViewModels\Matters\MatterTimeViewModel.cs" />
@@ -216,6 +217,7 @@
     <Content Include="Content\images\ui-icons_f9bd01_256x240.png" />
     <Content Include="Content\jquery-ui-1.10.4.custom.css" />
     <Content Include="Content\jquery-ui-1.10.4.custom.min.css" />
+    <Content Include="DatabaseSchemaUpdates.txt" />
     <Content Include="Global.asax" />
     <Content Include="LICENSE.txt" />
     <Content Include="Scripts\fullcalendar\fullcalendar.js" />

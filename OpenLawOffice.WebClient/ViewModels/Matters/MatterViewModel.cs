@@ -39,6 +39,12 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
 
         public bool Active { get; set; }
 
+        public string Jurisdiction { get; set; }
+
+        public string CaseNumber { get; set; }
+
+        public Contacts.ContactViewModel LeadAttorney { get; set; }
+
         public List<ViewModels.Tasks.TaskViewModel> Tasks { get; set; }
 
         public void BuildMappings()
@@ -86,6 +92,17 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis))
                 .ForMember(dst => dst.Active, opt => opt.MapFrom(src => src.Active))
+                .ForMember(dst => dst.Jurisdiction, opt => opt.MapFrom(src => src.Jurisdiction))
+                .ForMember(dst => dst.CaseNumber, opt => opt.MapFrom(src => src.CaseNumber))
+                .ForMember(dst => dst.LeadAttorney, opt => opt.ResolveUsing(db =>
+                {
+                    if (db.LeadAttorney == null || !db.LeadAttorney.Id.HasValue) return null;
+                    return new ViewModels.Contacts.ContactViewModel()
+                    {
+                        Id = db.LeadAttorney.Id.Value,
+                        IsStub = true
+                    };
+                }))
                 .ForMember(dst => dst.Tasks, opt => opt.Ignore());
 
             Mapper.CreateMap<MatterViewModel, Common.Models.Matters.Matter>()
@@ -98,7 +115,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
                         return null;
                     return new ViewModels.Account.UsersViewModel()
                     {
-                        PId = x.CreatedBy.PId
+                        PId = x.CreatedBy.PId,
+                        IsStub = true
                     };
                 }))
                 .ForMember(dst => dst.ModifiedBy, opt => opt.ResolveUsing(x =>
@@ -107,7 +125,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
                         return null;
                     return new ViewModels.Account.UsersViewModel()
                     {
-                        PId = x.ModifiedBy.PId
+                        PId = x.ModifiedBy.PId,
+                        IsStub = true
                     };
                 }))
                 .ForMember(dst => dst.DisabledBy, opt => opt.ResolveUsing(x =>
@@ -116,7 +135,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
                         return null;
                     return new ViewModels.Account.UsersViewModel()
                     {
-                        PId = x.DisabledBy.PId.Value
+                        PId = x.DisabledBy.PId.Value,
+                        IsStub = true
                     };
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
@@ -128,7 +148,19 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
                 }))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis))
-                .ForMember(dst => dst.Active, opt => opt.MapFrom(src => src.Active));
+                .ForMember(dst => dst.Active, opt => opt.MapFrom(src => src.Active))
+                .ForMember(dst => dst.Jurisdiction, opt => opt.MapFrom(src => src.Jurisdiction))
+                .ForMember(dst => dst.CaseNumber, opt => opt.MapFrom(src => src.CaseNumber))
+                .ForMember(dst => dst.LeadAttorney, opt => opt.ResolveUsing(x =>
+                {
+                    if (x.LeadAttorney == null || !x.LeadAttorney.Id.HasValue)
+                        return null;
+                    return new ViewModels.Contacts.ContactViewModel()
+                    {
+                        Id = x.LeadAttorney.Id.Value, 
+                        IsStub = true
+                    };
+                }));
         }
     }
 }

@@ -43,6 +43,35 @@
         </tr>
         <tr>
             <td class="display-label">
+                Jurisdiction
+            </td>
+            <td class="display-field">
+                <%: Html.TextBoxFor(model => model.Matter.Jurisdiction) %>
+                <%: Html.ValidationMessageFor(model => model.Matter.Jurisdiction)%>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
+                Case Number
+            </td>
+            <td class="display-field">
+                <%: Html.TextBoxFor(model => model.Matter.CaseNumber)%>
+                <%: Html.ValidationMessageFor(model => model.Matter.CaseNumber)%>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
+                Lead Attorney<span class="required-field" title="Required Field">*</span>
+            </td>
+            <td class="display-field">
+                <%: Html.ValidationMessageFor(model => model.LeadAttorney)%>
+                <%: Html.DropDownListFor(x => x.LeadAttorney.Contact.Id,
+                        new SelectList((IList)ViewData["EmployeeContactList"], "Id", "DisplayName"),
+                        new { @size = 5, @style = "width: 100%" })%>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
                 Active<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
@@ -69,12 +98,12 @@
                 <%: Html.ValidationMessageFor(model => model.ResponsibleUser.Responsibility)%>
             </td>
         </tr>
-        <tr>
+        <%--<tr>
             <td class="display-label">
                 Assigned Contact
             </td>
             <td class="display-field">
-                <%: Html.DropDownListFor(x => x.MatterContact.Contact.Id,
+                <%: Html.DropDownListFor(x => x.AssignedContact.Contact.Id,
                         new SelectList((IList)ViewData["EmployeeContactList"], "Id", "DisplayName"),
                         new { @size = 5, @style = "width: 100%" })%>
             </td>
@@ -84,11 +113,11 @@
                 Role<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.MatterContact.Role) %>
-                <%: Html.ValidationMessageFor(model => model.MatterContact.Role)%>
+                <%: Html.TextBoxFor(model => model.AssignedContact.Role)%>
+                <%: Html.ValidationMessageFor(model => model.AssignedContact.Role)%>
             </td>
         </tr>
-        <%--<tr>
+        <tr>
             <td class="display-label">
                 Parent
             </td>

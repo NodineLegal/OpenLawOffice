@@ -174,9 +174,11 @@ namespace OpenLawOffice.WebClient.Controllers
             Common.Models.Matters.Matter model;
 
             model = Data.Matters.Matter.Get(id);
+            model.LeadAttorney = Data.Contacts.Contact.Get(model.LeadAttorney.Id.Value);
 
             viewModel = Mapper.Map<ViewModels.Matters.MatterViewModel>(model);
             viewModel.Tasks = TasksController.GetListForMatter(id, true);
+            viewModel.LeadAttorney = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.LeadAttorney);
 
             PopulateCoreDetails(viewModel);
 
@@ -219,6 +221,35 @@ namespace OpenLawOffice.WebClient.Controllers
 
             model = Mapper.Map<Common.Models.Matters.Matter>(viewModel.Matter);
 
+            if (viewModel.LeadAttorney == null || viewModel.LeadAttorney.Contact == null ||
+                !viewModel.LeadAttorney.Contact.Id.HasValue)
+            {
+                List<ViewModels.Account.UsersViewModel> userList;
+                List<ViewModels.Contacts.ContactViewModel> employeeContactList;
+
+                userList = new List<ViewModels.Account.UsersViewModel>();
+                employeeContactList = new List<ViewModels.Contacts.ContactViewModel>();
+
+                Data.Account.Users.List().ForEach(x =>
+                {
+                    userList.Add(Mapper.Map<ViewModels.Account.UsersViewModel>(x));
+                });
+
+                Data.Contacts.Contact.ListEmployeesOnly().ForEach(x =>
+                {
+                    employeeContactList.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(x));
+                });
+
+                ModelState.AddModelError("LeadAttorney", "Lead Attorney is required");
+
+                ViewData["UserList"] = userList;
+                ViewData["EmployeeContactList"] = employeeContactList;
+                return View(viewModel);
+            }
+
+            model.LeadAttorney = Mapper.Map<Common.Models.Contacts.Contact>(viewModel.LeadAttorney.Contact);
+
+            // Lead Attorney is created within this method
             model = Data.Matters.Matter.Create(model, currentUser);
 
             Data.Matters.ResponsibleUser.Create(new Common.Models.Matters.ResponsibleUser()
@@ -227,12 +258,6 @@ namespace OpenLawOffice.WebClient.Controllers
                 User = new Common.Models.Account.Users() { PId = viewModel.ResponsibleUser.User.PId },
                 Responsibility = viewModel.ResponsibleUser.Responsibility
             }, currentUser);
-            Data.Matters.MatterContact.Create(new Common.Models.Matters.MatterContact()
-            {
-                Matter = model,
-                Contact = new Common.Models.Contacts.Contact() { Id = viewModel.MatterContact.Contact.Id },
-                Role = viewModel.MatterContact.Role
-            }, currentUser);
 
             return RedirectToAction("Details", new { Id = model.Id });
         }
@@ -240,26 +265,59 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult Edit(Guid id)
         {
-            ViewModels.Matters.MatterViewModel viewModel;
+            List<ViewModels.Contacts.ContactViewModel> employeeContactList;
+            ViewModels.Matters.EditMatterViewModel viewModel;
             Common.Models.Matters.Matter model;
 
+            employeeContactList = new List<ViewModels.Contacts.ContactViewModel>();
             model = Data.Matters.Matter.Get(id);
+            model.LeadAttorney = Data.Contacts.Contact.Get(model.LeadAttorney.Id.Value);
+            
+            Data.Contacts.Contact.ListEmployeesOnly().ForEach(x =>
+            {
+                employeeContactList.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(x));
+            });
 
-            viewModel = Mapper.Map<ViewModels.Matters.MatterViewModel>(model);
+            viewModel = new ViewModels.Matters.EditMatterViewModel();
+            viewModel.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(model);
+            viewModel.LeadAttorney = new ViewModels.Matters.MatterContactViewModel();
+            viewModel.LeadAttorney.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.LeadAttorney);
 
+            ViewData["EmployeeContactList"] = employeeContactList;
             return View(viewModel);
         }
 
         [HttpPost]
         [Authorize(Roles = "Login, User")]
-        public ActionResult Edit(Guid id, ViewModels.Matters.MatterViewModel viewModel)
+        public ActionResult Edit(Guid id, ViewModels.Matters.EditMatterViewModel viewModel)
         {
             Common.Models.Account.Users currentUser;
             Common.Models.Matters.Matter model;
 
+            viewModel.Matter.Id = id;
+
+            if (viewModel.LeadAttorney == null || viewModel.LeadAttorney.Contact == null ||
+                !viewModel.LeadAttorney.Contact.Id.HasValue)
+            {
+                List<ViewModels.Contacts.ContactViewModel> employeeContactList;
+
+                employeeContactList = new List<ViewModels.Contacts.ContactViewModel>();
+
+                Data.Contacts.Contact.ListEmployeesOnly().ForEach(x =>
+                {
+                    employeeContactList.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(x));
+                });
+
+                ModelState.AddModelError("LeadAttorney", "Lead Attorney is required");
+
+                ViewData["EmployeeContactList"] = employeeContactList;
+                return View(viewModel);
+            }
+
             currentUser = Data.Account.Users.Get(User.Identity.Name);
 
-            model = Mapper.Map<Common.Models.Matters.Matter>(viewModel);
+            viewModel.Matter.LeadAttorney = viewModel.LeadAttorney.Contact;
+            model = Mapper.Map<Common.Models.Matters.Matter>(viewModel.Matter);
 
             model = Data.Matters.Matter.Edit(model, currentUser);
 

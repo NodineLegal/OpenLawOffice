@@ -131,10 +131,19 @@ namespace OpenLawOffice.Data.Matters
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("INSERT INTO \"matter\" (\"id\", \"title\", \"active\", \"parent_id\", \"synopsis\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
-                    "VALUES (@Id, @Title, @Active, @ParentId, @Synopsis, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
+                conn.Execute("INSERT INTO \"matter\" (\"id\", \"title\", \"active\", \"parent_id\", \"synopsis\", \"utc_created\", \"utc_modified\", " +
+                    "\"created_by_user_pid\", \"modified_by_user_pid\", \"jurisdiction\", \"case_number\", \"lead_attorney_contact_id\") " +
+                    "VALUES (@Id, @Title, @Active, @ParentId, @Synopsis, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId, " +
+                    "@Jurisdiction, @CaseNumber, @LeadAttorneyContactId)",
                     dbo);
             }
+
+            MatterContact.Create(new Common.Models.Matters.MatterContact()
+            {
+                Matter = model,
+                Contact = new Common.Models.Contacts.Contact() { Id = dbo.LeadAttorneyContactId.Value },
+                Role = "Lead Attorney"
+            }, creator);
 
             return model;
         }
@@ -144,13 +153,34 @@ namespace OpenLawOffice.Data.Matters
         {
             model.ModifiedBy = modifier;
             model.Modified = DateTime.UtcNow;
+            List<Common.Models.Matters.MatterContact> leadAttorneyMatches;
             DBOs.Matters.Matter dbo = Mapper.Map<DBOs.Matters.Matter>(model);
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("UPDATE \"matter\" SET " +
-                    "\"title\"=@Title, \"active\"=@Active, \"parent_id\"=@ParentId, \"synopsis\"=@Synopsis, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserPId " +
+                    "\"title\"=@Title, \"active\"=@Active, \"parent_id\"=@ParentId, \"synopsis\"=@Synopsis, \"utc_modified\"=@UtcModified, " +
+                    "\"modified_by_user_pid\"=@ModifiedByUserPId, \"jurisdiction\"=@Jurisdiction, \"case_number\"=@CaseNumber, \"lead_attorney_contact_id\"=@LeadAttorneyContactId " +
                     "WHERE \"id\"=@Id", dbo);
+            }
+
+            leadAttorneyMatches = MatterContact.ListForMatterByRole(dbo.Id, "Lead Attorney");
+
+            if (leadAttorneyMatches.Count > 1)
+                throw new Exception("More than one lead attorney found.");
+            else if (leadAttorneyMatches.Count < 1)
+            {   // Insert only
+                MatterContact.Create(new Common.Models.Matters.MatterContact()
+                {
+                    Matter = model,
+                    Contact = new Common.Models.Contacts.Contact() { Id = dbo.LeadAttorneyContactId.Value },
+                    Role = "Lead Attorney"
+                }, modifier);
+            }
+            else
+            {   // Replace
+                leadAttorneyMatches[0].Contact.Id = dbo.LeadAttorneyContactId.Value;
+                MatterContact.Edit(leadAttorneyMatches[0], modifier);
             }
 
             return model;

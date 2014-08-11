@@ -5,11 +5,9 @@ using System.Web;
 
 namespace OpenLawOffice.WebClient.ViewModels.Matters
 {
-    public class CreateMatterViewModel
+    public class EditMatterViewModel
     {
         public MatterViewModel Matter { get; set; }
-
-        public Matters.ResponsibleUserViewModel ResponsibleUser { get; set; }
 
         public Matters.MatterContactViewModel LeadAttorney { get; set; }
     }

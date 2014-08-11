@@ -1,0 +1,11 @@
+﻿8/11/2014
+For issue #47
+
+ALTER TABLE matter
+  ADD COLUMN jurisdiction text;
+ALTER TABLE matter
+  ADD COLUMN case_number text;
+ALTER TABLE matter
+  ADD COLUMN lead_attorney_contact_id integer;
+ALTER TABLE matter
+  ADD CONSTRAINT "FK_matter_contact_lead_attorney_contact_id" FOREIGN KEY (lead_attorney_contact_id) REFERENCES contact (id) ON UPDATE NO ACTION ON DELETE NO ACTION;

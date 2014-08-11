@@ -34,5 +34,11 @@ namespace OpenLawOffice.Common.Models.Matters
         public string Synopsis { get; set; }
 
         public bool Active { get; set; }
+
+        public string Jurisdiction { get; set; }
+
+        public string CaseNumber { get; set; }
+
+        public Contacts.Contact LeadAttorney { get; set; }
     }
 }

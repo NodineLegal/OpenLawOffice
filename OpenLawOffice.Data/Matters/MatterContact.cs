@@ -47,6 +47,13 @@ namespace OpenLawOffice.Data.Matters
                 new { MatterId = matterId, ContactId = contactId });
         }
 
+        public static List<Common.Models.Matters.MatterContact> ListForMatterByRole(Guid matterId, string role)
+        {
+            return DataHelper.List<Common.Models.Matters.MatterContact, DBOs.Matters.MatterContact>(
+                "SELECT * FROM \"matter_contact\" WHERE \"matter_id\"=@MatterId AND \"role\"=@Role AND \"utc_disabled\" is null",
+                new { MatterId = matterId, Role = role });
+        }
+
         public static List<Common.Models.Matters.MatterContact> ListForMatter(Guid matterId)
         {
             List<Common.Models.Matters.MatterContact> list =

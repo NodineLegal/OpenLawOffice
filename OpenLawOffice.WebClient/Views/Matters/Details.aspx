@@ -77,6 +77,30 @@
                 <%: Model.Synopsis %>
             </td>
         </tr>
+        <tr>
+            <td class="display-label">
+                Jurisdiction
+            </td>
+            <td class="display-field">
+                <%: Model.Jurisdiction %>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
+                Case Number
+            </td>
+            <td class="display-field">
+                <%: Model.CaseNumber %>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
+                Lead Attorney
+            </td>
+            <td class="display-field">
+                <%: Model.LeadAttorney.DisplayName %>
+            </td>
+        </tr>
     </table>
     <% Html.RenderPartial("CoreDetailsView"); %>
 

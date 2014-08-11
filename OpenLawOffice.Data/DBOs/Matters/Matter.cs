@@ -42,6 +42,15 @@ namespace OpenLawOffice.Data.DBOs.Matters
         [ColumnMapping(Name = "active")]
         public bool Active { get; set; }
 
+        [ColumnMapping(Name = "jurisdiction")]
+        public string Jurisdiction { get; set; }
+
+        [ColumnMapping(Name = "case_number")]
+        public string CaseNumber { get; set; }
+
+        [ColumnMapping(Name = "lead_attorney_contact_id")]
+        public int? LeadAttorneyContactId { get; set; }
+
         public void BuildMappings()
         {
             Dapper.SqlMapper.SetTypeMap(typeof(Matter), new ColumnAttributeTypeMapper<Matter>());
@@ -88,7 +97,18 @@ namespace OpenLawOffice.Data.DBOs.Matters
                 .ForMember(dst => dst.ParentId, opt => opt.MapFrom(src => src.ParentId))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis))
-                .ForMember(dst => dst.Active, opt => opt.MapFrom(src => src.Active));
+                .ForMember(dst => dst.Active, opt => opt.MapFrom(src => src.Active))
+                .ForMember(dst => dst.Jurisdiction, opt => opt.MapFrom(src => src.Jurisdiction))
+                .ForMember(dst => dst.CaseNumber, opt => opt.MapFrom(src => src.CaseNumber))
+                .ForMember(dst => dst.LeadAttorney, opt => opt.ResolveUsing(db =>
+                {
+                    if (!db.LeadAttorneyContactId.HasValue) return null;
+                    return new Common.Models.Contacts.Contact()
+                    {
+                        Id = db.LeadAttorneyContactId.Value,
+                        IsStub = true
+                    };
+                }));
 
             Mapper.CreateMap<Common.Models.Matters.Matter, DBOs.Matters.Matter>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.ResolveUsing(db =>
@@ -124,7 +144,14 @@ namespace OpenLawOffice.Data.DBOs.Matters
                 .ForMember(dst => dst.ParentId, opt => opt.MapFrom(src => src.ParentId))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis))
-                .ForMember(dst => dst.Active, opt => opt.MapFrom(src => src.Active));
+                .ForMember(dst => dst.Active, opt => opt.MapFrom(src => src.Active))
+                .ForMember(dst => dst.Jurisdiction, opt => opt.MapFrom(src => src.Jurisdiction))
+                .ForMember(dst => dst.CaseNumber, opt => opt.MapFrom(src => src.CaseNumber))
+                .ForMember(dst => dst.LeadAttorneyContactId, opt => opt.ResolveUsing(model =>
+                {
+                    if (model.LeadAttorney == null) return null;
+                    return model.LeadAttorney.Id;
+                }));
         }
     }
 }
