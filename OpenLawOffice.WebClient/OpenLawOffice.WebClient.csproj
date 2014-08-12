@@ -194,6 +194,7 @@
     <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\download-cloud.png" />
     <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\exclamation-shield.png" />
     <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\gear-arrow.png" />
+    <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\hourglass-select.png" />
     <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\pencil.png" />
     <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\question.png" />
     <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\user-arrow.png" />
