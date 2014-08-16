@@ -9,6 +9,9 @@
     <table class="listing_table">
         <tr>
             <th style="text-align: center;">
+                Matter
+            </th>
+            <th style="text-align: center;">
                 Task
             </th>
             <th style="text-align: center;">
@@ -19,12 +22,15 @@
            { %>
         <tr>
             <td>
-                <%: Html.ActionLink(item.Title, "Details", "Tasks", new { id = item.Id.Value }, null) %>
+                <%: Html.ActionLink(item.Item1.Title, "Details", "Matters", new { id = item.Item1.Id.Value }, null)%>
             </td>
             <td>
-                <% if (item.DueDate.HasValue)
+                <%: Html.ActionLink(item.Item2.Title, "Details", "Tasks", new { id = item.Item2.Id.Value }, null)%>
+            </td>
+            <td>
+                <% if (item.Item2.DueDate.HasValue)
                    { %>
-                <%: String.Format("{0:g}", item.DueDate.Value) %>
+                <%: String.Format("{0:g}", item.Item2.DueDate.Value)%>
                 <% } %>
             </td>
         </tr>

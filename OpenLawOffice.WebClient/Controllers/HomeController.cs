@@ -24,6 +24,7 @@ namespace OpenLawOffice.WebClient.Controllers
     using System.Collections.Generic;
     using System.Web.Mvc;
     using AutoMapper;
+    using System;
 
     [HandleError(View = "Errors/Index", Order = 10)]
     public class HomeController : BaseController
@@ -34,6 +35,7 @@ namespace OpenLawOffice.WebClient.Controllers
             ViewModels.Home.DashboardViewModel viewModel;
             Common.Models.Account.Users currentUser;
             List<Common.Models.Settings.TagFilter> tagFilter;
+            Common.Models.Matters.Matter matter;
 
             try
             {
@@ -48,13 +50,17 @@ namespace OpenLawOffice.WebClient.Controllers
 
             currentUser = Data.Account.Users.Get(User.Identity.Name);
 
-            viewModel.MyTodoList = new List<ViewModels.Tasks.TaskViewModel>();
+            viewModel.MyTodoList = new List<Tuple<ViewModels.Matters.MatterViewModel, ViewModels.Tasks.TaskViewModel>>();
 
             tagFilter = Data.Settings.UserTaskSettings.ListTagFiltersFor(currentUser);
 
             Data.Tasks.Task.GetTodoListFor(currentUser, tagFilter).ForEach(x =>
             {
-                viewModel.MyTodoList.Add(Mapper.Map<ViewModels.Tasks.TaskViewModel>(x));
+                matter = Data.Tasks.Task.GetRelatedMatter(x.Id.Value);
+                viewModel.MyTodoList.Add(
+                    new Tuple<ViewModels.Matters.MatterViewModel,ViewModels.Tasks.TaskViewModel>(
+                    Mapper.Map<ViewModels.Matters.MatterViewModel>(matter),
+                    Mapper.Map<ViewModels.Tasks.TaskViewModel>(x)));
             });
 
             return View(viewModel);

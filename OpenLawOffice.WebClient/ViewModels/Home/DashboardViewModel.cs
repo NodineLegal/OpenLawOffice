@@ -28,6 +28,6 @@ namespace OpenLawOffice.WebClient.ViewModels.Home
 {
     public class DashboardViewModel
     {
-        public List<Tasks.TaskViewModel> MyTodoList { get; set; }
+        public List<Tuple<Matters.MatterViewModel, Tasks.TaskViewModel>> MyTodoList { get; set; }
     }
 }
