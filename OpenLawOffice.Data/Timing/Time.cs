@@ -65,6 +65,23 @@ namespace OpenLawOffice.Data.Timing
                 new { TimeId = timeId });
         }
 
+        public static List<Common.Models.Timing.Time> ListConflictingTimes(DateTime start, DateTime stop)
+        {
+            // Check for overlap
+            // We work in time frames or windows
+            // The new time can either (1) be within an existing time, (2) overlap an existing time, (3) encumpas an existing time or (4) be exclusive in reference to other time
+            // The ONLY valid entry is #4
+            if (start.Kind != DateTimeKind.Utc)
+                start = start.ToDbTime();
+            if (stop.Kind != DateTimeKind.Utc)
+                stop = stop.ToDbTime();
+            return DataHelper.List<Common.Models.Timing.Time, DBOs.Timing.Time>(
+                "SELECT * FROM time WHERE (@Start > \"start\" AND @Start < \"stop\" AND \"worker_contact_id\"=1) OR " + // 1 and 2
+                "(@Stop > \"start\" AND @Stop < \"stop\" AND \"worker_contact_id\"=1) OR " + // 1 and 2
+                "(@Start <= \"start\" AND @Stop >= \"stop\" AND \"worker_contact_id\"=1)",
+                new { Start = start, Stop = stop });
+        }
+
         public static bool IsFastTime(Guid timeId)
         {
             return (GetRelatedTask(timeId) == null);

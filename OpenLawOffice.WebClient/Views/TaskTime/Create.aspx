@@ -50,15 +50,21 @@
                         $('#timeadvance').click(function () {
                             var stop, duration;
                             var start = moment($('#Time_Start').val());
-                            if ($('#Time_Stop').val() == '') {
-                                duration = moment().diff(start, 'minutes');
+
+                            if (moment($('#Time_Start').val()) > moment()) { // time entry in the future, must treat differently
+                                stop = moment(start).add(6, 'minutes').format('M/D/YYYY h:mm A');
                             }
                             else {
-                                stop = moment($('#Time_Stop').val());
-                                duration = stop.diff(start, 'minutes');
+                                if ($('#Time_Stop').val() == '') {
+                                    duration = moment().diff(start, 'minutes');
+                                }
+                                else {
+                                    stop = moment($('#Time_Stop').val());
+                                    duration = stop.diff(start, 'minutes');
+                                }
+                                var minutesToAdd = 6 - (duration % 6);
+                                stop = moment(stop).add(minutesToAdd, 'minutes').format('M/D/YYYY h:mm A');
                             }
-                            var minutesToAdd = 6 - (duration % 6);
-                            stop = moment(stop).add(minutesToAdd, 'minutes').format('M/D/YYYY h:mm A');
                             $('#Time_Stop').val(stop)
                         });
                     });
