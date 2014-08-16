@@ -304,6 +304,30 @@ namespace OpenLawOffice.WebClient.Controllers
         }
 
         [Authorize(Roles = "Login, User")]
+        public ActionResult Close(long id)
+        {
+            return Close(id, null);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Login, User")]
+        public ActionResult Close(long id, ViewModels.Tasks.TaskViewModel viewModel)
+        {
+            Common.Models.Account.Users currentUser;
+            Common.Models.Tasks.Task model;
+
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
+
+            model = Data.Tasks.Task.Get(id);
+            model.Active = false;
+            model.ActualEnd = DateTime.Now;
+
+            model = Data.Tasks.Task.Edit(model, currentUser);
+
+            return RedirectToAction("Details", new { Id = id });
+        }
+
+        [Authorize(Roles = "Login, User")]
         public ActionResult Create()
         {
             List<ViewModels.Account.UsersViewModel> userList;

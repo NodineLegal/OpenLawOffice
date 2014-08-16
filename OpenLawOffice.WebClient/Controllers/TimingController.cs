@@ -93,6 +93,26 @@ namespace OpenLawOffice.WebClient.Controllers
 
             model = Mapper.Map<Common.Models.Timing.Time>(viewModel);
 
+            if (model.Stop.HasValue)
+            {
+                if (Data.Timing.Time.ListConflictingTimes(model.Start,
+                    model.Stop.Value, model.Worker.Id.Value).Count > 0)
+                { // conflict found
+                    Common.Models.Contacts.Contact contact;
+                    Common.Models.Tasks.Task task;
+
+                    contact = Data.Contacts.Contact.Get(viewModel.Worker.Id.Value);
+                    viewModel.Worker = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contact);
+
+                    task = Data.Timing.Time.GetRelatedTask(model.Id.Value);
+
+                    ModelState.AddModelError(String.Empty, "Time conflicts with other time entries.");
+
+                    ViewData["TaskId"] = task.Id.Value;
+                    return View(viewModel);
+                }
+            }
+
             model = Data.Timing.Time.Edit(model, currentUser);
 
             return RedirectToAction("Details", new { Id = id });

@@ -89,7 +89,8 @@ namespace OpenLawOffice.WebClient.Controllers
 
             if (viewModel.Time.Stop.HasValue)
             {
-                if (Data.Timing.Time.ListConflictingTimes(viewModel.Time.Start, viewModel.Time.Stop.Value).Count > 0)
+                if (Data.Timing.Time.ListConflictingTimes(viewModel.Time.Start,
+                    viewModel.Time.Stop.Value, viewModel.Time.Worker.Id.Value).Count > 0)
                 { // conflict found
                     long taskId;
                     int contactId;

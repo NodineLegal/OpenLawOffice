@@ -98,7 +98,10 @@
                 Lead Attorney
             </td>
             <td class="display-field">
-                <%: Model.LeadAttorney.DisplayName %>
+                <% if (Model.LeadAttorney != null)
+                   { %>
+                    <%: Model.LeadAttorney.DisplayName%>
+                <% } %>
             </td>
         </tr>
     </table>
@@ -117,7 +120,7 @@
             <th style="text-align: center;">
                 Due Date
             </th>
-            <th style="text-align: center; width: 25px;">
+            <th style="text-align: center; width: 40px;">
                 
             </th>
         </tr>
@@ -132,6 +135,7 @@
             </td>
             <td>
                 <%: Html.ActionLink("Edit", "Edit", "Tasks", new { id = item.Id.Value }, new { @class = "btn-edit", title = "Edit" })%>
+                <%: Html.ActionLink("Close", "Close", "Tasks", new { id = item.Id.Value }, new { @class = "btn-remove", title = "Close" })%>
             </td>
         </tr>
         <% } %>

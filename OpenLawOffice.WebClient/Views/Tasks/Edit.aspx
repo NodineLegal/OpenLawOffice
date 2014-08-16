@@ -241,7 +241,7 @@
         <input type="submit" value="Save" />
     </p>
     <% } %>
-    <script language="javascript">
+    <%--<script language="javascript">
         $(function () {
             var seqPredId = $("#SequentialPredecessor_Id").val();
 
@@ -259,7 +259,7 @@
                 //$("#SeqDivHidden").hide();
             }
         });
-    </script>
+    </script>--%>
     <div id="pageInfoDialog" title="Help">
         <p>
         <span style="font-weight: bold; text-decoration: underline;">Info:</span>

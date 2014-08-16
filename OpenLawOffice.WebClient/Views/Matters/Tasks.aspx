@@ -50,7 +50,7 @@
             <th style="text-align: center;">
                 Due Date
             </th>
-            <th style="text-align: center;">
+            <th style="text-align: center; width: 40px;">
                 
             </th>
         </tr>
@@ -65,6 +65,10 @@
             </td>
             <td>
                 <%: Html.ActionLink("Edit", "Edit", "Tasks", new { id = item.Id.Value }, new { @class = "btn-edit", title = "Edit" })%>
+                <% if (item.Active)
+                   { %>
+                    <%: Html.ActionLink("Close", "Close", "Tasks", new { id = item.Id.Value }, new { @class = "btn-remove", title = "Close" })%>
+                <% } %>
             </td>
         </tr>
         <% } %>

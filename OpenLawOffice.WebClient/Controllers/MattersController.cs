@@ -174,7 +174,9 @@ namespace OpenLawOffice.WebClient.Controllers
             Common.Models.Matters.Matter model;
 
             model = Data.Matters.Matter.Get(id);
-            model.LeadAttorney = Data.Contacts.Contact.Get(model.LeadAttorney.Id.Value);
+
+            if (model.LeadAttorney != null)
+                model.LeadAttorney = Data.Contacts.Contact.Get(model.LeadAttorney.Id.Value);
 
             viewModel = Mapper.Map<ViewModels.Matters.MatterViewModel>(model);
             viewModel.Tasks = TasksController.GetListForMatter(id, true);

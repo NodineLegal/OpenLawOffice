@@ -65,7 +65,7 @@ namespace OpenLawOffice.Data.Timing
                 new { TimeId = timeId });
         }
 
-        public static List<Common.Models.Timing.Time> ListConflictingTimes(DateTime start, DateTime stop)
+        public static List<Common.Models.Timing.Time> ListConflictingTimes(DateTime start, DateTime stop, int workerContactId)
         {
             // Check for overlap
             // We work in time frames or windows
@@ -76,10 +76,10 @@ namespace OpenLawOffice.Data.Timing
             if (stop.Kind != DateTimeKind.Utc)
                 stop = stop.ToDbTime();
             return DataHelper.List<Common.Models.Timing.Time, DBOs.Timing.Time>(
-                "SELECT * FROM time WHERE (@Start > \"start\" AND @Start < \"stop\" AND \"worker_contact_id\"=1) OR " + // 1 and 2
-                "(@Stop > \"start\" AND @Stop < \"stop\" AND \"worker_contact_id\"=1) OR " + // 1 and 2
-                "(@Start <= \"start\" AND @Stop >= \"stop\" AND \"worker_contact_id\"=1)",
-                new { Start = start, Stop = stop });
+                "SELECT * FROM time WHERE (@Start > \"start\" AND @Start < \"stop\" AND \"worker_contact_id\"=@WorkerContactId) OR " + // 1 and 2
+                "(@Stop > \"start\" AND @Stop < \"stop\" AND \"worker_contact_id\"=@WorkerContactId) OR " + // 1 and 2
+                "(@Start <= \"start\" AND @Stop >= \"stop\" AND \"worker_contact_id\"=@WorkerContactId)",
+                new { Start = start, Stop = stop, WorkerContactId = workerContactId });
         }
 
         public static bool IsFastTime(Guid timeId)

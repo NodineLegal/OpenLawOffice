@@ -6,6 +6,22 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <h2>
         Task Details<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
+
+        
+<% if (Model.Active)
+    { %>
+    <div class="options_div" style="text-align: right;">        
+    <% using (Html.BeginForm("Close", "Tasks", new { Id = RouteData.Values["Id"] }, FormMethod.Post, new { id = "CloseForm" }))
+       {%>
+    <%: Html.ValidationSummary(true)%>
+        <input type="submit" value="Close" 
+            style="background-image: url('/Content/fugue-icons-3.5.6/icons-shadowless/cross.png'); 
+            background-position: left center; background-repeat: no-repeat; padding-left: 20px;" />
+    <% } %>
+
+    </div>
+<% } %>
+
     <table class="detail_table">
         <tr>
             <td class="display-label">
