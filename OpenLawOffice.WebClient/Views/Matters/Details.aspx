@@ -41,6 +41,41 @@
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" runat="server">
     <h2>
         Matter Details<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
+
+        
+    <% if (ViewData["AlertText"] != null)
+       { %>
+    <div class="options_div" style="text-align: right;">
+        <a class="btn-alert" title="Alerts" id="alertInfo"></a>
+        <div id="alertInfoDialog" title="Alerts">
+            <p>
+            <span style="font-weight: bold; text-decoration: underline;">Alerts:</span>
+            <%= ViewData["AlertText"]%>
+            </p>
+        </div>  
+        <script language="javascript">
+            $(function () {
+                $("#alertInfoDialog").dialog({
+                    autoOpen: false,
+                    width: 400,
+                    show: {
+                        effect: "blind",
+                        duration: 100
+                    },
+                    hide: {
+                        effect: "fade",
+                        duration: 100
+                    }
+                });
+
+                $("#alertInfo").click(function () {
+                    $("#alertInfoDialog").dialog("open");
+                });
+            });
+        </script>
+    </div>
+    <% } %>
+
     <table class="detail_table">
         <tr>
             <td class="display-label">

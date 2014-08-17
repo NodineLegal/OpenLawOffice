@@ -517,3 +517,15 @@ a.btn-assigntask
     height: 16px;
     text-indent: -9999px; /* hide text */
 }
+
+a.btn-alert
+{
+    background-image: url('fugue-icons-3.5.6/icons-shadowless/exclamation-red-frame.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    text-indent: -9999px; /* hide text */
+    cursor: pointer;
+}

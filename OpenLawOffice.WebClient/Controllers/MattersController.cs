@@ -170,6 +170,8 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult Details(Guid id)
         {
+            List<string> neededRoles;
+            string alertText = "";
             ViewModels.Matters.MatterViewModel viewModel;
             Common.Models.Matters.Matter model;
 
@@ -183,6 +185,26 @@ namespace OpenLawOffice.WebClient.Controllers
             viewModel.LeadAttorney = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.LeadAttorney);
 
             PopulateCoreDetails(viewModel);
+
+            neededRoles = new List<string>(new string[] {"Lead Attorney", "Client", "Appointed Client"});
+
+            Data.Matters.MatterContact.ListForMatter(model.Id.Value).ForEach(x =>
+            {
+                if (x.Role == "Lead Attorney")
+                    neededRoles.Remove("Lead Attorney");
+                if (x.Role == "Appointed Client")
+                    neededRoles.Remove("Appointed Client");
+                if (x.Role == "Client")
+                    neededRoles.Remove("Client");
+            });
+
+            if (neededRoles.Contains("Lead Attorney"))
+                alertText += "<li>Missing role 'Lead Attorney'.</li>";
+            if (neededRoles.Contains("Appointed Client") && neededRoles.Contains("Client"))
+                alertText += "<li>Missing role 'Client' or 'Appointed Client' - one or the other is needed.</li>";
+
+            if (alertText.Length > 0)
+                ViewData["AlertText"] = "<ul>" + alertText + "</ul>";
 
             return View(viewModel);
         }
