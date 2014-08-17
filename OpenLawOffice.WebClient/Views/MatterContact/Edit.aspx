@@ -33,6 +33,38 @@
             <td class="display-field">
                 <%: Html.TextBoxFor(x => x.Role) %>
                 <%: Html.ValidationMessageFor(x => x.Role)%>
+                Special Roles:  <a href="#" id="LeadAttorney">Lead Attorney</a>, 
+                                <a href="#" id="Attorney">Attorney</a>, 
+                                <a href="#" id="OpposingAttorney">Opposing Attorney</a>, 
+                                <a href="#" id="Client">Client</a>, 
+                                <a href="#" id="AppointedClient">Appointed Client</a>, 
+                                <a href="#" id="OpposingParty">Opposing Party</a>
+                <script language="javascript">
+                    $("#LeadAttorney").click(function () {
+                        $("#Role").val("Lead Attorney");
+                        return false;
+                    });
+                    $("#Attorney").click(function () {
+                        $("#Role").val("Attorney");
+                        return false;
+                    });
+                    $("#OpposingAttorney").click(function () {
+                        $("#Role").val("Opposing Attorney");
+                        return false;
+                    });
+                    $("#Client").click(function () {
+                        $("#Role").val("Client");
+                        return false;
+                    });
+                    $("#AppointedClient").click(function () {
+                        $("#Role").val("Appointed Client");
+                        return false;
+                    });
+                    $("#OpposingParty").click(function () {
+                        $("#Role").val("Opposing Party");
+                        return false;
+                    });
+                </script>
             </td>
         </tr>
     </table>

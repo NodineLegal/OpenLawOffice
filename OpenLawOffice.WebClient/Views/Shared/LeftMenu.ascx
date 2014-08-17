@@ -78,7 +78,9 @@
     <ul>
     </ul>
     <% } %>
-    <% if (Page.User.IsInRole("Admin"))
+    <% 
+        var a = Page.User.IsInRole("User");
+        if (Page.User.IsInRole("Admin"))
        { %>
     <li><%: Html.ActionLink("Admin", "Index", "Admin")%></li>
     <ul>

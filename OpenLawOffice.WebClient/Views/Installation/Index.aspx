@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<dynamic>" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Installation.InstallationViewModel>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
     Installation
@@ -23,9 +23,18 @@
     database server and then setup my connection string in Web.config.
     <br />
     <br />
-    <%: Html.ActionLink("Install Only", "Install") %><br />
+
+    After that, give me a username and password so that I can create a new administrator account
+    for you.
     <br />
-    <%: Html.ActionLink("Install with Data", "InstallWithData") %>
+    
+    <% using (Html.BeginForm())
+       {%>
+    <%: Html.ValidationSummary(true)%>
+    Username: <%: Html.TextBoxFor(model => model.Username)%><br />
+    Password: <%: Html.PasswordFor(model => model.Password)%><br />
+    <input type="submit" value="Install Now" />
+    <% } %>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
 </asp:Content>

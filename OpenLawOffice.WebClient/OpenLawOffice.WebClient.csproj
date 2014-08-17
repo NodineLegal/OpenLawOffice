@@ -157,6 +157,7 @@
     <Compile Include="FormsAuthenticationService.cs" />
     <Compile Include="ViewModels\Home\DashboardViewModel.cs" />
     <Compile Include="IFormsAuthenticationService.cs" />
+    <Compile Include="ViewModels\Installation\InstallationViewModel.cs" />
     <Compile Include="ViewModels\JqGridObject.cs" />
     <Compile Include="ViewModels\Matters\CreateMatterViewModel.cs" />
     <Compile Include="ViewModels\Matters\EditMatterViewModel.cs" />

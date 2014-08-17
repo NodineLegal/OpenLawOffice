@@ -87,6 +87,13 @@ namespace OpenLawOffice.WebClient.Controllers
                 matterContact = Data.Matters.MatterContact.Enable(matterContact, currentUser);
             }
 
+            if (model.Role == "Lead Attorney")
+            {
+                Common.Models.Matters.Matter matter = Data.Matters.Matter.Get(model.Matter.Id.Value);
+                matter.LeadAttorney = Mapper.Map<Common.Models.Contacts.Contact>(model.Contact);
+                Data.Matters.Matter.Edit(matter, currentUser);
+            }
+
             return RedirectToAction("Contacts", "Matters",
                 new { id = matterContact.Matter.Id.Value.ToString() });
         }
@@ -125,6 +132,13 @@ namespace OpenLawOffice.WebClient.Controllers
             model.Contact = modelCurrent.Contact;
 
             model = Data.Matters.MatterContact.Edit(model, currentUser);
+
+            if (model.Role == "Lead Attorney")
+            {
+                model.Matter = Data.Matters.Matter.Get(model.Matter.Id.Value);
+                model.Matter.LeadAttorney = model.Contact;
+                Data.Matters.Matter.Edit(model.Matter, currentUser);
+            }
 
             return RedirectToAction("Contacts", "Matters",
                 new { id = model.Matter.Id.Value.ToString() });
@@ -167,6 +181,13 @@ namespace OpenLawOffice.WebClient.Controllers
             model = Mapper.Map<Common.Models.Matters.MatterContact>(viewModel);
 
             model = Data.Matters.MatterContact.Disable(model, currentUser);
+
+            if (model.Role == "Lead Attorney")
+            {
+                Common.Models.Matters.Matter matter = Data.Matters.Matter.Get(model.Matter.Id.Value);
+                matter.LeadAttorney = null;
+                Data.Matters.Matter.Edit(matter, currentUser);
+            }
 
             return RedirectToAction("Contacts", "Matters",
                 new { id = model.Matter.Id.Value.ToString() });
