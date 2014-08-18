@@ -4,8 +4,12 @@
     Time Entries within Matter
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-    <h2>
-        Time Entries within Matter<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
+       
+    <div id="roadmap">
+        <div class="zero">Matter: [<%: Html.ActionLink((string)ViewData["Matter"], "Details", "Matters", new { id = ViewData["MatterId"] }, null) %>]</div>
+        <div id="current" class="one">Time Entries within Matter<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></div>
+    </div>
+
     <% foreach (var task in Model.Tasks)
        { %>
     <h4>

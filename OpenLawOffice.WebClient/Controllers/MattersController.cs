@@ -295,7 +295,9 @@ namespace OpenLawOffice.WebClient.Controllers
 
             employeeContactList = new List<ViewModels.Contacts.ContactViewModel>();
             model = Data.Matters.Matter.Get(id);
-            model.LeadAttorney = Data.Contacts.Contact.Get(model.LeadAttorney.Id.Value);
+
+            if (model.LeadAttorney != null)
+                model.LeadAttorney = Data.Contacts.Contact.Get(model.LeadAttorney.Id.Value);
             
             Data.Contacts.Contact.ListEmployeesOnly().ForEach(x =>
             {
@@ -308,6 +310,9 @@ namespace OpenLawOffice.WebClient.Controllers
             viewModel.LeadAttorney.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.LeadAttorney);
 
             ViewData["EmployeeContactList"] = employeeContactList;
+            ViewData["Matter"] = model.Title;
+            ViewData["MatterId"] = model.Id;
+
             return View(viewModel);
         }
 
@@ -353,6 +358,7 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult Tags(Guid id)
         {
+            Common.Models.Matters.Matter matter;
             List<ViewModels.Matters.MatterTagViewModel> viewModelList;
 
             viewModelList = new List<ViewModels.Matters.MatterTagViewModel>();
@@ -362,12 +368,17 @@ namespace OpenLawOffice.WebClient.Controllers
                 viewModelList.Add(Mapper.Map<ViewModels.Matters.MatterTagViewModel>(x));
             });
 
+            matter = Data.Matters.Matter.Get(id);
+            ViewData["Matter"] = matter.Title;
+            ViewData["MatterId"] = matter.Id;
+
             return View(viewModelList);
         }
 
         [Authorize(Roles = "Login, User")]
         public ActionResult ResponsibleUsers(Guid id)
         {
+            Common.Models.Matters.Matter matter;
             Common.Models.Account.Users user;
             ViewModels.Matters.ResponsibleUserViewModel viewModel;
             List<ViewModels.Matters.ResponsibleUserViewModel> viewModelList;
@@ -384,12 +395,17 @@ namespace OpenLawOffice.WebClient.Controllers
                 viewModelList.Add(viewModel);
             });
 
+            matter = Data.Matters.Matter.Get(id);
+            ViewData["Matter"] = matter.Title;
+            ViewData["MatterId"] = matter.Id;
+
             return View(viewModelList);
         }
 
         [Authorize(Roles = "Login, User")]
         public ActionResult Contacts(Guid id)
         {
+            Common.Models.Matters.Matter matter;
             Common.Models.Contacts.Contact contact;
             ViewModels.Matters.MatterContactViewModel viewModel;
             List<ViewModels.Matters.MatterContactViewModel> viewModelList;
@@ -406,12 +422,18 @@ namespace OpenLawOffice.WebClient.Controllers
                 viewModelList.Add(viewModel);
             });
 
+            matter = Data.Matters.Matter.Get(id);
+            ViewData["Matter"] = matter.Title;
+            ViewData["MatterId"] = matter.Id;
+
             return View(viewModelList);
         }
 
         [Authorize(Roles = "Login, User")]
         public ActionResult Tasks(Guid id)
         {
+            Common.Models.Matters.Matter matter;
+
             bool? active;
             string activeStr = Request["active"];
             switch (activeStr)
@@ -426,12 +448,18 @@ namespace OpenLawOffice.WebClient.Controllers
                     active = true;
                     break;
             }
+
+            matter = Data.Matters.Matter.Get(id);
+            ViewData["Matter"] = matter.Title;
+            ViewData["MatterId"] = matter.Id;
+
             return View(TasksController.GetListForMatter(id, active));
         }
 
         [Authorize(Roles = "Login, User")]
         public ActionResult Notes(Guid id)
         {
+            Common.Models.Matters.Matter matter;
             ViewModels.Notes.NoteViewModel viewModel;
             List<ViewModels.Notes.NoteViewModel> viewModelList;
 
@@ -444,12 +472,17 @@ namespace OpenLawOffice.WebClient.Controllers
                 viewModelList.Add(viewModel);
             });
 
+            matter = Data.Matters.Matter.Get(id);
+            ViewData["Matter"] = matter.Title;
+            ViewData["MatterId"] = matter.Id;
+
             return View(viewModelList);
         }
 
         [Authorize(Roles = "Login, User")]
         public ActionResult Documents(Guid id)
         {
+            Common.Models.Matters.Matter matter;
             Common.Models.Documents.Version version;
             ViewModels.Documents.SelectableDocumentViewModel viewModel;
             List<ViewModels.Documents.SelectableDocumentViewModel> viewModelList;
@@ -467,6 +500,10 @@ namespace OpenLawOffice.WebClient.Controllers
 
                 viewModelList.Add(viewModel);
             });
+
+            matter = Data.Matters.Matter.Get(id);
+            ViewData["Matter"] = matter.Title;
+            ViewData["MatterId"] = matter.Id;
 
             return View(viewModelList);
         }
@@ -545,6 +582,7 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult Time(Guid id)
         {
+            Common.Models.Matters.Matter matter;
             ViewModels.Matters.MatterTimeViewModel viewModel;
             List<Common.Models.Timing.Time> times;
             ViewModels.Matters.MatterTimeViewModel.Task task;
@@ -584,12 +622,17 @@ namespace OpenLawOffice.WebClient.Controllers
                 }
             });
 
+            matter = Data.Matters.Matter.Get(id);
+            ViewData["Matter"] = matter.Title;
+            ViewData["MatterId"] = matter.Id;
+
             return View(viewModel);
         }
 
         [Authorize(Roles = "Login, User")]
         public ActionResult Events(Guid id)
         {
+            Common.Models.Matters.Matter matter;
             ViewModels.Events.EventViewModel viewModel;
             List<ViewModels.Events.EventViewModel> viewModelList;
 
@@ -601,6 +644,10 @@ namespace OpenLawOffice.WebClient.Controllers
 
                 viewModelList.Add(viewModel);
             });
+            
+            matter = Data.Matters.Matter.Get(id);
+            ViewData["Matter"] = matter.Title;
+            ViewData["MatterId"] = matter.Id;
 
             return View(viewModelList);
         }

@@ -4,8 +4,24 @@
     Time Entries for Task
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-    <h2>
-        Time Entries for Task<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
+
+    <div id="roadmap">
+        <div class="zero">Matter: [<%: Html.ActionLink((string)ViewData["Matter"], "Details", "Matters", new { id = ViewData["MatterId"] }, null) %>]</div>
+        <div class="one">Task: [<%: Html.ActionLink((string)ViewData["Task"], "Details", "Tasks", new { id = ViewData["TaskId"] }, null) %>]</div>
+        <div id="current" class="two">Time Entries for Task<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></div>
+    </div>
+    
+    <div class="options_div" style="text-align: right;">
+        <input id="newentry" type="button" value="New Entry"
+            style="background-image: url('/Content/fugue-icons-3.5.6/icons-shadowless/plus.png'); 
+            background-position: left center; background-repeat: no-repeat; padding-left: 20px;" />
+        <script language="javascript">
+            $("#newentry").click(function () {
+                window.location = '/TaskTime/SelectContactToAssign?TaskId=<%: RouteData.Values["Id"] %>';
+            });
+        </script>
+    </div>
+
     <% double totalMinutes = 0; %>
     <table class="listing_table">
         <tr>

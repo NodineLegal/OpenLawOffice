@@ -36,7 +36,7 @@
         <%: Html.ActionLink("Permissions", "Acls", "Matters")%></li>--%>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" runat="server">
-    <script type="text/javascript" src="../../Scripts/jqGrid-4.6.0/grid.locale-en.js"></script>
+    <%--<script type="text/javascript" src="../../Scripts/jqGrid-4.6.0/grid.locale-en.js"></script>
     <script type="text/javascript" src="../../Scripts/jqGrid-4.6.0/jquery.jqGrid.min.js"></script>
     <style type="text/css">
         div.ui-jqgrid-titlebar
@@ -44,8 +44,12 @@
             height: 16px;
         }
     </style>
-    <h2>
-        Edit Matter<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
+    --%>
+    <div id="roadmap">
+        <div class="zero">Matter: [<%: Html.ActionLink((string)ViewData["Matter"], "Details", "Matters", new { id = ViewData["MatterId"] }, null) %>]</div>
+        <div id="current" class="one">Edit Matter<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></div>
+    </div>
+
     <% using (Html.BeginForm())
        {%>
     <%: Html.ValidationSummary(true) %>

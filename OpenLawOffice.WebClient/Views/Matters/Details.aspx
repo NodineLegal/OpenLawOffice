@@ -39,9 +39,9 @@
         <%: Html.ActionLink("Permissions", "Acls", "Matters")%></li>--%>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" runat="server">
-    <h2>
-        Matter Details<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
-
+    <div id="roadmap">
+        <div id="current" class="zero">Matter Details<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></div>
+    </div>
         
     <% if (ViewData["AlertText"] != null)
        { %>

@@ -32,6 +32,8 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult SelectContactToAssign(long id)
         {
+            Common.Models.Matters.Matter matter;
+            Common.Models.Tasks.Task task;
             List<ViewModels.Contacts.SelectableContactViewModel> modelList;
 
             modelList = new List<ViewModels.Contacts.SelectableContactViewModel>();
@@ -41,12 +43,21 @@ namespace OpenLawOffice.WebClient.Controllers
                 modelList.Add(Mapper.Map<ViewModels.Contacts.SelectableContactViewModel>(x));
             });
 
+            task = Data.Tasks.Task.Get(id);
+            matter = Data.Tasks.Task.GetRelatedMatter(task.Id.Value);
+            ViewData["Task"] = task.Title;
+            ViewData["TaskId"] = task.Id;
+            ViewData["Matter"] = matter.Title;
+            ViewData["MatterId"] = matter.Id;
+
             return View(modelList);
         }
 
         [Authorize(Roles = "Login, User")]
         public ActionResult AssignContact(int id)
         {
+            Common.Models.Matters.Matter matter;
+            Common.Models.Tasks.Task task;
             long taskId = 0;
             ViewModels.Tasks.TaskAssignedContactViewModel vm;
 
@@ -56,9 +67,17 @@ namespace OpenLawOffice.WebClient.Controllers
             if (!long.TryParse(Request["TaskId"], out taskId))
                 return View("InvalidRequest");
 
+            task = Data.Tasks.Task.Get(taskId);
+            matter = Data.Tasks.Task.GetRelatedMatter(task.Id.Value);
+
             vm = new ViewModels.Tasks.TaskAssignedContactViewModel();
-            vm.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(Data.Tasks.Task.Get(taskId));
+            vm.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(task);
             vm.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(Data.Contacts.Contact.Get(id));
+
+            ViewData["Task"] = task.Title;
+            ViewData["TaskId"] = task.Id;
+            ViewData["Matter"] = matter.Title;
+            ViewData["MatterId"] = matter.Id;
 
             return View(vm);
         }
@@ -96,6 +115,7 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult Edit(Guid id)
         {
+            Common.Models.Matters.Matter matter;
             Common.Models.Tasks.TaskAssignedContact model;
             ViewModels.Tasks.TaskAssignedContactViewModel viewModel;
 
@@ -106,6 +126,12 @@ namespace OpenLawOffice.WebClient.Controllers
             viewModel = Mapper.Map<ViewModels.Tasks.TaskAssignedContactViewModel>(model);
             viewModel.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(model.Task);
             viewModel.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.Contact);
+
+            matter = Data.Tasks.Task.GetRelatedMatter(model.Task.Id.Value);
+            ViewData["Task"] = model.Task.Title;
+            ViewData["TaskId"] = model.Task.Id;
+            ViewData["Matter"] = matter.Title;
+            ViewData["MatterId"] = matter.Id;
 
             return View(viewModel);
         }
@@ -135,6 +161,7 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult Details(Guid id)
         {
+            Common.Models.Matters.Matter matter;
             ViewModels.Tasks.TaskAssignedContactViewModel viewModel;
             Common.Models.Tasks.TaskAssignedContact model;
 
@@ -147,6 +174,12 @@ namespace OpenLawOffice.WebClient.Controllers
             viewModel.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.Contact);
 
             PopulateCoreDetails(viewModel);
+
+            matter = Data.Tasks.Task.GetRelatedMatter(model.Task.Id.Value);
+            ViewData["Task"] = model.Task.Title;
+            ViewData["TaskId"] = model.Task.Id;
+            ViewData["Matter"] = matter.Title;
+            ViewData["MatterId"] = matter.Id;
 
             return View(viewModel);
         }

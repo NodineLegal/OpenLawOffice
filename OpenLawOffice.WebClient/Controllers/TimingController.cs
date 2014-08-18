@@ -38,6 +38,7 @@ namespace OpenLawOffice.WebClient.Controllers
             ViewModels.Timing.TimeViewModel viewModel;
             Common.Models.Contacts.Contact contact;
             Common.Models.Tasks.Task task;
+            Common.Models.Matters.Matter matter;
 
             model = Data.Timing.Time.Get(id);
 
@@ -51,11 +52,13 @@ namespace OpenLawOffice.WebClient.Controllers
 
             PopulateCoreDetails(viewModel);
 
-            if (task != null && task.Id.HasValue)
-                ViewData["TaskId"] = task.Id.Value;
-
             ViewData["IsFastTime"] = Data.Timing.Time.IsFastTime(id);
 
+            matter = Data.Tasks.Task.GetRelatedMatter(task.Id.Value);
+            ViewData["Task"] = task.Title;
+            ViewData["TaskId"] = task.Id;
+            ViewData["Matter"] = matter.Title;
+            ViewData["MatterId"] = matter.Id;
             return View(viewModel);
         }
 
@@ -66,6 +69,7 @@ namespace OpenLawOffice.WebClient.Controllers
             ViewModels.Timing.TimeViewModel viewModel;
             Common.Models.Contacts.Contact contact;
             Common.Models.Tasks.Task task;
+            Common.Models.Matters.Matter matter;
 
             model = Data.Timing.Time.Get(id);
 
@@ -78,6 +82,12 @@ namespace OpenLawOffice.WebClient.Controllers
             task = Data.Timing.Time.GetRelatedTask(model.Id.Value);
 
             ViewData["TaskId"] = task.Id.Value;
+
+            matter = Data.Tasks.Task.GetRelatedMatter(task.Id.Value);
+            ViewData["Task"] = task.Title;
+            ViewData["TaskId"] = task.Id;
+            ViewData["Matter"] = matter.Title;
+            ViewData["MatterId"] = matter.Id;
 
             return View(viewModel);
         }
@@ -100,6 +110,7 @@ namespace OpenLawOffice.WebClient.Controllers
                 { // conflict found
                     Common.Models.Contacts.Contact contact;
                     Common.Models.Tasks.Task task;
+                    Common.Models.Matters.Matter matter;
 
                     contact = Data.Contacts.Contact.Get(viewModel.Worker.Id.Value);
                     viewModel.Worker = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contact);
@@ -108,7 +119,11 @@ namespace OpenLawOffice.WebClient.Controllers
 
                     ModelState.AddModelError(String.Empty, "Time conflicts with other time entries.");
 
-                    ViewData["TaskId"] = task.Id.Value;
+                    matter = Data.Tasks.Task.GetRelatedMatter(task.Id.Value);
+                    ViewData["Task"] = task.Title;
+                    ViewData["TaskId"] = task.Id;
+                    ViewData["Matter"] = matter.Title;
+                    ViewData["MatterId"] = matter.Id;
                     return View(viewModel);
                 }
             }

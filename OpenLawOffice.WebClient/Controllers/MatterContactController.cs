@@ -32,6 +32,7 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult SelectContactToAssign(Guid id)
         {
+            Common.Models.Matters.Matter matter;
             List<ViewModels.Contacts.SelectableContactViewModel> modelList = new List<ViewModels.Contacts.SelectableContactViewModel>();
 
             Data.Contacts.Contact.List().ForEach(x =>
@@ -39,12 +40,18 @@ namespace OpenLawOffice.WebClient.Controllers
                 modelList.Add(Mapper.Map<ViewModels.Contacts.SelectableContactViewModel>(x));
             });
 
+            matter = Data.Matters.Matter.Get(id);
+
+            ViewData["MatterId"] = matter.Id.Value;
+            ViewData["Matter"] = matter.Title;
+
             return View(modelList);
         }
 
         [Authorize(Roles = "Login, User")]
         public ActionResult AssignContact(int id)
         {
+            Common.Models.Matters.Matter matter;
             ViewModels.Matters.MatterContactViewModel vm;
             Guid matterId = Guid.Empty;
 
@@ -57,6 +64,11 @@ namespace OpenLawOffice.WebClient.Controllers
             vm = new ViewModels.Matters.MatterContactViewModel();
             vm.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(Data.Matters.Matter.Get(matterId));
             vm.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(Data.Contacts.Contact.Get(id));
+
+            matter = Data.Matters.Matter.Get(matterId);
+
+            ViewData["MatterId"] = matter.Id.Value;
+            ViewData["Matter"] = matter.Title;
 
             return View(vm);
         }
@@ -112,6 +124,9 @@ namespace OpenLawOffice.WebClient.Controllers
             viewModel.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(model.Matter);
             viewModel.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.Contact);
 
+            ViewData["MatterId"] = model.Matter.Id.Value;
+            ViewData["Matter"] = model.Matter.Title;
+
             return View(viewModel);
         }
 
@@ -159,6 +174,9 @@ namespace OpenLawOffice.WebClient.Controllers
             viewModel.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.Contact);
 
             PopulateCoreDetails(viewModel);
+
+            ViewData["MatterId"] = model.Matter.Id.Value;
+            ViewData["Matter"] = model.Matter.Title;
 
             return View(viewModel);
         }

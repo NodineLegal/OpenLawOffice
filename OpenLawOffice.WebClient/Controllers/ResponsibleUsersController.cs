@@ -45,6 +45,9 @@ namespace OpenLawOffice.WebClient.Controllers
 
             PopulateCoreDetails(viewModel);
 
+            ViewData["MatterId"] = model.Matter.Id.Value;
+            ViewData["Matter"] = model.Matter.Title;
+
             return View(viewModel);
         }
 
@@ -67,6 +70,9 @@ namespace OpenLawOffice.WebClient.Controllers
             });
 
             ViewData["UserList"] = userViewModelList;
+
+            ViewData["MatterId"] = matter.Id.Value;
+            ViewData["Matter"] = matter.Title;
 
             return View(new ViewModels.Matters.ResponsibleUserViewModel() { Matter = matterViewModel });
         }
@@ -110,6 +116,8 @@ namespace OpenLawOffice.WebClient.Controllers
 
                     ViewData["UserList"] = userViewModelList;
 
+                    ViewData["MatterId"] = matter.Id.Value;
+                    ViewData["Matter"] = matter.Title;
                     return View(new ViewModels.Matters.ResponsibleUserViewModel() { Matter = matterViewModel });
                 }
 
@@ -152,6 +160,8 @@ namespace OpenLawOffice.WebClient.Controllers
 
             ViewData["UserList"] = userViewModelList;
 
+            ViewData["MatterId"] = model.Matter.Id.Value;
+            ViewData["Matter"] = model.Matter.Title;
             return View(viewModel);
         }
 

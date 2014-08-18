@@ -42,6 +42,9 @@ namespace OpenLawOffice.WebClient.Controllers
 
             PopulateCoreDetails(viewModel);
 
+            ViewData["MatterId"] = model.Matter.Id.Value;
+            ViewData["Matter"] = model.Matter.Title;
+
             return View(viewModel);
         }
 
@@ -51,6 +54,9 @@ namespace OpenLawOffice.WebClient.Controllers
             Common.Models.Matters.Matter matter;
 
             matter = Data.Matters.Matter.Get(id);
+
+            ViewData["MatterId"] = matter.Id.Value;
+            ViewData["Matter"] = matter.Title;
 
             return View(new ViewModels.Matters.MatterTagViewModel()
             {
@@ -96,6 +102,9 @@ namespace OpenLawOffice.WebClient.Controllers
             viewModel.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(model.Matter);
 
             PopulateCoreDetails(viewModel);
+
+            ViewData["MatterId"] = model.Matter.Id.Value;
+            ViewData["Matter"] = model.Matter.Title;
 
             return View(viewModel);
         }

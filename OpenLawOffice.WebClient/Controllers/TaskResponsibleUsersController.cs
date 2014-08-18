@@ -32,6 +32,7 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult Details(Guid id)
         {
+            Common.Models.Matters.Matter matter;
             ViewModels.Tasks.TaskResponsibleUserViewModel viewModel;
             Common.Models.Tasks.TaskResponsibleUser model;
 
@@ -45,12 +46,19 @@ namespace OpenLawOffice.WebClient.Controllers
 
             PopulateCoreDetails(viewModel);
 
+            matter = Data.Tasks.Task.GetRelatedMatter(model.Task.Id.Value);
+            ViewData["Task"] = model.Task.Title;
+            ViewData["TaskId"] = model.Task.Id;
+            ViewData["Matter"] = matter.Title;
+            ViewData["MatterId"] = matter.Id;
+
             return View(viewModel);
         }
 
         [Authorize(Roles = "Login, User")]
         public ActionResult Create(long id)
         {
+            Common.Models.Matters.Matter matter;
             List<ViewModels.Account.UsersViewModel> userViewModelList;
             Common.Models.Tasks.Task task;
             ViewModels.Tasks.TaskViewModel taskViewModel;
@@ -67,6 +75,12 @@ namespace OpenLawOffice.WebClient.Controllers
             });
 
             ViewData["UserList"] = userViewModelList;
+
+            matter = Data.Tasks.Task.GetRelatedMatter(task.Id.Value);
+            ViewData["Task"] = task.Title;
+            ViewData["TaskId"] = task.Id;
+            ViewData["Matter"] = matter.Title;
+            ViewData["MatterId"] = matter.Id;
 
             return View(new ViewModels.Tasks.TaskResponsibleUserViewModel() { Task = taskViewModel });
         }
@@ -131,6 +145,7 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult Edit(Guid id)
         {
+            Common.Models.Matters.Matter matter;
             ViewModels.Tasks.TaskResponsibleUserViewModel viewModel;
             List<ViewModels.Account.UsersViewModel> userViewModelList;
             Common.Models.Tasks.TaskResponsibleUser model;
@@ -151,6 +166,12 @@ namespace OpenLawOffice.WebClient.Controllers
             });
 
             ViewData["UserList"] = userViewModelList;
+
+            matter = Data.Tasks.Task.GetRelatedMatter(model.Task.Id.Value);
+            ViewData["Task"] = model.Task.Title;
+            ViewData["TaskId"] = model.Task.Id;
+            ViewData["Matter"] = matter.Title;
+            ViewData["MatterId"] = matter.Id;
 
             return View(viewModel);
         }

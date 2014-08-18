@@ -4,10 +4,12 @@
     Task Details
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-    <h2>
-        Task Details<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
-
-        
+           
+    <div id="roadmap">
+        <div class="zero">Matter: [<%: Html.ActionLink((string)ViewData["Matter"], "Details", "Matters", new { id = ViewData["MatterId"] }, null) %>]</div>
+        <div id="current" class="one">Task Details<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></div>
+    </div>
+            
 <% if (Model.Active)
     { %>
     <div class="options_div" style="text-align: right;">        
@@ -25,10 +27,10 @@
     <table class="detail_table">
         <tr>
             <td class="display-label">
-                Id
+                Matter
             </td>
             <td class="display-field">
-                <%: Model.Id %>
+                <%: Html.ActionLink((string)ViewData["Matter"], "Details", "Matters", new { id = ViewData["MatterId"] }, null)%>
             </td>
         </tr>
         <tr>

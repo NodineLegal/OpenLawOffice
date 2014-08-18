@@ -31,6 +31,7 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult Details(Guid id)
         {
+            Common.Models.Matters.Matter matter;
             ViewModels.Tasks.TaskTagViewModel viewModel;
             Common.Models.Tasks.TaskTag model;
 
@@ -42,13 +43,26 @@ namespace OpenLawOffice.WebClient.Controllers
 
             PopulateCoreDetails(viewModel);
 
+            matter = Data.Tasks.Task.GetRelatedMatter(model.Task.Id.Value);
+            ViewData["Task"] = model.Task.Title;
+            ViewData["TaskId"] = model.Task.Id;
+            ViewData["Matter"] = matter.Title;
+            ViewData["MatterId"] = matter.Id;
+
             return View(viewModel);
         }
 
         [Authorize(Roles = "Login, User")]
         public ActionResult Create(long id)
         {
+            Common.Models.Matters.Matter matter;
             Common.Models.Tasks.Task model = Data.Tasks.Task.Get(id);
+
+            matter = Data.Tasks.Task.GetRelatedMatter(model.Id.Value);
+            ViewData["Task"] = model.Title;
+            ViewData["TaskId"] = model.Id;
+            ViewData["Matter"] = matter.Title;
+            ViewData["MatterId"] = matter.Id;
 
             return View(new ViewModels.Tasks.TaskTagViewModel()
             {
@@ -82,6 +96,7 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult Edit(Guid id)
         {
+            Common.Models.Matters.Matter matter;
             ViewModels.Tasks.TaskTagViewModel viewModel;
             Common.Models.Tasks.TaskTag model;
 
@@ -92,6 +107,12 @@ namespace OpenLawOffice.WebClient.Controllers
             viewModel.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(model.Task);
 
             PopulateCoreDetails(viewModel);
+
+            matter = Data.Tasks.Task.GetRelatedMatter(model.Task.Id.Value);
+            ViewData["Task"] = model.Task.Title;
+            ViewData["TaskId"] = model.Task.Id;
+            ViewData["Matter"] = matter.Title;
+            ViewData["MatterId"] = matter.Id;
 
             return View(viewModel);
         }

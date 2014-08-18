@@ -4,8 +4,12 @@
     Delete Responsible User from Matter
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-    <h2>
-        Delete Responsible User from Matter<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
+        
+    <div id="roadmap">
+        <div class="zero">Matter: [<%: Html.ActionLink((string)ViewData["Matter"], "Details", "Matters", new { id = ViewData["MatterId"] }, null) %>]</div>
+        <div id="current" class="one">Delete Responsible User from Matter<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></div>
+    </div>
+            
     <h3>
         Are you sure you want to delete this?</h3>
     <table class="detail_table">
@@ -30,7 +34,7 @@
                 User
             </td>
             <td class="display-field">
-                <%: Html.ActionLink(Model.User.Username, "Details", "Users", new { id = Model.User.Id }, null) %>
+                <%: Html.ActionLink(Model.User.Username, "Details", "Users", new { id = Model.User.PId }, null) %>
             </td>
         </tr>
         <tr>

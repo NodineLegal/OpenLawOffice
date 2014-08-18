@@ -4,8 +4,20 @@
     Note Details
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-    <h2>
-        Note Details<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
+
+    <div id="roadmap">
+        <div class="zero">Matter: [<%: Html.ActionLink((string)ViewData["Matter"], "Details", "Matters", new { id = ViewData["MatterId"] }, null) %>]</div>
+        <% if (ViewData["Task"] != null)
+           { %>
+        <div class="one">Task: [<%: Html.ActionLink((string)ViewData["Task"], "Details", "Tasks", new { id = ViewData["TaskId"] }, null)%>]</div>
+        <div id="current" class="two">Note Details<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></div>
+        <% }
+           else
+           { %>           
+        <div id="current" class="one">Note Details<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></div>
+        <% } %>
+    </div>
+    
     <table class="detail_table">
         <tr>
             <td class="display-label">

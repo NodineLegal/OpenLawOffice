@@ -4,8 +4,12 @@
     Details of User Responsiblity for Matter
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-    <h2>
-        Details of User Responsiblity for Matter<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
+        
+    <div id="roadmap">
+        <div class="zero">Matter: [<%: Html.ActionLink((string)ViewData["Matter"], "Details", "Matters", new { id = ViewData["MatterId"] }, null) %>]</div>
+        <div id="current" class="one">Details of User Responsiblity for Matter<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></div>
+    </div>
+            
     <table class="detail_table">
         <tr>
             <td class="display-label">
@@ -28,7 +32,7 @@
                 User
             </td>
             <td class="display-field">
-                <%: Html.ActionLink(Model.User.Username, "Details", "Users", new { id = Model.User.Id }, null) %>
+                <%: Html.ActionLink(Model.User.Username, "Details", "Users", new { id = Model.User.PId }, null) %>
             </td>
         </tr>
         <tr>

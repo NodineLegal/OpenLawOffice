@@ -529,3 +529,46 @@ a.btn-alert
     text-indent: -9999px; /* hide text */
     cursor: pointer;
 }
+
+a.btn-plus
+{
+    background-image: url('fugue-icons-3.5.6/icons-shadowless/plus.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    text-indent: -9999px; /* hide text */
+    cursor: pointer;
+}
+
+#roadmap
+{
+    font-family: Arial, Helvetica, sans-serif;
+    margin-top: -15px;
+    margin-bottom: 15px;
+    font-size: 13px;
+}
+
+#roadmap #current
+{
+    font-size: 17px;
+    font-weight: bold;
+    color: #000;
+    margin-top: 10px;
+}
+
+#roadmap .zero
+{
+    margin-left: 0px;
+}
+
+#roadmap .one
+{
+    margin-left: 25px;
+}
+
+#roadmap .two
+{
+    margin-left: 50px;
+}
