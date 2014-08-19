@@ -36,7 +36,7 @@
                 Description<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Description)%>
+                <%: Html.TextAreaFor(model => model.Description, new { style = "height: 50px; width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Description)%>
             </td>
         </tr>

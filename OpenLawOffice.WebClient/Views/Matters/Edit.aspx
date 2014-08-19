@@ -76,7 +76,7 @@
                 Synopsis<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Matter.Synopsis)%>
+                <%: Html.TextAreaFor(model => model.Matter.Synopsis, new { style = "height: 50px; width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Matter.Synopsis)%>
             </td>
         </tr>
