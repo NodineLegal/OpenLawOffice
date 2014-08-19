@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Home.DashboardViewModel>" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/Views/Shared/SiteNoRightBar.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Home.DashboardViewModel>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
     OpenLawOffice
@@ -19,8 +19,16 @@
             </th>
         </tr>
         <% foreach (var item in Model.MyTodoList)
-           { %>
+           {                
+               %>
+         
+        <% if (item.Item2.DueDate.Value.Date < DateTime.Now.Date) { %>
+        <tr style="background-color: #FFCECE"> 
+        <% } else if (item.Item2.DueDate.Value.Date == DateTime.Now.Date) { %>
+        <tr style="background-color: #FFFFC8"> 
+        <% } else { %>
         <tr>
+        <% } %>
             <td>
                 <%: Html.ActionLink(item.Item1.Title, "Details", "Matters", new { id = item.Item1.Id.Value }, null)%>
             </td>
