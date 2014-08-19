@@ -66,27 +66,40 @@ namespace OpenLawOffice.WebClient.Controllers
 
             PopulateCoreDetails(viewModel);
 
-            if (matter != null && matter.Id.HasValue)
-                ViewData["MatterId"] = matter.Id.Value;
-
             if (task != null && task.Id.HasValue)
+            {
+                matter = Data.Tasks.Task.GetRelatedMatter(task.Id.Value);
                 ViewData["TaskId"] = task.Id.Value;
+                ViewData["Task"] = task.Title;
+            }
 
+            ViewData["MatterId"] = matter.Id.Value;
+            ViewData["Matter"] = matter.Title;
             return View(viewModel);
         }
 
         [Authorize(Roles = "Login, User")]
         public ActionResult Create()
         {
+            Common.Models.Matters.Matter matter;
+            Common.Models.Tasks.Task task;
+
             if (Request["TaskId"] != null)
             { // The create request originated from a task
+                task = Data.Tasks.Task.Get(long.Parse(Request["TaskId"]));
+                matter = Data.Tasks.Task.GetRelatedMatter(task.Id.Value);
+                ViewData["TaskId"] = task.Id.Value;
+                ViewData["Task"] = task.Title;
             }
             else if (Request["MatterId"] != null)
             { // The create request originated from a matter
+                matter = Data.Matters.Matter.Get(Guid.Parse(Request["MatterId"]));
             }
             else
                 return View("Errors/InvalidRequest");
 
+            ViewData["MatterId"] = matter.Id.Value;
+            ViewData["Matter"] = matter.Title;
             return View();
         }
 
@@ -154,13 +167,16 @@ namespace OpenLawOffice.WebClient.Controllers
             task = Data.Documents.Document.GetTask(id);
 
             viewModel = Mapper.Map<ViewModels.Documents.DocumentViewModel>(model);
-
-            if (matter != null && matter.Id.HasValue)
-                ViewData["MatterId"] = matter.Id.Value;
-
+            
             if (task != null && task.Id.HasValue)
+            {
+                matter = Data.Tasks.Task.GetRelatedMatter(task.Id.Value);
                 ViewData["TaskId"] = task.Id.Value;
+                ViewData["Task"] = task.Title;
+            }
 
+            ViewData["MatterId"] = matter.Id.Value;
+            ViewData["Matter"] = matter.Title;
             return View(viewModel);
         }
 
