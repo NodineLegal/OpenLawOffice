@@ -330,6 +330,8 @@ namespace OpenLawOffice.WebClient.Controllers
             {
                 List<ViewModels.Contacts.ContactViewModel> employeeContactList;
 
+                model = Data.Matters.Matter.Get(id);
+
                 employeeContactList = new List<ViewModels.Contacts.ContactViewModel>();
 
                 Data.Contacts.Contact.ListEmployeesOnly().ForEach(x =>
@@ -340,6 +342,8 @@ namespace OpenLawOffice.WebClient.Controllers
                 ModelState.AddModelError("LeadAttorney", "Lead Attorney is required");
 
                 ViewData["EmployeeContactList"] = employeeContactList;
+                ViewData["Matter"] = model.Title;
+                ViewData["MatterId"] = model.Id;
                 return View(viewModel);
             }
 
