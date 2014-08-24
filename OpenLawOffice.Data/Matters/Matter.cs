@@ -50,6 +50,35 @@ namespace OpenLawOffice.Data.Matters
                     new { Active = active.Value });
         }
 
+        public static List<Common.Models.Matters.Matter> List(bool? active, string contactFilter)
+        {
+            if (!active.HasValue)
+            {
+                if (!string.IsNullOrEmpty(contactFilter))
+                    return DataHelper.List<Common.Models.Matters.Matter, DBOs.Matters.Matter>(
+                        "SELECT * FROM \"matter\" WHERE \"utc_disabled\" is null AND " +
+                        "\"id\" IN (SELECT \"matter_id\" FROM \"matter_contact\" WHERE " +
+                        "\"contact_id\" IN (SELECT \"id\" FROM \"contact\" WHERE LOWER(\"display_name\") LIKE '%' || @ContactFilter || '%'))",
+                        new { ContactFilter = contactFilter.ToLower() });
+                else
+                    return DataHelper.List<Common.Models.Matters.Matter, DBOs.Matters.Matter>(
+                        "SELECT * FROM \"matter\" WHERE \"utc_disabled\" is null");
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(contactFilter))
+                    return DataHelper.List<Common.Models.Matters.Matter, DBOs.Matters.Matter>(
+                        "SELECT * FROM \"matter\" WHERE \"utc_disabled\" is null AND \"active\"=@Active AND " +
+                        "\"id\" IN (SELECT \"matter_id\" FROM \"matter_contact\" WHERE " +
+                        "\"contact_id\" IN (SELECT \"id\" FROM \"contact\" WHERE LOWER(\"display_name\") LIKE '%' || @ContactFilter || '%'))",
+                        new { ContactFilter = contactFilter.ToLower(), Active = active.Value });
+                else
+                    return DataHelper.List<Common.Models.Matters.Matter, DBOs.Matters.Matter>(
+                        "SELECT * FROM \"matter\" WHERE \"utc_disabled\" is null AND \"active\"=@Active",
+                        new { Active = active.Value });
+            }
+        }
+
         public static List<Common.Models.Matters.Matter> ListChildren(Guid? parentId)
         {
             List<Common.Models.Matters.Matter> list = new List<Common.Models.Matters.Matter>();

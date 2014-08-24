@@ -66,6 +66,19 @@ namespace OpenLawOffice.WebClient.Controllers
             return Json(jqObject, JsonRequestBehavior.AllowGet);
         }
 
+        [Authorize(Roles = "Login, User")]
+        public ActionResult ListDisplayNameOnly()
+        {
+            string term;
+            List<Common.Models.Contacts.Contact> list;
+
+            term = Request["term"];
+
+            list = Data.Contacts.Contact.List(term.Trim());
+
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
+
         private List<ViewModels.Contacts.ContactViewModel> GetList()
         {
             List<ViewModels.Contacts.ContactViewModel> modelList = null;

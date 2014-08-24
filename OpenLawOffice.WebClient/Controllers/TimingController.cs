@@ -105,8 +105,11 @@ namespace OpenLawOffice.WebClient.Controllers
 
             if (model.Stop.HasValue)
             {
-                if (Data.Timing.Time.ListConflictingTimes(model.Start,
-                    model.Stop.Value, model.Worker.Id.Value).Count > 0)
+                List<Common.Models.Timing.Time> conflicts = 
+                    Data.Timing.Time.ListConflictingTimes(model.Start, model.Stop.Value, model.Worker.Id.Value);
+                
+                if (conflicts.Count > 1 || 
+                    (conflicts.Count == 1 && conflicts[0].Id != id))
                 { // conflict found
                     Common.Models.Contacts.Contact contact;
                     Common.Models.Tasks.Task task;

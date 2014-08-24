@@ -34,6 +34,7 @@
             });
         });
     </script>
+    <script type="text/javascript" src="/Scripts/Office/1.1/office.js"></script>
 </head>
 <body>
     <div class="page">

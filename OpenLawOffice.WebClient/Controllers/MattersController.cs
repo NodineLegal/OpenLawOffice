@@ -35,7 +35,7 @@ namespace OpenLawOffice.WebClient.Controllers
         {
             List<ViewModels.Matters.MatterViewModel> viewModelList;
             bool? active;
-            string activeStr;
+            string activeStr, contactFilter;
 
             switch (activeStr = Request["active"])
             {
@@ -52,11 +52,21 @@ namespace OpenLawOffice.WebClient.Controllers
 
             viewModelList = new List<ViewModels.Matters.MatterViewModel>();
 
-            Data.Matters.Matter.List(active).ForEach(x =>
+            if (!string.IsNullOrEmpty(contactFilter = Request["contactFilter"]))
             {
-                viewModelList.Add(Mapper.Map<ViewModels.Matters.MatterViewModel>(x));
-            });
-
+                Data.Matters.Matter.List(active, contactFilter).ForEach(x =>
+                {
+                    viewModelList.Add(Mapper.Map<ViewModels.Matters.MatterViewModel>(x));
+                });
+            }
+            else
+            {
+                Data.Matters.Matter.List(active).ForEach(x =>
+                {
+                    viewModelList.Add(Mapper.Map<ViewModels.Matters.MatterViewModel>(x));
+                });
+            }
+            
             return View(viewModelList);
         }
 
