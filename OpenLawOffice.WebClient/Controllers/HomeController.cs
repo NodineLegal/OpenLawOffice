@@ -25,6 +25,7 @@ namespace OpenLawOffice.WebClient.Controllers
     using System.Web.Mvc;
     using AutoMapper;
     using System;
+    using System.Net;
 
     [HandleError(View = "Errors/Index", Order = 10)]
     public class HomeController : BaseController

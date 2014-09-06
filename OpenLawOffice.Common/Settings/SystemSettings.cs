@@ -70,6 +70,34 @@ namespace OpenLawOffice.Common.Settings
             set { base["adminEmail"] = value.ToString(); }
         }
 
+        [ConfigurationProperty("office365AuthEndpoint", IsRequired = false)]
+        public Uri Office365AuthEndpoint
+        {
+            get { return (Uri)base["office365AuthEndpoint"]; }
+            set { base["office365AuthEndpoint"] = value.ToString(); }
+        }
+
+        [ConfigurationProperty("office365TokenEndpoint", IsRequired = false)]
+        public Uri Office365TokenEndpoint
+        {
+            get { return (Uri)base["office365TokenEndpoint"]; }
+            set { base["office365TokenEndpoint"] = value.ToString(); }
+        }
+
+        [ConfigurationProperty("office365ClientId", IsRequired = false)]
+        public string Office365ClientId
+        {
+            get { return (string)base["office365ClientId"]; }
+            set { base["office365ClientId"] = value.ToString(); }
+        }
+
+        [ConfigurationProperty("office365ClientKey", IsRequired = false)]
+        public string Office365ClientKey
+        {
+            get { return (string)base["office365ClientKey"]; }
+            set { base["office365ClientKey"] = value.ToString(); }
+        }
+
         public static SystemSettings Load()
         {
             return (SystemSettings)ConfigurationManager.GetSection("OpenLawOffice");
