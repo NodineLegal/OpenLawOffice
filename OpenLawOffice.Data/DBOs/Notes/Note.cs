@@ -39,6 +39,9 @@ namespace OpenLawOffice.Data.DBOs.Notes
         [ColumnMapping(Name = "body")]
         public string Body { get; set; }
 
+        [ColumnMapping(Name = "timestamp")]
+        public DateTime? Timestamp { get; set; }
+
         public void BuildMappings()
         {
             Dapper.SqlMapper.SetTypeMap(typeof(Note), new ColumnAttributeTypeMapper<Note>());
@@ -83,7 +86,11 @@ namespace OpenLawOffice.Data.DBOs.Notes
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
-                .ForMember(dst => dst.Body, opt => opt.MapFrom(src => src.Body));
+                .ForMember(dst => dst.Body, opt => opt.MapFrom(src => src.Body))
+                .ForMember(dst => dst.Timestamp, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Timestamp.ToSystemTime();
+                }));
 
             Mapper.CreateMap<Common.Models.Notes.Note, DBOs.Notes.Note>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.ResolveUsing(db =>
@@ -117,7 +124,11 @@ namespace OpenLawOffice.Data.DBOs.Notes
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
-                .ForMember(dst => dst.Body, opt => opt.MapFrom(src => src.Body));
+                .ForMember(dst => dst.Body, opt => opt.MapFrom(src => src.Body))
+                .ForMember(dst => dst.Timestamp, opt => opt.ResolveUsing(db =>
+                {
+                    return db.Timestamp.ToDbTime();
+                }));
         }
     }
 }

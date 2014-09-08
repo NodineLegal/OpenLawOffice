@@ -25,6 +25,7 @@ namespace OpenLawOffice.Data.Notes
     using System.Data;
     using AutoMapper;
     using Dapper;
+    using System.Collections.Generic;
 
     /// <summary>
     /// TODO: Update summary.
@@ -60,6 +61,14 @@ namespace OpenLawOffice.Data.Notes
                 "AND \"note_matter\".\"utc_disabled\" is null " +
                 "AND \"matter\".\"utc_disabled\" is null ",
                 new { NoteId = noteId });
+        }
+
+        public static List<Common.Models.Notes.Note> ListForMatter(Guid matterId)
+        {
+            return DataHelper.List<Common.Models.Notes.Note, DBOs.Notes.Note>(
+                "SELECT * FROM \"note\" WHERE \"id\" IN (SELECT \"note_id\" FROM \"note_matter\" WHERE \"matter_id\"=@MatterId) AND " +
+                "\"utc_disabled\" is null ORDER BY \"timestamp\" DESC",
+                new { MatterId = matterId });
         }
 
         public static Common.Models.Notes.NoteMatter Create(Common.Models.Notes.NoteMatter model,

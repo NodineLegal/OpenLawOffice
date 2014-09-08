@@ -122,7 +122,7 @@ namespace OpenLawOffice.WebClient.Controllers
             ViewData["MatterId"] = matter.Id.Value;
             ViewData["Matter"] = matter.Title;
 
-            return View();
+            return View(new ViewModels.Notes.NoteViewModel() { Timestamp = DateTime.Now });
         }
 
         [HttpPost]
@@ -145,23 +145,27 @@ namespace OpenLawOffice.WebClient.Controllers
                 matterid = Guid.Parse(Request["MatterId"]);
 
                 Data.Notes.Note.RelateMatter(model, matterid, currentUser);
+
+                return RedirectToAction("Details", "Matters", new { Id = matterid });
             }
             else if (Request["TaskId"] != null)
             {
                 taskid = long.Parse(Request["TaskId"]);
 
                 Data.Notes.Note.RelateTask(model, taskid, currentUser);
+
+                return RedirectToAction("Details", "Tasks", new { Id = taskid });
             }
             else if (Request["EventId"] != null)
             {
                 eventid = Guid.Parse(Request["EventId"]);
 
                 Data.Notes.Note.RelateEvent(model, eventid, currentUser);
+
+                return RedirectToAction("Details", "Events", new { Id = eventid });
             }
             else
                 throw new HttpRequestValidationException("Must specify a MatterId, TaskId or EventId");
-
-            return RedirectToAction("Details", new { Id = model.Id });
         }
     }
 }

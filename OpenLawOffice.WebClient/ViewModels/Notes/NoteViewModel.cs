@@ -34,6 +34,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Notes
 
         public string Body { get; set; }
 
+        public DateTime? Timestamp { get; set; }
+
         public void BuildMappings()
         {
             Mapper.CreateMap<Common.Models.Notes.Note, NoteViewModel>()
@@ -68,7 +70,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Notes
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
-                .ForMember(dst => dst.Body, opt => opt.MapFrom(src => src.Body));
+                .ForMember(dst => dst.Body, opt => opt.MapFrom(src => src.Body))
+                .ForMember(dst => dst.Timestamp, opt => opt.MapFrom(src => src.Timestamp));
 
             Mapper.CreateMap<NoteViewModel, Common.Models.Notes.Note>()
                 .ForMember(dst => dst.Created, opt => opt.MapFrom(src => src.Created))
@@ -103,7 +106,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Notes
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
-                .ForMember(dst => dst.Body, opt => opt.MapFrom(src => src.Body));
+                .ForMember(dst => dst.Body, opt => opt.MapFrom(src => src.Body))
+                .ForMember(dst => dst.Timestamp, opt => opt.MapFrom(src => src.Timestamp));
         }
     }
 }

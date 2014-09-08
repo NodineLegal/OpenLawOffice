@@ -32,39 +32,60 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult Index()
         {
-            return View(GetList());
-        }
+            List<ViewModels.Contacts.ContactViewModel> viewModelList = null;
+            string contactFilter;
 
-        [Authorize(Roles = "Login, User")]
-        public ActionResult ListJqGrid()
-        {
-            ViewModels.JqGridObject jqObject;
-            List<ViewModels.Contacts.ContactViewModel> modelList = null;
-            List<object> anonList = new List<object>();
 
-            modelList = GetList();
+            viewModelList = new List<ViewModels.Contacts.ContactViewModel>();
 
-            modelList.ForEach(x =>
+            if (!string.IsNullOrEmpty(contactFilter = Request["contactFilter"]))
             {
-                anonList.Add(new
+                Data.Contacts.Contact.List(contactFilter).ForEach(x =>
                 {
-                    Id = x.Id,
-                    DisplayName = x.DisplayName,
-                    City = x.Address1AddressCity,
-                    State = x.Address1AddressStateOrProvince
+                    viewModelList.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(x));
                 });
-            });
-
-            jqObject = new ViewModels.JqGridObject()
+            }
+            else
             {
-                TotalPages = 1,
-                CurrentPage = 1,
-                TotalRecords = modelList.Count,
-                Rows = anonList.ToArray()
-            };
+                Data.Contacts.Contact.List().ForEach(x =>
+                {
+                    viewModelList.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(x));
+                });
+            }
 
-            return Json(jqObject, JsonRequestBehavior.AllowGet);
+            return View(viewModelList);
         }
+
+        //[Authorize(Roles = "Login, User")]
+        //public ActionResult ListJqGrid()
+        //{
+        //    ViewModels.JqGridObject jqObject;
+        //    List<ViewModels.Contacts.ContactViewModel> modelList = null;
+        //    List<object> anonList = new List<object>();
+
+        //    modelList = GetList();
+
+        //    modelList.ForEach(x =>
+        //    {
+        //        anonList.Add(new
+        //        {
+        //            Id = x.Id,
+        //            DisplayName = x.DisplayName,
+        //            City = x.Address1AddressCity,
+        //            State = x.Address1AddressStateOrProvince
+        //        });
+        //    });
+
+        //    jqObject = new ViewModels.JqGridObject()
+        //    {
+        //        TotalPages = 1,
+        //        CurrentPage = 1,
+        //        TotalRecords = modelList.Count,
+        //        Rows = anonList.ToArray()
+        //    };
+
+        //    return Json(jqObject, JsonRequestBehavior.AllowGet);
+        //}
 
         [Authorize(Roles = "Login, User")]
         public ActionResult ListDisplayNameOnly()

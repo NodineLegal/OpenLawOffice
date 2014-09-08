@@ -46,6 +46,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
         public Contacts.ContactViewModel LeadAttorney { get; set; }
 
         public List<ViewModels.Tasks.TaskViewModel> Tasks { get; set; }
+        public List<ViewModels.Notes.NoteViewModel> Notes { get; set; }
+        public Dictionary<ViewModels.Tasks.TaskViewModel, List<ViewModels.Notes.NoteViewModel>> TaskNotes { get; set; }
 
         public void BuildMappings()
         {
@@ -103,7 +105,9 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
                         IsStub = true
                     };
                 }))
-                .ForMember(dst => dst.Tasks, opt => opt.Ignore());
+                .ForMember(dst => dst.Tasks, opt => opt.Ignore())
+                .ForMember(dst => dst.Notes, opt => opt.Ignore())
+                .ForMember(dst => dst.TaskNotes, opt => opt.Ignore());
 
             Mapper.CreateMap<MatterViewModel, Common.Models.Matters.Matter>()
                 .ForMember(dst => dst.Created, opt => opt.MapFrom(src => src.Created))

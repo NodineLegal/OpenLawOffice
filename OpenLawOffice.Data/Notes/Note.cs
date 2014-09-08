@@ -88,8 +88,8 @@ namespace OpenLawOffice.Data.Notes
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("INSERT INTO \"note\" (\"id\", \"title\", \"body\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
-                    "VALUES (@Id, @Title, @Body, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
+                conn.Execute("INSERT INTO \"note\" (\"id\", \"title\", \"body\", \"timestamp\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
+                    "VALUES (@Id, @Title, @Body, @Timestamp, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
                     dbo);
             }
 
@@ -151,7 +151,7 @@ namespace OpenLawOffice.Data.Notes
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("UPDATE \"note\" SET " +
-                    "\"title\"=@Title, \"body\"=@Body, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserPId " +
+                    "\"title\"=@Title, \"body\"=@Body, \"timestamp\"=@Timestamp, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserPId " +
                     "WHERE \"id\"=@Id", dbo);
             }
 

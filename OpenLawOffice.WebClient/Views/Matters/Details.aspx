@@ -141,7 +141,7 @@
         </tr>
     </table>
     <% Html.RenderPartial("CoreDetailsView"); %>
-
+    
     <table class="listing_table">    
         <tr>
             <td colspan="3" style="font-weight: bold;">
@@ -174,6 +174,85 @@
             </td>
         </tr>
         <% } %>
+    </table>
+
+    <br />
+    
+    <table class="listing_table">    
+        <tr>
+            <td colspan="3" style="font-weight: bold;">
+                Notes from Matter
+            </td>
+        </tr>
+        <tr>
+            <th style="text-align: center; width: 150px;">
+                Date/Time
+            </th>
+            <th style="text-align: center;">
+                Title
+            </th>
+            <th style="text-align: center; width: 20px;">
+                
+            </th>
+        </tr>
+        <% foreach (var item in Model.Notes)
+           { %>
+        <tr>
+            <td>
+                <%: item.Timestamp %>
+            </td>
+            <td>
+                <%: Html.ActionLink(item.Title, "Details", "Notes", new { id = item.Id.Value }, null) %>
+            </td>
+            <td>
+                <%: Html.ActionLink("Edit", "Edit", "Notes", new { id = item.Id.Value }, new { @class = "btn-edit", title = "Edit" })%>
+            </td>
+        </tr>
+        <% } %>
+    </table>
+    
+    <br />
+    
+    <table class="listing_table">    
+        <tr>
+            <td colspan="3" style="font-weight: bold;">
+                Notes from Tasks
+            </td>
+        </tr>
+        <tr>
+            <th style="text-align: center;">
+                Task
+            </th>
+            <th style="text-align: center;">
+                Date/Time
+            </th>
+            <th style="text-align: center;">
+                Title
+            </th>
+            <th style="text-align: center; width: 20px;">
+                
+            </th>
+        </tr>
+        <% foreach (var item in Model.TaskNotes)
+           {
+               foreach (var note in item.Value)
+               { %>
+        <tr>
+            <td>
+                <%: Html.ActionLink(item.Key.Title, "Details", "Tasks", new { id = item.Key.Id.Value }, null)%>
+            </td>
+            <td>
+                <%: note.Timestamp %>
+            </td>
+            <td>
+                <%: Html.ActionLink(note.Title, "Details", "Notes", new { id = note.Id.Value }, null)%>
+            </td>
+            <td>
+                <%: Html.ActionLink("Edit", "Edit", "Notes", new { id = note.Id.Value }, new { @class = "btn-edit", title = "Edit" })%>
+            </td>
+        </tr>
+        <%     }
+           }%>
     </table>
     <div id="pageInfoDialog" title="Help">
         <p>

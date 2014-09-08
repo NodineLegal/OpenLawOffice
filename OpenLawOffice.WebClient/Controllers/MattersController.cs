@@ -194,6 +194,23 @@ namespace OpenLawOffice.WebClient.Controllers
             viewModel.Tasks = TasksController.GetListForMatter(id, true);
             viewModel.LeadAttorney = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.LeadAttorney);
 
+            viewModel.Notes = new List<ViewModels.Notes.NoteViewModel>();
+            Data.Notes.NoteMatter.ListForMatter(id).ForEach(x =>
+            {
+                viewModel.Notes.Add(Mapper.Map<ViewModels.Notes.NoteViewModel>(x));
+            });
+
+            viewModel.TaskNotes = new Dictionary<ViewModels.Tasks.TaskViewModel,List<ViewModels.Notes.NoteViewModel>>();
+            viewModel.Tasks.ForEach(x =>
+            {
+                List<ViewModels.Notes.NoteViewModel> list = new List<ViewModels.Notes.NoteViewModel>();
+                Data.Notes.NoteTask.ListForTask(x.Id.Value).ForEach(y =>
+                {
+                    list.Add(Mapper.Map<ViewModels.Notes.NoteViewModel>(y));
+                });
+                viewModel.TaskNotes.Add(x, list);
+            });
+
             PopulateCoreDetails(viewModel);
 
             neededRoles = new List<string>(new string[] {"Lead Attorney", "Client", "Appointed Client"});

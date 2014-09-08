@@ -24,6 +24,15 @@
     <table class="detail_table">
         <tr>
             <td class="display-label">
+                Date/Time
+            </td>
+            <td class="display-field">
+                <%: Html.TextBoxFor(model => model.Timestamp) %>
+                <%: Html.ValidationMessageFor(model => model.Timestamp)%>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
                 Title<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
@@ -36,7 +45,7 @@
                 Description<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                <%: Html.TextAreaFor(model => model.Body)%>
+                <%: Html.TextAreaFor(model => model.Body, new { @style = "width: 100%; height: 100px;" })%>
                 <%: Html.ValidationMessageFor(model => model.Body)%>
             </td>
         </tr>

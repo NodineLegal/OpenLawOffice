@@ -33,5 +33,7 @@ namespace OpenLawOffice.Common.Models.Notes
         public string Title { get; set; }
 
         public string Body { get; set; }
+
+        public DateTime? Timestamp { get; set; }
     }
 }

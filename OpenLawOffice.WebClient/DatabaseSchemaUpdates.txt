@@ -15,3 +15,9 @@ ALTER TABLE matter
 Removed from Users - THIS IS NOT A SCHEMA UPDATE - it is only noted here to record the fact that the installer will no longer create the "Administrator" account, instead it now allows
 	the person doing the install to create their account with administrator privileges.  This will also close issue #53
 "23421fc4-c3d3-4ac9-992e-16d3df11c2c3";"Administrator";"Website";"lucas_nodine_01@hotmail.com";"";"gzyziKE4+3wa5wbFI95PXbzEUvY=";"";"";TRUE;"2014-06-29 22:35:02.808-05";"2014-06-29 23:16:29.688-05";"2014-06-29 22:35:02.808-05";"2014-06-29 22:35:02.808-05";;FALSE;"2014-06-29 22:35:02.808-05";0;"2014-06-29 22:35:02.808-05";0;"2014-06-29 22:35:02.808-05"
+
+9/7/2014
+To give notes a "date" field so that the note can be dated besides with the core properties.
+
+ALTER TABLE note
+  ADD COLUMN "timestamp" timestamp without time zone;

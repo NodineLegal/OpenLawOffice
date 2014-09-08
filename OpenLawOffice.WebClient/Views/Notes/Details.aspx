@@ -29,6 +29,14 @@
         </tr>
         <tr>
             <td class="display-label">
+                Date/Time
+            </td>
+            <td class="display-field">
+                <%: Model.Timestamp %>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
                 Title
             </td>
             <td class="display-field">
