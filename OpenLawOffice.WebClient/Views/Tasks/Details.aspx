@@ -7,7 +7,7 @@
            
     <div id="roadmap">
         <div class="zero">Matter: [<%: Html.ActionLink((string)ViewData["Matter"], "Details", "Matters", new { id = ViewData["MatterId"] }, null) %>]</div>
-        <div id="current" class="one">Task Details<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></div>
+        <div id="current" class="one">Task: <%: Model.Title %><a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></div>
     </div>
             
 <% if (Model.Active)
@@ -26,39 +26,12 @@
 
     <table class="detail_table">
         <tr>
-            <td class="display-label">
-                Matter
-            </td>
-            <td class="display-field">
-                <%: Html.ActionLink((string)ViewData["Matter"], "Details", "Matters", new { id = ViewData["MatterId"] }, null)%>
+            <td colspan="5" class="detail_table_heading">
+                Task Details
             </td>
         </tr>
         <tr>
-            <td class="display-label">
-                Title
-            </td>
-            <td class="display-field">
-                <%: Model.Title %>
-            </td>
-        </tr>
-        <tr>
-            <td class="display-label">
-                Description
-            </td>
-            <td class="display-field">
-                <%: Model.Description%>
-            </td>
-        </tr>
-        <tr>
-            <td class="display-label">
-                Active
-            </td>
-            <td class="display-field">
-                <%: Html.CheckBoxFor(model => model.Active, new { disabled = true })%>
-            </td>
-        </tr>
-        <tr>
-            <td class="display-label">
+            <td class="display-label" style="width: 125px;">
                 Projected Start
             </td>
             <td class="display-field">
@@ -66,21 +39,9 @@
                    { %>
                 <%: String.Format("{0:g}", Model.ProjectedStart.Value)%>
                 <% } %>
-            </td>
-        </tr>
-        <tr>
-            <td class="display-label">
-                Due Date
-            </td>
-            <td class="display-field">
-                <% if (Model.DueDate.HasValue)
-                   { %>
-                <%: String.Format("{0:g}", Model.DueDate.Value)%>
-                <% } %>
-            </td>
-        </tr>
-        <tr>
-            <td class="display-label">
+            </td>            
+            <td></td>
+            <td class="display-label" style="width: 125px;">
                 Projected End
             </td>
             <td class="display-field">
@@ -91,7 +52,17 @@
             </td>
         </tr>
         <tr>
-            <td class="display-label">
+            <td class="display-label" style="width: 125px;">
+                Due Date
+            </td>
+            <td class="display-field">
+                <% if (Model.DueDate.HasValue)
+                   { %>
+                <%: String.Format("{0:g}", Model.DueDate.Value)%>
+                <% } %>
+            </td>      
+            <td></td>
+            <td class="display-label" style="width: 125px;">
                 Actual End
             </td>
             <td class="display-field">
@@ -101,37 +72,64 @@
                 <% } %>
             </td>
         </tr>
-        <%--<tr>
-            <td class="display-label">
-                Is a Grouping Task
+        <tr>
+            <td class="display-label" style="width: 125px;">
+                Active
             </td>
             <td class="display-field">
-                <%: Html.CheckBoxFor(model => model.IsGroupingTask, new { disabled=true }) %>
+                <%: Html.CheckBoxFor(model => model.Active, new { disabled = true })%>
             </td>
         </tr>
         <tr>
-            <td class="display-label">
-                Parent
+            <td class="display-label" style="width: 125px;">
+                Description
             </td>
-            <td class="display-field">
-                <% if (Model.Parent != null)
-                   { %>
-                <%: Model.Parent.Title%>
-                <% } %>
+            <td class="display-field" colspan="4">
+                <%: Model.Description%>
             </td>
         </tr>
-        <tr>
-            <td class="display-label">
-                Sequential Predecessor
-            </td>
-            <td class="display-field">
-                <% if (Model.SequentialPredecessor != null)
-                   { %>
-                <%: Model.SequentialPredecessor.Title%>
-                <% } %>
-            </td>
-        </tr>--%>
     </table>
+    
+    <table class="listing_table">    
+        <tr>
+            <td colspan="4" class="listing_table_heading">
+                Notes
+            </td>
+        </tr>
+        <tr>
+            <th style="text-align: center; width: 150px;">
+                Date/Time
+            </th>
+            <th style="text-align: center;">
+                Title
+            </th>
+            <th style="text-align: center; width: 20px;">
+                
+            </th>
+        </tr>
+        <% bool altRow = true; 
+            foreach (var note in Model.Notes)
+            {
+               altRow = !altRow;
+               if (altRow)
+               { %> <tr class="tr_alternate"> <% }
+               else
+               { %> <tr> <% }
+                %>
+            <td>
+                <%: note.Timestamp %>
+            </td>
+            <td>
+                <%: Html.ActionLink(note.Title, "Details", "Notes", new { id = note.Id.Value }, null)%>
+            </td>
+            <td>
+                <%: Html.ActionLink("Edit", "Edit", "Notes", new { id = note.Id.Value }, new { @class = "btn-edit", title = "Edit" })%>
+            </td>
+        </tr>
+        <%  } %>
+    </table>
+    
+    <br />
 <% Html.RenderPartial("CoreDetailsView"); %>
 
     <div id="pageInfoDialog" title="Help">

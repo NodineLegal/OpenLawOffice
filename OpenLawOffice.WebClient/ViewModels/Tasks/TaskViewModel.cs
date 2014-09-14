@@ -24,6 +24,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasks
     using System;
     using AutoMapper;
     using OpenLawOffice.Common.Models;
+    using System.Collections.Generic;
 
     [MapMe]
     public class TaskViewModel : CoreViewModel
@@ -51,6 +52,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasks
         public TaskViewModel SequentialPredecessor { get; set; }
 
         public bool Active { get; set; }
+
+        public List<ViewModels.Notes.NoteViewModel> Notes { get; set; }
 
         public void BuildMappings()
         {
@@ -113,7 +116,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasks
                         IsStub = true
                     };
                 }))
-                .ForMember(dst => dst.Active, opt => opt.MapFrom(src => src.Active));
+                .ForMember(dst => dst.Active, opt => opt.MapFrom(src => src.Active))
+                .ForMember(dst => dst.Notes, opt => opt.Ignore());
 
             Mapper.CreateMap<TaskViewModel, Common.Models.Tasks.Task>()
                 .ForMember(dst => dst.Created, opt => opt.MapFrom(src => src.Created))

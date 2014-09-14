@@ -31,7 +31,7 @@
         </tr>
         <tr>
             <td class="display-label">
-                Date/Time
+                Date/Time<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
                 <%: Html.TextBoxFor(model => model.Timestamp) %>

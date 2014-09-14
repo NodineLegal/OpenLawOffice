@@ -6,7 +6,7 @@ to use a different color start by replacing all instances of
 body
 {
     background-color: #5c87b2;
-    font-size: 11px;
+    font-size: 12px;
     font-family: Verdana, Helvetica, Sans-Serif;
     margin: 0;
     padding: 0;
@@ -222,7 +222,7 @@ table
 table td
 {
     padding: 5px;
-    border: solid 1px #e8eef4;
+    /*border: solid 1px #e8eef4;*/
 }
 
 table th
@@ -244,6 +244,25 @@ table th
 #main table.listing_table
 {
     width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid #e8eef4;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+}
+
+.listing_table_heading
+{
+    font-weight: bold; 
+    color: White; 
+    background-color: #5c87b2;
+    border-collapse: collapse;
+    border-spacing: 0;
+    border: 1px solid #5c87b2;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    -moz-border-top-left-radius: 5px;
+    -moz-border-top-right-radius: 5px;
 }
 
 #main table.listing_table th
@@ -255,6 +274,30 @@ table th
 {
     width: 100%;
     margin-bottom: 15px;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid #e8eef4;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+}
+
+.detail_table_heading
+{
+    font-weight: bold; 
+    color: White; 
+    background-color: #5c87b2;
+    border-collapse: collapse;
+    border-spacing: 0;
+    border: 1px solid #5c87b2;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    -moz-border-top-left-radius: 5px;
+    -moz-border-top-right-radius: 5px;
+}
+
+.tr_alternate
+{
+    background-color: #f5f5f5;
 }
 
 td.display-field input
@@ -357,7 +400,13 @@ div#title
 
 /* Styles for editor and display helpers
 ----------------------------------------------------------*/
-.display-label, .editor-label, .display-field, .editor-field
+.display-label, .editor-label
+{
+    margin: 0.5em 0;
+    color: #969696;
+}
+
+.display-field, .editor-field
 {
     margin: 0.5em 0;
 }

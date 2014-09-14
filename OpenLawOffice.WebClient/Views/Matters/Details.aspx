@@ -40,7 +40,7 @@
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" runat="server">
     <div id="roadmap">
-        <div id="current" class="zero">Matter Details<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></div>
+        <div id="current" class="zero">Matter: <%: Model.Title %><a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></div>
     </div>
         
     <% if (ViewData["AlertText"] != null)
@@ -75,61 +75,38 @@
         </script>
     </div>
     <% } %>
-
-    <table class="detail_table">
+    
+    <table class="detail_table">    
         <tr>
-            <td class="display-label">
-                Id
-            </td>
-            <td class="display-field">
-                <%: Model.Id %>
-            </td>
-        </tr>
-        <%--<tr>
-            <td class="display-label">
-                Parent
-            </td>
-            <td class="display-field">
-                <% if (Model.Parent != null)
-                   { %>
-                <%: Model.Parent.Title%>
-                <% } %>
-            </td>
-        </tr>--%>
-        <tr>
-            <td class="display-label">
-                Title
-            </td>
-            <td class="display-field">
-                <%: Model.Title %>
+            <td colspan="5" class="detail_table_heading">
+                Court Information
             </td>
         </tr>
         <tr>
-            <td class="display-label">
-                Synopsis
-            </td>
-            <td class="display-field">
-                <%: Model.Synopsis %>
-            </td>
-        </tr>
-        <tr>
-            <td class="display-label">
+            <td class="display-label" style="width: 125px;">
                 Jurisdiction
             </td>
             <td class="display-field">
                 <%: Model.Jurisdiction %>
             </td>
-        </tr>
-        <tr>
-            <td class="display-label">
+            <td></td>
+            <td class="display-label" style="width: 125px;">
                 Case Number
             </td>
             <td class="display-field">
                 <%: Model.CaseNumber %>
             </td>
         </tr>
+    </table>
+
+    <table class="detail_table">  
         <tr>
-            <td class="display-label">
+            <td colspan="2" class="detail_table_heading">
+                Matter Details
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label" style="width: 125px;">
                 Lead Attorney
             </td>
             <td class="display-field">
@@ -139,12 +116,19 @@
                 <% } %>
             </td>
         </tr>
+        <tr>
+            <td class="display-label" style="width: 125px;">
+                Synopsis
+            </td>
+            <td class="display-field" colspan="4">
+                <%: Model.Synopsis %>
+            </td>
+        </tr>
     </table>
-    <% Html.RenderPartial("CoreDetailsView"); %>
     
     <table class="listing_table">    
         <tr>
-            <td colspan="3" style="font-weight: bold;">
+            <td colspan="3" class="listing_table_heading">
                 Active Tasks
             </td>
         </tr>
@@ -159,9 +143,15 @@
                 
             </th>
         </tr>
-        <% foreach (var item in Model.Tasks)
-           { %>
-        <tr>
+        <% bool altRow = true;
+           foreach (var item in Model.Tasks)
+           {
+               altRow = !altRow;
+               if (altRow)
+               { %> <tr class="tr_alternate"> <% }
+               else
+               { %> <tr> <% }
+                %>
             <td>
                 <%: Html.ActionLink(item.Title, "Details", "Tasks", new { id = item.Id.Value }, null) %>
             </td>
@@ -180,10 +170,10 @@
     
     <table class="listing_table">    
         <tr>
-            <td colspan="3" style="font-weight: bold;">
-                Notes from Matter
+            <td colspan="3" class="listing_table_heading">
+                Matter Notes
             </td>
-        </tr>
+        </tr> 
         <tr>
             <th style="text-align: center; width: 150px;">
                 Date/Time
@@ -195,9 +185,15 @@
                 
             </th>
         </tr>
-        <% foreach (var item in Model.Notes)
-           { %>
-        <tr>
+        <% altRow = true; 
+           foreach (var item in Model.Notes)
+           {
+               altRow = !altRow;
+               if (altRow)
+               { %> <tr class="tr_alternate"> <% }
+               else
+               { %> <tr> <% }
+                %>
             <td>
                 <%: item.Timestamp %>
             </td>
@@ -215,15 +211,15 @@
     
     <table class="listing_table">    
         <tr>
-            <td colspan="3" style="font-weight: bold;">
-                Notes from Tasks
+            <td colspan="4" class="listing_table_heading">
+                Task Notes
             </td>
         </tr>
         <tr>
             <th style="text-align: center;">
                 Task
             </th>
-            <th style="text-align: center;">
+            <th style="text-align: center; width: 150px;">
                 Date/Time
             </th>
             <th style="text-align: center;">
@@ -233,11 +229,17 @@
                 
             </th>
         </tr>
-        <% foreach (var item in Model.TaskNotes)
+        <% altRow = true; 
+           foreach (var item in Model.TaskNotes)
            {
                foreach (var note in item.Value)
-               { %>
-        <tr>
+               {
+               altRow = !altRow;
+               if (altRow)
+               { %> <tr class="tr_alternate"> <% }
+               else
+               { %> <tr> <% }
+                %>
             <td>
                 <%: Html.ActionLink(item.Key.Title, "Details", "Tasks", new { id = item.Key.Id.Value }, null)%>
             </td>
@@ -254,6 +256,11 @@
         <%     }
            }%>
     </table>
+    
+    <br />
+    
+    <% Html.RenderPartial("CoreDetailsView"); %>
+
     <div id="pageInfoDialog" title="Help">
         <p>
         <span style="font-weight: bold; text-decoration: underline;">Info:</span>

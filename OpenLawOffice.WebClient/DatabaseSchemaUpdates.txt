@@ -21,3 +21,12 @@ To give notes a "date" field so that the note can be dated besides with the core
 
 ALTER TABLE note
   ADD COLUMN "timestamp" timestamp without time zone;
+
+Below will set timestamp to the created time
+
+UPDATE note SET "timestamp"=utc_created;
+
+Below will make timestamp a required field
+
+ALTER TABLE note
+   ALTER COLUMN "timestamp" SET NOT NULL;

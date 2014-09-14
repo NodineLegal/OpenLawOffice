@@ -217,6 +217,12 @@ namespace OpenLawOffice.WebClient.Controllers
             model = Data.Tasks.Task.Get(id);
 
             viewModel = Mapper.Map<ViewModels.Tasks.TaskViewModel>(model);
+            
+            viewModel.Notes = new List<ViewModels.Notes.NoteViewModel>();
+            Data.Notes.NoteTask.ListForTask(id).ForEach(x =>
+            {
+                viewModel.Notes.Add(Mapper.Map<ViewModels.Notes.NoteViewModel>(x));
+            });
 
             PopulateCoreDetails(viewModel);
 
