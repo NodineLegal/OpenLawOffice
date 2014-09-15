@@ -268,6 +268,7 @@ table th
 #main table.listing_table th
 {
     text-align: center;
+    padding: 1px;
 }
 
 #main table.detail_table

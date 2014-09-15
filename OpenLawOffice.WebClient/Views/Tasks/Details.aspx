@@ -97,7 +97,7 @@
             </td>
         </tr>
         <tr>
-            <th style="text-align: center; width: 150px;">
+            <th style="text-align: center; width: 170px;">
                 Date/Time
             </th>
             <th style="text-align: center;">

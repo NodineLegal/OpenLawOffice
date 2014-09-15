@@ -136,10 +136,10 @@
             <th style="text-align: center;">
                 Title
             </th>
-            <th style="text-align: center;">
+            <th style="text-align: center; width: 170px; padding-right: 10px;">
                 Due Date
             </th>
-            <th style="text-align: center; width: 40px;">
+            <th style="text-align: center; width: 45px;">
                 
             </th>
         </tr>
@@ -175,7 +175,7 @@
             </td>
         </tr> 
         <tr>
-            <th style="text-align: center; width: 150px;">
+            <th style="text-align: center; width: 170px;">
                 Date/Time
             </th>
             <th style="text-align: center;">
@@ -219,7 +219,7 @@
             <th style="text-align: center;">
                 Task
             </th>
-            <th style="text-align: center; width: 150px;">
+            <th style="text-align: center; width: 170px;">
                 Date/Time
             </th>
             <th style="text-align: center;">
