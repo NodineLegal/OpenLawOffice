@@ -83,18 +83,18 @@
             <% } %>
             
             <tr <% if (lastTimestampStop > item.Time.Start) { %>style="background-color: #FFCECE;"<% } %>>
-                <td style="width: 120px;">
+                <td style="width: 170px;">
                     <%: String.Format("{0:g}", item.Time.Start) %>
                 </td>
                 <% if (item.Time.Stop.HasValue)
                    { %>
-                    <td style="width: 120px;">
+                    <td style="width: 170px;">
                         <%: String.Format("{0:g}", item.Time.Stop)%>
                     </td>
                     <% }
                    else
                    { %>
-                   <td style="width: 120px; background-color: #FFFFC8;">
+                   <td style="width: 170px; background-color: #FFFFC8;">
                    ???
                    </td>
                    <% } %>

@@ -73,7 +73,7 @@
             <th>
                 City, State
             </th>
-            <th style="width: 40px;">
+            <th style="width: 45px;">
             </th>
         </tr>
         <% foreach (var item in Model)
