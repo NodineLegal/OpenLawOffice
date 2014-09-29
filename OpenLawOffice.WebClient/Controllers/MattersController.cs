@@ -178,6 +178,29 @@ namespace OpenLawOffice.WebClient.Controllers
         }
 
         [Authorize(Roles = "Login, User")]
+        public ActionResult Close(Guid id)
+        {
+            return Close(id, null);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Login, User")]
+        public ActionResult Close(Guid id, ViewModels.Matters.MatterViewModel viewModel)
+        {
+            Common.Models.Account.Users currentUser;
+            Common.Models.Matters.Matter model;
+
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
+
+            model = Data.Matters.Matter.Get(id);
+            model.Active = false;
+
+            model = Data.Matters.Matter.Edit(model, currentUser);
+
+            return RedirectToAction("Details", new { Id = id });
+        }
+
+        [Authorize(Roles = "Login, User")]
         public ActionResult Details(Guid id)
         {
             List<string> neededRoles;

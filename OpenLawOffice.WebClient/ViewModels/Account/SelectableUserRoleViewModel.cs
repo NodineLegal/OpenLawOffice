@@ -30,7 +30,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Account
     {
         public bool IsSelected { get; set; }
 
-        public void BuildMappings()
+        public new void BuildMappings()
         {
             Mapper.CreateMap<Common.Models.Account.UserRole, SelectableUserRoleViewModel>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))

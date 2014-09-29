@@ -42,40 +42,58 @@
     <div id="roadmap">
         <div id="current" class="zero">Matter: <%: Model.Title %><a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></div>
     </div>
-        
-    <% if (ViewData["AlertText"] != null)
+            
+    <% using (Html.BeginForm("Close", "Matters", new { Id = RouteData.Values["Id"] }, FormMethod.Post, new { id = "CloseForm" }))
+       {%>
+
+    <% if (Model.Active || ViewData["AlertText"] != null)
        { %>
     <div class="options_div" style="text-align: right;">
-        <a class="btn-alert" title="Alerts" id="alertInfo"></a>
-        <div id="alertInfoDialog" title="Alerts">
-            <p>
-            <span style="font-weight: bold; text-decoration: underline;">Alerts:</span>
-            <%= ViewData["AlertText"]%>
-            </p>
-        </div>  
-        <script language="javascript">
-            $(function () {
-                $("#alertInfoDialog").dialog({
-                    autoOpen: false,
-                    width: 400,
-                    show: {
-                        effect: "blind",
-                        duration: 100
-                    },
-                    hide: {
-                        effect: "fade",
-                        duration: 100
-                    }
-                });
+    <% if (Model.Active)
+       { %>
+        <div style="width: 200px; display: inline;">  
+            <input type="submit" value="Close" 
+                style="background-image: url('/Content/fugue-icons-3.5.6/icons-shadowless/cross.png'); 
+                background-position: left center; background-repeat: no-repeat; padding-left: 20px;" />
+        </div>
+        
+    <% }
+       if (ViewData["AlertText"] != null)
+       { %>
+        <div style="width: 200px; display: inline;">
+            <a class="btn-alert" title="Alerts" id="alertInfo" style="padding-left: 15px;"></a>
+            <div id="alertInfoDialog" title="Alerts">
+                <p>
+                <span style="font-weight: bold; text-decoration: underline;">Alerts:</span>
+                <%= ViewData["AlertText"]%>
+                </p>
+            </div>  
+            <script language="javascript">
+                $(function () {
+                    $("#alertInfoDialog").dialog({
+                        autoOpen: false,
+                        width: 400,
+                        show: {
+                            effect: "blind",
+                            duration: 100
+                        },
+                        hide: {
+                            effect: "fade",
+                            duration: 100
+                        }
+                    });
 
-                $("#alertInfo").click(function () {
-                    $("#alertInfoDialog").dialog("open");
+                    $("#alertInfo").click(function () {
+                        $("#alertInfoDialog").dialog("open");
+                    });
                 });
-            });
-        </script>
-    </div>
+            </script>
+        </div>
     <% } %>
+    </div>
     
+            <% }
+       }%>
     <table class="detail_table">    
         <tr>
             <td colspan="5" class="detail_table_heading">
