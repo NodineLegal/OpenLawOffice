@@ -102,9 +102,15 @@
                 
             </th>
         </tr>
-        <% foreach (var item in Model)
-           { %>
-        <tr>
+        <% bool altRow = true; 
+           foreach (var item in Model)
+           { 
+               altRow = !altRow;
+               if (altRow)
+               { %> <tr class="tr_alternate"> <% }
+               else
+               { %> <tr> <% }
+                %>
             <td>
                 <%: Html.ActionLink(item.Title, "Details", "Matters", new { id = item.Id.Value }, null) %>
             </td>
@@ -117,54 +123,6 @@
         </tr>
         <% } %>
     </table>
-
-    <%--<table id="list">
-    </table>
-    <div id="pager">
-    </div>
-    <script language="javascript">
-        $(function () {
-            $("#list").jqGrid({
-                treeGrid: true,
-                autowidth: true,
-                height: '100%',
-                url: '../Matters/ListChildrenJqGrid',
-                datatype: 'json',
-                jsonReader: {
-                    root: 'Rows',
-                    page: 'CurrentPage',
-                    total: 'TotalRecords',
-                    id: 'Id',
-                    rows: 'Rows'
-                },
-                colNames: ['id', 'Title', 'Synopsis', ''],
-                colModel: [
-                    { name: 'Id', width: 1, hidden: true, key: true },
-                    { name: 'Title', width: 250, formatter: titleFormat },
-                    { name: 'Synopsis', width: 400 },
-                    { name: 'act', width: 25 }
-                ],
-                pager: '#pager',
-                gridview: true,
-                treedatatype: 'json',
-                treeGridModel: 'adjacency',
-                ExpandColumn: 'Title',
-                caption: 'Matters',
-                gridComplete: function () {
-                    var ids = jQuery("#list").jqGrid('getDataIDs');
-                    for (var i = 0; i < ids.length; i++) {
-                        id = ids[i];
-                        editButton = "<a href=\"../Matters/Edit/" + ids[i] + "\" class=\"btn-edit\" title=\"Edit\">Edit</a>";
-                        jQuery("#list").jqGrid('setRowData', ids[i], { act: editButton });
-                    }
-                }
-            });
-        });
-
-        function titleFormat(cellvalue, options, rowObject) {
-            return '<a href="../Matters/Details/' + options.rowId + '">' + cellvalue + '</a>';
-        }
-    </script>--%>
     
     <div id="pageInfoDialog" title="Help">
         <p>
