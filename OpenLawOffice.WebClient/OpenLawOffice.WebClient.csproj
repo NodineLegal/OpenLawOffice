@@ -111,6 +111,7 @@
     <Compile Include="Controllers\EventTaskController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InstallationController.cs" />
+    <Compile Include="Controllers\JsonInterfaceController.cs" />
     <Compile Include="Controllers\MatterContactController.cs" />
     <Compile Include="Controllers\MattersController.cs" />
     <Compile Include="Controllers\MatterTagsController.cs" />
@@ -127,6 +128,7 @@
     <Compile Include="Controllers\UserTaskSettingsController.cs" />
     <Compile Include="Controllers\VersionsController.cs" />
     <Compile Include="Controllers\HandleErrorAttribute.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

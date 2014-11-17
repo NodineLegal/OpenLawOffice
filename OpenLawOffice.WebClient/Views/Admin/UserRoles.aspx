@@ -94,9 +94,9 @@
         <li>
             <%: Html.ActionLink("Unlock", "UnlockUser", new { id = Request["Username"] })%></li>
         <li>
-            <%: Html.ActionLink("Change Password", "ChangePassword", new { id = Model.Username })%></li>
+            <%: Html.ActionLink("Change Password", "ChangePassword", new { id = Request["Username"] })%></li>
         <li>
-            <%: Html.ActionLink("Reset Password", "ResetPassword", new { id = Model.Username })%></li>
+            <%: Html.ActionLink("Reset Password", "ResetPassword", new { id = Request["Username"] })%></li>
     </ul>
     <li>
         <%: Html.ActionLink("List", "Index") %></li>

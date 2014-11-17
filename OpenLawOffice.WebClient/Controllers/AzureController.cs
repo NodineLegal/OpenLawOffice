@@ -55,29 +55,42 @@ namespace OpenLawOffice.WebClient.Controllers
                 postStream.Flush();
                 postStream.Close();
 
-                using (HttpWebResponse resp = (HttpWebResponse)req.GetResponse())
+                try
                 {
-                    using (StreamReader reader = new StreamReader(resp.GetResponseStream()))
+                    using (HttpWebResponse resp = (HttpWebResponse)req.GetResponse())
                     {
-                        JToken jt = JToken.Parse(reader.ReadToEnd());
-                        string access_token = jt["access_token"].Value<string>();
-                        string token_type = jt["token_type"].Value<string>();
-                        string expires_in = jt["expires_in"].Value<string>();
-                        string expires_on = jt["expires_on"].Value<string>();
-                        string resource = jt["resource"].Value<string>();
-                        string refresh_token = jt["refresh_token"].Value<string>();
-                        string scope = jt["scope"].Value<string>();
-                        string id_token = jt["id_token"].Value<string>();
+                        using (StreamReader reader = new StreamReader(resp.GetResponseStream()))
+                        {
+                            JToken jt = JToken.Parse(reader.ReadToEnd());
+                            string access_token = jt["access_token"].Value<string>();
+                            string token_type = jt["token_type"].Value<string>();
+                            string expires_in = jt["expires_in"].Value<string>();
+                            string expires_on = jt["expires_on"].Value<string>();
+                            string resource = jt["resource"].Value<string>();
+                            string refresh_token = jt["refresh_token"].Value<string>();
+                            string scope = jt["scope"].Value<string>();
+                            string id_token = jt["id_token"].Value<string>();
 
-                        dynamic profile = ProfileBase.Create(Membership.GetUser().UserName);
+                            dynamic profile = ProfileBase.Create(Membership.GetUser().UserName);
 
-                        profile.Office365AccessToken = access_token;
-                        profile.Office365RefreshToken = refresh_token;
+                            profile.Office365AccessToken = access_token;
+                            profile.Office365RefreshToken = refresh_token;
 
-                        profile.Save();
+                            profile.Save();
+                        }
                     }
                 }
-
+                catch (WebException ex)
+                {
+                    using (HttpWebResponse resp = (HttpWebResponse)ex.Response)
+                    {
+                        using (StreamReader reader = new StreamReader(resp.GetResponseStream()))
+                        {
+                            string str = reader.ReadToEnd();
+                            ViewData["Error"] = str;
+                        }
+                    }
+                }
             }
             else
             {
@@ -102,7 +115,8 @@ namespace OpenLawOffice.WebClient.Controllers
                     Common.Settings.Manager.Instance.System.Office365ClientId +
                     "&redirect_uri=" +
                     Common.Settings.Manager.Instance.System.WebsiteUrl + "Azure" +
-                    "&resource=https:%2f%2foutlook.office365.com%2f&state=5fdfd60b-8457-4536-b20f-fcb658d19458";
+                    "&resource=https:%2f%2foutlook.office365.com%2f&state=5fdfd60b-8457-4536-b20f-fcb658d19458" +
+                    "&prompt=admin_consent";
             }
             return View();
         }

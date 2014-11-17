@@ -182,14 +182,23 @@ namespace OpenLawOffice.WebClient.Controllers
         }
 
         [Authorize(Roles = "Login, User")]
-        public ActionResult DayView()
+        public ActionResult DayView(ViewModels.Timing.DayViewModel currentDVM)
         {
             int id;
             DateTime date;
-            List<ViewModels.Timing.DayViewModel> list;
+            List<ViewModels.Contacts.ContactViewModel> employeeContactList;
+            ViewModels.Timing.DayViewModel dayViewVM = new ViewModels.Timing.DayViewModel();
+
+            employeeContactList = new List<ViewModels.Contacts.ContactViewModel>();
 
             if (RouteData.Values["Id"] != null)
+            {
                 id = int.Parse((string)RouteData.Values["Id"]);
+            }
+            else if (currentDVM.Employee != null && currentDVM.Employee.Id.HasValue)
+            {
+                id = currentDVM.Employee.Id.Value;
+            }
             else
             {
                 dynamic profile = ProfileBase.Create(Membership.GetUser().UserName);
@@ -198,32 +207,36 @@ namespace OpenLawOffice.WebClient.Controllers
                 else
                     throw new ArgumentNullException("Must supply an Id or have a ContactId set in profile.");
             }
-
+            dayViewVM.Employee = Mapper.Map<ViewModels.Contacts.ContactViewModel>(Data.Contacts.Contact.Get(id));
+            
             if (Request["Date"] != null)
                 date = DateTime.Parse(Request["Date"]);
             else
                 date = DateTime.Today;
-
-            list = new List<ViewModels.Timing.DayViewModel>();
-
+            
             Data.Timing.Time.ListForDay(id, date).ForEach(x =>
             {
-                ViewModels.Timing.DayViewModel dayVM;
+                ViewModels.Timing.DayViewModel.Item dayVMItem;
 
-                dayVM = new ViewModels.Timing.DayViewModel();
+                dayVMItem = new ViewModels.Timing.DayViewModel.Item();
 
-                dayVM.Time = Mapper.Map<ViewModels.Timing.TimeViewModel>(x);
+                dayVMItem.Time = Mapper.Map<ViewModels.Timing.TimeViewModel>(x);
 
-                dayVM.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(Data.Timing.Time.GetRelatedTask(dayVM.Time.Id.Value));
+                dayVMItem.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(Data.Timing.Time.GetRelatedTask(dayVMItem.Time.Id.Value));
 
-                dayVM.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(Data.Tasks.Task.GetRelatedMatter(dayVM.Task.Id.Value));
+                dayVMItem.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(Data.Tasks.Task.GetRelatedMatter(dayVMItem.Task.Id.Value));
 
-                list.Add(dayVM);
+                dayViewVM.Items.Add(dayVMItem);
             });
 
+            Data.Contacts.Contact.ListEmployeesOnly().ForEach(x =>
+            {
+                employeeContactList.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(x));
+            });
 
             ViewData["Date"] = date;
-            return View(list);
+            ViewData["EmployeeContactList"] = employeeContactList;
+            return View(dayViewVM);
         }
     }
 }

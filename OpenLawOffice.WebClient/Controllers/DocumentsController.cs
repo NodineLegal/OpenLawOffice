@@ -33,12 +33,13 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public FileResult Download(Guid id)
         {
-            Common.Models.Documents.Version version = null;
+            //Common.Models.Documents.Version version = null;
 
-            version = Data.Documents.Document.GetCurrentVersion(id);
+            //version = Data.Documents.Document.GetCurrentVersion(id);
 
-            return File(Common.Settings.Manager.Instance.FileStorage.CurrentVersionPath + version.Id.ToString() + "." + version.Extension,
-                version.Mime, version.Filename + "." + version.Extension);
+            //return File(Common.Settings.Manager.Instance.FileStorage.CurrentVersionPath + version.Id.ToString() + "." + version.Extension,
+            //    version.Mime, version.Filename + "." + version.Extension);
+            return null;
         }
 
         [Authorize(Roles = "Login, User")]
@@ -107,51 +108,52 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult Create(ViewModels.Documents.DocumentViewModel viewModel, HttpPostedFileBase file)
         {
-            Common.Models.Account.Users currentUser;
-            Common.Models.Documents.Document model;
-            Common.Models.Documents.Version version;
+            //Common.Models.Account.Users currentUser;
+            //Common.Models.Documents.Document model;
+            //Common.Models.Documents.Version version;
 
-            currentUser = Data.Account.Users.Get(User.Identity.Name);
+            //currentUser = Data.Account.Users.Get(User.Identity.Name);
 
-            model = Mapper.Map<Common.Models.Documents.Document>(viewModel);
+            //model = Mapper.Map<Common.Models.Documents.Document>(viewModel);
 
-            model = Data.Documents.Document.Create(model, currentUser);
+            //model = Data.Documents.Document.Create(model, currentUser);
 
-            version = new Common.Models.Documents.Version()
-            {
-                Id = Guid.NewGuid(),
-                Document = model,
-                Mime = file.ContentType,
-                Filename = file.FileName.Split('.')[0],
-                Extension = file.FileName.Split('.')[1],
-                Size = (long)file.ContentLength,
+            //version = new Common.Models.Documents.Version()
+            //{
+            //    Id = Guid.NewGuid(),
+            //    Document = model,
+            //    Mime = file.ContentType,
+            //    Filename = file.FileName.Split('.')[0],
+            //    Extension = file.FileName.Split('.')[1],
+            //    Size = (long)file.ContentLength,
 
-                // Md5 = md5
-            };
+            //    // Md5 = md5
+            //};
 
-            // Save file
-            file.SaveAs(Common.Settings.Manager.Instance.FileStorage.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
+            //// Save file
+            //file.SaveAs(Common.Settings.Manager.Instance.FileStorage.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
 
-            // Calculate the MD5 checksum
-            version.Md5 = Common.Settings.FileStorageSettings.CalculateMd5(
-                Common.Settings.Manager.Instance.FileStorage.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
+            //// Calculate the MD5 checksum
+            //version.Md5 = Common.Settings.FileStorageSettings.CalculateMd5(
+            //    Common.Settings.Manager.Instance.FileStorage.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
 
-            // Version
-            Data.Documents.Document.CreateNewVersion(model.Id.Value, version, currentUser);
+            //// Version
+            //Data.Documents.Document.CreateNewVersion(model.Id.Value, version, currentUser);
 
-            // Matter or Task
-            if (Request["MatterId"] != null)
-            {
-                Data.Documents.Document.RelateMatter(model, Guid.Parse(Request["MatterId"]), currentUser);
-                return RedirectToAction("Documents", "Matters", new { Id = Request["MatterId"] });
-            }
-            else if (Request["TaskId"] != null)
-            {
-                Data.Documents.Document.RelateTask(model, long.Parse(Request["TaskId"]), currentUser);
-                return RedirectToAction("Documents", "Tasks", new { Id = Request["TaskId"] });
-            }
-            else
-                throw new Exception("Must have a matter or task id.");
+            //// Matter or Task
+            //if (Request["MatterId"] != null)
+            //{
+            //    Data.Documents.Document.RelateMatter(model, Guid.Parse(Request["MatterId"]), currentUser);
+            //    return RedirectToAction("Documents", "Matters", new { Id = Request["MatterId"] });
+            //}
+            //else if (Request["TaskId"] != null)
+            //{
+            //    Data.Documents.Document.RelateTask(model, long.Parse(Request["TaskId"]), currentUser);
+            //    return RedirectToAction("Documents", "Tasks", new { Id = Request["TaskId"] });
+            //}
+            //else
+            //    throw new Exception("Must have a matter or task id.");
+            return null;
         }
 
         [Authorize(Roles = "Login, User")]

@@ -21,66 +21,33 @@
 
 namespace OpenLawOffice.Common.Settings
 {
-    using System.Configuration;
-    using System.IO;
-    using System.Security.Cryptography;
     using System;
+    using System.Configuration;
 
     /// <summary>
     /// TODO: Update summary.
     /// </summary>
     public class FileStorageSettings : ConfigurationElement
     {
-        [ConfigurationProperty("currentVersionPath", IsRequired = true)]
-        public string CurrentVersionPath
+        [ConfigurationProperty("mattersPath", IsRequired = true)]
+        public string MattersPath
         {
-            get { return (string)this["currentVersionPath"]; }
-            set { this["currentVersionPath"] = value; }
+            get { return (string)this["mattersPath"]; }
+            set { this["mattersPath"] = value; }
         }
 
-        [ConfigurationProperty("previousVersionsPath", IsRequired = true)]
-        public string PreviousVersionsPath
+        [ConfigurationProperty("clientsPath", IsRequired = true)]
+        public string CientsPath
         {
-            get { return (string)this["previousVersionsPath"]; }
-            set { this["previousVersionsPath"] = value; }
+            get { return (string)this["clientsPath"]; }
+            set { this["clientsPath"] = value; }
         }
 
-        [ConfigurationProperty("tempPath", IsRequired = true)]
-        public string TempPath
+        [ConfigurationProperty("jurisdictionsPath", IsRequired = true)]
+        public string JurisdictionsPath
         {
-            get { return (string)this["tempPath"]; }
-            set { this["tempPath"] = value; }
-        }
-
-        public static string CalculateMd5(string path)
-        {
-            string output = null;
-            using (MD5 md5 = MD5.Create())
-            {
-                using (FileStream stream = File.OpenRead(path))
-                {
-                    output = BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "").ToUpper();
-                }
-            }
-            return output;
-        }
-
-        public string GetCurrentVersionFilepathFor(string filename)
-        {
-            string[] Split = filename.Split('.');
-            return CurrentVersionPath + Split[0] + "." + Split[1];
-        }
-
-        public string GetPreviousVersionFilepathFor(string filename)
-        {
-            string[] Split = filename.Split('.');
-            return PreviousVersionsPath + Split[0] + "." + Split[1];
-        }
-
-        public void MoveCurrentToPrevious(string filename)
-        {
-            string currentFilePath = GetCurrentVersionFilepathFor(filename);
-            File.Move(currentFilePath, GetPreviousVersionFilepathFor(filename));
+            get { return (string)this["jurisdictionsPath"]; }
+            set { this["jurisdictionsPath"] = value; }
         }
     }
 }

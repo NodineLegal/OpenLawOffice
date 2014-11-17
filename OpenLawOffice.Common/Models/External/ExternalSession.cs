@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="Manager.cs" company="Nodine Legal, LLC">
+// <copyright file="ExternalSession.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,36 +19,24 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.Common.Settings
+namespace OpenLawOffice.Common.Models.External
 {
     using System;
-    using System.Configuration;
 
-    /// <summary>
-    /// TODO: Update summary.
-    /// </summary>
-    public class Manager : Singleton<Manager>
+    public class ExternalSession : ModelBase
     {
-        private OloSection _config;
+        public Guid? Id { get; set; }
 
-        public OloSection Configuration
-        {
-            get { return _config; }
-        }
+        public Account.Users User { get; set; }
 
-        public FileStorageSettings FileStorage
-        {
-            get { return _config.FileStorage; }
-        }
+        public string AppName { get; set; }
 
-        public SystemSettings System
-        {
-            get { return _config.System; }
-        }
+        public Guid MachineId { get; set; }
 
-        public Manager()
-        {
-            _config = (OloSection)ConfigurationManager.GetSection("openLawOffice");
-        }
+        public DateTime Created { get; set; }
+
+        public DateTime Expires { get; set; }
+
+        public int Timeout { get; set; }
     }
 }

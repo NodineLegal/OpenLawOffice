@@ -15,7 +15,8 @@
        <br /><br />
 
        Error: <%: Request["error"]%><br />
-       Description: <%: Request["error_description"]%>
+       Description: <%: Request["error_description"]%><br />
+       Error: <%: ViewData["Error"]%><br />
 
     <% }
        else

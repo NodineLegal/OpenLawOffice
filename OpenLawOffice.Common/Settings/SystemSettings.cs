@@ -29,12 +29,12 @@ namespace OpenLawOffice.Common.Settings
     /// </summary>
     public class SystemSettings : ConfigurationElement
     {
-        [ConfigurationProperty("fileStorage", IsRequired = true)]
-        public FileStorageSettings FileStorage
-        {
-            get { return (FileStorageSettings)base["fileStorage"]; }
-            set { base["fileStorage"] = value; }
-        }
+        //[ConfigurationProperty("fileStorage", IsRequired = true)]
+        //public FileStorageSettings FileStorage
+        //{
+        //    get { return (FileStorageSettings)base["fileStorage"]; }
+        //    set { base["fileStorage"] = value; }
+        //}
 
         [ConfigurationProperty("timezone", IsRequired = true)]
         public string Timezone
@@ -98,9 +98,9 @@ namespace OpenLawOffice.Common.Settings
             set { base["office365ClientKey"] = value.ToString(); }
         }
 
-        public static SystemSettings Load()
-        {
-            return (SystemSettings)ConfigurationManager.GetSection("OpenLawOffice");
-        }
+        //public static SystemSettings Load()
+        //{
+        //    return (SystemSettings)ConfigurationManager.GetSection("OpenLawOffice");
+        //}
     }
 }

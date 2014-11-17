@@ -566,71 +566,72 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult Documents(Guid id, List<ViewModels.Documents.SelectableDocumentViewModel> viewModelListNull)
         {
-            string zipTitle;
-            int inc = 0;
-            string path;
-            Guid temp;
-            List<Common.Models.Documents.Document> documents;
-            Common.Models.Matters.Matter matter;
-            Common.Models.Documents.Version version;
-            ViewModels.Documents.SelectableDocumentViewModel viewModel;
-            List<ViewModels.Documents.SelectableDocumentViewModel> viewModelList;
+            //string zipTitle;
+            //int inc = 0;
+            //string path;
+            //Guid temp;
+            //List<Common.Models.Documents.Document> documents;
+            //Common.Models.Matters.Matter matter;
+            //Common.Models.Documents.Version version;
+            //ViewModels.Documents.SelectableDocumentViewModel viewModel;
+            //List<ViewModels.Documents.SelectableDocumentViewModel> viewModelList;
 
-            viewModelList = new List<ViewModels.Documents.SelectableDocumentViewModel>();
+            //viewModelList = new List<ViewModels.Documents.SelectableDocumentViewModel>();
 
-            matter = Data.Matters.Matter.Get(id);
+            //matter = Data.Matters.Matter.Get(id);
 
-            documents = Data.Documents.Document.ListForMatter(id);
+            //documents = Data.Documents.Document.ListForMatter(id);
 
-            using (ZipFile zip = new ZipFile())
-            {
-                //zip.CompressionLevel = Ionic.Zlib.CompressionLevel.BestCompression;
-                documents.ForEach(x =>
-                {
-                    version = Data.Documents.Document.GetCurrentVersion(x.Id.Value);
+            //using (ZipFile zip = new ZipFile())
+            //{
+            //    //zip.CompressionLevel = Ionic.Zlib.CompressionLevel.BestCompression;
+            //    documents.ForEach(x =>
+            //    {
+            //        version = Data.Documents.Document.GetCurrentVersion(x.Id.Value);
 
-                    viewModel = Mapper.Map<ViewModels.Documents.SelectableDocumentViewModel>(x);
+            //        viewModel = Mapper.Map<ViewModels.Documents.SelectableDocumentViewModel>(x);
 
-                    viewModel.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(Data.Documents.Document.GetTask(x.Id.Value));
+            //        viewModel.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(Data.Documents.Document.GetTask(x.Id.Value));
 
-                    viewModelList.Add(viewModel);
+            //        viewModelList.Add(viewModel);
 
-                    if (Request["CB_" + x.Id.Value.ToString()] == "on")
-                    {
+            //        if (Request["CB_" + x.Id.Value.ToString()] == "on")
+            //        {
 
-                        path = Common.Settings.Manager.Instance.FileStorage.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension);
+            //            path = Common.Settings.Manager.Instance.FileStorage.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension);
 
-                        zipTitle = x.Title + "." + version.Extension;
+            //            zipTitle = x.Title + "." + version.Extension;
 
-                        if (zip[zipTitle] != null)
-                        {
-                            inc = 1;
-                            zipTitle = x.Title + " (" + inc.ToString() + ")" + "." + version.Extension;
-                            while (zip[zipTitle] != null)
-                            {
-                                inc++;
-                                zipTitle = x.Title + " (" + inc.ToString() + ")" + "." + version.Extension;
-                            }
-                        }
+            //            if (zip[zipTitle] != null)
+            //            {
+            //                inc = 1;
+            //                zipTitle = x.Title + " (" + inc.ToString() + ")" + "." + version.Extension;
+            //                while (zip[zipTitle] != null)
+            //                {
+            //                    inc++;
+            //                    zipTitle = x.Title + " (" + inc.ToString() + ")" + "." + version.Extension;
+            //                }
+            //            }
 
-                        ZipEntry ze = zip.AddFile(path, "");
-                        ze.FileName = zipTitle;
-                    }
-                });
+            //            ZipEntry ze = zip.AddFile(path, "");
+            //            ze.FileName = zipTitle;
+            //        }
+            //    });
 
-                if (!System.IO.Directory.Exists(Common.Settings.Manager.Instance.FileStorage.TempPath))
-                    System.IO.Directory.CreateDirectory(Common.Settings.Manager.Instance.FileStorage.TempPath);
+            //    if (!System.IO.Directory.Exists(Common.Settings.Manager.Instance.FileStorage.TempPath))
+            //        System.IO.Directory.CreateDirectory(Common.Settings.Manager.Instance.FileStorage.TempPath);
 
-                temp = Guid.NewGuid();
+            //    temp = Guid.NewGuid();
 
-                if (zip.Count > 0)
-                    zip.Save(Common.Settings.Manager.Instance.FileStorage.TempPath + temp.ToString() + ".zip");
-                else
-                    return View(viewModelList);
-            }
+            //    if (zip.Count > 0)
+            //        zip.Save(Common.Settings.Manager.Instance.FileStorage.TempPath + temp.ToString() + ".zip");
+            //    else
+            //        return View(viewModelList);
+            //}
 
 
-            return new DeletingFileResult(Common.Settings.Manager.Instance.FileStorage.TempPath + temp.ToString() + ".zip", matter.Title + ".zip");
+            //return new DeletingFileResult(Common.Settings.Manager.Instance.FileStorage.TempPath + temp.ToString() + ".zip", matter.Title + ".zip");
+            return null;
         }
 
         [Authorize(Roles = "Login, User")]

@@ -70,6 +70,7 @@
     <Compile Include="DBOs\Events\EventNote.cs" />
     <Compile Include="DBOs\Events\EventTag.cs" />
     <Compile Include="DBOs\Events\EventTask.cs" />
+    <Compile Include="DBOs\External\ExternalSession.cs" />
     <Compile Include="Events\Event.cs" />
     <Compile Include="DataHelper.cs" />
     <Compile Include="Contacts\Contact.cs" />
@@ -115,6 +116,7 @@
     <Compile Include="Events\EventTag.cs" />
     <Compile Include="Events\EventResponsibleUser.cs" />
     <Compile Include="Events\EventTask.cs" />
+    <Compile Include="External\ExternalSession.cs" />
     <Compile Include="Installation\Setup.cs" />
     <Compile Include="Matters\Matter.cs" />
     <Compile Include="Matters\MatterContact.cs" />

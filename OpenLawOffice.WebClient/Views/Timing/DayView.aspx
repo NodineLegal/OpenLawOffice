@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<IEnumerable<OpenLawOffice.WebClient.ViewModels.Timing.DayViewModel>>" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/SiteNoRightBar.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Timing.DayViewModel>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
 	DayView
@@ -20,12 +20,23 @@
                     $("form").submit();
                 }
             });
+            $('#Employee_Id').change(function () {
+                $("form").submit();
+            });
         });
     </script>
     
-    <p>
-        Date: <input type="text" id="date" name="date" value="<%: ((DateTime)ViewData["Date"]).ToString("MM/dd/yyyy") %>" />
-    </p>
+    <div class="options_div">
+        <div style="width: 200px; display: inline;">
+            Date: <input type="text" id="date" name="date" value="<%: ((DateTime)ViewData["Date"]).ToString("MM/dd/yyyy") %>" />
+        </div>
+        <div style="width: 200px; display: inline;">
+            Employee:
+            <%: Html.DropDownListFor(x => x.Employee.Id,
+                new SelectList((IList)ViewData["EmployeeContactList"], "Id", "DisplayName"),
+                new { @size = 1, @style = "width: 200px" })%>
+        </div>
+    </div>
 
     <table class="listing_table">
         <tr>
@@ -55,7 +66,7 @@
         DateTime lastTimestampStart = (DateTime)ViewData["Date"];// DateTime.Today;
         DateTime lastTimestampStop = (DateTime)ViewData["Date"];// DateTime.Today;
         
-        foreach (var item in Model) {
+        foreach (var item in Model.Items) {
 
             totalMinutes += item.Time.Duration.TotalMinutes;
 
@@ -149,7 +160,3 @@
     <% } %>   
 
 </asp:Content>
-
-<asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
-</asp:Content>
-

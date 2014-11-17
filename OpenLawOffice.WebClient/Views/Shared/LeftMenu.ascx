@@ -18,6 +18,14 @@
     <% if (Page.User.IsInRole("User"))
        {  %>
     <li>
+        <%: Html.ActionLink("Contacts", "", "Contacts")%> <%: Html.ActionLink("New Contact", "Create", "Contacts", null, new { @class = "btn-plus" })%></li>
+    <ul>
+    </ul>
+    <li>
+        <%: Html.ActionLink("Matters", "", "Matters")%> <%: Html.ActionLink("New Matter", "Create", "Matters", null, new { @class = "btn-plus" })%></li>
+    <ul>
+    </ul>
+    <li>
         Calendar</li>
     <ul>
         <li>
@@ -28,16 +36,10 @@
             <%: Html.ActionLink("Contact", "SelectContact", "Calendar", null, null)%></li>
     </ul>
     <li>
-        <%: Html.ActionLink("Matters", "", "Matters")%></li>
+        Events <%: Html.ActionLink("New Event", "Create", "Events", null, new { @class = "btn-plus" })%></li>
     <ul>
         <li>
-            <%: Html.ActionLink("New Matter", "Create", "Matters")%></li>
-    </ul>
-    <li>
-        Events</li>
-    <ul>
-        <li>
-            <%: Html.ActionLink("New Event", "Create", "Events", null, null)%></li>
+            </li>
         <li>
             <%: Html.ActionLink("User Agenda", "SelectUser", "Events", null, null)%></li>
         <li>
@@ -48,14 +50,6 @@
         <li>
             <%: Html.ActionLink("Tags", "Tags", "Search")%></li>
         <li>Document Text</li>
-    </ul>
-    <li>
-        <%: Html.ActionLink("Contacts", "", "Contacts")%></li>
-    <ul>
-        <li>
-            <%: Html.ActionLink("New Contact", "Create", "Contacts")%></li>
-    </ul>
-    <ul>
     </ul>
     <li>Billing</li>
     <ul>

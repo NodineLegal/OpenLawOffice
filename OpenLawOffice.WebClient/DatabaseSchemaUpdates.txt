@@ -30,3 +30,26 @@ Below will make timestamp a required field
 
 ALTER TABLE note
    ALTER COLUMN "timestamp" SET NOT NULL;
+
+10/11/2014
+To create the external_session table
+
+CREATE TABLE external_session
+(
+  id uuid NOT NULL,
+  user_pid uuid NOT NULL,
+  app_name text NOT NULL,
+  machine_id uuid NOT NULL,
+  utc_created timestamp without time zone NOT NULL,
+  utc_expires timestamp without time zone NOT NULL,
+  timeout integer NOT NULL,
+  CONSTRAINT external_session_pkey PRIMARY KEY (id),
+  CONSTRAINT "FK_external_session_users_UserPId" FOREIGN KEY (user_pid)
+      REFERENCES "Users" ("pId") MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE external_session
+  OWNER TO postgres;

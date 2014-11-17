@@ -1,12 +1,8 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Matters.CreateMatterViewModel>" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/SiteNoRightBar.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Matters.CreateMatterViewModel>" %>
 
 <%@ Import Namespace="OpenLawOffice.WebClient.Helpers" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
     Create Matter
-</asp:Content>
-<asp:Content ID="Content2" ContentPlaceHolderID="MenuContent" runat="server">
-    <li>
-        <%: Html.ActionLink("Matters", "Index") %></li>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" runat="server">
     <%--<script type="text/javascript" src="../../Scripts/jqGrid-4.6.0/grid.locale-en.js"></script>

@@ -48,22 +48,23 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public FileResult Download(Guid id)
         {
-            Common.Models.Documents.Version version;
-            Common.Models.Documents.Version currentVersion;
+            //Common.Models.Documents.Version version;
+            //Common.Models.Documents.Version currentVersion;
 
-            version = Data.Documents.Version.Get(id);
-            currentVersion = Data.Documents.Document.GetCurrentVersion(version.Document.Id.Value);
+            //version = Data.Documents.Version.Get(id);
+            //currentVersion = Data.Documents.Document.GetCurrentVersion(version.Document.Id.Value);
 
-            if (currentVersion.VersionNumber == version.VersionNumber)
-            {
-                return File(Common.Settings.Manager.Instance.FileStorage.CurrentVersionPath + version.Id.ToString() + "." + version.Extension,
-                    version.Mime, version.Filename + "." + version.Extension);
-            }
-            else
-            {
-                return File(Common.Settings.Manager.Instance.FileStorage.PreviousVersionsPath + version.Id.ToString() + "." + version.Extension,
-                   version.Mime, version.Filename + "." + version.Extension);
-            }
+            //if (currentVersion.VersionNumber == version.VersionNumber)
+            //{
+            //    return File(Common.Settings.Manager.Instance.FileStorage.CurrentVersionPath + version.Id.ToString() + "." + version.Extension,
+            //        version.Mime, version.Filename + "." + version.Extension);
+            //}
+            //else
+            //{
+            //    return File(Common.Settings.Manager.Instance.FileStorage.PreviousVersionsPath + version.Id.ToString() + "." + version.Extension,
+            //       version.Mime, version.Filename + "." + version.Extension);
+            //}
+            return null;
         }
 
         [Authorize(Roles = "Login, User")]
@@ -97,63 +98,64 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult Create(ViewModels.Documents.VersionViewModel viewModel, HttpPostedFileBase file)
         {
-            Common.Models.Account.Users currentUser;
-            Common.Models.Documents.Document docModel;
-            Common.Models.Documents.Version currentVersion;
-            Common.Models.Matters.Matter matter;
-            Common.Models.Tasks.Task task;
-            Common.Models.Documents.Version version;
+            //Common.Models.Account.Users currentUser;
+            //Common.Models.Documents.Document docModel;
+            //Common.Models.Documents.Version currentVersion;
+            //Common.Models.Matters.Matter matter;
+            //Common.Models.Tasks.Task task;
+            //Common.Models.Documents.Version version;
 
-            currentUser = Data.Account.Users.Get(User.Identity.Name);
-            docModel = Data.Documents.Document.Get(viewModel.Document.Id.Value);
-            currentVersion = Data.Documents.Document.GetCurrentVersion(viewModel.Document.Id.Value);
-            matter = Data.Documents.Document.GetMatter(docModel.Id.Value);
-            task = Data.Documents.Document.GetTask(docModel.Id.Value);
+            //currentUser = Data.Account.Users.Get(User.Identity.Name);
+            //docModel = Data.Documents.Document.Get(viewModel.Document.Id.Value);
+            //currentVersion = Data.Documents.Document.GetCurrentVersion(viewModel.Document.Id.Value);
+            //matter = Data.Documents.Document.GetMatter(docModel.Id.Value);
+            //task = Data.Documents.Document.GetTask(docModel.Id.Value);
 
-            version = new Common.Models.Documents.Version()
-            {
-                Id = Guid.NewGuid(),
-                Document = docModel,
-                Mime = file.ContentType,
-                Filename = file.FileName.Split('.')[0],
-                Extension = file.FileName.Split('.')[1],
-                Size = (long)file.ContentLength,
+            //version = new Common.Models.Documents.Version()
+            //{
+            //    Id = Guid.NewGuid(),
+            //    Document = docModel,
+            //    Mime = file.ContentType,
+            //    Filename = file.FileName.Split('.')[0],
+            //    Extension = file.FileName.Split('.')[1],
+            //    Size = (long)file.ContentLength,
 
-                // Md5 = md5
-            };
+            //    // Md5 = md5
+            //};
 
-            if (currentVersion == null)
-            {
-                // Save file
-                file.SaveAs(Common.Settings.Manager.Instance.FileStorage.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
-            }
-            else
-            {
-                // Move current to previous
-                Common.Settings.Manager.Instance.FileStorage.MoveCurrentToPrevious(currentVersion.Id.Value + "." + currentVersion.Extension);
+            //if (currentVersion == null)
+            //{
+            //    // Save file
+            //    file.SaveAs(Common.Settings.Manager.Instance.FileStorage.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
+            //}
+            //else
+            //{
+            //    // Move current to previous
+            //    Common.Settings.Manager.Instance.FileStorage.MoveCurrentToPrevious(currentVersion.Id.Value + "." + currentVersion.Extension);
 
-                // Save new
-                file.SaveAs(Common.Settings.Manager.Instance.FileStorage.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
-            }
+            //    // Save new
+            //    file.SaveAs(Common.Settings.Manager.Instance.FileStorage.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
+            //}
 
-            // Calculate the MD5 checksum
-            version.Md5 = Common.Settings.FileStorageSettings.CalculateMd5(
-                Common.Settings.Manager.Instance.FileStorage.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
+            //// Calculate the MD5 checksum
+            //version.Md5 = Common.Settings.FileStorageSettings.CalculateMd5(
+            //    Common.Settings.Manager.Instance.FileStorage.GetCurrentVersionFilepathFor(version.Id.Value + "." + version.Extension));
 
-            //Version
-            Data.Documents.Document.CreateNewVersion(docModel.Id.Value, version, currentUser);
+            ////Version
+            //Data.Documents.Document.CreateNewVersion(docModel.Id.Value, version, currentUser);
 
-            // Matter or Task
-            if (matter != null)
-            {
-                return RedirectToAction("Documents", "Matters", new { Id = matter.Id.Value });
-            }
-            else if (task != null)
-            {
-                return RedirectToAction("Documents", "Tasks", new { Id = task.Id.Value });
-            }
-            else
-                throw new Exception("Must have a matter or task id.");
+            //// Matter or Task
+            //if (matter != null)
+            //{
+            //    return RedirectToAction("Documents", "Matters", new { Id = matter.Id.Value });
+            //}
+            //else if (task != null)
+            //{
+            //    return RedirectToAction("Documents", "Tasks", new { Id = task.Id.Value });
+            //}
+            //else
+            //    throw new Exception("Must have a matter or task id.");
+            return null;
         }
     }
 }

@@ -65,6 +65,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileSystem\OloFile.cs" />
+    <Compile Include="FileSystem\OloMatter.cs" />
     <Compile Include="Models\Account\UserRole.cs" />
     <Compile Include="Models\Account\Users.cs" />
     <Compile Include="Models\Events\Event.cs" />
@@ -80,6 +82,7 @@
     <Compile Include="Models\Documents\Version.cs" />
     <Compile Include="Models\Events\EventTag.cs" />
     <Compile Include="Models\Events\EventTask.cs" />
+    <Compile Include="Models\External\ExternalSession.cs" />
     <Compile Include="Models\MapMeAttribute.cs" />
     <Compile Include="Models\Matters\Matter.cs" />
     <Compile Include="Models\Matters\MatterContact.cs" />
@@ -102,6 +105,9 @@
     <Compile Include="Models\Tasks\TaskTag.cs" />
     <Compile Include="Models\Tasks\TaskTime.cs" />
     <Compile Include="Models\Timing\Time.cs" />
+    <Compile Include="Net\AuthPackage.cs" />
+    <Compile Include="Net\Request.cs" />
+    <Compile Include="Net\Response.cs" />
     <Compile Include="ObjectMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings\FileStorageSettings.cs" />

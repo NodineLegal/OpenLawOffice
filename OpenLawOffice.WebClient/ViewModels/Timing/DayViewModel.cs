@@ -24,13 +24,25 @@ namespace OpenLawOffice.WebClient.ViewModels.Timing
     using System;
     using AutoMapper;
     using OpenLawOffice.Common.Models;
+    using System.Collections.Generic;
 
     public class DayViewModel
     {
-        public TimeViewModel Time { get; set; }
+        public class Item
+        {
+            public TimeViewModel Time { get; set; }
 
-        public Matters.MatterViewModel Matter { get; set; }
+            public Matters.MatterViewModel Matter { get; set; }
 
-        public Tasks.TaskViewModel Task { get; set; }
+            public Tasks.TaskViewModel Task { get; set; }
+        }
+
+        public List<Item> Items { get; set; }
+        public ViewModels.Contacts.ContactViewModel Employee { get; set; }
+
+        public DayViewModel()
+        {
+            Items = new List<Item>();
+        }
     }
 }
