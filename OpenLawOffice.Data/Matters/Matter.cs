@@ -68,7 +68,7 @@ namespace OpenLawOffice.Data.Matters
             {
                 if (!string.IsNullOrEmpty(contactFilter))
                     return DataHelper.List<Common.Models.Matters.Matter, DBOs.Matters.Matter>(
-                        "SELECT * FROM \"matter\" WHERE \"utc_disabled\" is null AND \"active\"=@Active AND " +
+                        "SELECT * FROM \"matter\" WHERE \"utc_disabled\" is null AND \"active\"= @Active AND " +
                         "\"id\" IN (SELECT \"matter_id\" FROM \"matter_contact\" WHERE " +
                         "\"contact_id\" IN (SELECT \"id\" FROM \"contact\" WHERE LOWER(\"display_name\") LIKE '%' || @ContactFilter || '%'))",
                         new { ContactFilter = contactFilter.ToLower(), Active = active.Value });
@@ -77,6 +77,89 @@ namespace OpenLawOffice.Data.Matters
                         "SELECT * FROM \"matter\" WHERE \"utc_disabled\" is null AND \"active\"=@Active",
                         new { Active = active.Value });
             }
+        }
+
+        public static List<Common.Models.Matters.Matter> List(bool? active, string contactFilter, string titleFilter, string caseNumberFilter, string jurisdictionFilter)
+        {
+            string sql = "SELECT * FROM \"matter\" WHERE \"utc_disabled\" is null ";
+
+            if (contactFilter != null)
+                contactFilter = contactFilter.ToLower();
+            if (titleFilter != null)
+                titleFilter = titleFilter.ToLower();
+            if (caseNumberFilter != null)
+                caseNumberFilter = caseNumberFilter.ToLower();
+            if (jurisdictionFilter != null)
+                jurisdictionFilter = jurisdictionFilter.ToLower();
+
+            if (active.HasValue)
+            {
+                sql += " AND \"active\"=@Active ";
+            }
+            if (!string.IsNullOrEmpty(contactFilter))
+            {
+                sql += " AND \"id\" IN (SELECT \"matter_id\" FROM \"matter_contact\" WHERE " +
+                    "\"contact_id\" IN (SELECT \"id\" FROM \"contact\" WHERE LOWER(\"display_name\") LIKE '%' || @ContactFilter || '%'))";
+            }
+            if (!string.IsNullOrEmpty(titleFilter))
+            {
+                sql += " AND LOWER(\"title\") LIKE '%' || @TitleFilter || '%' ";
+            }
+            if (!string.IsNullOrEmpty(caseNumberFilter))
+            {
+                sql += " AND LOWER(\"case_number\") LIKE '%' || @CaseNumberFilter || '%' ";
+            }
+            if (!string.IsNullOrEmpty(jurisdictionFilter))
+            {
+                sql += " AND LOWER(\"jurisdiction\") LIKE '%' || @JurisdictionFilter || '%' ";
+            }
+
+            if (active.HasValue)
+                return DataHelper.List<Common.Models.Matters.Matter, DBOs.Matters.Matter>(sql,
+                    new
+                    {
+                        Active = active.Value,
+                        ContactFilter = contactFilter,
+                        TitleFilter = titleFilter,
+                        CaseNumberFilter = caseNumberFilter,
+                        JurisdictionFilter = jurisdictionFilter
+                    });
+            else
+                return DataHelper.List<Common.Models.Matters.Matter, DBOs.Matters.Matter>(sql,
+                    new
+                    {
+                        ContactFilter = contactFilter,
+                        TitleFilter = titleFilter,
+                        CaseNumberFilter = caseNumberFilter,
+                        JurisdictionFilter = jurisdictionFilter
+                    });
+        }
+
+        public static List<Common.Models.Matters.Matter> ListTitlesOnly(string title)
+        {
+            if (!string.IsNullOrEmpty(title))
+                title = title.ToLower();
+            return DataHelper.List<Common.Models.Matters.Matter, DBOs.Matters.Matter>(
+                "SELECT DISTINCT \"title\" FROM \"matter\" WHERE \"utc_disabled\" is null AND LOWER(\"title\") LIKE '%' || @Title || '%'",
+                new { Title = title });
+        }
+
+        public static List<Common.Models.Matters.Matter> ListCaseNumbersOnly(string caseNumber)
+        {
+            if (!string.IsNullOrEmpty(caseNumber))
+                caseNumber = caseNumber.ToLower();
+            return DataHelper.List<Common.Models.Matters.Matter, DBOs.Matters.Matter>(
+                "SELECT DISTINCT \"case_number\" FROM \"matter\" WHERE \"utc_disabled\" is null AND LOWER(\"case_number\") LIKE '%' || @CaseNumber || '%'",
+                new { CaseNumber = caseNumber });
+        }
+
+        public static List<Common.Models.Matters.Matter> ListJurisdictionsOnly(string jurisdiction)
+        {
+            if (!string.IsNullOrEmpty(jurisdiction))
+                jurisdiction = jurisdiction.ToLower();
+            return DataHelper.List<Common.Models.Matters.Matter, DBOs.Matters.Matter>(
+                "SELECT DISTINCT \"jurisdiction\" FROM \"matter\" WHERE \"utc_disabled\" is null AND LOWER(\"jurisdiction\") LIKE '%' || @Jurisdiction || '%'",
+                new { Jurisdiction = jurisdiction });
         }
 
         public static List<Common.Models.Matters.Matter> ListChildren(Guid? parentId)

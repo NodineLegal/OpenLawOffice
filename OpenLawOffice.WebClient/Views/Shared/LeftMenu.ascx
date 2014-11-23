@@ -8,10 +8,10 @@
             <%: Html.ActionLink("Dashboard", "Index", "Home") %></li>
         <li>
             <%: Html.ActionLink("Daily Time", "DayView", "Timing") %></li>
-        <li>
+       <%-- <li>
             <%: Html.ActionLink("Calendar", "User", "Calendar", new { Id = "" }, null)%></li>
         <li>
-            <%: Html.ActionLink("Agenda", "UserAgenda", "Events", new { Id = "" }, null)%></li>
+            <%: Html.ActionLink("Agenda", "UserAgenda", "Events", new { Id = "" }, null)%></li>--%>
     </ul>
     <ul>
     </ul>
@@ -25,7 +25,7 @@
         <%: Html.ActionLink("Matters", "", "Matters")%> <%: Html.ActionLink("New Matter", "Create", "Matters", null, new { @class = "btn-plus" })%></li>
     <ul>
     </ul>
-    <li>
+    <%--<li>
         Calendar</li>
     <ul>
         <li>
@@ -44,7 +44,7 @@
             <%: Html.ActionLink("User Agenda", "SelectUser", "Events", null, null)%></li>
         <li>
             <%: Html.ActionLink("Contact Agenda", "SelectContact", "Events", null, null)%></li>
-    </ul>
+    </ul>--%>
     <li>Search</li>
     <ul>
         <li>

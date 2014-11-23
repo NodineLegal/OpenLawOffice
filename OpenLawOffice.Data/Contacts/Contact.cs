@@ -117,10 +117,12 @@ namespace OpenLawOffice.Data.Contacts
 
         public static List<Common.Models.Contacts.Contact> List(string displayName)
         {
+            if (!string.IsNullOrEmpty(displayName))
+                displayName = displayName.ToLower();
             return DataHelper.List<Common.Models.Contacts.Contact, DBOs.Contacts.Contact>(
                 "SELECT * FROM \"contact\" WHERE \"utc_disabled\" is null AND " +
                 "LOWER(\"display_name\") LIKE '%' || @DisplayName || '%' ORDER BY \"display_name\" ASC",
-                new { DisplayName = displayName.ToLower() });
+                new { DisplayName = displayName });
         }
 
         public static List<Common.Models.Contacts.Contact> ListEmployeesOnly()

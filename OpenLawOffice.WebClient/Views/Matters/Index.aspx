@@ -32,16 +32,41 @@
                         $('#activeSelector').val(vars['active']);
                     if (vars['contactFilter'] != null)
                         $('#contactFilter').val(decodeURIComponent(vars['contactFilter']));
+                    if (vars['titleFilter'] != null)
+                        $('#titleFilter').val(decodeURIComponent(vars['titleFilter']));
+                    if (vars['caseNumberFilter'] != null)
+                        $('#caseNumberFilter').val(decodeURIComponent(vars['caseNumberFilter']));
+                    if (vars['jurisdictionFilter'] != null)
+                        $('#jurisdictionFilter').val(decodeURIComponent(vars['jurisdictionFilter']));
+
                     $("#activeSelector").change(function () {
                         go();
                     });
-                    $('#contactFilterGo').click(function () {
+                    $('#goButton').click(function () {
                         go();
                     });
                     $('#contactFilter').focus(function () {
                         $('#contactFilter').val('');
                     });
+                    $('#titleFilter').focus(function () {
+                        $('#titleFilter').val('');
+                    });
+                    $('#caseNumberFilter').focus(function () {
+                        $('#caseNumberFilter').val('');
+                    });
+                    $('#jurisdictionFilter').focus(function () {
+                        $('#jurisdictionFilter').val('');
+                    });
                     $('#contactFilter').keyup(function (e) {
+                        if (e.keyCode == 13) go();
+                    });
+                    $('#titleFilter').keyup(function (e) {
+                        if (e.keyCode == 13) go();
+                    });
+                    $('#caseNumberFilter').keyup(function (e) {
+                        if (e.keyCode == 13) go();
+                    });
+                    $('#jurisdictionFilter').keyup(function (e) {
                         if (e.keyCode == 13) go();
                     });
                     $('#contactFilter').autocomplete({
@@ -61,9 +86,64 @@
                             .append("<a>" + item.DisplayName + "</a>")
                             .appendTo(ul);
                     };
+                    $('#titleFilter').autocomplete({
+                        source: "/Matters/ListTitleOnly",
+                        minLength: 2,
+                        focus: function (event, ui) {
+                            $("#titleFilter").val(ui.item.Title);
+                            return false;
+                        },
+                        select: function (event, ui) {
+                            $("#titleFilter").val(ui.item.Title);
+                            go();
+                            return false;
+                        }
+                    }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                        return $("<li>")
+                            .append("<a>" + item.Title + "</a>")
+                            .appendTo(ul);
+                    };
+                    $('#caseNumberFilter').autocomplete({
+                        source: "/Matters/ListCaseNumberOnly",
+                        minLength: 2,
+                        focus: function (event, ui) {
+                            $("#caseNumberFilter").val(ui.item.CaseNumber);
+                            return false;
+                        },
+                        select: function (event, ui) {
+                            $("#caseNumberFilter").val(ui.item.CaseNumber);
+                            go();
+                            return false;
+                        }
+                    }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                        return $("<li>")
+                            .append("<a>" + item.CaseNumber + "</a>")
+                            .appendTo(ul);
+                    };
+                    $('#jurisdictionFilter').autocomplete({
+                        source: "/Matters/ListJurisdictionOnly",
+                        minLength: 2,
+                        focus: function (event, ui) {
+                            $("#jurisdictionFilter").val(ui.item.Jurisdiction);
+                            return false;
+                        },
+                        select: function (event, ui) {
+                            $("#jurisdictionFilter").val(ui.item.Jurisdiction);
+                            go();
+                            return false;
+                        }
+                    }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                        return $("<li>")
+                            .append("<a>" + item.Jurisdiction + "</a>")
+                            .appendTo(ul);
+                    };
                 });
                 function go() {
+                    var href;
                     var contactFilter = $('#contactFilter').val().trim();
+                    var titleFilter = $('#titleFilter').val().trim();
+                    var caseNumberFilter = $('#caseNumberFilter').val().trim();
+                    var jurisdictionFilter = $('#jurisdictionFilter').val().trim();
                     var base;
                     var qMarkAt = window.location.href.lastIndexOf('?');
                     $('#contactFilterGo').attr('disabled', 'disabled');
@@ -71,15 +151,36 @@
                         base = window.location.href.substr(0, qMarkAt);
                     else
                         base = window.location.href;
+
+                    href = base + '?active=' + $("#activeSelector").val();
+
                     if (contactFilter.length > 0)
-                        window.location.href = base + '?active=' + $("#activeSelector").val() + '&contactFilter=' + contactFilter;
-                    else
-                        window.location.href = base + '?active=' + $("#activeSelector").val();
+                        href += '&contactFilter=' + contactFilter;
+                    if (titleFilter.length > 0)
+                        href += '&titleFilter=' + titleFilter;
+                    if (caseNumberFilter.length > 0)
+                        href += '&caseNumberFilter=' + caseNumberFilter;
+                    if (jurisdictionFilter.length > 0)
+                        href += '&jurisdictionFilter=' + jurisdictionFilter;
+
+                    window.location.href = href;
                 };
             </script>
         </div>
         <div style="width: 200px; display: inline;">
-            Contact: <input type="text" id="contactFilter" name="contactFilter" value="" /><input id="contactFilterGo" type="button" value="Go" />
+            Contact: <input type="text" id="contactFilter" name="contactFilter" value="" />
+        </div>
+        <div style="width: 200px; display: inline;">
+            Title: <input type="text" id="titleFilter" name="titleFilter" value="" />
+        </div>
+        <div style="width: 200px; display: inline;">
+            Case No: <input type="text" id="caseNumberFilter" name="caseNumberFilter" value="" />
+        </div>
+        <div style="width: 200px; display: inline;">
+            Jurisdiction: <input type="text" id="jurisdictionFilter" name="jurisdictionFilter" value="" />
+        </div>
+        <div style="width: 200px; display: inline;">
+            <input id="goButton" type="button" value="Go" />
         </div>
     </div>
 

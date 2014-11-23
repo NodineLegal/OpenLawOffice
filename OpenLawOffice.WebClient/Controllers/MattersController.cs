@@ -35,7 +35,7 @@ namespace OpenLawOffice.WebClient.Controllers
         {
             List<ViewModels.Matters.MatterViewModel> viewModelList;
             bool? active;
-            string activeStr, contactFilter;
+            string activeStr, contactFilter, titleFilter, caseNumberFilter, jurisdictionFilter;
 
             switch (activeStr = Request["active"])
             {
@@ -52,22 +52,56 @@ namespace OpenLawOffice.WebClient.Controllers
 
             viewModelList = new List<ViewModels.Matters.MatterViewModel>();
 
-            if (!string.IsNullOrEmpty(contactFilter = Request["contactFilter"]))
+            contactFilter = Request["contactFilter"];
+            titleFilter = Request["titleFilter"];
+            caseNumberFilter = Request["caseNumberFilter"];
+            jurisdictionFilter = Request["jurisdictionFilter"];
+
+            Data.Matters.Matter.List(active, contactFilter, titleFilter, caseNumberFilter, jurisdictionFilter).ForEach(x =>
             {
-                Data.Matters.Matter.List(active, contactFilter).ForEach(x =>
-                {
-                    viewModelList.Add(Mapper.Map<ViewModels.Matters.MatterViewModel>(x));
-                });
-            }
-            else
-            {
-                Data.Matters.Matter.List(active).ForEach(x =>
-                {
-                    viewModelList.Add(Mapper.Map<ViewModels.Matters.MatterViewModel>(x));
-                });
-            }
+                viewModelList.Add(Mapper.Map<ViewModels.Matters.MatterViewModel>(x));
+            });
             
             return View(viewModelList);
+        }
+
+        [Authorize(Roles = "Login, User")]
+        public ActionResult ListTitleOnly()
+        {
+            string term;
+            List<Common.Models.Matters.Matter> list;
+
+            term = Request["term"];
+
+            list = Data.Matters.Matter.ListTitlesOnly(term.Trim());
+
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
+
+        [Authorize(Roles = "Login, User")]
+        public ActionResult ListCaseNumberOnly()
+        {
+            string term;
+            List<Common.Models.Matters.Matter> list;
+
+            term = Request["term"];
+
+            list = Data.Matters.Matter.ListCaseNumbersOnly(term.Trim());
+
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
+
+        [Authorize(Roles = "Login, User")]
+        public ActionResult ListJurisdictionOnly()
+        {
+            string term;
+            List<Common.Models.Matters.Matter> list;
+
+            term = Request["term"];
+
+            list = Data.Matters.Matter.ListJurisdictionsOnly(term.Trim());
+
+            return Json(list, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]

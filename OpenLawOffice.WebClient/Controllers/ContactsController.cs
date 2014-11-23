@@ -56,37 +56,6 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModelList);
         }
 
-        //[Authorize(Roles = "Login, User")]
-        //public ActionResult ListJqGrid()
-        //{
-        //    ViewModels.JqGridObject jqObject;
-        //    List<ViewModels.Contacts.ContactViewModel> modelList = null;
-        //    List<object> anonList = new List<object>();
-
-        //    modelList = GetList();
-
-        //    modelList.ForEach(x =>
-        //    {
-        //        anonList.Add(new
-        //        {
-        //            Id = x.Id,
-        //            DisplayName = x.DisplayName,
-        //            City = x.Address1AddressCity,
-        //            State = x.Address1AddressStateOrProvince
-        //        });
-        //    });
-
-        //    jqObject = new ViewModels.JqGridObject()
-        //    {
-        //        TotalPages = 1,
-        //        CurrentPage = 1,
-        //        TotalRecords = modelList.Count,
-        //        Rows = anonList.ToArray()
-        //    };
-
-        //    return Json(jqObject, JsonRequestBehavior.AllowGet);
-        //}
-
         [Authorize(Roles = "Login, User")]
         public ActionResult ListDisplayNameOnly()
         {
