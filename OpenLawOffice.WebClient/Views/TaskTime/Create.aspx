@@ -39,7 +39,7 @@
                 Start Date/Time<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Time.Start, new { @Value = Model.Time.Start.ToString("M/d/yyyy h:m tt") })%>
+                <%: Html.TextBoxFor(model => model.Time.Start, new { @Value = Model.Time.Start.ToString("M/d/yyyy h:mm tt") })%>
                 <%: Html.ValidationMessageFor(model => model.Time.Start)%>
             </td>
         </tr>

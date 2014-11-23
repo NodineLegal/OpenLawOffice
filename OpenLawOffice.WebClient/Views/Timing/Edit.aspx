@@ -20,7 +20,7 @@
                 Start<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                <%: Html.EditorFor(model => model.Start) %>
+                <%: Html.TextBoxFor(model => model.Start, new { @Value = Model.Start.ToString("M/d/yyyy h:mm tt") })%>
             </td>
         </tr>
         <tr>
@@ -28,7 +28,14 @@
                 Stop<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                <%: Html.EditorFor(model => model.Stop)%>
+                <% if (Model.Stop.HasValue)
+                   { %>
+                    <%: Html.TextBoxFor(model => model.Stop, new { @Value = Model.Stop.Value.ToString("M/d/yyyy h:mm tt") })%>
+                <% }
+                   else
+                   { %>                
+                    <%: Html.TextBoxFor(model => model.Stop)%>
+                <% } %>
             </td>
         </tr>
         <tr>
