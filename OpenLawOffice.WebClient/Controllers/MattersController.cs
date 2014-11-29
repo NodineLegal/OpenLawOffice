@@ -258,14 +258,14 @@ namespace OpenLawOffice.WebClient.Controllers
             });
 
             viewModel.TaskNotes = new Dictionary<ViewModels.Tasks.TaskViewModel,List<ViewModels.Notes.NoteViewModel>>();
-            viewModel.Tasks.ForEach(x =>
+            Data.Tasks.Task.ListForMatter(id, null).ForEach(x =>
             {
                 List<ViewModels.Notes.NoteViewModel> list = new List<ViewModels.Notes.NoteViewModel>();
                 Data.Notes.NoteTask.ListForTask(x.Id.Value).ForEach(y =>
                 {
                     list.Add(Mapper.Map<ViewModels.Notes.NoteViewModel>(y));
                 });
-                viewModel.TaskNotes.Add(x, list);
+                viewModel.TaskNotes.Add(Mapper.Map<ViewModels.Tasks.TaskViewModel>(x), list);
             });
 
             PopulateCoreDetails(viewModel);

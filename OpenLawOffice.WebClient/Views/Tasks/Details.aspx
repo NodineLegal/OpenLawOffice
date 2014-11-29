@@ -107,7 +107,7 @@
                 
             </th>
         </tr>
-        <% bool altRow = true; 
+        <%  bool altRow = true; 
             foreach (var note in Model.Notes)
             {
                altRow = !altRow;
@@ -150,7 +150,8 @@
     <li>
         <%: Html.ActionLink("Matter", "Details", "Matters", new { id = ViewData["MatterId"] }, null)%></li>
     <li>
-        <%: Html.ActionLink("Tags", "Tags", "Tasks", new { id = Model.Id }, null)%></li>
+        <%: Html.ActionLink("Tags", "Tags", "Tasks", new { id = Model.Id }, null)%>
+        (<%: Html.ActionLink("Add", "Create", "TaskTags", new { id = Model.Id }, null)%>)</li>
     <li>
         <%: Html.ActionLink("Responsible Users", "ResponsibleUsers", "Tasks", new { id = Model.Id }, null)%></li>
     <li>

@@ -40,10 +40,16 @@
             <th style="width: 45px;">
             </th>
         </tr>
-        <% foreach (var item in Model)
-           { %>
-        <% totalMinutes += item.Duration.TotalMinutes; %>
-        <tr>
+        <% bool altRow = true; 
+           foreach (var item in Model)
+           {
+               totalMinutes += item.Duration.TotalMinutes;
+               altRow = !altRow;
+               if (altRow)
+               { %> <tr class="tr_alternate"> <% }
+               else
+               { %> <tr> <% }
+                %>
             <td>
                 <%: item.Start %>
             </td>

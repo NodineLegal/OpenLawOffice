@@ -16,16 +16,31 @@
                 Display Name
             </th>
             <th>
+                Phone
+            </th>
+            <th>
                 City, State
             </th>
             <th style="width: 20px;">
             </th>
         </tr>
-        <% foreach (var item in Model)
-           { %>
-        <tr>
+        <% bool altRow = true;
+           foreach (var item in Model)
+           { 
+               altRow = !altRow;
+               if (altRow)
+               { %> <tr class="tr_alternate"> <% }
+               else
+               { %> <tr> <% } %>
             <td>
                 <%: Html.ActionLink(item.DisplayName, "Details", "Contacts", new { id = item.Id }, null)%>
+            </td>
+            <td>
+                <% if (!string.IsNullOrEmpty(item.Telephone1DisplayName) &&
+                       !string.IsNullOrEmpty(item.Telephone1TelephoneNumber))
+                   { %>
+                <%: item.Telephone1DisplayName + ": " + item.Telephone1TelephoneNumber%>
+                <% } %>
             </td>
             <td>
                 <%: item.Address1AddressCity + ", " + item.Address1AddressStateOrProvince %>

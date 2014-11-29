@@ -19,12 +19,18 @@
             <th style="text-align: center;">
                 Responsibility
             </th>
-            <th style="width: 40px;">
+            <th style="width: 45px;">
             </th>
         </tr>
-        <% foreach (var item in Model)
-           { %>
-        <tr>
+        <%  bool altRow = true;
+            foreach (var item in Model)
+            {
+               altRow = !altRow;
+               if (altRow)
+               { %> <tr class="tr_alternate"> <% }
+               else
+               { %> <tr> <% }
+                %>
             <td>
                 <%: Html.ActionLink(item.User.Username, "Details", "Users", new { id = item.User.PId.Value }, null)%>
             </td>
