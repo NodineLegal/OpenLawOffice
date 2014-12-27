@@ -105,24 +105,49 @@ namespace OpenLawOffice.WebClient.Controllers
 
             if (viewModel.Time.Stop.HasValue)
             {
-                if (Data.Timing.Time.ListConflictingTimes(viewModel.Time.Start,
-                    viewModel.Time.Stop.Value, viewModel.Time.Worker.Id.Value).Count > 0)
+                List<Common.Models.Timing.Time> conflicts = Data.Timing.Time.ListConflictingTimes(viewModel.Time.Start,
+                    viewModel.Time.Stop.Value, viewModel.Time.Worker.Id.Value);
+
+                if (conflicts.Count > 0)
                 { // conflict found
                     long taskId;
                     int contactId;
+                    string errorListString = "";
                     Common.Models.Tasks.Task task;
                     Common.Models.Contacts.Contact contact;
+                    Common.Models.Matters.Matter matter;
 
                     taskId = long.Parse(Request["TaskId"]);
                     contactId = int.Parse(Request["ContactId"]);
                     task = Data.Tasks.Task.Get(taskId);
                     contact = Data.Contacts.Contact.Get(contactId);
-
-                    ModelState.AddModelError(String.Empty, "Time conflicts with other time entries.");
-
+                    matter = Data.Tasks.Task.GetRelatedMatter(taskId);
+                    
                     viewModel.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(task);
                     viewModel.Time.Worker = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contact);
+                    
+                    ViewData["Task"] = task.Title;
+                    ViewData["TaskId"] = task.Id;
+                    ViewData["Matter"] = matter.Title;
+                    ViewData["MatterId"] = matter.Id;
+                    
+                    foreach (Common.Models.Timing.Time time in conflicts)
+                    {
+                        time.Worker = Data.Contacts.Contact.Get(time.Worker.Id.Value);
+                        errorListString += "<li>" + time.Worker.DisplayName + 
+                            "</a> worked from " + time.Start.ToString("M/d/yyyy h:mm tt");
+                        
+                        if (time.Stop.HasValue)
+                            errorListString += " to " + time.Stop.Value.ToString("M/d/yyyy h:mm tt") +
+                                " [<a href=\"/Timing/Edit/" + time.Id.Value.ToString() + "\">edit</a>]";
+                        else
+                            errorListString += " to an unknown time " +
+                                "[<a href=\"/Timing/Edit/" + time.Id.Value.ToString() + "\">edit</a>]";
 
+                        errorListString += "</li>";
+                    }
+                    
+                    ViewData["ErrorMessage"] = "Time conflicts with the following other time entries:<ul>" + errorListString + "</ul>";
                     return View(viewModel);
                 }
             }

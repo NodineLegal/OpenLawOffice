@@ -25,6 +25,7 @@ namespace OpenLawOffice.Common
     using System.Web;
     using System.Net;
     using System.Linq;
+    using System.IO;
 
     public static class Utilities
     {
@@ -94,6 +95,22 @@ namespace OpenLawOffice.Common
             if (!dateTime.HasValue) return null;
             DateTime dt = dateTime.Value.ToUniversalTime();
             return (dt - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds;
+        }
+
+        public static bool? IsFile(string filepath)
+        {
+            if (FsObjectExists(filepath))
+            {
+                FileAttributes attr = File.GetAttributes(filepath);
+
+                return !attr.HasFlag(FileAttributes.Directory);
+            }
+            return null;
+        }
+
+        public static bool FsObjectExists(string path)
+        {
+            return File.Exists(path) || Directory.Exists(path);
         }
     }
 }

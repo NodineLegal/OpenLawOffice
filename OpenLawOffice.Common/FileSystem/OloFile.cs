@@ -6,7 +6,7 @@ namespace OpenLawOffice.Common.FileSystem
     public class OloFile
     {
         public OloMatter Matter { get; private set; }
-        public string MatterRelativePath { get; private set; }
+        public OloMatterDirectory MatterDirectory { get; private set; }
         public DateTime? TimeStamp { get; private set; }
         public string Title { get; private set; }
         public string Extension { get; private set; }
@@ -19,6 +19,7 @@ namespace OpenLawOffice.Common.FileSystem
         {
             OloFile file = new OloFile();
             OloMatter Matter = OloMatter.Parse(fileSystemPath);
+            OloMatterDirectory Dir = OloMatterDirectory.Parse(fileSystemPath);
 
             string afterMatter = fileSystemPath.Replace(Matter.ToString(), "");
 
@@ -27,7 +28,6 @@ namespace OpenLawOffice.Common.FileSystem
 
             if (afterMatter.IndexOf(Path.DirectorySeparatorChar) > 0)
             { // Has relative path
-                file.MatterRelativePath = afterMatter.Substring(0, afterMatter.LastIndexOf(Path.DirectorySeparatorChar));
                 file.Title = afterMatter.Substring(afterMatter.LastIndexOf(Path.DirectorySeparatorChar));
                 file.Extension = file.Title.Substring(file.Title.LastIndexOf("."));
                 file.Title = file.Title.Substring(0, file.Title.LastIndexOf(".") - 1);
@@ -43,7 +43,7 @@ namespace OpenLawOffice.Common.FileSystem
 
         public override string ToString()
         {
-            string output = Matter.ToString() + Path.DirectorySeparatorChar + MatterRelativePath;
+            string output = MatterDirectory.ToString();
 
             if (!output.EndsWith(Path.DirectorySeparatorChar.ToString()))
                 output += Path.DirectorySeparatorChar;

@@ -14,17 +14,22 @@ namespace OpenLawOffice.Common.FileSystem
 
         public static OloMatter Parse(string fileSystemPath)
         {
+            string wholeName;
             OloMatter matter = new OloMatter();
 
             string afterRoot = fileSystemPath.Replace(OpenLawOffice.Common.Settings.Manager.Instance.FileStorage.MattersPath, "");
 
-            if (!string.IsNullOrEmpty(afterRoot))
+            if (string.IsNullOrEmpty(afterRoot))
                 throw new ArgumentException("Invalid path.");
 
             if (afterRoot.IndexOf(Path.DirectorySeparatorChar) < 1)
-                throw new ArgumentException("Invalid path.");
-
-            string wholeName = afterRoot.Substring(0, afterRoot.IndexOf(Path.DirectorySeparatorChar));
+            { // Just a matter folder
+                wholeName = afterRoot;
+            }
+            else
+            { // Filer or folder within a matter
+                wholeName = afterRoot.Substring(0, afterRoot.IndexOf(Path.DirectorySeparatorChar));
+            }
 
             if (wholeName.LastIndexOf("(") > 0)
             { // Has case number

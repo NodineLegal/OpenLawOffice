@@ -19,12 +19,13 @@
             </th>
         </tr>
         <% foreach (var item in Model.MyTodoList)
-           {                
-               %>
-         
-        <% if (item.Item2.DueDate.Value.Date < DateTime.Now.Date) { %>
+           {
+               %>         
+        <% if (item.Item2.DueDate.HasValue && 
+               item.Item2.DueDate.Value.Date < DateTime.Now.Date) { %>
         <tr style="background-color: #FFCECE"> 
-        <% } else if (item.Item2.DueDate.Value.Date == DateTime.Now.Date) { %>
+        <% } else if (item.Item2.DueDate.HasValue && 
+               item.Item2.DueDate.Value.Date == DateTime.Now.Date) { %>
         <tr style="background-color: #FFFFC8"> 
         <% } else { %>
         <tr>

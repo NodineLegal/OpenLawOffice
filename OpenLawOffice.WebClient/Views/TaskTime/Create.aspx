@@ -15,6 +15,10 @@
     <% using (Html.BeginForm())
        {%>
     <%: Html.ValidationSummary(true) %>
+    <% if (ViewData["ErrorMessage"] != null)
+       { %>
+        <div style="color: Red;"><%= ViewData["ErrorMessage"]%></div>
+    <% } %>
     <table class="detail_table">
         <tr>
             <td class="display-label">

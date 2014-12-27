@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="FileSystem\OloFile.cs" />
     <Compile Include="FileSystem\OloMatter.cs" />
+    <Compile Include="FileSystem\OloMatterDirectory.cs" />
     <Compile Include="Models\Account\UserRole.cs" />
     <Compile Include="Models\Account\Users.cs" />
     <Compile Include="Models\Events\Event.cs" />
