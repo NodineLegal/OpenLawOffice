@@ -4,8 +4,21 @@
     OpenLawOffice
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
+
+
+    <% using (Html.BeginForm())
+       {%>
+    <script>
+        $(function () {
+            $('#Employee_Id').change(function () {
+                $("form").submit();
+            });
+        });
+    </script>
     <h4>
-        My Todo List</h4>
+        Todo List for <%: Html.DropDownListFor(x => x.Employee.Id,
+                new SelectList((IList)ViewData["EmployeeContactList"], "Id", "DisplayName"),
+                new { @size = 1, @style = "width: 200px" })%></h4>
     <table class="listing_table">
         <tr>
             <th style="text-align: center;">
@@ -21,13 +34,18 @@
         <% foreach (var item in Model.MyTodoList)
            {
                %>         
-        <% if (item.Item2.DueDate.HasValue && 
-               item.Item2.DueDate.Value.Date < DateTime.Now.Date) { %>
+        <% if (item.Item2.DueDate.HasValue &&
+               item.Item2.DueDate.Value.Date < DateTime.Now.Date)
+           { %>
         <tr style="background-color: #FFCECE"> 
-        <% } else if (item.Item2.DueDate.HasValue && 
-               item.Item2.DueDate.Value.Date == DateTime.Now.Date) { %>
+        <% }
+           else if (item.Item2.DueDate.HasValue &&
+             item.Item2.DueDate.Value.Date == DateTime.Now.Date)
+           { %>
         <tr style="background-color: #FFFFC8"> 
-        <% } else { %>
+        <% }
+           else
+           { %>
         <tr>
         <% } %>
             <td>
@@ -45,4 +63,6 @@
         </tr>
         <% } %>
     </table>
+
+    <% } %>
 </asp:Content>

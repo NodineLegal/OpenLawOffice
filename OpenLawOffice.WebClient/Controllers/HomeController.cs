@@ -26,17 +26,24 @@ namespace OpenLawOffice.WebClient.Controllers
     using AutoMapper;
     using System;
     using System.Net;
+    using System.Web.Profile;
+    using System.Web.Security;
 
     [HandleError(View = "Errors/Index", Order = 10)]
     public class HomeController : BaseController
     {
         [Authorize(Roles = "Login, User")]
-        public ActionResult Index()
+        public ActionResult Index(ViewModels.Home.DashboardViewModel currentDVM)
         {
+            int id;
             ViewModels.Home.DashboardViewModel viewModel;
+            Common.Models.Contacts.Contact employee;
             Common.Models.Account.Users currentUser;
             List<Common.Models.Settings.TagFilter> tagFilter;
             Common.Models.Matters.Matter matter;
+            List<ViewModels.Contacts.ContactViewModel> employeeContactList;
+
+            employeeContactList = new List<ViewModels.Contacts.ContactViewModel>();
 
             try
             {
@@ -47,22 +54,49 @@ namespace OpenLawOffice.WebClient.Controllers
                 return RedirectToAction("Index", "Installation");
             }
 
-            viewModel = new ViewModels.Home.DashboardViewModel();
 
+            if (RouteData.Values["Id"] != null)
+            {
+                id = int.Parse((string)RouteData.Values["Id"]);
+            }
+            else if (currentDVM.Employee != null && currentDVM.Employee.Id.HasValue)
+            {
+                id = currentDVM.Employee.Id.Value;
+            }
+            else
+            {
+                dynamic profile = ProfileBase.Create(Membership.GetUser().UserName);
+                if (profile.ContactId != null && !string.IsNullOrEmpty(profile.ContactId))
+                    id = int.Parse(profile.ContactId);
+                else
+                    throw new ArgumentNullException("Must supply an Id or have a ContactId set in profile.");
+            }
+
+            employee = Data.Contacts.Contact.Get(id);
             currentUser = Data.Account.Users.Get(User.Identity.Name);
+
+            viewModel = new ViewModels.Home.DashboardViewModel();
+            viewModel.Employee = Mapper.Map<ViewModels.Contacts.ContactViewModel>(employee);
 
             viewModel.MyTodoList = new List<Tuple<ViewModels.Matters.MatterViewModel, ViewModels.Tasks.TaskViewModel>>();
 
             tagFilter = Data.Settings.UserTaskSettings.ListTagFiltersFor(currentUser);
 
-            Data.Tasks.Task.GetTodoListFor(currentUser, tagFilter).ForEach(x =>
+            Data.Tasks.Task.GetTodoListFor(employee, tagFilter).ForEach(x =>
             {
                 matter = Data.Tasks.Task.GetRelatedMatter(x.Id.Value);
                 viewModel.MyTodoList.Add(
-                    new Tuple<ViewModels.Matters.MatterViewModel,ViewModels.Tasks.TaskViewModel>(
+                    new Tuple<ViewModels.Matters.MatterViewModel, ViewModels.Tasks.TaskViewModel>(
                     Mapper.Map<ViewModels.Matters.MatterViewModel>(matter),
                     Mapper.Map<ViewModels.Tasks.TaskViewModel>(x)));
             });
+
+            Data.Contacts.Contact.ListEmployeesOnly().ForEach(x =>
+            {
+                employeeContactList.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(x));
+            });
+
+            ViewData["EmployeeContactList"] = employeeContactList;
 
             return View(viewModel);
         }

@@ -252,29 +252,52 @@ namespace OpenLawOffice.Data.Tasks
                     tags.Add(x.Tag.ToLower());
             });
 
-            sql = "SELECT * FROM \"task\" WHERE \"active\"=true AND \"id\" IN (SELECT \"task_id\" FROM \"task_assigned_contact\" WHERE \"contact_id\"=@ContactId) " +
-                "AND \"id\" IN (SELECT \"task_id\" FROM \"task_tag\" WHERE \"tag_category_id\" " +
-                "IN (SELECT \"id\" FROM \"tag_category\" WHERE LOWER(\"name\") IN (";
+            sql = "SELECT * FROM \"task\" WHERE \"active\"=true AND \"id\" IN (SELECT \"task_id\" FROM \"task_assigned_contact\" WHERE \"contact_id\"=@ContactId) ";
 
-            cats.ForEach(x =>
+            if (cats.Count > 0 || tags.Count > 0)
             {
-                string parmName = parms.Count.ToString();
-                parms.Add(new Npgsql.NpgsqlParameter(parmName, NpgsqlTypes.NpgsqlDbType.Text) { Value = x });
-                sql += ":" + parmName + ",";
-            });
+                sql += " AND \"id\" IN (SELECT \"task_id\" FROM \"task_tag\" WHERE \"tag_category_id\" " +
+                        "IN (SELECT \"id\" FROM \"tag_category\" WHERE ";
+                
+                
+                if (cats.Count > 0)
+                {
+                    sql += " LOWER(\"name\") IN (";
 
-            sql = sql.TrimEnd(',');
-            sql += ")) AND LOWER(\"tag\") IN (";
+                    cats.ForEach(x =>
+                    {
+                        string parmName = parms.Count.ToString();
+                        parms.Add(new Npgsql.NpgsqlParameter(parmName, NpgsqlTypes.NpgsqlDbType.Text) { Value = x });
+                        sql += ":" + parmName + ",";
+                    });
 
-            tags.ForEach(x =>
-            {
-                string parmName = parms.Count.ToString();
-                parms.Add(new Npgsql.NpgsqlParameter(parmName, NpgsqlTypes.NpgsqlDbType.Text) { Value = x });
-                sql += ":" + parmName + ",";
-            });
+                    sql = sql.TrimEnd(',') + ") ";
+                }
 
-            sql = sql.TrimEnd(',');
-            sql += ")) AND \"utc_disabled\" is null ";
+                sql += ") ";
+            
+                if (tags.Count > 0)
+                {
+                    if (cats.Count > 0)
+                        sql += " AND ";
+
+                    sql += " LOWER(\"tag\") IN (";
+
+                    tags.ForEach(x =>
+                    {
+                        string parmName = parms.Count.ToString();
+                        parms.Add(new Npgsql.NpgsqlParameter(parmName, NpgsqlTypes.NpgsqlDbType.Text) { Value = x });
+                        sql += ":" + parmName + ",";
+                    });
+
+                    sql = sql.TrimEnd(',');
+                    sql += ")";
+                }
+
+                sql += ") ";
+            }                
+                
+            sql += "AND \"utc_disabled\" is null ";
 
             if (start.HasValue)
             {
