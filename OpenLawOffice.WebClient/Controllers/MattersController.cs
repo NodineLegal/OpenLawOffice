@@ -26,6 +26,8 @@ namespace OpenLawOffice.WebClient.Controllers
     using System.Web.Mvc;
     using AutoMapper;
     using Ionic.Zip;
+    using System.Web.Profile;
+    using System.Web.Security;
 
     [HandleError(View = "Errors/Index", Order = 10)]
     public class MattersController : BaseController
@@ -715,6 +717,346 @@ namespace OpenLawOffice.WebClient.Controllers
             ViewData["Matter"] = matter.Title;
             ViewData["MatterId"] = matter.Id;
 
+            return View(viewModel);
+        }
+
+        [Authorize(Roles = "Login, User")]
+        public ActionResult Timesheet(Guid id)
+        {
+            int contactId;
+            Common.Models.Matters.Matter matter;
+            List<ViewModels.Contacts.ContactViewModel> employeeContactList;
+            ViewModels.Timing.DayViewModel viewModel = new ViewModels.Timing.DayViewModel();
+
+            employeeContactList = new List<ViewModels.Contacts.ContactViewModel>();
+            
+            dynamic profile = ProfileBase.Create(Membership.GetUser().UserName);
+            if (profile.ContactId != null && !string.IsNullOrEmpty(profile.ContactId))
+                contactId = int.Parse(profile.ContactId);
+            else
+                throw new ArgumentNullException("Must have a ContactId set in profile.");
+
+            viewModel.Employee = Mapper.Map<ViewModels.Contacts.ContactViewModel>(Data.Contacts.Contact.Get(contactId));
+
+            Data.Timing.Time.ListForMatterWithinRange(id).ForEach(x =>
+            {
+                ViewModels.Timing.DayViewModel.Item dayVMItem;
+
+                dayVMItem = new ViewModels.Timing.DayViewModel.Item();
+
+                dayVMItem.Time = Mapper.Map<ViewModels.Timing.TimeViewModel>(x);
+
+                dayVMItem.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(Data.Timing.Time.GetRelatedTask(dayVMItem.Time.Id.Value));
+
+                dayVMItem.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(Data.Tasks.Task.GetRelatedMatter(dayVMItem.Task.Id.Value));
+
+                viewModel.Items.Add(dayVMItem);
+            });
+
+            Data.Contacts.Contact.ListEmployeesOnly().ForEach(x =>
+            {
+                employeeContactList.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(x));
+            });
+
+            matter = Data.Matters.Matter.Get(id);
+            ViewData["Matter"] = matter.Title;
+            ViewData["MatterId"] = matter.Id;
+            ViewData["EmployeeContactList"] = employeeContactList;
+            return View(viewModel);
+        }
+
+        [Authorize(Roles = "Login, User")]
+        [HttpPost]
+        public ActionResult Timesheet(ViewModels.Home.DashboardViewModel currentDVM)
+        {
+            Guid id;
+            int contactId;
+            Common.Models.Matters.Matter matter;
+            DateTime? from = null, to = null;
+            List<ViewModels.Contacts.ContactViewModel> employeeContactList;
+            ViewModels.Timing.DayViewModel viewModel = new ViewModels.Timing.DayViewModel();
+
+            employeeContactList = new List<ViewModels.Contacts.ContactViewModel>();
+
+            id = Guid.Parse((string)RouteData.Values["Id"]);
+            if (!string.IsNullOrEmpty(Request["From"]))
+                from = DateTime.Parse(Request["From"]);
+            if (!string.IsNullOrEmpty(Request["To"]))
+                to = DateTime.Parse(Request["To"]);
+
+            matter = Data.Matters.Matter.Get(id);
+
+            if (currentDVM.Employee != null && currentDVM.Employee.Id.HasValue)
+            {
+                contactId = currentDVM.Employee.Id.Value;
+            }
+            else
+            {
+                dynamic profile = ProfileBase.Create(Membership.GetUser().UserName);
+                if (profile.ContactId != null && !string.IsNullOrEmpty(profile.ContactId))
+                    contactId = int.Parse(profile.ContactId);
+                else
+                    throw new ArgumentNullException("Must supply an Id or have a ContactId set in profile.");
+            }
+            viewModel.Employee = Mapper.Map<ViewModels.Contacts.ContactViewModel>(Data.Contacts.Contact.Get(contactId));
+
+            Data.Timing.Time.ListForMatterWithinRange(matter.Id.Value, from, to).ForEach(x =>
+            {
+                ViewModels.Timing.DayViewModel.Item dayVMItem;
+
+                dayVMItem = new ViewModels.Timing.DayViewModel.Item();
+
+                dayVMItem.Time = Mapper.Map<ViewModels.Timing.TimeViewModel>(x);
+
+                dayVMItem.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(Data.Timing.Time.GetRelatedTask(dayVMItem.Time.Id.Value));
+
+                dayVMItem.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(Data.Tasks.Task.GetRelatedMatter(dayVMItem.Task.Id.Value));
+
+                viewModel.Items.Add(dayVMItem);
+            });
+
+            Data.Contacts.Contact.ListEmployeesOnly().ForEach(x =>
+            {
+                employeeContactList.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(x));
+            });
+
+
+            if (from.HasValue)
+                ViewData["From"] = from.Value;
+            if (to.HasValue)
+                ViewData["To"] = to.Value;
+
+            ViewData["Matter"] = matter.Title;
+            ViewData["MatterId"] = matter.Id;
+            ViewData["EmployeeContactList"] = employeeContactList;
+            return View(viewModel);
+        }
+        
+        [Authorize(Roles = "Login, User")]
+        public ActionResult Timesheet_PrintInternal(ViewModels.Home.DashboardViewModel currentDVM)
+        {
+            Guid id;
+            int contactId = 0;
+            Common.Models.Matters.Matter matter;
+            DateTime? from = null, to = null;
+            List<ViewModels.Contacts.ContactViewModel> employeeContactList;
+            List<Common.Models.Timing.Time> timeList = null;
+            ViewModels.Timing.DayViewModel viewModel = new ViewModels.Timing.DayViewModel();
+
+            employeeContactList = new List<ViewModels.Contacts.ContactViewModel>();
+
+            id = Guid.Parse((string)RouteData.Values["Id"]);
+            if (!string.IsNullOrEmpty(Request["From"]))
+                from = DateTime.Parse(Request["From"]);
+            if (!string.IsNullOrEmpty(Request["To"]))
+                to = DateTime.Parse(Request["To"]);
+
+            matter = Data.Matters.Matter.Get(id);
+
+            if (currentDVM.Employee != null && currentDVM.Employee.Id.HasValue)
+            {
+                contactId = currentDVM.Employee.Id.Value;
+            }
+            else if (!string.IsNullOrEmpty(Request["empid"]))
+            {
+                contactId = int.Parse(Request["empid"]);
+            }
+
+
+            if (contactId > 0)
+            {
+                viewModel.Employee = Mapper.Map<ViewModels.Contacts.ContactViewModel>(Data.Contacts.Contact.Get(contactId));
+                timeList = Data.Timing.Time.ListForMatterWithinRange(matter.Id.Value, contactId, from, to);
+            }
+            else
+            {
+                timeList = Data.Timing.Time.ListForMatterWithinRange(matter.Id.Value, from, to);
+            }
+
+
+            timeList.ForEach(x =>
+            {
+                ViewModels.Timing.DayViewModel.Item dayVMItem;
+
+                dayVMItem = new ViewModels.Timing.DayViewModel.Item();
+
+                dayVMItem.Time = Mapper.Map<ViewModels.Timing.TimeViewModel>(x);
+
+                dayVMItem.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(Data.Timing.Time.GetRelatedTask(dayVMItem.Time.Id.Value));
+
+                dayVMItem.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(Data.Tasks.Task.GetRelatedMatter(dayVMItem.Task.Id.Value));
+
+                viewModel.Items.Add(dayVMItem);
+            });
+
+            Data.Contacts.Contact.ListEmployeesOnly().ForEach(x =>
+            {
+                employeeContactList.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(x));
+            });
+
+
+            if (from.HasValue)
+                ViewData["From"] = from.Value;
+            if (to.HasValue)
+                ViewData["To"] = to.Value;
+
+            ViewData["Matter"] = matter.Title;
+            ViewData["Jurisdiction"] = matter.Jurisdiction;
+            ViewData["CaseNumber"] = matter.CaseNumber;
+            ViewData["MatterId"] = matter.Id;
+            ViewData["EmployeeContactList"] = employeeContactList;
+            return View(viewModel);
+        }
+
+        [Authorize(Roles = "Login, User")]
+        public ActionResult Timesheet_PrintClient(ViewModels.Home.DashboardViewModel currentDVM)
+        {
+            Guid id;
+            int contactId = 0;
+            Common.Models.Matters.Matter matter;
+            DateTime? from = null, to = null;
+            List<ViewModels.Contacts.ContactViewModel> employeeContactList;
+            List<Common.Models.Timing.Time> timeList = null;
+            ViewModels.Timing.DayViewModel viewModel = new ViewModels.Timing.DayViewModel();
+
+            employeeContactList = new List<ViewModels.Contacts.ContactViewModel>();
+
+            id = Guid.Parse((string)RouteData.Values["Id"]);
+            if (!string.IsNullOrEmpty(Request["From"]))
+                from = DateTime.Parse(Request["From"]);
+            if (!string.IsNullOrEmpty(Request["To"]))
+                to = DateTime.Parse(Request["To"]);
+
+            matter = Data.Matters.Matter.Get(id);
+
+            if (currentDVM.Employee != null && currentDVM.Employee.Id.HasValue)
+            {
+                contactId = currentDVM.Employee.Id.Value;
+            }
+            else if (!string.IsNullOrEmpty(Request["empid"]))
+            {
+                contactId = int.Parse(Request["empid"]);
+            }
+
+
+            if (contactId > 0)
+            {
+                viewModel.Employee = Mapper.Map<ViewModels.Contacts.ContactViewModel>(Data.Contacts.Contact.Get(contactId));
+                timeList = Data.Timing.Time.ListForMatterWithinRange(matter.Id.Value, contactId, from, to);
+            }
+            else
+            {
+                timeList = Data.Timing.Time.ListForMatterWithinRange(matter.Id.Value, from, to);
+            }
+
+
+            timeList.ForEach(x =>
+            {
+                ViewModels.Timing.DayViewModel.Item dayVMItem;
+
+                dayVMItem = new ViewModels.Timing.DayViewModel.Item();
+
+                dayVMItem.Time = Mapper.Map<ViewModels.Timing.TimeViewModel>(x);
+
+                dayVMItem.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(Data.Timing.Time.GetRelatedTask(dayVMItem.Time.Id.Value));
+
+                dayVMItem.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(Data.Tasks.Task.GetRelatedMatter(dayVMItem.Task.Id.Value));
+
+                viewModel.Items.Add(dayVMItem);
+            });
+
+            Data.Contacts.Contact.ListEmployeesOnly().ForEach(x =>
+            {
+                employeeContactList.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(x));
+            });
+
+
+            if (from.HasValue)
+                ViewData["From"] = from.Value;
+            if (to.HasValue)
+                ViewData["To"] = to.Value;
+
+            ViewData["Matter"] = matter.Title;
+            ViewData["Jurisdiction"] = matter.Jurisdiction;
+            ViewData["CaseNumber"] = matter.CaseNumber;
+            ViewData["MatterId"] = matter.Id;
+            ViewData["EmployeeContactList"] = employeeContactList;
+            return View(viewModel);
+        }
+
+        [Authorize(Roles = "Login, User")]
+        public ActionResult Timesheet_Print3rdParty(ViewModels.Home.DashboardViewModel currentDVM)
+        {
+            Guid id;
+            int contactId = 0;
+            Common.Models.Matters.Matter matter;
+            DateTime? from = null, to = null;
+            List<ViewModels.Contacts.ContactViewModel> employeeContactList;
+            List<Common.Models.Timing.Time> timeList = null;
+            ViewModels.Timing.DayViewModel viewModel = new ViewModels.Timing.DayViewModel();
+
+            employeeContactList = new List<ViewModels.Contacts.ContactViewModel>();
+
+            id = Guid.Parse((string)RouteData.Values["Id"]);
+            if (!string.IsNullOrEmpty(Request["From"]))
+                from = DateTime.Parse(Request["From"]);
+            if (!string.IsNullOrEmpty(Request["To"]))
+                to = DateTime.Parse(Request["To"]);
+
+            matter = Data.Matters.Matter.Get(id);
+
+            if (currentDVM.Employee != null && currentDVM.Employee.Id.HasValue)
+            {
+                contactId = currentDVM.Employee.Id.Value;
+            }
+            else if (!string.IsNullOrEmpty(Request["empid"]))
+            {
+                contactId = int.Parse(Request["empid"]);
+            }
+
+
+            if (contactId > 0)
+            {
+                viewModel.Employee = Mapper.Map<ViewModels.Contacts.ContactViewModel>(Data.Contacts.Contact.Get(contactId));
+                timeList = Data.Timing.Time.ListForMatterWithinRange(matter.Id.Value, contactId, from, to);
+            }
+            else
+            {
+                timeList = Data.Timing.Time.ListForMatterWithinRange(matter.Id.Value, from, to);
+            }
+
+
+            timeList.ForEach(x =>
+            {
+                ViewModels.Timing.DayViewModel.Item dayVMItem;
+
+                dayVMItem = new ViewModels.Timing.DayViewModel.Item();
+
+                dayVMItem.Time = Mapper.Map<ViewModels.Timing.TimeViewModel>(x);
+
+                dayVMItem.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(Data.Timing.Time.GetRelatedTask(dayVMItem.Time.Id.Value));
+
+                dayVMItem.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(Data.Tasks.Task.GetRelatedMatter(dayVMItem.Task.Id.Value));
+
+                viewModel.Items.Add(dayVMItem);
+            });
+
+            Data.Contacts.Contact.ListEmployeesOnly().ForEach(x =>
+            {
+                employeeContactList.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(x));
+            });
+
+
+            if (from.HasValue)
+                ViewData["From"] = from.Value;
+            if (to.HasValue)
+                ViewData["To"] = to.Value;
+
+            ViewData["Matter"] = matter.Title;
+            ViewData["Jurisdiction"] = matter.Jurisdiction;
+            ViewData["CaseNumber"] = matter.CaseNumber;
+            ViewData["MatterId"] = matter.Id;
+            ViewData["EmployeeContactList"] = employeeContactList;
             return View(viewModel);
         }
 

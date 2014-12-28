@@ -35,7 +35,9 @@
         <%: Html.ActionLink("Documents", "Documents", "Matters", new { id = Model.Id }, null)%>
         (<%: Html.ActionLink("Add", "Create", "Documents", new { controller = "Matters", MatterId = Model.Id }, null)%>)</li>
     <li>
-        <%: Html.ActionLink("Times", "Time", "Matters", new { id = Model.Id }, null)%></li>
+        <%: Html.ActionLink("Times by Task", "Time", "Matters", new { id = Model.Id }, null)%></li>
+    <li>
+        <%: Html.ActionLink("Timesheet", "Timesheet", "Matters", new { id = Model.Id }, null)%></li>
     <%--<li>
         <%: Html.ActionLink("Permissions", "Acls", "Matters")%></li>--%>
 </asp:Content>

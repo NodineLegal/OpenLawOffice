@@ -57,6 +57,56 @@ namespace OpenLawOffice.Data.Timing
                 new { WorkerContactId = workerContactId, Start = date, Stop = date.AddDays(1).AddMilliseconds(-1) });
         }
 
+        public static List<Common.Models.Timing.Time> ListForMatterWithinRange(Guid matterId, DateTime? from = null, DateTime? to = null)
+        {
+            if (from.HasValue && from.Value.Kind != DateTimeKind.Utc)
+                from = from.ToDbTime();
+            if (to.HasValue && to.Value.Kind != DateTimeKind.Utc)
+                to = to.ToDbTime();
+
+            if (from.HasValue && to.HasValue)
+                return DataHelper.List<Common.Models.Timing.Time, DBOs.Timing.Time>(
+                    "SELECT * FROM \"time\" WHERE \"id\" IN (SELECT \"time_id\" FROM \"task_time\" WHERE \"task_id\" IN (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId)) AND \"start\" BETWEEN @Start AND @Stop AND \"utc_disabled\" is null ORDER BY \"start\" ASC",
+                    new { MatterId = matterId, Start = from.Value, Stop = to.Value.AddDays(1).AddMilliseconds(-1) });
+            else if (from.HasValue && !to.HasValue)
+                return DataHelper.List<Common.Models.Timing.Time, DBOs.Timing.Time>(
+                    "SELECT * FROM \"time\" WHERE \"id\" IN (SELECT \"time_id\" FROM \"task_time\" WHERE \"task_id\" IN (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId)) AND \"start\" >= @Start AND \"utc_disabled\" is null ORDER BY \"start\" ASC",
+                    new { MatterId = matterId, Start = from.Value });
+            else if (!from.HasValue && to.HasValue)
+                return DataHelper.List<Common.Models.Timing.Time, DBOs.Timing.Time>(
+                    "SELECT * FROM \"time\" WHERE \"id\" IN (SELECT \"time_id\" FROM \"task_time\" WHERE \"task_id\" IN (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId)) AND \"start\" <= @Stop AND \"utc_disabled\" is null ORDER BY \"start\" ASC",
+                    new { MatterId = matterId, Stop = to.Value.AddDays(1).AddMilliseconds(-1) });
+            else // !from && !to
+                return DataHelper.List<Common.Models.Timing.Time, DBOs.Timing.Time>(
+                    "SELECT * FROM \"time\" WHERE \"id\" IN (SELECT \"time_id\" FROM \"task_time\" WHERE \"task_id\" IN (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId)) AND \"utc_disabled\" is null ORDER BY \"start\" ASC",
+                    new { MatterId = matterId });
+        }
+
+        public static List<Common.Models.Timing.Time> ListForMatterWithinRange(Guid matterId, int employeeContactId, DateTime? from = null, DateTime? to = null)
+        {
+            if (from.HasValue && from.Value.Kind != DateTimeKind.Utc)
+                from = from.ToDbTime();
+            if (to.HasValue && to.Value.Kind != DateTimeKind.Utc)
+                to = to.ToDbTime();
+
+            if (from.HasValue && to.HasValue)
+                return DataHelper.List<Common.Models.Timing.Time, DBOs.Timing.Time>(
+                    "SELECT * FROM \"time\" WHERE \"worker_contact_id\"=@EmployeeContactId AND \"id\" IN (SELECT \"time_id\" FROM \"task_time\" WHERE \"task_id\" IN (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId)) AND \"start\" BETWEEN @Start AND @Stop AND \"utc_disabled\" is null ORDER BY \"start\" ASC",
+                    new { MatterId = matterId, EmployeeContactId = employeeContactId, Start = from.Value, Stop = to.Value.AddDays(1).AddMilliseconds(-1) });
+            else if (from.HasValue && !to.HasValue)
+                return DataHelper.List<Common.Models.Timing.Time, DBOs.Timing.Time>(
+                    "SELECT * FROM \"time\" WHERE \"worker_contact_id\"=@EmployeeContactId AND \"id\" IN (SELECT \"time_id\" FROM \"task_time\" WHERE \"task_id\" IN (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId)) AND \"start\" >= @Start AND \"utc_disabled\" is null ORDER BY \"start\" ASC",
+                    new { MatterId = matterId, EmployeeContactId = employeeContactId, Start = from.Value });
+            else if (!from.HasValue && to.HasValue)
+                return DataHelper.List<Common.Models.Timing.Time, DBOs.Timing.Time>(
+                    "SELECT * FROM \"time\" WHERE \"worker_contact_id\"=@EmployeeContactId AND \"id\" IN (SELECT \"time_id\" FROM \"task_time\" WHERE \"task_id\" IN (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId)) AND \"start\" <= @Stop AND \"utc_disabled\" is null ORDER BY \"start\" ASC",
+                    new { MatterId = matterId, EmployeeContactId = employeeContactId, Stop = to.Value.AddDays(1).AddMilliseconds(-1) });
+            else // !from && !to
+                return DataHelper.List<Common.Models.Timing.Time, DBOs.Timing.Time>(
+                    "SELECT * FROM \"time\" WHERE \"worker_contact_id\"=@EmployeeContactId AND \"id\" IN (SELECT \"time_id\" FROM \"task_time\" WHERE \"task_id\" IN (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId)) AND \"utc_disabled\" is null ORDER BY \"start\" ASC",
+                    new { MatterId = matterId, EmployeeContactId = employeeContactId });
+        }
+
         public static Common.Models.Tasks.Task GetRelatedTask(Guid timeId)
         {
             return DataHelper.Get<Common.Models.Tasks.Task, DBOs.Tasks.Task>(

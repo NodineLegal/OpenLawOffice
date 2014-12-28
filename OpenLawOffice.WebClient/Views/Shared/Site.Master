@@ -10,10 +10,12 @@
     <link href="/Content/jquery-ui-1.10.4.custom.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="/Scripts/jqGrid-4.6.0/ui.jqgrid.css"
         media="all" />
-    <link href="/Content/fullcalendar.css" rel="stylesheet" type="text/css" />
-    <link href="/Content/fullcalendar.print.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="/Scripts/jquery-1.10.2.js"></script>
     <script type="text/javascript" src="/Scripts/jquery-ui-1.10.4.custom.js"></script>    
+    
+    <link href="/Scripts/jui_dropdown-1.0.4/jquery.jui_dropdown.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="/Scripts/jui_dropdown-1.0.4/jquery.jui_dropdown.js"></script>
+
     <script language="javascript">
         $(function () {
             $("#pageInfoDialog").dialog({

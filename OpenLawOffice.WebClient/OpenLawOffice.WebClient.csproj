@@ -205,6 +205,7 @@
     <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\hourglass-select.png" />
     <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\pencil.png" />
     <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\plus.png" />
+    <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\printer.png" />
     <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\question.png" />
     <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\task-arrow.png" />
     <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\user-arrow.png" />
@@ -244,6 +245,9 @@
     <Content Include="Scripts\jquery-ui-1.9.2.custom.min.js" />
     <Content Include="Scripts\jquery-ui.custom.min.js" />
     <Content Include="Scripts\jquery.min.js" />
+    <Content Include="Scripts\jui_dropdown-1.0.4\jquery.jui_dropdown.css" />
+    <Content Include="Scripts\jui_dropdown-1.0.4\jquery.jui_dropdown.js" />
+    <Content Include="Scripts\jui_dropdown-1.0.4\jquery.jui_dropdown.min.js" />
     <Content Include="Scripts\moment.min.js" />
     <Content Include="Views\Account\ChangePassword.aspx" />
     <Content Include="Views\Account\ChangePasswordSuccess.aspx" />
@@ -315,6 +319,10 @@
     <Content Include="Views\EventTasks\SelectTask.aspx" />
     <Content Include="Views\EventTasks\Unlink.aspx" />
     <Content Include="Views\Matters\Events.aspx" />
+    <Content Include="Views\Matters\Timesheet.aspx" />
+    <Content Include="Views\Matters\Timesheet_Print3rdParty.aspx" />
+    <Content Include="Views\Matters\Timesheet_PrintClient.aspx" />
+    <Content Include="Views\Matters\Timesheet_PrintInternal.aspx" />
     <Content Include="Views\Shared\CoreDetailsView.ascx" />
     <Content Include="Views\Shared\Errors\Index.aspx" />
     <Content Include="Views\Shared\Errors\NotFound.aspx" />
@@ -433,6 +441,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\SiteNoRightBar.Master" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Scripts\jui_dropdown-1.0.4\MIT_LICENSE" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
