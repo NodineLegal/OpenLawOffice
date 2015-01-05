@@ -35,16 +35,33 @@
     <%--<li>
         <%: Html.ActionLink("Permissions", "Acls", "Matters")%></li>--%>
 </asp:Content>
-<asp:Content ID="Content3" ContentPlaceHolderID="MainContent" runat="server">
-    <%--<script type="text/javascript" src="../../Scripts/jqGrid-4.6.0/grid.locale-en.js"></script>
-    <script type="text/javascript" src="../../Scripts/jqGrid-4.6.0/jquery.jqGrid.min.js"></script>
-    <style type="text/css">
-        div.ui-jqgrid-titlebar
-        {
-            height: 16px;
-        }
-    </style>
-    --%>
+<asp:Content ID="Content3" ContentPlaceHolderID="MainContent" runat="server">   
+    <script language="javascript">
+        $(document).ready(function () {
+            $('#Matter_BillTo_DisplayName').autocomplete({
+                source: "/Contacts/ListDisplayNameOnly",
+                minLength: 2,
+                focus: function (event, ui) {
+                    $("#Matter_BillTo_Id").val(ui.item.Id);
+                    $("#Matter_BillTo_DisplayName").val(ui.item.DisplayName);
+                    return false;
+                },
+                select: function (event, ui) {
+                    $("#Matter_BillTo_Id").val(ui.item.Id);
+                    $("#Matter_BillTo_DisplayName").val(ui.item.DisplayName);
+                    return false;
+                }
+            }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                return $("<li>")
+                .append("<a>" + item.DisplayName + "</a>")
+                .appendTo(ul);
+            };
+            $('#Matter_BillTo_DisplayName').focus(function () {
+                $("#Matter_BillTo_Id").val('');
+                $('#Matter_BillTo_DisplayName').val('');
+            });
+        });
+    </script>
     <div id="roadmap">
         <div class="zero">Matter: [<%: Html.ActionLink((string)ViewData["Matter"], "Details", "Matters", new { id = ViewData["MatterId"] }, null) %>]</div>
         <div id="current" class="one">Edit Matter<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></div>
@@ -111,6 +128,16 @@
         </tr>
         <tr>
             <td class="display-label">
+                Bill To<span class="required-field" title="Required Field">*</span>
+            </td>
+            <td class="display-field">
+                <%: Html.HiddenFor(model => model.Matter.BillTo.Id) %>
+                <%: Html.TextBoxFor(model => model.Matter.BillTo.DisplayName) %>
+                <%: Html.ValidationMessageFor(model => model.Matter.BillTo.DisplayName)%>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
                 Active<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
@@ -118,59 +145,6 @@
                 Uncheck if the matter is already completed
             </td>
         </tr>
-        <%--<tr>
-            <td class="display-label">
-                Parent
-            </td>
-            <td class="display-field">
-                Parent:
-                <%: Html.TextBoxFor(model => model.Parent.Id, new { @readonly = true })%>
-                <br />
-                <br />
-                <table id="list">
-                </table>
-                <div id="pager">
-                </div>
-                <input id="clear" type="button" style="width: 200px;" value="clear" />
-                <script language="javascript">
-                    $(function () {
-                        $("#list").jqGrid({
-                            treeGrid: true,
-                            width: 350,
-                            url: '../../Matters/ListChildrenJqGrid',
-                            datatype: 'json',
-                            jsonReader: {
-                                root: 'Rows',
-                                page: 'CurrentPage',
-                                total: 'TotalRecords',
-                                id: 'Id',
-                                rows: 'Rows'
-                            },
-                            colNames: ['id', 'Title', 'Synopsis'],
-                            colModel: [
-                                    { name: 'Id', width: 1, hidden: true, key: true },
-                                    { name: 'Title', width: 250 },
-                                    { name: 'Synopsis', width: 250 }
-                                ],
-                            pager: '#pager',
-                            gridview: true,
-                            treedatatype: 'json',
-                            treeGridModel: 'adjacency',
-                            ExpandColumn: 'Title',
-                            caption: 'Matters',
-                            onSelectRow: function (id) {
-                                $("#Parent_Id").val(id);
-                            }
-                        });
-                    });
-
-                    $("#clear").click(function () {
-                        $("#list").jqGrid('resetSelection');
-                        $("#Parent_Id").val(null);
-                    });
-                </script>
-            </td>
-        </tr>--%>
     </table>
     <p>
         <input type="submit" value="Save" />

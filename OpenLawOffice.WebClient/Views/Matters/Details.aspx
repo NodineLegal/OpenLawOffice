@@ -122,7 +122,7 @@
 
     <table class="detail_table">  
         <tr>
-            <td colspan="2" class="detail_table_heading">
+            <td colspan="5" class="detail_table_heading">
                 Matter Details
             </td>
         </tr>
@@ -134,6 +134,17 @@
                 <% if (Model.LeadAttorney != null)
                    { %>
                     <%: Model.LeadAttorney.DisplayName%>
+                <% } %>
+            </td>
+            <td>
+            </td>
+            <td class="display-label" style="width: 125px;">
+                Bill To
+            </td>
+            <td class="display-field">
+                <% if (Model.BillTo != null)
+                   { %>
+                    <%: Html.ActionLink(Model.BillTo.DisplayName, "Details", "Contacts", new { Id = Model.BillTo.Id }, null) %>
                 <% } %>
             </td>
         </tr>

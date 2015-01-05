@@ -146,6 +146,7 @@
     <Compile Include="ViewModels\Account\UserRoleViewModel.cs" />
     <Compile Include="ViewModels\Account\UsersViewModel.cs" />
     <Compile Include="ViewModels\AssignmentTypeViewModel.cs" />
+    <Compile Include="ViewModels\Contacts\TimesheetsViewModel.cs" />
     <Compile Include="ViewModels\Events\EventAssignedContactViewModel.cs" />
     <Compile Include="ViewModels\Events\EventMatterViewModel.cs" />
     <Compile Include="ViewModels\Events\EventResponsibleUserViewModel.cs" />
@@ -279,6 +280,8 @@
     <Content Include="Views\Contacts\Index.aspx" />
     <Content Include="Views\Contacts\Matters.aspx" />
     <Content Include="Views\Contacts\Tasks.aspx" />
+    <Content Include="Views\Contacts\Timesheets.aspx" />
+    <Content Include="Views\Contacts\Timesheets_Print3rdParty.aspx" />
     <Content Include="Views\Documents\Create.aspx" />
     <Content Include="Views\Documents\Details.aspx" />
     <Content Include="Views\Documents\Edit.aspx" />

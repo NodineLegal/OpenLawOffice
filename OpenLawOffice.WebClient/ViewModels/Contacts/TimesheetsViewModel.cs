@@ -19,28 +19,40 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.WebClient.ViewModels.Timing
+namespace OpenLawOffice.WebClient.ViewModels.Contacts
 {
     using System.Collections.Generic;
 
-    public class DayViewModel
+    public class TimesheetsViewModel
     {
-        public class Item
+        public class MatterTimeList
         {
-            public TimeViewModel Time { get; set; }
+            public Matters.MatterViewModel Matter { get; set; }
+
+            public List<TimeItem> Times { get; set; }
+
+            public MatterTimeList()
+            {
+                Times = new List<TimeItem>();
+            }
+        }
+
+        public class TimeItem
+        {
+            public Timing.TimeViewModel Time { get; set; }
 
             public Matters.MatterViewModel Matter { get; set; }
 
             public Tasks.TaskViewModel Task { get; set; }
         }
 
-        public List<Item> Items { get; set; }
+        public ContactViewModel Contact { get; set; }
 
-        public ViewModels.Contacts.ContactViewModel Employee { get; set; }
+        public List<MatterTimeList> Matters { get; set; }
 
-        public DayViewModel()
+        public TimesheetsViewModel()
         {
-            Items = new List<Item>();
+            Matters = new List<MatterTimeList>();
         }
     }
 }

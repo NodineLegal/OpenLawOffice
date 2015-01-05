@@ -249,9 +249,13 @@ namespace OpenLawOffice.WebClient.Controllers
             if (model.LeadAttorney != null)
                 model.LeadAttorney = Data.Contacts.Contact.Get(model.LeadAttorney.Id.Value);
 
+            if (model.BillTo != null)
+                model.BillTo = Data.Contacts.Contact.Get(model.BillTo.Id.Value);
+
             viewModel = Mapper.Map<ViewModels.Matters.MatterViewModel>(model);
             viewModel.Tasks = TasksController.GetListForMatter(id, true);
             viewModel.LeadAttorney = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.LeadAttorney);
+            viewModel.BillTo = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.BillTo);
 
             viewModel.Notes = new List<ViewModels.Notes.NoteViewModel>();
             Data.Notes.NoteMatter.ListForMatter(id).ForEach(x =>
@@ -369,6 +373,41 @@ namespace OpenLawOffice.WebClient.Controllers
                 Responsibility = viewModel.ResponsibleUser.Responsibility
             }, currentUser);
 
+            // Assign Contacts
+
+            if (viewModel.Contact1 != null && viewModel.Contact1.Id.HasValue &&
+                !string.IsNullOrEmpty(viewModel.Role1))
+            {
+                Data.Matters.MatterContact.Create(new Common.Models.Matters.MatterContact()
+                {
+                    Matter = model,
+                    Role = viewModel.Role1,
+                    Contact = Mapper.Map<Common.Models.Contacts.Contact>(viewModel.Contact1)
+                }, currentUser);
+            }
+
+            if (viewModel.Contact2 != null && viewModel.Contact2.Id.HasValue &&
+                !string.IsNullOrEmpty(viewModel.Role2))
+            {
+                Data.Matters.MatterContact.Create(new Common.Models.Matters.MatterContact()
+                {
+                    Matter = model,
+                    Role = viewModel.Role2,
+                    Contact = Mapper.Map<Common.Models.Contacts.Contact>(viewModel.Contact2)
+                }, currentUser);
+            }
+
+            if (viewModel.Contact3 != null && viewModel.Contact3.Id.HasValue &&
+                !string.IsNullOrEmpty(viewModel.Role3))
+            {
+                Data.Matters.MatterContact.Create(new Common.Models.Matters.MatterContact()
+                {
+                    Matter = model,
+                    Role = viewModel.Role3,
+                    Contact = Mapper.Map<Common.Models.Contacts.Contact>(viewModel.Contact3)
+                }, currentUser);
+            }
+
             return RedirectToAction("Details", new { Id = model.Id });
         }
 
@@ -384,6 +423,9 @@ namespace OpenLawOffice.WebClient.Controllers
 
             if (model.LeadAttorney != null)
                 model.LeadAttorney = Data.Contacts.Contact.Get(model.LeadAttorney.Id.Value);
+
+            if (model.BillTo != null)
+                model.BillTo = Data.Contacts.Contact.Get(model.BillTo.Id.Value);
             
             Data.Contacts.Contact.ListEmployeesOnly().ForEach(x =>
             {
@@ -394,6 +436,7 @@ namespace OpenLawOffice.WebClient.Controllers
             viewModel.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(model);
             viewModel.LeadAttorney = new ViewModels.Matters.MatterContactViewModel();
             viewModel.LeadAttorney.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.LeadAttorney);
+            viewModel.Matter.BillTo = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.BillTo);
 
             ViewData["EmployeeContactList"] = employeeContactList;
             ViewData["Matter"] = model.Title;
@@ -433,6 +476,27 @@ namespace OpenLawOffice.WebClient.Controllers
                 return View(viewModel);
             }
 
+            if (viewModel.Matter.BillTo == null || !viewModel.Matter.BillTo.Id.HasValue)
+            {
+                List<ViewModels.Contacts.ContactViewModel> employeeContactList;
+
+                model = Data.Matters.Matter.Get(id);
+
+                employeeContactList = new List<ViewModels.Contacts.ContactViewModel>();
+
+                Data.Contacts.Contact.ListEmployeesOnly().ForEach(x =>
+                {
+                    employeeContactList.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(x));
+                });
+
+                ModelState.AddModelError("BillTo", "Bill To is required");
+
+                ViewData["EmployeeContactList"] = employeeContactList;
+                ViewData["Matter"] = model.Title;
+                ViewData["MatterId"] = model.Id;
+                return View(viewModel);
+            }
+
             currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             viewModel.Matter.LeadAttorney = viewModel.LeadAttorney.Contact;
@@ -440,7 +504,7 @@ namespace OpenLawOffice.WebClient.Controllers
 
             model = Data.Matters.Matter.Edit(model, currentUser);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Details", new { id = model.Id });
         }
 
         // A note on delete - https://github.com/NodineLegal/OpenLawOffice/wiki/Design-of-Disabling-a-Matter

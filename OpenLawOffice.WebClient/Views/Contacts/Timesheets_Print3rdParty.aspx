@@ -1,10 +1,10 @@
-﻿<%@ Page Language="C#" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Timing.DayViewModel>" %>
+﻿<%@ Page Language="C#" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Contacts.TimesheetsViewModel>" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" >
-<head id="Head1" runat="server">
-    <title>Timesheet</title>
+<head runat="server">
+    <title>Timesheets for <%: Model.Contact.DisplayName %></title>
     <style>
     body
     {
@@ -16,25 +16,32 @@
 <body style="background: white; margin: 5px; width: 511pt;">
     <div style="margin: 0 0 5px 0;">
     
-    <div>Matter: <%: ViewData["Matter"] %></div>
-    <% if (ViewData["Jurisdiction"] != null)
-       { %><div>Jurisdiction: <%: ViewData["Jurisdiction"]%></div><% } %>    
-    <% if (ViewData["CaseNumber"] != null)
-       { %><div>Case Number: <%: ViewData["CaseNumber"]%></div><% } %>  
-    <% if (Model.Employee != null)
-       { %><div>Worker: <%: Model.Employee.DisplayName%></div><% } %>
-    <div>Date Range: <% if (ViewData["From"] != null)
-                       { %><%: ((DateTime)ViewData["From"]).ToString("MM/dd/yyyy")%><% }
-                       else
-                       { %>*<% } %>
-                       -
-                       <% if (ViewData["To"] != null)
-                       { %><%: ((DateTime)ViewData["To"]).ToString("MM/dd/yyyy")%><% }
-                       else
-                       { %>*<% } %></div>
+    <%--Header--%>
+    <div style="font-weight: bold; text-align: center;">Timesheets for <%: Model.Contact.DisplayName %></div>
+    <div style="font-weight: bold; text-align: center;">Date Range: 
+        <% if (ViewData["From"] != null)
+        { %><%: ((DateTime)ViewData["From"]).ToString("MM/dd/yyyy")%><% }
+        else
+        { %>*<% } %>
+        -
+        <% if (ViewData["To"] != null)
+        { %><%: ((DateTime)ViewData["To"]).ToString("MM/dd/yyyy")%><% }
+        else
+        { %>*<% } %></div>
     </div>
 
-    
+    <%--Matter Loop--%>
+
+    <% 
+foreach (OpenLawOffice.WebClient.ViewModels.Contacts.TimesheetsViewModel.MatterTimeList matter in Model.Matters)
+{ %>
+   
+    <div>Matter: <%: matter.Matter.Title %></div>
+    <% if (!string.IsNullOrEmpty(matter.Matter.Jurisdiction))
+       { %><div>Jurisdiction: <%: matter.Matter.Jurisdiction %></div><% } %>   
+    <% if (!string.IsNullOrEmpty(matter.Matter.CaseNumber))
+       { %><div>Case Number: <%: matter.Matter.CaseNumber %></div><% } %>  
+   
     <table style="font-size: 8pt;border: 1px solid black; width: 511pt;">
         <tr>
             <th>
@@ -50,9 +57,9 @@
         double totalMinutes = 0;
         DateTime lastTimestampStart = DateTime.MinValue;// DateTime.Today;
         DateTime lastTimestampStop = DateTime.MinValue;// DateTime.Today;
-        
-        foreach (var item in Model.Items) {
 
+        foreach (var item in matter.Times)
+        {
             altRow = !altRow;
             totalMinutes += item.Time.Duration.TotalMinutes;
 
@@ -86,5 +93,11 @@
             </td>
         </tr>
     </table>
+<% }
+    %>
+
+
+
+    </div>
 </body>
 </html>

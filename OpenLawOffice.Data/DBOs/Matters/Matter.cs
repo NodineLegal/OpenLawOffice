@@ -51,6 +51,9 @@ namespace OpenLawOffice.Data.DBOs.Matters
         [ColumnMapping(Name = "lead_attorney_contact_id")]
         public int? LeadAttorneyContactId { get; set; }
 
+        [ColumnMapping(Name = "bill_to_contact_id")]
+        public int? BillToContactId { get; set; }
+
         public void BuildMappings()
         {
             Dapper.SqlMapper.SetTypeMap(typeof(Matter), new ColumnAttributeTypeMapper<Matter>());
@@ -108,6 +111,15 @@ namespace OpenLawOffice.Data.DBOs.Matters
                         Id = db.LeadAttorneyContactId.Value,
                         IsStub = true
                     };
+                }))
+                .ForMember(dst => dst.BillTo, opt => opt.ResolveUsing(db =>
+                {
+                    if (!db.BillToContactId.HasValue) return null;
+                    return new Common.Models.Contacts.Contact()
+                    {
+                        Id = db.BillToContactId.Value,
+                        IsStub = true
+                    };
                 }));
 
             Mapper.CreateMap<Common.Models.Matters.Matter, DBOs.Matters.Matter>()
@@ -151,6 +163,11 @@ namespace OpenLawOffice.Data.DBOs.Matters
                 {
                     if (model.LeadAttorney == null) return null;
                     return model.LeadAttorney.Id;
+                }))
+                .ForMember(dst => dst.BillToContactId, opt => opt.ResolveUsing(model =>
+                {
+                    if (model.BillTo == null) return null;
+                    return model.BillTo.Id;
                 }));
         }
     }

@@ -244,9 +244,9 @@ namespace OpenLawOffice.Data.Matters
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("INSERT INTO \"matter\" (\"id\", \"title\", \"active\", \"parent_id\", \"synopsis\", \"utc_created\", \"utc_modified\", " +
-                    "\"created_by_user_pid\", \"modified_by_user_pid\", \"jurisdiction\", \"case_number\", \"lead_attorney_contact_id\") " +
+                    "\"created_by_user_pid\", \"modified_by_user_pid\", \"jurisdiction\", \"case_number\", \"lead_attorney_contact_id\", \"bill_to_contact_id\") " +
                     "VALUES (@Id, @Title, @Active, @ParentId, @Synopsis, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId, " +
-                    "@Jurisdiction, @CaseNumber, @LeadAttorneyContactId)",
+                    "@Jurisdiction, @CaseNumber, @LeadAttorneyContactId, @BillToContactId)",
                     dbo);
             }
 
@@ -272,14 +272,14 @@ namespace OpenLawOffice.Data.Matters
             {
                 conn.Execute("UPDATE \"matter\" SET " +
                     "\"title\"=@Title, \"active\"=@Active, \"parent_id\"=@ParentId, \"synopsis\"=@Synopsis, \"utc_modified\"=@UtcModified, " +
-                    "\"modified_by_user_pid\"=@ModifiedByUserPId, \"jurisdiction\"=@Jurisdiction, \"case_number\"=@CaseNumber, \"lead_attorney_contact_id\"=@LeadAttorneyContactId " +
+                    "\"modified_by_user_pid\"=@ModifiedByUserPId, \"jurisdiction\"=@Jurisdiction, \"case_number\"=@CaseNumber, \"lead_attorney_contact_id\"=@LeadAttorneyContactId, \"bill_to_contact_id\"=@BillToContactId " +
                     "WHERE \"id\"=@Id", dbo);
             }
 
             leadAttorneyMatches = MatterContact.ListForMatterByRole(dbo.Id, "Lead Attorney");
 
             if (leadAttorneyMatches.Count > 1)
-                throw new Exception("More than one lead attorney found.");
+                throw new Exception("More than one Lead Attorney found.");
             else if (leadAttorneyMatches.Count < 1)
             {   // Insert only
                 MatterContact.Create(new Common.Models.Matters.MatterContact()

@@ -101,6 +101,71 @@ namespace OpenLawOffice.WebClient.Controllers
         }
 
         [Authorize(Roles = "Login, User")]
+        public ActionResult Timesheets(int id)
+        {
+            DateTime? from = null, to = null;
+
+            ViewModels.Contacts.TimesheetsViewModel viewModel = new ViewModels.Contacts.TimesheetsViewModel();
+            
+            viewModel.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(OpenLawOffice.Data.Contacts.Contact.Get(id));
+
+            if (!string.IsNullOrEmpty(Request["From"]))
+                from = DateTime.Parse(Request["From"]);
+            if (!string.IsNullOrEmpty(Request["To"]))
+                to = DateTime.Parse(Request["To"]);
+
+
+            if (from.HasValue)
+                ViewData["From"] = from.Value;
+            if (to.HasValue)
+                ViewData["To"] = to.Value;
+
+            return View(viewModel);
+        }
+
+        [Authorize(Roles = "Login, User")]
+        public ActionResult Timesheets_Print3rdParty(int id)
+        {
+            int contactId = id;
+            DateTime? from = null, to = null;
+            ViewModels.Contacts.TimesheetsViewModel viewModel = new ViewModels.Contacts.TimesheetsViewModel();
+            
+            if (!string.IsNullOrEmpty(Request["From"]))
+                from = DateTime.Parse(Request["From"]);
+            if (!string.IsNullOrEmpty(Request["To"]))
+                to = DateTime.Parse(Request["To"]);
+
+            viewModel.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(Data.Contacts.Contact.Get(id));
+
+            // Method to get all matters for which BillTo is set to this contact
+            Data.Contacts.Contact.ListMattersWhereContactIsBillTo(contactId).ForEach(matter =>
+            {
+                ViewModels.Contacts.TimesheetsViewModel.MatterTimeList mtl = new ViewModels.Contacts.TimesheetsViewModel.MatterTimeList();
+                ViewModels.Contacts.TimesheetsViewModel.TimeItem timeItem;
+                
+                mtl.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(matter);
+                Data.Timing.Time.ListForMatterWithinRange(matter.Id.Value, from, to).ForEach(time =>
+                {
+                    timeItem = new ViewModels.Contacts.TimesheetsViewModel.TimeItem();
+
+                    timeItem.Time = Mapper.Map<ViewModels.Timing.TimeViewModel>(time);
+
+                    timeItem.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(
+                        Data.Timing.Time.GetRelatedTask(timeItem.Time.Id.Value));
+
+                    timeItem.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(
+                        Data.Tasks.Task.GetRelatedMatter(timeItem.Task.Id.Value));
+
+                    mtl.Times.Add(timeItem);
+                });
+
+                viewModel.Matters.Add(mtl);
+            });
+
+            return View(viewModel);
+        }
+
+        [Authorize(Roles = "Login, User")]
         public ActionResult Create()
         {
             return View();

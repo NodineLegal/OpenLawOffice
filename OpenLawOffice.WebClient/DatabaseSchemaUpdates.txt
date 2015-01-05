@@ -1,35 +1,9 @@
-﻿8/11/2014
-For issue #47
+﻿1/4/2015
+To create a bill to field in the matter
 
 ALTER TABLE matter
-  ADD COLUMN jurisdiction text;
-ALTER TABLE matter
-  ADD COLUMN case_number text;
-ALTER TABLE matter
-  ADD COLUMN lead_attorney_contact_id integer;
-ALTER TABLE matter
-  ADD CONSTRAINT "FK_matter_contact_lead_attorney_contact_id" FOREIGN KEY (lead_attorney_contact_id) REFERENCES contact (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+  ADD COLUMN bill_to_contact_id integer;
 
-8/16/2014
-
-Removed from Users - THIS IS NOT A SCHEMA UPDATE - it is only noted here to record the fact that the installer will no longer create the "Administrator" account, instead it now allows
-	the person doing the install to create their account with administrator privileges.  This will also close issue #53
-"23421fc4-c3d3-4ac9-992e-16d3df11c2c3";"Administrator";"Website";"lucas_nodine_01@hotmail.com";"";"gzyziKE4+3wa5wbFI95PXbzEUvY=";"";"";TRUE;"2014-06-29 22:35:02.808-05";"2014-06-29 23:16:29.688-05";"2014-06-29 22:35:02.808-05";"2014-06-29 22:35:02.808-05";;FALSE;"2014-06-29 22:35:02.808-05";0;"2014-06-29 22:35:02.808-05";0;"2014-06-29 22:35:02.808-05"
-
-9/7/2014
-To give notes a "date" field so that the note can be dated besides with the core properties.
-
-ALTER TABLE note
-  ADD COLUMN "timestamp" timestamp without time zone;
-
-Below will set timestamp to the created time
-
-UPDATE note SET "timestamp"=utc_created;
-
-Below will make timestamp a required field
-
-ALTER TABLE note
-   ALTER COLUMN "timestamp" SET NOT NULL;
 
 10/11/2014
 To create the external_session table
@@ -53,3 +27,40 @@ WITH (
 );
 ALTER TABLE external_session
   OWNER TO postgres;
+
+
+9/7/2014
+To give notes a "date" field so that the note can be dated besides with the core properties.
+
+ALTER TABLE note
+  ADD COLUMN "timestamp" timestamp without time zone;
+
+Below will set timestamp to the created time
+
+UPDATE note SET "timestamp"=utc_created;
+
+Below will make timestamp a required field
+
+ALTER TABLE note
+   ALTER COLUMN "timestamp" SET NOT NULL;
+
+
+8/16/2014
+
+Removed from Users - THIS IS NOT A SCHEMA UPDATE - it is only noted here to record the fact that the installer will no longer create the "Administrator" account, instead it now allows
+	the person doing the install to create their account with administrator privileges.  This will also close issue #53
+"23421fc4-c3d3-4ac9-992e-16d3df11c2c3";"Administrator";"Website";"lucas_nodine_01@hotmail.com";"";"gzyziKE4+3wa5wbFI95PXbzEUvY=";"";"";TRUE;"2014-06-29 22:35:02.808-05";"2014-06-29 23:16:29.688-05";"2014-06-29 22:35:02.808-05";"2014-06-29 22:35:02.808-05";;FALSE;"2014-06-29 22:35:02.808-05";0;"2014-06-29 22:35:02.808-05";0;"2014-06-29 22:35:02.808-05"
+
+
+8/11/2014
+For issue #47
+
+ALTER TABLE matter
+  ADD COLUMN jurisdiction text;
+ALTER TABLE matter
+  ADD COLUMN case_number text;
+ALTER TABLE matter
+  ADD COLUMN lead_attorney_contact_id integer;
+ALTER TABLE matter
+  ADD CONSTRAINT "FK_matter_contact_lead_attorney_contact_id" FOREIGN KEY (lead_attorney_contact_id) REFERENCES contact (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+

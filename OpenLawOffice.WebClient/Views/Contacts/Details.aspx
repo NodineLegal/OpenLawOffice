@@ -756,6 +756,8 @@
     <li>
         <%: Html.ActionLink("Check Conflicts", "Conflicts", new { id = Model.Id }) %></li>
     <li>
+        <%: Html.ActionLink("Timesheets", "Timesheets", new { id = Model.Id }) %></li>
+    <li>
         <%: Html.ActionLink("Matters", "Matters", new { ContactId = Model.Id }) %></li>
     <li>
         <%: Html.ActionLink("Tasks", "Tasks", new { ContactId = Model.Id })%></li>

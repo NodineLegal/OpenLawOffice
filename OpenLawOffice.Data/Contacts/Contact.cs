@@ -74,6 +74,26 @@ namespace OpenLawOffice.Data.Contacts
             return modelList;
         }
 
+        public static List<Common.Models.Matters.Matter> ListMattersWhereContactIsBillTo(int contactId)
+        {
+            List<DBOs.Matters.Matter> dbo = null;
+            List<Common.Models.Matters.Matter> modelList = new List<Common.Models.Matters.Matter>();
+
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                dbo = conn.Query<DBOs.Matters.Matter>
+                    ("SELECT * FROM \"matter\" WHERE \"bill_to_contact_id\"=@ContactId",
+                    new { ContactId = contactId }).ToList();
+            }
+
+            dbo.ForEach(x =>
+            {
+                modelList.Add(Mapper.Map<Common.Models.Matters.Matter>(x));
+            });
+
+            return modelList;
+        }
+
         public static List<Tuple<Common.Models.Matters.Matter, Common.Models.Matters.MatterContact, Common.Models.Contacts.Contact>>
             ListMatterRelationshipsForContact(int contactId, Guid matterId)
         {

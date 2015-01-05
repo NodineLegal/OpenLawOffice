@@ -45,6 +45,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
 
         public Contacts.ContactViewModel LeadAttorney { get; set; }
 
+        public Contacts.ContactViewModel BillTo { get; set; } 
+
         public List<ViewModels.Tasks.TaskViewModel> Tasks { get; set; }
         public List<ViewModels.Notes.NoteViewModel> Notes { get; set; }
         public Dictionary<ViewModels.Tasks.TaskViewModel, List<ViewModels.Notes.NoteViewModel>> TaskNotes { get; set; }
@@ -105,6 +107,15 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
                         IsStub = true
                     };
                 }))
+                .ForMember(dst => dst.BillTo, opt => opt.ResolveUsing(db =>
+                {
+                    if (db.BillTo == null || !db.BillTo.Id.HasValue) return null;
+                    return new ViewModels.Contacts.ContactViewModel()
+                    {
+                        Id = db.BillTo.Id.Value,
+                        IsStub = true
+                    };
+                }))
                 .ForMember(dst => dst.Tasks, opt => opt.Ignore())
                 .ForMember(dst => dst.Notes, opt => opt.Ignore())
                 .ForMember(dst => dst.TaskNotes, opt => opt.Ignore());
@@ -161,7 +172,17 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
                         return null;
                     return new ViewModels.Contacts.ContactViewModel()
                     {
-                        Id = x.LeadAttorney.Id.Value, 
+                        Id = x.LeadAttorney.Id.Value,
+                        IsStub = true
+                    };
+                }))
+                .ForMember(dst => dst.BillTo, opt => opt.ResolveUsing(x =>
+                {
+                    if (x.BillTo == null || !x.BillTo.Id.HasValue)
+                        return null;
+                    return new ViewModels.Contacts.ContactViewModel()
+                    {
+                        Id = x.BillTo.Id.Value,
                         IsStub = true
                     };
                 }));

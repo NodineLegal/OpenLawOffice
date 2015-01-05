@@ -43,6 +43,7 @@
                                 <a href="#" id="Attorney">Attorney</a>, 
                                 <a href="#" id="OpposingAttorney">Opposing Attorney</a>, 
                                 <a href="#" id="Client">Client</a>, 
+                                <a href="#" id="ThirdPartyPayor">Third-Party Payor</a>, 
                                 <a href="#" id="AppointedClient">Appointed Client</a>, 
                                 <a href="#" id="OpposingParty">Opposing Party</a>
                 <script language="javascript">
@@ -60,6 +61,10 @@
                     });
                     $("#Client").click(function () {
                         $("#Role").val("Client");
+                        return false;
+                    });
+                    $("#ThirdPartyPayor").click(function () {
+                        $("#Role").val("Third-Party Payor");
                         return false;
                     });
                     $("#AppointedClient").click(function () {

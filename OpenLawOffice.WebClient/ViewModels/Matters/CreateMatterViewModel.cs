@@ -12,5 +12,15 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
         public Matters.ResponsibleUserViewModel ResponsibleUser { get; set; }
 
         public Matters.MatterContactViewModel LeadAttorney { get; set; }
+
+        public Contacts.ContactViewModel Contact1 { get; set; }
+        public string Role1 { get; set; }
+
+        public Contacts.ContactViewModel Contact2 { get; set; }
+        public string Role2  { get; set; }
+
+        public Contacts.ContactViewModel Contact3 { get; set; }
+        public string Role3 { get; set; }
+
     }
 }
