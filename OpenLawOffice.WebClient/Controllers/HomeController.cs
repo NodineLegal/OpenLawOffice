@@ -49,7 +49,7 @@ namespace OpenLawOffice.WebClient.Controllers
             {
                 Data.Account.Users.List();
             }
-            catch
+            catch (Exception ex)
             {
                 return RedirectToAction("Index", "Installation");
             }

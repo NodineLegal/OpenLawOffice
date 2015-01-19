@@ -103,6 +103,7 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult Timesheets(int id)
         {
+            DateTime now = DateTime.Now;
             DateTime? from = null, to = null;
 
             ViewModels.Contacts.TimesheetsViewModel viewModel = new ViewModels.Contacts.TimesheetsViewModel();
@@ -114,6 +115,10 @@ namespace OpenLawOffice.WebClient.Controllers
             if (!string.IsNullOrEmpty(Request["To"]))
                 to = DateTime.Parse(Request["To"]);
 
+            if (!from.HasValue)
+                from = new DateTime(now.Year, now.Month, 1);
+            if (!to.HasValue)
+                to = new DateTime(now.Year, now.Month, 1).AddMonths(1).AddDays(-1);
 
             if (from.HasValue)
                 ViewData["From"] = from.Value;
@@ -126,6 +131,7 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult Timesheets_Print3rdParty(int id)
         {
+            DateTime now = DateTime.Now;
             int contactId = id;
             DateTime? from = null, to = null;
             ViewModels.Contacts.TimesheetsViewModel viewModel = new ViewModels.Contacts.TimesheetsViewModel();
@@ -134,6 +140,11 @@ namespace OpenLawOffice.WebClient.Controllers
                 from = DateTime.Parse(Request["From"]);
             if (!string.IsNullOrEmpty(Request["To"]))
                 to = DateTime.Parse(Request["To"]);
+
+            if (!from.HasValue)
+                from = new DateTime(now.Year, now.Month, 1);
+            if (!to.HasValue)
+                to = new DateTime(now.Year, now.Month, 1).AddMonths(1).AddDays(-1);
 
             viewModel.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(Data.Contacts.Contact.Get(id));
 
@@ -161,6 +172,11 @@ namespace OpenLawOffice.WebClient.Controllers
 
                 viewModel.Matters.Add(mtl);
             });
+
+            if (from.HasValue)
+                ViewData["From"] = from.Value;
+            if (to.HasValue)
+                ViewData["To"] = to.Value;
 
             return View(viewModel);
         }

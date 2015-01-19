@@ -88,6 +88,7 @@
         </div>
     </div>
 
+    <div style="text-align:center;line-height:20px;">Please select start and stop dates above (or empty them for all dates) and then select print and your desired view from the right.</div>
 
     <% } %>
     
