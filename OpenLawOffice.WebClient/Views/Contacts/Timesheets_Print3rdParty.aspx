@@ -38,6 +38,11 @@
 
     <%
         bool onePrinted = false;
+        bool altRow = true;
+        double totalMinutes = 0;
+        DateTime lastTimestampStart = DateTime.MinValue;// DateTime.Today;
+        DateTime lastTimestampStop = DateTime.MinValue;// DateTime.Today;
+        List<Tuple<string, string, double>> summaryList = new List<Tuple<string, string, double>>();
 for (int i=0; i<Model.Matters.Count; i++)
 {
     OpenLawOffice.WebClient.ViewModels.Contacts.TimesheetsViewModel.MatterTimeList matter = Model.Matters[i];
@@ -64,10 +69,10 @@ for (int i=0; i<Model.Matters.Count; i++)
         </tr>
         
     <% 
-       bool altRow = true;
-       double totalMinutes = 0;
-       DateTime lastTimestampStart = DateTime.MinValue;// DateTime.Today;
-       DateTime lastTimestampStop = DateTime.MinValue;// DateTime.Today;
+       altRow = true;
+       totalMinutes = 0;
+       lastTimestampStart = DateTime.MinValue;// DateTime.Today;
+       lastTimestampStop = DateTime.MinValue;// DateTime.Today;
 
        foreach (var item in matter.Times)
        {
@@ -105,14 +110,69 @@ for (int i=0; i<Model.Matters.Count; i++)
         </tr>
     </table>
     <br />
-    <% if (i < Model.Matters.Count - 1)
-       { %>
-        <div class="page-break"></div>
-    <% }
+    <div class="page-break"></div>
+    <% 
+    summaryList.Add(new Tuple<string, string, double>(matter.Matter.Title, matter.Matter.CaseNumber, totalMinutes)); 
+    %>
+        
+    <%
     }
-}
-        if (!onePrinted)
-        {    
+} %>
+    <table style="font-size: 8pt;border: 1px solid black; width: 511pt;">
+        <tr>
+            <th>
+                Matter
+            </th>
+            <th>
+                Case Number
+            </th>
+            <th>
+                Duration
+            </th>
+        </tr>
+        
+    <% 
+       altRow = true;
+       totalMinutes = 0;
+
+       foreach (var item in summaryList)
+       {
+           altRow = !altRow;
+           totalMinutes += item.Item3;
+
+            %>
+            
+            <tr <% 
+                if (altRow) {
+                    %>style="background-color: #f5f5f5;"<% } %> >
+                <td>
+                    <%: item.Item1%>
+                </td>
+                <td>
+                    <%: item.Item2%>
+                </td>
+                <td style="width: 100px; text-align: center;">
+                    <%: TimeSpan.FromMinutes(Math.Round(item.Item3, 0)).ToString(@"h\:mm")%>
+                </td>
+            </tr>
+    
+            <% 
+       } %>
+        
+        <tr>
+            <td colspan="2" style="text-align: right; font-weight: bold;">
+                Total Time:
+            </td>
+            <td style="text-align: center; font-weight: bold;">
+                <%: TimeSpan.FromMinutes(Math.Round(totalMinutes, 0)).ToString(@"h\:mm")%>
+            </td>
+            <td colspan="4">
+            </td>
+        </tr>
+    </table>
+<% 
+if (!onePrinted)
+{    
 %>
     <div style="text-align: center;"><br />There are no time entries within this timeframe for this contact</div>
 <% } %>
