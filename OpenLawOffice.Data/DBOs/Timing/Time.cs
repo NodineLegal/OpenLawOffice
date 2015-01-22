@@ -45,6 +45,9 @@ namespace OpenLawOffice.Data.DBOs.Timing
         [ColumnMapping(Name = "details")]
         public string Details { get; set; }
 
+        [ColumnMapping(Name = "billable")]
+        public bool Billable { get; set; }
+
         public void BuildMappings()
         {
             Dapper.SqlMapper.SetTypeMap(typeof(Time), new ColumnAttributeTypeMapper<Time>());
@@ -104,7 +107,8 @@ namespace OpenLawOffice.Data.DBOs.Timing
                         IsStub = true
                     };
                 }))
-                .ForMember(dst => dst.Details, opt => opt.MapFrom(src => src.Details));
+                .ForMember(dst => dst.Details, opt => opt.MapFrom(src => src.Details))
+                .ForMember(dst => dst.Billable, opt => opt.MapFrom(src => src.Billable));
 
             Mapper.CreateMap<Common.Models.Timing.Time, DBOs.Timing.Time>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.ResolveUsing(db =>
@@ -150,7 +154,8 @@ namespace OpenLawOffice.Data.DBOs.Timing
                     if (model.Worker == null) return null;
                     return model.Worker.Id;
                 }))
-                .ForMember(dst => dst.Details, opt => opt.MapFrom(src => src.Details));
+                .ForMember(dst => dst.Details, opt => opt.MapFrom(src => src.Details))
+                .ForMember(dst => dst.Billable, opt => opt.MapFrom(src => src.Billable));
         }
     }
 }

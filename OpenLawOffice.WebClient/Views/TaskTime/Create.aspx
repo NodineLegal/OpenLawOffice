@@ -40,6 +40,15 @@
         </tr>
         <tr>
             <td class="display-label">
+                Billable<span class="required-field" title="Required Field">*</span>
+            </td>
+            <td class="display-field">
+                <%: Html.CheckBoxFor(model => model.Time.Billable)%>
+                Uncheck if the matter not billable.
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
                 Start Date/Time<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">

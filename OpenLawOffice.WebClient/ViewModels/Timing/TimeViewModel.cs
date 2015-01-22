@@ -42,6 +42,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Timing
 
         public string WorkerDisplayName { get; set; }
 
+        public bool Billable { get; set; }
+
         public void BuildMappings()
         {
             Mapper.CreateMap<Common.Models.Timing.Time, TimeViewModel>()
@@ -90,7 +92,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Timing
                     };
                 }))
                 .ForMember(dst => dst.Details, opt => opt.MapFrom(src => src.Details))
-                .ForMember(dst => dst.WorkerDisplayName, opt => opt.Ignore());
+                .ForMember(dst => dst.WorkerDisplayName, opt => opt.Ignore())
+                .ForMember(dst => dst.Billable, opt => opt.MapFrom(src => src.Billable));
 
             Mapper.CreateMap<TimeViewModel, Common.Models.Timing.Time>()
                 .ForMember(dst => dst.Created, opt => opt.MapFrom(src => src.Created))
@@ -135,7 +138,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Timing
                         IsStub = true
                     };
                 }))
-                .ForMember(dst => dst.Details, opt => opt.MapFrom(src => src.Details));
+                .ForMember(dst => dst.Details, opt => opt.MapFrom(src => src.Details))
+                .ForMember(dst => dst.Billable, opt => opt.MapFrom(src => src.Billable));
         }
     }
 }
