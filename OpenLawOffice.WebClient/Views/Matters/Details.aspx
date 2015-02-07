@@ -1,4 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Matters.MatterViewModel>" %>
+<%@ Import Namespace="OpenLawOffice.WebClient.Helpers" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
     Matter Details
@@ -158,6 +159,133 @@
         </tr>
     </table>
     
+    <table class="detail_table">    
+        <tr>
+            <td colspan="4" class="detail_table_heading">
+                Financial Information
+            </td>
+        </tr>
+
+        <!-- 
+        
+        Minumum Charge:                 Maximum Charge:
+        Nonbillable Time:               Expenses:
+        Billed:                         Billable:
+        Total Value:                    Effective Hourly Rate:
+
+        Expenses: Billed, Unbilled, Total
+        Fees: Billed, Unbilled, Total
+        Time: Billed (h:m), Unbilled (h:m), Total (h:m)
+        
+        -->
+        
+        <tr>
+            <td class="display-label" style="width: 125px;">
+                Minimum Charge:
+            </td>
+            <td class="display-field">
+                <% if (Model.MinimumCharge.HasValue) { %>
+                    <%: Model.MinimumCharge.Value.ToString("C") %> 
+                <%} %>
+            </td>
+            <td class="display-label" style="width: 125px;">
+                Estimated Charge:
+            </td>
+            <td class="display-field">
+                <% if (Model.EstimatedCharge.HasValue) { %>
+                    <%: Model.EstimatedCharge.Value.ToString("C") %> 
+                <%} %>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label" style="width: 125px;">
+                Maximum Charge:
+            </td>
+            <td class="display-field">
+                <% if (Model.MaximumCharge.HasValue) { %>
+                    <%: Model.MaximumCharge.Value.ToString("C") %> 
+                <%} %>
+            </td>
+            <td class="display-label" style="width: 125px;">
+                Nonbillable Time:
+            </td>
+            <td class="display-field">
+                <%: TimeSpanHelper.TimeSpan(ViewData["NonBillableTime"], false) %>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label" style="width: 125px;">
+                Total Value:
+            </td>
+            <td class="display-field">
+                <%: ViewData["TotalValue"] %>
+            </td>
+            <td class="display-label" style="width: 125px;">
+                Eff. Hourly Rate:
+            </td>
+            <td class="display-field">
+                <% if (ViewData["EffHourlyRate"].ToString() != "NaN")
+                   { %><%: ViewData["EffHourlyRate"]%><% } %>
+            </td>
+        </tr>
+        <tr>
+            <th style="text-align: center;">
+                
+            </th>
+            <th style="text-align: center;">
+                Billed
+            </th>
+            <th style="text-align: center;">
+                Unbilled & Billable
+            </th>
+            <th style="text-align: center;">
+                Total
+            </th>
+        </tr>
+        <tr>
+            <td style="font-weight: bold;">
+                Expenses
+            </td>
+            <td style="text-align: center;">
+                <%: string.Format("{0:C}", ViewData["ExpensesBilled"]) %>
+            </td>
+            <td style="text-align: center;">
+                <%: string.Format("{0:C}", ViewData["ExpensesUnbilled"])%>
+            </td>
+            <td style="text-align: center;">
+                <%: string.Format("{0:C}", ViewData["Expenses"])%>
+            </td>
+        </tr>
+        <tr class="tr_alternate">
+            <td style="font-weight: bold;">
+                Fees
+            </td>
+            <td style="text-align: center;">
+                <%: string.Format("{0:C}", ViewData["FeesBilled"])%>
+            </td>
+            <td style="text-align: center;">
+                <%: string.Format("{0:C}", ViewData["FeesUnbilled"])%>
+            </td>
+            <td style="text-align: center;">
+                <%: string.Format("{0:C}", ViewData["Fees"])%>
+            </td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold;">
+                Time
+            </td>
+            <td style="text-align: center;">
+                <%: ViewData["TimeBilled"]%>
+            </td>
+            <td style="text-align: center;">
+                <%: ViewData["TimeUnbilled"]%>
+            </td>
+            <td style="text-align: center;">
+                <%: ViewData["TotalValue"]%>
+            </td>
+        </tr>
+    </table>
+
     <table class="listing_table">    
         <tr>
             <td colspan="3" class="listing_table_heading">

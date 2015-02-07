@@ -132,6 +132,28 @@ namespace OpenLawOffice.Data.Timing
                 new { Start = start, Stop = stop, WorkerContactId = workerContactId });
         }
 
+        public static List<Common.Models.Timing.Time> ListBilledTimeForMatter(Guid matterId)
+        {
+            return DataHelper.List<Common.Models.Timing.Time, DBOs.Timing.Time>(
+                "SELECT * FROM \"time\" WHERE \"id\" IN " + 
+                "   (SELECT \"time_id\" FROM \"task_time\" WHERE \"task_id\" IN " + 
+                "       (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId)) AND " +
+                "   \"id\" IN (SELECT \"time_id\" FROM \"invoice_time\" WHERE \"time_id\"=\"time\".\"id\") AND " +
+                "\"utc_disabled\" is null ORDER BY \"utc_created\" ASC",
+                new { MatterId = matterId });
+        }
+
+        public static List<Common.Models.Timing.Time> ListUnbilledTimeForMatter(Guid matterId)
+        {
+            return DataHelper.List<Common.Models.Timing.Time, DBOs.Timing.Time>(
+                "SELECT * FROM \"time\" WHERE \"id\" IN " +
+                "   (SELECT \"time_id\" FROM \"task_time\" WHERE \"task_id\" IN " +
+                "       (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId)) AND " +
+                "   \"id\" NOT IN (SELECT \"time_id\" FROM \"invoice_time\" WHERE \"time_id\"=\"time\".\"id\") AND " +
+                "\"utc_disabled\" is null ORDER BY \"utc_created\" ASC",
+                new { MatterId = matterId });
+        }
+
         public static bool IsFastTime(Guid timeId)
         {
             return (GetRelatedTask(timeId) == null);

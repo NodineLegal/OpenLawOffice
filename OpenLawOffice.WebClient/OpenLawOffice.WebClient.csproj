@@ -98,6 +98,7 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\AzureController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\BillingRatesController.cs" />
     <Compile Include="Controllers\CalendarController.cs" />
     <Compile Include="Controllers\ContactsController.cs" />
     <Compile Include="Controllers\DeletingFileResult.cs" />
@@ -133,6 +134,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\EnumDropDownListForHelper.cs" />
+    <Compile Include="Helpers\TimeSpanHelper.cs" />
     <Compile Include="Security.cs" />
     <Compile Include="AccountMembershipService.cs" />
     <Compile Include="ViewModels\AccountValidation.cs" />
@@ -146,6 +148,15 @@
     <Compile Include="ViewModels\Account\UserRoleViewModel.cs" />
     <Compile Include="ViewModels\Account\UsersViewModel.cs" />
     <Compile Include="ViewModels\AssignmentTypeViewModel.cs" />
+    <Compile Include="ViewModels\Billing\BillingRateViewModel.cs" />
+    <Compile Include="ViewModels\Billing\ExpenseMatterViewModel.cs" />
+    <Compile Include="ViewModels\Billing\ExpenseViewModel.cs" />
+    <Compile Include="ViewModels\Billing\FeeMatterViewModel.cs" />
+    <Compile Include="ViewModels\Billing\FeeViewModel.cs" />
+    <Compile Include="ViewModels\Billing\InvoiceExpenseViewModel.cs" />
+    <Compile Include="ViewModels\Billing\InvoiceFeeViewModel.cs" />
+    <Compile Include="ViewModels\Billing\InvoiceTimeViewModel.cs" />
+    <Compile Include="ViewModels\Billing\InvoiceViewModel.cs" />
     <Compile Include="ViewModels\Contacts\TimesheetsViewModel.cs" />
     <Compile Include="ViewModels\Events\EventAssignedContactViewModel.cs" />
     <Compile Include="ViewModels\Events\EventMatterViewModel.cs" />
@@ -268,6 +279,9 @@
     <Content Include="Views\Admin\UserRoles.aspx" />
     <Content Include="Views\Azure\Connect.aspx" />
     <Content Include="Views\Azure\Index.aspx" />
+    <Content Include="Views\BillingRates\Create.aspx" />
+    <Content Include="Views\BillingRates\Edit.aspx" />
+    <Content Include="Views\BillingRates\Index.aspx" />
     <Content Include="Views\Calendar\Contact.aspx" />
     <Content Include="Views\Calendar\Index.aspx" />
     <Content Include="Views\Calendar\SelectContact.aspx" />
@@ -425,6 +439,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Billing\" />
+    <Folder Include="Views\Invoicing\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenLawOffice.Common\OpenLawOffice.Common.csproj">

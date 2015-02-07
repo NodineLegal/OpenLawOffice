@@ -51,6 +51,14 @@
             </td>
         </tr>
         <tr>
+            <td class="display-label" style="width: 125px;">
+                Billable
+            </td>
+            <td class="display-field">
+                <%: Html.CheckBoxFor(model => model.Billable, new { disabled = true })%>
+            </td>
+        </tr>
+        <tr>
             <td class="display-label">
                 Worker
             </td>

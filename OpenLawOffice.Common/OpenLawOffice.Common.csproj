@@ -70,6 +70,15 @@
     <Compile Include="FileSystem\OloMatterDirectory.cs" />
     <Compile Include="Models\Account\UserRole.cs" />
     <Compile Include="Models\Account\Users.cs" />
+    <Compile Include="Models\Billing\BillingRate.cs" />
+    <Compile Include="Models\Billing\Expense.cs" />
+    <Compile Include="Models\Billing\ExpenseMatter.cs" />
+    <Compile Include="Models\Billing\Fee.cs" />
+    <Compile Include="Models\Billing\FeeMatter.cs" />
+    <Compile Include="Models\Billing\Invoice.cs" />
+    <Compile Include="Models\Billing\InvoiceExpense.cs" />
+    <Compile Include="Models\Billing\InvoiceFee.cs" />
+    <Compile Include="Models\Billing\InvoiceTime.cs" />
     <Compile Include="Models\Events\Event.cs" />
     <Compile Include="Models\Events\EventAssignedContact.cs" />
     <Compile Include="Models\Events\EventMatter.cs" />

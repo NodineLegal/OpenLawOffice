@@ -243,6 +243,19 @@ namespace OpenLawOffice.WebClient.Controllers
             string alertText = "";
             ViewModels.Matters.MatterViewModel viewModel;
             Common.Models.Matters.Matter model;
+            List<Common.Models.Billing.InvoiceExpense> billedExpenseList;
+            List<Common.Models.Billing.Expense> unbilledExpenseList;
+            List<Common.Models.Billing.InvoiceFee> billedFeeList;
+            List<Common.Models.Billing.Fee> unbilledFeeList;
+            List<Common.Models.Billing.InvoiceTime> billedTimeList;
+            List<Common.Models.Timing.Time> unbilledTimeList;
+            decimal feesBilled = 0, feesUnbilled = 0,
+                expensesBilled = 0, expensesUnbilled = 0,
+                timeBilledDollars = 0, 
+                totalValue = 0;
+            TimeSpan timeBilledSpan = new TimeSpan(),
+                timeUnbilledSpan = new TimeSpan(),
+                nonBillableTimeSpan = new TimeSpan();
 
             model = Data.Matters.Matter.Get(id);
 
@@ -256,6 +269,67 @@ namespace OpenLawOffice.WebClient.Controllers
             viewModel.Tasks = TasksController.GetListForMatter(id, true);
             viewModel.LeadAttorney = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.LeadAttorney);
             viewModel.BillTo = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.BillTo);
+
+            // -- Financial Info
+            billedExpenseList = Data.Billing.InvoiceExpense.ListForMatter(model.Id.Value);
+            unbilledExpenseList = Data.Billing.Expense.ListUnbilledExpensesForMatter(model.Id.Value);
+            billedFeeList = Data.Billing.InvoiceFee.ListForMatter(model.Id.Value);
+            unbilledFeeList = Data.Billing.Fee.ListUnbilledFeesForMatter(model.Id.Value);
+            billedTimeList = Data.Billing.InvoiceTime.ListForMatter(model.Id.Value);
+            unbilledTimeList = Data.Timing.Time.ListUnbilledTimeForMatter(model.Id.Value);
+
+            billedFeeList.ForEach(x =>
+            {
+                feesBilled += x.Amount;
+            });
+            unbilledFeeList.ForEach(x =>
+            {
+                feesUnbilled += x.Amount;
+            });
+
+            billedExpenseList.ForEach(x =>
+            {
+                expensesBilled += x.Amount;
+            });
+            unbilledExpenseList.ForEach(x =>
+            {
+                expensesUnbilled += x.Amount;
+            });
+
+            billedTimeList.ForEach(x =>
+            {
+                if (x.Time.Stop.HasValue)
+                    timeBilledSpan = timeBilledSpan.Add(x.Time.Stop.Value - x.Time.Start);
+                timeBilledDollars += (x.Quantity * x.PricePerUnit);
+            });
+            unbilledTimeList.ForEach(x =>
+            {
+                if (x.Billable)
+                {
+                    if (x.Stop.HasValue)
+                        timeUnbilledSpan = timeUnbilledSpan.Add(x.Stop.Value - x.Start);
+                }
+                else
+                    if (x.Stop.HasValue)
+                        nonBillableTimeSpan = nonBillableTimeSpan.Add(x.Stop.Value - x.Start);
+            });
+
+            totalValue = feesBilled + feesUnbilled + expensesBilled + expensesUnbilled + timeBilledDollars;
+
+            ViewData["FeesBilled"] = feesBilled;
+            ViewData["FeesUnbilled"] = feesUnbilled;
+            ViewData["Fees"] = feesBilled + feesUnbilled;
+            ViewData["ExpensesBilled"] = expensesBilled;
+            ViewData["ExpensesUnbilled"] = expensesUnbilled;
+            ViewData["Expenses"] = expensesBilled + expensesUnbilled;
+            ViewData["TimeBilledDollars"] = timeBilledDollars;
+            ViewData["TimeBilledSpan"] = timeBilledSpan;
+            ViewData["TimeUnbilledSpan"] = timeUnbilledSpan;
+            ViewData["TimeBilled"] = timeBilledDollars.ToString("C") + " (" + Helpers.TimeSpanHelper.TimeSpan(timeBilledSpan, false) + ")";
+            ViewData["TimeUnbilled"] = "(" + Helpers.TimeSpanHelper.TimeSpan(timeUnbilledSpan, false) + ")";
+            ViewData["TotalValue"] = totalValue.ToString("C") + " (Unbilled Time: " + Helpers.TimeSpanHelper.TimeSpan(timeUnbilledSpan, false) + ")";
+            ViewData["NonBillableTime"] = nonBillableTimeSpan;
+            ViewData["EffHourlyRate"] = string.Format("{0:C}", (((double)timeBilledDollars + (double)feesBilled) / timeBilledSpan.Add(nonBillableTimeSpan).TotalHours));
 
             viewModel.Notes = new List<ViewModels.Notes.NoteViewModel>();
             Data.Notes.NoteMatter.ListForMatter(id).ForEach(x =>

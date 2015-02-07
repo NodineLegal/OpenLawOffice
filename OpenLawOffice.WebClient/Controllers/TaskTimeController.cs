@@ -79,7 +79,8 @@ namespace OpenLawOffice.WebClient.Controllers
                 Time = new ViewModels.Timing.TimeViewModel()
                 {
                     Worker = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contact),
-                    Start = DateTime.Now
+                    Start = DateTime.Now,
+                    Billable = true
                 }
             };
 

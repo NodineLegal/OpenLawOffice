@@ -53,10 +53,11 @@
     </ul>
     <li>Billing</li>
     <ul>
-        <li>
+        <%--<li>
             <%: Html.ActionLink("FastTime", "FastTime", "Timing")%></li>
         <li>
-            <%: Html.ActionLink("Unrelated FastTime", "FastTimeList", "Timing")%></li>
+            <%: Html.ActionLink("Unrelated FastTime", "FastTimeList", "Timing")%></li>--%>
+        <li><%: Html.ActionLink("Rates", "Index", "BillingRates") %> <%: Html.ActionLink("New Rate", "Create", "BillingRates", null, new { @class = "btn-plus" })%></li>
     </ul>
     <ul>
     </ul>

@@ -42,5 +42,11 @@ namespace OpenLawOffice.Common.Models.Matters
         public Contacts.Contact LeadAttorney { get; set; }
 
         public Contacts.Contact BillTo { get; set; }
+
+        public decimal? MinimumCharge { get; set; }
+
+        public decimal? EstimatedCharge { get; set; }
+
+        public decimal? MaximumCharge { get; set; }
     }
 }

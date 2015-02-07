@@ -45,7 +45,25 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
 
         public Contacts.ContactViewModel LeadAttorney { get; set; }
 
-        public Contacts.ContactViewModel BillTo { get; set; } 
+        public Contacts.ContactViewModel BillTo { get; set; }
+
+        // -- Financial Information
+            
+            // -- DB Values
+        public decimal? MinimumCharge { get; set; }
+        public decimal? EstimatedCharge { get; set; }
+        public decimal? MaximumCharge { get; set; }
+            
+            // -- Calculated
+        public TimeSpan NonbillableTime { get; set; }
+        public decimal Fees { get; set; }
+        public decimal Expenses { get; set; }
+        public TimeSpan TimeBilled { get; set; }
+        public decimal MoneyBilled { get; set; }
+        public TimeSpan TimeBillable { get; set; }
+        public decimal MoneyBillable { get; set; }
+        public decimal TotalValue { get; set; }
+        public decimal EffectiveHourlyRate { get; set; }
 
         public List<ViewModels.Tasks.TaskViewModel> Tasks { get; set; }
         public List<ViewModels.Notes.NoteViewModel> Notes { get; set; }
@@ -118,7 +136,19 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
                 }))
                 .ForMember(dst => dst.Tasks, opt => opt.Ignore())
                 .ForMember(dst => dst.Notes, opt => opt.Ignore())
-                .ForMember(dst => dst.TaskNotes, opt => opt.Ignore());
+                .ForMember(dst => dst.TaskNotes, opt => opt.Ignore())
+                .ForMember(dst => dst.MinimumCharge, opt => opt.MapFrom(src => src.MinimumCharge))
+                .ForMember(dst => dst.EstimatedCharge, opt => opt.MapFrom(src => src.EstimatedCharge))
+                .ForMember(dst => dst.MaximumCharge, opt => opt.MapFrom(src => src.MaximumCharge))
+                .ForMember(dst => dst.NonbillableTime, opt => opt.Ignore())
+                .ForMember(dst => dst.Fees, opt => opt.Ignore())
+                .ForMember(dst => dst.Expenses, opt => opt.Ignore())
+                .ForMember(dst => dst.TimeBilled, opt => opt.Ignore())
+                .ForMember(dst => dst.MoneyBilled, opt => opt.Ignore())
+                .ForMember(dst => dst.TimeBillable, opt => opt.Ignore())
+                .ForMember(dst => dst.MoneyBillable, opt => opt.Ignore())
+                .ForMember(dst => dst.TotalValue, opt => opt.Ignore())
+                .ForMember(dst => dst.EffectiveHourlyRate, opt => opt.Ignore());
 
             Mapper.CreateMap<MatterViewModel, Common.Models.Matters.Matter>()
                 .ForMember(dst => dst.Created, opt => opt.MapFrom(src => src.Created))
@@ -185,7 +215,10 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
                         Id = x.BillTo.Id.Value,
                         IsStub = true
                     };
-                }));
+                }))
+                .ForMember(dst => dst.MinimumCharge, opt => opt.MapFrom(src => src.MinimumCharge))
+                .ForMember(dst => dst.EstimatedCharge, opt => opt.MapFrom(src => src.EstimatedCharge))
+                .ForMember(dst => dst.MaximumCharge, opt => opt.MapFrom(src => src.MaximumCharge));
         }
     }
 }

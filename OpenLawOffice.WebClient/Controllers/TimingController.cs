@@ -70,6 +70,9 @@ namespace OpenLawOffice.WebClient.Controllers
             Common.Models.Contacts.Contact contact;
             Common.Models.Tasks.Task task;
             Common.Models.Matters.Matter matter;
+            List<ViewModels.Contacts.ContactViewModel> employeeContactList;
+
+            employeeContactList = new List<ViewModels.Contacts.ContactViewModel>();
 
             model = Data.Timing.Time.Get(id);
 
@@ -81,6 +84,11 @@ namespace OpenLawOffice.WebClient.Controllers
 
             task = Data.Timing.Time.GetRelatedTask(model.Id.Value);
 
+            Data.Contacts.Contact.ListEmployeesOnly().ForEach(x =>
+            {
+                employeeContactList.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(x));
+            });
+
             ViewData["TaskId"] = task.Id.Value;
 
             matter = Data.Tasks.Task.GetRelatedMatter(task.Id.Value);
@@ -88,6 +96,7 @@ namespace OpenLawOffice.WebClient.Controllers
             ViewData["TaskId"] = task.Id;
             ViewData["Matter"] = matter.Title;
             ViewData["MatterId"] = matter.Id;
+            ViewData["EmployeeContactList"] = employeeContactList;
 
             return View(viewModel);
         }

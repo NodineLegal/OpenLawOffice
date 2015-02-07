@@ -54,6 +54,15 @@ namespace OpenLawOffice.Data.DBOs.Matters
         [ColumnMapping(Name = "bill_to_contact_id")]
         public int? BillToContactId { get; set; }
 
+        [ColumnMapping(Name = "minimum_charge")]
+        public decimal? MinimumCharge { get; set; }
+
+        [ColumnMapping(Name = "estimated_charge")]
+        public decimal? EstimatedCharge { get; set; }
+
+        [ColumnMapping(Name = "maximum_charge")]
+        public decimal? MaximumCharge { get; set; }
+
         public void BuildMappings()
         {
             Dapper.SqlMapper.SetTypeMap(typeof(Matter), new ColumnAttributeTypeMapper<Matter>());
@@ -120,7 +129,10 @@ namespace OpenLawOffice.Data.DBOs.Matters
                         Id = db.BillToContactId.Value,
                         IsStub = true
                     };
-                }));
+                }))
+                .ForMember(dst => dst.MinimumCharge, opt => opt.MapFrom(src => src.MinimumCharge))
+                .ForMember(dst => dst.EstimatedCharge, opt => opt.MapFrom(src => src.EstimatedCharge))
+                .ForMember(dst => dst.MaximumCharge, opt => opt.MapFrom(src => src.MaximumCharge));
 
             Mapper.CreateMap<Common.Models.Matters.Matter, DBOs.Matters.Matter>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.ResolveUsing(db =>
@@ -168,7 +180,10 @@ namespace OpenLawOffice.Data.DBOs.Matters
                 {
                     if (model.BillTo == null) return null;
                     return model.BillTo.Id;
-                }));
+                }))
+                .ForMember(dst => dst.MinimumCharge, opt => opt.MapFrom(src => src.MinimumCharge))
+                .ForMember(dst => dst.EstimatedCharge, opt => opt.MapFrom(src => src.EstimatedCharge))
+                .ForMember(dst => dst.MaximumCharge, opt => opt.MapFrom(src => src.MaximumCharge));
         }
     }
 }

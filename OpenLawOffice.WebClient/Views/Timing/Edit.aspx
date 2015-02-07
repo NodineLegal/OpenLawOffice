@@ -44,7 +44,7 @@
             </td>
             <td class="display-field">
                 <%: Html.CheckBoxFor(model => model.Billable)%>
-                Uncheck if the matter not billable.
+                Check if time is billable.
             </td>
         </tr>
         <tr>
@@ -52,50 +52,11 @@
                 Worker<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                Worker: <%: Html.TextBoxFor(model => model.Worker.DisplayName, new { @readonly = true })%>
-                <%: Html.HiddenFor(model => model.Worker.Id, new { @readonly = true })%>
-                <table id="list">
-                </table>
-                <div id="pager">
-                </div>
-                <input id="clear" type="button" style="width: 200px;" value="clear" />
-                <script language="javascript">
-                    $(function () {
-                        $("#list").jqGrid({
-                            autowidth: true,
-                            url: '../../Contacts/ListJqGrid',
-                            datatype: 'json',
-                            jsonReader: {
-                                root: 'Rows',
-                                page: 'CurrentPage',
-                                total: 'TotalRecords',
-                                id: 'Id',
-                                rows: 'Rows'
-                            },
-                            colNames: ['id', 'Display Name', 'City', 'State'],
-                            colModel: [
-                                { name: 'Id', width: 1, hidden: true, key: true },
-                                { name: 'DisplayName', width: 350 },
-                                { name: 'City', width: 200 },
-                                { name: 'State', width: 200 }
-                            ],
-                            pager: '#pager',
-                            gridview: true,
-                            caption: 'Contacts',
-                            onSelectRow: function (id) {
-                                var selr = jQuery('#list').jqGrid('getGridParam', 'selrow');
-                                var data = $("#list").jqGrid('getRowData', selr)
-                                $("#Worker_Id").val(id);
-                                $("#Worker_DisplayName").val(data.DisplayName);
-                            }
-                        });
-                    });
+            
+                <%: Html.DropDownListFor(model => model.Worker.Id,
+                        new SelectList((IList)ViewData["EmployeeContactList"], "Id", "DisplayName"),
+                        new { @size = 5 })%>
 
-                    $("#clear").click(function () {
-                        $("#list").jqGrid('resetSelection');
-                        $("#Worker_Id").val(null);
-                        $("#Worker_DisplayName").val(null);
-                    });
                 </script>
             </td>
         </tr>

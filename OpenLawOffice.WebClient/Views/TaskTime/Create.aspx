@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Tasks.TaskTimeViewModel>" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/SiteNoRightBar.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Tasks.TaskTimeViewModel>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
     New Time Entry
@@ -44,7 +44,7 @@
             </td>
             <td class="display-field">
                 <%: Html.CheckBoxFor(model => model.Time.Billable)%>
-                Uncheck if the matter not billable.
+                Check if time is billable.
             </td>
         </tr>
         <tr>
@@ -61,7 +61,7 @@
                 Stop Date/Time<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Time.Stop, new { @style = "width: 80%;" })%>
+                <%: Html.TextBoxFor(model => model.Time.Stop)%>
                 <img id="timeadvance" src="../../Content/fugue-icons-3.5.6/icons-shadowless/hourglass-select.png" style="cursor: pointer" alt="Advance Time" />
                 <script language="javascript">
                     $(document).ready(function () {
@@ -96,7 +96,7 @@
                 Details
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Time.Details)%>
+                <%: Html.TextAreaFor(model => model.Time.Details)%>
                 <%: Html.ValidationMessageFor(model => model.Time.Details)%>
             </td>
         </tr>
@@ -114,6 +114,4 @@
         Fields marked with an <span style="color: #ee0000;font-size: 12px;cursor:help;" title="Required Field">*</span> are required.
         </p>
     </div>
-</asp:Content>
-<asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
 </asp:Content>

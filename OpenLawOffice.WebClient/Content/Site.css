@@ -303,7 +303,30 @@ table th
 
 td.display-field input
 {
-    width: 100%;
+    /*width: 100%;*/
+}
+
+td.display-field input[type="checkbox"]
+{
+}
+
+td.display-field input[type="text"]
+{
+    width: 200px;
+    border: 1px solid #CCC;
+}
+
+td.display-field textarea
+{
+    width: 500px;
+    height: 200px;
+    border: 1px solid #CCC;
+}
+
+td.display-field select
+{
+    width: 500px;
+    border: 1px solid #CCC;
 }
 
 /* MISC

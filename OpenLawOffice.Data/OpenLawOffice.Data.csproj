@@ -64,8 +64,23 @@
   <ItemGroup>
     <Compile Include="Account\UserRole.cs" />
     <Compile Include="Account\Users.cs" />
+    <Compile Include="Billing\BillingRate.cs" />
+    <Compile Include="Billing\Expense.cs" />
+    <Compile Include="Billing\Fee.cs" />
+    <Compile Include="Billing\InvoiceExpense.cs" />
+    <Compile Include="Billing\InvoiceFee.cs" />
+    <Compile Include="Billing\InvoiceTime.cs" />
     <Compile Include="DBOs\Account\UserRole.cs" />
     <Compile Include="DBOs\Account\Users.cs" />
+    <Compile Include="DBOs\Billing\BillingRate.cs" />
+    <Compile Include="DBOs\Billing\Expense.cs" />
+    <Compile Include="DBOs\Billing\ExpenseMatter.cs" />
+    <Compile Include="DBOs\Billing\Fee.cs" />
+    <Compile Include="DBOs\Billing\FeeMatter.cs" />
+    <Compile Include="DBOs\Billing\Invoice.cs" />
+    <Compile Include="DBOs\Billing\InvoiceExpense.cs" />
+    <Compile Include="DBOs\Billing\InvoiceFee.cs" />
+    <Compile Include="DBOs\Billing\InvoiceTime.cs" />
     <Compile Include="DBOs\Events\EventMatter.cs" />
     <Compile Include="DBOs\Events\EventNote.cs" />
     <Compile Include="DBOs\Events\EventTag.cs" />
@@ -178,6 +193,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\OpenLawOffice.WebClient\packages\AutoMapper.3.2.1\tools\AutoMapper.targets" Condition="Exists('..\OpenLawOffice.WebClient\packages\AutoMapper.3.2.1\tools\AutoMapper.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
