@@ -244,7 +244,8 @@
         </tr>
         <tr>
             <td style="font-weight: bold;">
-                Expenses
+                <%: Html.ActionLink("Expenses", "Expenses", "Matters", new { id = Model.Id }, null) %>
+                <%: Html.ActionLink("New Expense", "Create", "Expenses", new { MatterId = Model.Id }, new { @class = "btn-plus" })%>
             </td>
             <td style="text-align: center;">
                 <%: string.Format("{0:C}", ViewData["ExpensesBilled"]) %>
@@ -258,7 +259,8 @@
         </tr>
         <tr class="tr_alternate">
             <td style="font-weight: bold;">
-                Fees
+                <%: Html.ActionLink("Fees", "Fees", "Matters", new { id = Model.Id }, null) %>
+                <%: Html.ActionLink("New Fee", "Create", "Fees", new { MatterId = Model.Id }, new { @class = "btn-plus" })%>
             </td>
             <td style="text-align: center;">
                 <%: string.Format("{0:C}", ViewData["FeesBilled"])%>

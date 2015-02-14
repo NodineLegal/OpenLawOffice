@@ -708,6 +708,52 @@ namespace OpenLawOffice.WebClient.Controllers
         }
 
         [Authorize(Roles = "Login, User")]
+        public ActionResult Expenses(Guid id)
+        {
+            Common.Models.Matters.Matter matter;
+            ViewModels.Billing.ExpenseViewModel viewModel;
+            List<ViewModels.Billing.ExpenseViewModel> viewModelList;
+
+            viewModelList = new List<ViewModels.Billing.ExpenseViewModel>();
+
+            Data.Billing.Expense.ListForMatter(id).ForEach(x =>
+            {
+                viewModel = Mapper.Map<ViewModels.Billing.ExpenseViewModel>(x);
+
+                viewModelList.Add(viewModel);
+            });
+
+            matter = Data.Matters.Matter.Get(id);
+            ViewData["Matter"] = matter.Title;
+            ViewData["MatterId"] = matter.Id;
+
+            return View(viewModelList);
+        }
+
+        [Authorize(Roles = "Login, User")]
+        public ActionResult Fees(Guid id)
+        {
+            Common.Models.Matters.Matter matter;
+            ViewModels.Billing.FeeViewModel viewModel;
+            List<ViewModels.Billing.FeeViewModel> viewModelList;
+
+            viewModelList = new List<ViewModels.Billing.FeeViewModel>();
+
+            Data.Billing.Fee.ListForMatter(id).ForEach(x =>
+            {
+                viewModel = Mapper.Map<ViewModels.Billing.FeeViewModel>(x);
+
+                viewModelList.Add(viewModel);
+            });
+
+            matter = Data.Matters.Matter.Get(id);
+            ViewData["Matter"] = matter.Title;
+            ViewData["MatterId"] = matter.Id;
+
+            return View(viewModelList);
+        }
+
+        [Authorize(Roles = "Login, User")]
         public ActionResult Documents(Guid id)
         {
             Common.Models.Matters.Matter matter;

@@ -30,12 +30,24 @@ namespace OpenLawOffice.WebClient.ViewModels.Billing
     public class InvoiceViewModel : CoreViewModel
     {
         public Guid? Id { get; set; }
-        public int BillTo { get; set; }
+        public Contacts.ContactViewModel BillTo { get; set; }
         public DateTime Date { get; set; }
         public DateTime Due { get; set; }
         public decimal Subtotal { get; set; }
         public decimal TaxAmount { get; set; }
         public decimal Total { get; set; }
+        public string ExternalInvoiceId { get; set; }
+
+        public List<InvoiceTimeViewModel> Times { get; set; }
+        public List<InvoiceExpenseViewModel> Expenses { get; set; }
+        public List<InvoiceFeeViewModel> Fees { get; set; }
+
+        public InvoiceViewModel()
+        {
+            Times = new List<InvoiceTimeViewModel>();
+            Expenses = new List<InvoiceExpenseViewModel>();
+            Fees = new List<InvoiceFeeViewModel>();
+        }
 
         public void BuildMappings()
         {
@@ -71,11 +83,23 @@ namespace OpenLawOffice.WebClient.ViewModels.Billing
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.BillTo, opt => opt.MapFrom(src => src.BillTo))
+                .ForMember(dst => dst.BillTo, opt => opt.ResolveUsing(db =>
+                {
+                    return new ViewModels.Contacts.ContactViewModel()
+                    {
+                        Id = db.BillTo.Id,
+                        IsStub = true
+                    };
+                }))
                 .ForMember(dst => dst.Date, opt => opt.MapFrom(src => src.Date))
                 .ForMember(dst => dst.Due, opt => opt.MapFrom(src => src.Due))
                 .ForMember(dst => dst.Subtotal, opt => opt.MapFrom(src => src.Subtotal))
                 .ForMember(dst => dst.TaxAmount, opt => opt.MapFrom(src => src.TaxAmount))
-                .ForMember(dst => dst.Total, opt => opt.MapFrom(src => src.Total));
+                .ForMember(dst => dst.Total, opt => opt.MapFrom(src => src.Total))
+                .ForMember(dst => dst.ExternalInvoiceId, opt => opt.MapFrom(src => src.ExternalInvoiceId))
+                .ForMember(dst => dst.Times, opt => opt.Ignore())
+                .ForMember(dst => dst.Expenses, opt => opt.Ignore())
+                .ForMember(dst => dst.Fees, opt => opt.Ignore());
 
             Mapper.CreateMap<InvoiceViewModel, Common.Models.Billing.Invoice>()
                 .ForMember(dst => dst.Created, opt => opt.MapFrom(src => src.Created))
@@ -113,11 +137,22 @@ namespace OpenLawOffice.WebClient.ViewModels.Billing
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.BillTo, opt => opt.MapFrom(src => src.BillTo))
+                .ForMember(dst => dst.BillTo, opt => opt.ResolveUsing(x =>
+                {
+                    if (x.BillTo == null || !x.BillTo.Id.HasValue)
+                        return null;
+                    return new ViewModels.Contacts.ContactViewModel()
+                    {
+                        Id = x.BillTo.Id,
+                        IsStub = true
+                    };
+                }))
                 .ForMember(dst => dst.Date, opt => opt.MapFrom(src => src.Date))
                 .ForMember(dst => dst.Due, opt => opt.MapFrom(src => src.Due))
                 .ForMember(dst => dst.Subtotal, opt => opt.MapFrom(src => src.Subtotal))
                 .ForMember(dst => dst.TaxAmount, opt => opt.MapFrom(src => src.TaxAmount))
-                .ForMember(dst => dst.Total, opt => opt.MapFrom(src => src.Total));
+                .ForMember(dst => dst.Total, opt => opt.MapFrom(src => src.Total))
+                .ForMember(dst => dst.ExternalInvoiceId, opt => opt.MapFrom(src => src.ExternalInvoiceId));
         }
     }
 }

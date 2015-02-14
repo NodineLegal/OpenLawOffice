@@ -1,4 +1,9 @@
-﻿1/29/2015
+﻿2/8/2015
+ALTER TABLE invoice
+  ADD COLUMN external_invoice_id text;
+
+
+1/29/2015
 
 -- Table: expense
 

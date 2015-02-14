@@ -36,6 +36,55 @@ namespace OpenLawOffice.Common.Settings
         //    set { base["fileStorage"] = value; }
         //}
 
+        [ConfigurationProperty("billingFirmName", IsRequired = false)]
+        public string BillingFirmName
+        {
+            get { return (string)base["billingFirmName"]; }
+            set { base["billingFirmName"] = value; }
+        }
+
+        [ConfigurationProperty("billingFirmAddress", IsRequired = false)]
+        public string BillingFirmAddress
+        {
+            get { return (string)base["billingFirmAddress"]; }
+            set { base["billingFirmAddress"] = value; }
+        }
+
+        [ConfigurationProperty("billingFirmCity", IsRequired = false)]
+        public string BillingFirmCity
+        {
+            get { return (string)base["billingFirmCity"]; }
+            set { base["billingFirmCity"] = value; }
+        }
+
+        [ConfigurationProperty("billingFirmState", IsRequired = false)]
+        public string BillingFirmState
+        {
+            get { return (string)base["billingFirmState"]; }
+            set { base["billingFirmState"] = value; }
+        }
+
+        [ConfigurationProperty("billingFirmZip", IsRequired = false)]
+        public string BillingFirmZip
+        {
+            get { return (string)base["billingFirmZip"]; }
+            set { base["billingFirmZip"] = value; }
+        }
+
+        [ConfigurationProperty("billingFirmPhone", IsRequired = false)]
+        public string BillingFirmPhone
+        {
+            get { return (string)base["billingFirmPhone"]; }
+            set { base["billingFirmPhone"] = value; }
+        }
+
+        [ConfigurationProperty("billingFirmWeb", IsRequired = false)]
+        public string BillingFirmWeb
+        {
+            get { return (string)base["billingFirmWeb"]; }
+            set { base["billingFirmWeb"] = value; }
+        }
+
         [ConfigurationProperty("timezone", IsRequired = true)]
         public string Timezone
         {

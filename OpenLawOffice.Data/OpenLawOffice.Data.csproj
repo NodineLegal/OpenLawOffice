@@ -66,7 +66,10 @@
     <Compile Include="Account\Users.cs" />
     <Compile Include="Billing\BillingRate.cs" />
     <Compile Include="Billing\Expense.cs" />
+    <Compile Include="Billing\ExpenseMatter.cs" />
     <Compile Include="Billing\Fee.cs" />
+    <Compile Include="Billing\FeeMatter.cs" />
+    <Compile Include="Billing\Invoice.cs" />
     <Compile Include="Billing\InvoiceExpense.cs" />
     <Compile Include="Billing\InvoiceFee.cs" />
     <Compile Include="Billing\InvoiceTime.cs" />

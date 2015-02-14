@@ -31,7 +31,7 @@ namespace OpenLawOffice.Data.DBOs.Billing
         public Guid Id { get; set; }
 
         [ColumnMapping(Name = "bill_to_contact_id")]
-        public int BillTo { get; set; }
+        public int BillToContactId { get; set; }
 
         [ColumnMapping(Name = "date")]
         public DateTime Date { get; set; }
@@ -47,6 +47,9 @@ namespace OpenLawOffice.Data.DBOs.Billing
 
         [ColumnMapping(Name = "total")]
         public decimal Total { get; set; }
+
+        [ColumnMapping(Name = "external_invoice_id")]
+        public string ExternalInvoiceId { get; set; }
 
         public void BuildMappings()
         {
@@ -91,12 +94,20 @@ namespace OpenLawOffice.Data.DBOs.Billing
                     };
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.BillTo, opt => opt.MapFrom(src => src.BillTo))
+                .ForMember(dst => dst.BillTo, opt => opt.ResolveUsing(db =>
+                {
+                    return new Common.Models.Contacts.Contact()
+                    {
+                        Id = db.BillToContactId,
+                        IsStub = true
+                    };
+                }))
                 .ForMember(dst => dst.Date, opt => opt.MapFrom(src => src.Date))
                 .ForMember(dst => dst.Due, opt => opt.MapFrom(src => src.Due))
                 .ForMember(dst => dst.Subtotal, opt => opt.MapFrom(src => src.Subtotal))
                 .ForMember(dst => dst.TaxAmount, opt => opt.MapFrom(src => src.TaxAmount))
-                .ForMember(dst => dst.Total, opt => opt.MapFrom(src => src.Total));
+                .ForMember(dst => dst.Total, opt => opt.MapFrom(src => src.Total))
+                .ForMember(dst => dst.ExternalInvoiceId, opt => opt.MapFrom(src => src.ExternalInvoiceId));
 
             Mapper.CreateMap<Common.Models.Billing.Invoice, DBOs.Billing.Invoice>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.ResolveUsing(db =>
@@ -129,12 +140,16 @@ namespace OpenLawOffice.Data.DBOs.Billing
                     return model.DisabledBy.PId;
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.BillTo, opt => opt.MapFrom(src => src.BillTo))
+                .ForMember(dst => dst.BillToContactId, opt => opt.ResolveUsing(model =>
+                {
+                    return model.BillTo.Id.Value;
+                }))
                 .ForMember(dst => dst.Date, opt => opt.MapFrom(src => src.Date))
                 .ForMember(dst => dst.Due, opt => opt.MapFrom(src => src.Due))
                 .ForMember(dst => dst.Subtotal, opt => opt.MapFrom(src => src.Subtotal))
                 .ForMember(dst => dst.TaxAmount, opt => opt.MapFrom(src => src.TaxAmount))
-                .ForMember(dst => dst.Total, opt => opt.MapFrom(src => src.Total));
+                .ForMember(dst => dst.Total, opt => opt.MapFrom(src => src.Total))
+                .ForMember(dst => dst.ExternalInvoiceId, opt => opt.MapFrom(src => src.ExternalInvoiceId));
         }
     }
 }

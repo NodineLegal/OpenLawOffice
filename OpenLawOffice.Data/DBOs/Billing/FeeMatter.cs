@@ -31,10 +31,10 @@ namespace OpenLawOffice.Data.DBOs.Billing
         public Guid Id { get; set; }
 
         [ColumnMapping(Name = "matter_id")]
-        public Guid Matter { get; set; }
+        public Guid MatterId { get; set; }
 
         [ColumnMapping(Name = "fee_id")]
-        public Guid Fee { get; set; }
+        public Guid FeeId { get; set; }
 
         public void BuildMappings()
         {
@@ -83,7 +83,7 @@ namespace OpenLawOffice.Data.DBOs.Billing
                 {
                     return new Common.Models.Matters.Matter()
                     {
-                        Id = db.Matter,
+                        Id = db.MatterId,
                         IsStub = true
                     };
                 }))
@@ -91,7 +91,7 @@ namespace OpenLawOffice.Data.DBOs.Billing
                 {
                     return new Common.Models.Billing.Fee()
                     {
-                        Id = db.Fee,
+                        Id = db.FeeId,
                         IsStub = true
                     };
                 }));
@@ -126,13 +126,13 @@ namespace OpenLawOffice.Data.DBOs.Billing
                     if (model.DisabledBy == null) return null;
                     return model.DisabledBy.PId;
                 }))
-                .ForMember(dst => dst.Matter, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.MatterId, opt => opt.ResolveUsing(model =>
                 {
                     if (model.Matter == null || !model.Matter.Id.HasValue)
                         return Guid.Empty;
                     return model.Matter.Id.Value;
                 }))
-                .ForMember(dst => dst.Fee, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.FeeId, opt => opt.ResolveUsing(model =>
                 {
                     if (model.Fee == null || !model.Fee.Id.HasValue)
                         return Guid.Empty;

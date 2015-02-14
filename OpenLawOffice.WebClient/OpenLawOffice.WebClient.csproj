@@ -98,6 +98,7 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\AzureController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\BillingController.cs" />
     <Compile Include="Controllers\BillingRatesController.cs" />
     <Compile Include="Controllers\CalendarController.cs" />
     <Compile Include="Controllers\ContactsController.cs" />
@@ -110,6 +111,8 @@
     <Compile Include="Controllers\EventsController.cs" />
     <Compile Include="Controllers\EventTagsController.cs" />
     <Compile Include="Controllers\EventTaskController.cs" />
+    <Compile Include="Controllers\ExpensesController.cs" />
+    <Compile Include="Controllers\FeesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InstallationController.cs" />
     <Compile Include="Controllers\JsonInterfaceController.cs" />
@@ -149,6 +152,7 @@
     <Compile Include="ViewModels\Account\UsersViewModel.cs" />
     <Compile Include="ViewModels\AssignmentTypeViewModel.cs" />
     <Compile Include="ViewModels\Billing\BillingRateViewModel.cs" />
+    <Compile Include="ViewModels\Billing\BillingViewModel.cs" />
     <Compile Include="ViewModels\Billing\ExpenseMatterViewModel.cs" />
     <Compile Include="ViewModels\Billing\ExpenseViewModel.cs" />
     <Compile Include="ViewModels\Billing\FeeMatterViewModel.cs" />
@@ -215,6 +219,7 @@
     <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\exclamation-shield.png" />
     <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\gear-arrow.png" />
     <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\hourglass-select.png" />
+    <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\money-arrow.png" />
     <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\pencil.png" />
     <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\plus.png" />
     <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\printer.png" />
@@ -282,6 +287,8 @@
     <Content Include="Views\BillingRates\Create.aspx" />
     <Content Include="Views\BillingRates\Edit.aspx" />
     <Content Include="Views\BillingRates\Index.aspx" />
+    <Content Include="Views\Billing\Index.aspx" />
+    <Content Include="Views\Billing\SingleMatterBill.aspx" />
     <Content Include="Views\Calendar\Contact.aspx" />
     <Content Include="Views\Calendar\Index.aspx" />
     <Content Include="Views\Calendar\SelectContact.aspx" />
@@ -335,7 +342,13 @@
     <Content Include="Views\EventTasks\SelectEvent.aspx" />
     <Content Include="Views\EventTasks\SelectTask.aspx" />
     <Content Include="Views\EventTasks\Unlink.aspx" />
+    <Content Include="Views\Expenses\Create.aspx" />
+    <Content Include="Views\Expenses\Edit.aspx" />
+    <Content Include="Views\Fees\Create.aspx" />
+    <Content Include="Views\Fees\Edit.aspx" />
     <Content Include="Views\Matters\Events.aspx" />
+    <Content Include="Views\Matters\Expenses.aspx" />
+    <Content Include="Views\Matters\Fees.aspx" />
     <Content Include="Views\Matters\Timesheet.aspx" />
     <Content Include="Views\Matters\Timesheet_Print3rdParty.aspx" />
     <Content Include="Views\Matters\Timesheet_PrintClient.aspx" />
@@ -439,8 +452,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Billing\" />
-    <Folder Include="Views\Invoicing\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenLawOffice.Common\OpenLawOffice.Common.csproj">

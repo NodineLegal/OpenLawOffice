@@ -627,6 +627,18 @@ a.btn-printer
     cursor: pointer;
 }
 
+a.btn-money-arrow
+{
+    background-image: url('fugue-icons-3.5.6/icons-shadowless/money-arrow.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    text-indent: -9999px; /* hide text */
+    cursor: pointer;
+}
+
 #roadmap
 {
     font-family: Arial, Helvetica, sans-serif;

@@ -154,6 +154,28 @@ namespace OpenLawOffice.Data.Timing
                 new { MatterId = matterId });
         }
 
+        public static TimeSpan SumUnbilledTimeForMatter(Guid matterId)
+        {
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                IEnumerable<dynamic> ie = conn.Query(
+                "SELECT SUM(\"stop\" - \"start\") AS \"Interval\" FROM \"time\" WHERE \"id\" IN " +
+                "   (SELECT \"time_id\" FROM \"task_time\" WHERE \"task_id\" IN " +
+                "       (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId)) AND " +
+                "   \"id\" NOT IN (SELECT \"time_id\" FROM \"invoice_time\" WHERE \"time_id\"=\"time\".\"id\") AND " +
+                "\"utc_disabled\" is null",
+                new { MatterId = matterId });
+
+                IEnumerator<dynamic> enumerator = ie.GetEnumerator();
+                while (enumerator.MoveNext())
+                {
+                    return (TimeSpan)enumerator.Current.Interval;
+                }
+            }
+
+            return new TimeSpan();
+        }
+
         public static bool IsFastTime(Guid timeId)
         {
             return (GetRelatedTask(timeId) == null);
