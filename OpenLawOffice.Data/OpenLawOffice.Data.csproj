@@ -75,6 +75,8 @@
     <Compile Include="Billing\InvoiceTime.cs" />
     <Compile Include="DBOs\Account\UserRole.cs" />
     <Compile Include="DBOs\Account\Users.cs" />
+    <Compile Include="DBOs\Billing\BillingGroup.cs" />
+    <Compile Include="DBOs\Billing\BillingGroupMatter.cs" />
     <Compile Include="DBOs\Billing\BillingRate.cs" />
     <Compile Include="DBOs\Billing\Expense.cs" />
     <Compile Include="DBOs\Billing\ExpenseMatter.cs" />

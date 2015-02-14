@@ -70,6 +70,8 @@
     <Compile Include="FileSystem\OloMatterDirectory.cs" />
     <Compile Include="Models\Account\UserRole.cs" />
     <Compile Include="Models\Account\Users.cs" />
+    <Compile Include="Models\Billing\BillingGroup.cs" />
+    <Compile Include="Models\Billing\BillingGroupMatter.cs" />
     <Compile Include="Models\Billing\BillingRate.cs" />
     <Compile Include="Models\Billing\Expense.cs" />
     <Compile Include="Models\Billing\ExpenseMatter.cs" />
