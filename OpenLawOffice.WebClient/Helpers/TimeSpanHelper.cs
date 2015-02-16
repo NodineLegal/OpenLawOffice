@@ -34,12 +34,12 @@ namespace OpenLawOffice.WebClient.Helpers
         {
             if (showDays)
             {
-                return new HtmlString(ts.Days + " d " + ts.Hours + ":" + ts.Minutes);
+                return new HtmlString(ts.Days + " d " + string.Format("{0:00}", ts.Hours) + ":" + string.Format("{0:00}", ts.Minutes));
             }
             else
             {
                 int hours = (int)Math.Floor(ts.TotalHours);
-                return new HtmlString(hours + ":" + ts.Minutes);
+                return new HtmlString(string.Format("{0:00}", hours) + ":" + string.Format("{0:00}", ts.Minutes));
             }
         }
 

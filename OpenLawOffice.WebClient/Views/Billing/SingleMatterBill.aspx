@@ -1,4 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/SiteNoRightBar.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Billing.InvoiceViewModel>" %>
+<%@ Import Namespace="OpenLawOffice.WebClient.Helpers" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
 	SingleBill
@@ -84,40 +85,30 @@
                         Details
                     </td>
                     <td>
-                        Duration
+                        Duration (h:m)
                     </td>
                     <td>
-                        Rate
-                    </td>
-                    <td>
-                        Amount
-                    </td>            
+                        Rate ($/hr.)
+                    </td>        
                 </thead>
                 <tbody>
                 <%
                     bool altRow = true;
-                    foreach (OpenLawOffice.WebClient.ViewModels.Billing.InvoiceTimeViewModel item in Model.Times)
+                    for (int i=0; i<Model.Times.Count; i++)
                     {
+                        OpenLawOffice.WebClient.ViewModels.Billing.InvoiceTimeViewModel item = Model.Times[i];
                         altRow = !altRow;
                         if (altRow)
                         { %> <tr class="tr_alternate"> <% }
                         else
                         { %> <tr> <% }
                         %>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td><%: item.Time.Start.ToShortDateString() %></td>
+                        <td><%: item.Details %></td>
+                        <td style="text-align: center;"><%: TimeSpanHelper.TimeSpan(item.Time.Duration, false) %></td>
+                        <td style="text-align: center;">$<%: Html.TextBoxFor(x => x.Times[i].PricePerUnit, new { @style = "width: 75px;" })%></td>
                     </tr>
                     <% } %>
-                    <tr style="background: #f5f5f5;">
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
                 </tbody>
             </table>
         </div>

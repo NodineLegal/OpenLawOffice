@@ -51,13 +51,10 @@
             <%: Html.ActionLink("Tags", "Tags", "Search")%></li>
         <li>Document Text</li>
     </ul>
-    <li>Billing</li>
+    <li><%: Html.ActionLink("Billing", "", "Billing")%> </li>
     <ul>
-        <%--<li>
-            <%: Html.ActionLink("FastTime", "FastTime", "Timing")%></li>
-        <li>
-            <%: Html.ActionLink("Unrelated FastTime", "FastTimeList", "Timing")%></li>--%>
         <li><%: Html.ActionLink("Rates", "Index", "BillingRates") %> <%: Html.ActionLink("New Rate", "Create", "BillingRates", null, new { @class = "btn-plus" })%></li>
+        <li><%: Html.ActionLink("Groups", "Index", "BillingGroups") %> <%: Html.ActionLink("New Group", "Create", "BillingGroups", null, new { @class = "btn-plus" })%></li>
     </ul>
     <ul>
     </ul>

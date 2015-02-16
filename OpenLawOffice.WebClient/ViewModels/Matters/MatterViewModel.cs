@@ -47,6 +47,10 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
 
         public Contacts.ContactViewModel BillTo { get; set; }
 
+        public Billing.BillingRateViewModel DefaultBillingRate { get; set; }
+
+        public Billing.BillingGroupViewModel BillingGroup { get; set; }
+
         // -- Financial Information
             
             // -- DB Values
@@ -134,6 +138,24 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
                         IsStub = true
                     };
                 }))
+                .ForMember(dst => dst.DefaultBillingRate, opt => opt.ResolveUsing(db =>
+                {
+                    if (db.DefaultBillingRate == null || !db.DefaultBillingRate.Id.HasValue) return null;
+                    return new ViewModels.Billing.BillingRateViewModel()
+                    {
+                        Id = db.DefaultBillingRate.Id.Value,
+                        IsStub = true
+                    };
+                }))
+                .ForMember(dst => dst.BillingGroup, opt => opt.ResolveUsing(db =>
+                {
+                    if (db.BillingGroup == null || !db.BillingGroup.Id.HasValue) return null;
+                    return new ViewModels.Billing.BillingGroupViewModel()
+                    {
+                        Id = db.BillingGroup.Id.Value,
+                        IsStub = true
+                    };
+                }))
                 .ForMember(dst => dst.Tasks, opt => opt.Ignore())
                 .ForMember(dst => dst.Notes, opt => opt.Ignore())
                 .ForMember(dst => dst.TaskNotes, opt => opt.Ignore())
@@ -213,6 +235,26 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
                     return new ViewModels.Contacts.ContactViewModel()
                     {
                         Id = x.BillTo.Id.Value,
+                        IsStub = true
+                    };
+                }))
+                .ForMember(dst => dst.DefaultBillingRate, opt => opt.ResolveUsing(x =>
+                {
+                    if (x.DefaultBillingRate == null || !x.DefaultBillingRate.Id.HasValue)
+                        return null;
+                    return new ViewModels.Billing.BillingRateViewModel()
+                    {
+                        Id = x.DefaultBillingRate.Id.Value,
+                        IsStub = true
+                    };
+                }))
+                .ForMember(dst => dst.BillingGroup, opt => opt.ResolveUsing(x =>
+                {
+                    if (x.BillingGroup == null || !x.BillingGroup.Id.HasValue)
+                        return null;
+                    return new ViewModels.Billing.BillingGroupViewModel()
+                    {
+                        Id = x.BillingGroup.Id.Value,
                         IsStub = true
                     };
                 }))

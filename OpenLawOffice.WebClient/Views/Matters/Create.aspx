@@ -91,6 +91,73 @@
                 .append("<a>" + item.DisplayName + "</a>")
                 .appendTo(ul);
             };
+
+            $('#Contact4_DisplayName').focus(function () {
+                $("#Contact4_Id").val('');
+                $('#Contact4_DisplayName').val('');
+            });
+            $('#Contact4_DisplayName').autocomplete({
+                source: "/Contacts/ListDisplayNameOnly",
+                minLength: 2,
+                focus: function (event, ui) {
+                    $("#Contact4_Id").val(ui.item.Id);
+                    $("#Contact4_DisplayName").val(ui.item.DisplayName);
+                    return false;
+                },
+                select: function (event, ui) {
+                    $("#Contact4_Id").val(ui.item.Id);
+                    $("#Contact4_DisplayName").val(ui.item.DisplayName);
+                    return false;
+                }
+            }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                return $("<li>")
+                .append("<a>" + item.DisplayName + "</a>")
+                .appendTo(ul);
+            };
+            $('#Contact5_DisplayName').focus(function () {
+                $("#Contact5_Id").val('');
+                $('#Contact5_DisplayName').val('');
+            });
+            $('#Contact5_DisplayName').autocomplete({
+                source: "/Contacts/ListDisplayNameOnly",
+                minLength: 2,
+                focus: function (event, ui) {
+                    $("#Contact5_Id").val(ui.item.Id);
+                    $("#Contact5_DisplayName").val(ui.item.DisplayName);
+                    return false;
+                },
+                select: function (event, ui) {
+                    $("#Contact5_Id").val(ui.item.Id);
+                    $("#Contact5_DisplayName").val(ui.item.DisplayName);
+                    return false;
+                }
+            }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                return $("<li>")
+                .append("<a>" + item.DisplayName + "</a>")
+                .appendTo(ul);
+            };
+            $('#Contact6_DisplayName').focus(function () {
+                $("#Contact6_Id").val('');
+                $('#Contact6_DisplayName').val('');
+            });
+            $('#Contact6_DisplayName').autocomplete({
+                source: "/Contacts/ListDisplayNameOnly",
+                minLength: 2,
+                focus: function (event, ui) {
+                    $("#Contact6_Id").val(ui.item.Id);
+                    $("#Contact6_DisplayName").val(ui.item.DisplayName);
+                    return false;
+                },
+                select: function (event, ui) {
+                    $("#Contact6_Id").val(ui.item.Id);
+                    $("#Contact6_DisplayName").val(ui.item.DisplayName);
+                    return false;
+                }
+            }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                return $("<li>")
+                .append("<a>" + item.DisplayName + "</a>")
+                .appendTo(ul);
+            };
         });
     </script>
 
@@ -113,6 +180,26 @@
             <td class="display-field">
                 <%: Html.TextBoxFor(model => model.Matter.Title) %>
                 <%: Html.ValidationMessageFor(model => model.Matter.Title)%>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
+                Default Billing Rate
+            </td>
+            <td class="display-field">
+                <%: Html.DropDownListFor(x => x.Matter.DefaultBillingRate.Id,
+                        new SelectList((IList)ViewData["BillingRateList"], "Id", "Title"),
+                        new { @size = 5, @style = "width: 100%" })%>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
+                Billing Group
+            </td>
+            <td class="display-field">
+                <%: Html.DropDownListFor(x => x.Matter.BillingGroup.Id,
+                        new SelectList((IList)ViewData["BillingGroupList"], "Id", "Title"),
+                        new { @size = 5, @style = "width: 100%" })%>
             </td>
         </tr>
         <tr>
@@ -352,6 +439,165 @@
                     });
                     $("#OpposingParty3").click(function () {
                         $("#Role3").val("Opposing Party");
+                        return false;
+                    });
+                </script>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
+                Contact
+            </td>
+            <td class="display-field">
+                <%: Html.HiddenFor(model => model.Contact4.Id)%>
+                <%: Html.TextBoxFor(model => model.Contact4.DisplayName) %>
+                <%: Html.ValidationMessageFor(model => model.Contact4)%>
+            </td>
+            <td style="width: 25px;"></td>
+            <td class="display-label">
+                Role
+            </td>
+            <td class="display-field">
+                <%: Html.TextBoxFor(model => model.Role4) %>
+                <%: Html.ValidationMessageFor(model => model.Role4)%><br />
+                Special Roles:  <a href="#" id="Attorney4">Attorney</a>, 
+                                <a href="#" id="OpposingAttorney4">Opposing Attorney</a>, 
+                                <a href="#" id="Client4">Client</a>, 
+                                <a href="#" id="AppointedClient4">Appointed Client</a>, 
+                                <a href="#" id="OpposingParty4">Opposing Party</a>
+                <script language="javascript">
+                    $("#LeadAttorney4").click(function () {
+                        $("#Role4").val("Lead Attorney");
+                        return false;
+                    });
+                    $("#Attorney4").click(function () {
+                        $("#Role4").val("Attorney");
+                        return false;
+                    });
+                    $("#OpposingAttorney4").click(function () {
+                        $("#Role4").val("Opposing Attorney");
+                        return false;
+                    });
+                    $("#Client4").click(function () {
+                        $("#Role4").val("Client");
+                        return false;
+                    });
+                    $("#ThirdPartyPayor4").click(function () {
+                        $("#Role4").val("Third-Party Payor");
+                        return false;
+                    });
+                    $("#AppointedClient4").click(function () {
+                        $("#Role4").val("Appointed Client");
+                        return false;
+                    });
+                    $("#OpposingParty4").click(function () {
+                        $("#Role4").val("Opposing Party");
+                        return false;
+                    });
+                </script>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
+                Contact
+            </td>
+            <td class="display-field">
+                <%: Html.HiddenFor(model => model.Contact5.Id)%>
+                <%: Html.TextBoxFor(model => model.Contact5.DisplayName) %>
+                <%: Html.ValidationMessageFor(model => model.Contact5)%>
+            </td>
+            <td style="width: 25px;"></td>
+            <td class="display-label">
+                Role
+            </td>
+            <td class="display-field">
+                <%: Html.TextBoxFor(model => model.Role5) %>
+                <%: Html.ValidationMessageFor(model => model.Role5)%><br />
+                Special Roles:  <a href="#" id="Attorney5">Attorney</a>, 
+                                <a href="#" id="OpposingAttorney5">Opposing Attorney</a>, 
+                                <a href="#" id="Client5">Client</a>, 
+                                <a href="#" id="AppointedClient5">Appointed Client</a>, 
+                                <a href="#" id="OpposingParty5">Opposing Party</a>
+                <script language="javascript">
+                    $("#LeadAttorney5").click(function () {
+                        $("#Role5").val("Lead Attorney");
+                        return false;
+                    });
+                    $("#Attorney5").click(function () {
+                        $("#Role5").val("Attorney");
+                        return false;
+                    });
+                    $("#OpposingAttorney5").click(function () {
+                        $("#Role5").val("Opposing Attorney");
+                        return false;
+                    });
+                    $("#Client5").click(function () {
+                        $("#Role5").val("Client");
+                        return false;
+                    });
+                    $("#ThirdPartyPayor5").click(function () {
+                        $("#Role5").val("Third-Party Payor");
+                        return false;
+                    });
+                    $("#AppointedClient5").click(function () {
+                        $("#Role5").val("Appointed Client");
+                        return false;
+                    });
+                    $("#OpposingParty5").click(function () {
+                        $("#Role5").val("Opposing Party");
+                        return false;
+                    });
+                </script>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
+                Contact
+            </td>
+            <td class="display-field">
+                <%: Html.HiddenFor(model => model.Contact6.Id)%>
+                <%: Html.TextBoxFor(model => model.Contact6.DisplayName) %>
+                <%: Html.ValidationMessageFor(model => model.Contact6)%>
+            </td>
+            <td style="width: 25px;"></td>
+            <td class="display-label">
+                Role
+            </td>
+            <td class="display-field">
+                <%: Html.TextBoxFor(model => model.Role6) %>
+                <%: Html.ValidationMessageFor(model => model.Role6)%><br />
+                Special Roles:  <a href="#" id="Attorney6">Attorney</a>, 
+                                <a href="#" id="OpposingAttorney6">Opposing Attorney</a>, 
+                                <a href="#" id="Client6">Client</a>, 
+                                <a href="#" id="AppointedClient6">Appointed Client</a>, 
+                                <a href="#" id="OpposingParty6">Opposing Party</a>
+                <script language="javascript">
+                    $("#LeadAttorney6").click(function () {
+                        $("#Role6").val("Lead Attorney");
+                        return false;
+                    });
+                    $("#Attorney6").click(function () {
+                        $("#Role6").val("Attorney");
+                        return false;
+                    });
+                    $("#OpposingAttorney6").click(function () {
+                        $("#Role6").val("Opposing Attorney");
+                        return false;
+                    });
+                    $("#Client6").click(function () {
+                        $("#Role6").val("Client");
+                        return false;
+                    });
+                    $("#ThirdPartyPayor6").click(function () {
+                        $("#Role6").val("Third-Party Payor");
+                        return false;
+                    });
+                    $("#AppointedClient6").click(function () {
+                        $("#Role6").val("Appointed Client");
+                        return false;
+                    });
+                    $("#OpposingParty6").click(function () {
+                        $("#Role6").val("Opposing Party");
                         return false;
                     });
                 </script>

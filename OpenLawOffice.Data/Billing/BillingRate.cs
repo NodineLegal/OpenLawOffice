@@ -43,7 +43,7 @@ namespace OpenLawOffice.Data.Billing
                 "SELECT * FROM \"billing_rate\" WHERE \"utc_disabled\" is null");
         }
 
-        public static Common.Models.Billing.BillingRate Create(Common.Models.Billing.BillingRate model, 
+        public static Common.Models.Billing.BillingRate Create(Common.Models.Billing.BillingRate model,
             Common.Models.Account.Users creator)
         {
             model.CreatedBy = model.ModifiedBy = creator;
@@ -56,7 +56,7 @@ namespace OpenLawOffice.Data.Billing
                     "VALUES (@Title, @PricePerUnit, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
                     dbo);
 
-                model.Id = conn.Query<DBOs.Contacts.Contact>("SELECT currval(pg_get_serial_sequence('billing_rate', 'id')) AS \"id\"").Single().Id;
+                model.Id = conn.Query<DBOs.Billing.BillingRate>("SELECT currval(pg_get_serial_sequence('billing_rate', 'id')) AS \"id\"").Single().Id;
             }
 
             return model;

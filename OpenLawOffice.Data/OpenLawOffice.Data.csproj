@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="Account\UserRole.cs" />
     <Compile Include="Account\Users.cs" />
+    <Compile Include="Billing\BillingGroup.cs" />
     <Compile Include="Billing\BillingRate.cs" />
     <Compile Include="Billing\Expense.cs" />
     <Compile Include="Billing\ExpenseMatter.cs" />
@@ -76,7 +77,6 @@
     <Compile Include="DBOs\Account\UserRole.cs" />
     <Compile Include="DBOs\Account\Users.cs" />
     <Compile Include="DBOs\Billing\BillingGroup.cs" />
-    <Compile Include="DBOs\Billing\BillingGroupMatter.cs" />
     <Compile Include="DBOs\Billing\BillingRate.cs" />
     <Compile Include="DBOs\Billing\Expense.cs" />
     <Compile Include="DBOs\Billing\ExpenseMatter.cs" />

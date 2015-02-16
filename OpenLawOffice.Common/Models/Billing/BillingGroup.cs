@@ -25,7 +25,7 @@ namespace OpenLawOffice.Common.Models.Billing
 
     public class BillingGroup : Core
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         public string Title { get; set; }
 
@@ -34,5 +34,7 @@ namespace OpenLawOffice.Common.Models.Billing
         public DateTime? NextRun { get; set; }
 
         public decimal Amount { get; set; }
+
+        public Contacts.Contact BillTo { get; set; }
     }
 }

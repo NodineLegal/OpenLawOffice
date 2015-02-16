@@ -38,11 +38,22 @@ namespace OpenLawOffice.WebClient.ViewModels.Billing
             public TimeSpan Time { get; set; }
         }
 
+        public class GroupItem
+        {
+            public bool IsSelected { get; set; }
+            public Billing.BillingGroupViewModel BillingGroup { get; set; }
+            public decimal Expenses { get; set; }
+            public decimal Fees { get; set; }
+            public TimeSpan Time { get; set; }
+        }
+
         public List<Item> Items { get; set; }
+        public List<GroupItem> GroupItems { get; set; }
 
         public BillingViewModel()
         {
             Items = new List<Item>();
+            GroupItems = new List<GroupItem>();
         }
     }
 }

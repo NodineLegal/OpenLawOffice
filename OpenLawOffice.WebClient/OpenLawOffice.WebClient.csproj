@@ -99,6 +99,7 @@
     <Compile Include="Controllers\AzureController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\BillingController.cs" />
+    <Compile Include="Controllers\BillingGroupsController.cs" />
     <Compile Include="Controllers\BillingRatesController.cs" />
     <Compile Include="Controllers\CalendarController.cs" />
     <Compile Include="Controllers\ContactsController.cs" />
@@ -151,6 +152,7 @@
     <Compile Include="ViewModels\Account\UserRoleViewModel.cs" />
     <Compile Include="ViewModels\Account\UsersViewModel.cs" />
     <Compile Include="ViewModels\AssignmentTypeViewModel.cs" />
+    <Compile Include="ViewModels\Billing\BillingGroupViewModel.cs" />
     <Compile Include="ViewModels\Billing\BillingRateViewModel.cs" />
     <Compile Include="ViewModels\Billing\BillingViewModel.cs" />
     <Compile Include="ViewModels\Billing\ExpenseMatterViewModel.cs" />
@@ -284,6 +286,9 @@
     <Content Include="Views\Admin\UserRoles.aspx" />
     <Content Include="Views\Azure\Connect.aspx" />
     <Content Include="Views\Azure\Index.aspx" />
+    <Content Include="Views\BillingGroups\Create.aspx" />
+    <Content Include="Views\BillingGroups\Edit.aspx" />
+    <Content Include="Views\BillingGroups\Index.aspx" />
     <Content Include="Views\BillingRates\Create.aspx" />
     <Content Include="Views\BillingRates\Edit.aspx" />
     <Content Include="Views\BillingRates\Index.aspx" />

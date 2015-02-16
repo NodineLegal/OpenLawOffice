@@ -23,7 +23,7 @@ namespace OpenLawOffice.Common.Models.Billing
 {
     public class BillingRate : Core
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         public string Title { get; set; }
 

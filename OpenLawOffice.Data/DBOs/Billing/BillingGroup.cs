@@ -33,14 +33,17 @@ namespace OpenLawOffice.Data.DBOs.Billing
         [ColumnMapping(Name = "title")]
         public string Title { get; set; }
 
-        [ColumnMapping(Name = "lastrun")]
+        [ColumnMapping(Name = "last_run")]
         public DateTime? LastRun { get; set; }
 
-        [ColumnMapping(Name = "nextrun")]
+        [ColumnMapping(Name = "next_run")]
         public DateTime? NextRun { get; set; }
 
         [ColumnMapping(Name = "amount")]
         public decimal Amount { get; set; }
+
+        [ColumnMapping(Name = "bill_to_contact_id")]
+        public int BillToContactId { get; set; }
 
         public void BuildMappings()
         {
@@ -86,9 +89,23 @@ namespace OpenLawOffice.Data.DBOs.Billing
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
-                .ForMember(dst => dst.LastRun, opt => opt.MapFrom(src => src.LastRun))
-                .ForMember(dst => dst.NextRun, opt => opt.MapFrom(src => src.NextRun))
-                .ForMember(dst => dst.Amount, opt => opt.MapFrom(src => src.Amount));
+                .ForMember(dst => dst.LastRun, opt => opt.ResolveUsing(db =>
+                {
+                    return db.LastRun.ToSystemTime();
+                }))
+                .ForMember(dst => dst.NextRun, opt => opt.ResolveUsing(db =>
+                {
+                    return db.NextRun.ToSystemTime();
+                }))
+                .ForMember(dst => dst.Amount, opt => opt.MapFrom(src => src.Amount))
+                .ForMember(dst => dst.BillTo, opt => opt.ResolveUsing(db =>
+                {
+                    return new Common.Models.Contacts.Contact()
+                    {
+                        Id = db.BillToContactId,
+                        IsStub = true
+                    };
+                }));
 
             Mapper.CreateMap<Common.Models.Billing.BillingGroup, DBOs.Billing.BillingGroup>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.ResolveUsing(db =>
@@ -122,9 +139,20 @@ namespace OpenLawOffice.Data.DBOs.Billing
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
-                .ForMember(dst => dst.LastRun, opt => opt.MapFrom(src => src.LastRun))
-                .ForMember(dst => dst.NextRun, opt => opt.MapFrom(src => src.NextRun))
-                .ForMember(dst => dst.Amount, opt => opt.MapFrom(src => src.Amount));
+                .ForMember(dst => dst.LastRun, opt => opt.ResolveUsing(db =>
+                {
+                    return db.LastRun.ToDbTime();
+                }))
+                .ForMember(dst => dst.NextRun, opt => opt.ResolveUsing(db =>
+                {
+                    return db.NextRun.ToDbTime();
+                }))
+                .ForMember(dst => dst.Amount, opt => opt.MapFrom(src => src.Amount))
+                .ForMember(dst => dst.BillToContactId, opt => opt.ResolveUsing(model =>
+                {
+                    if (model.BillTo == null) return null;
+                    return model.BillTo.Id;
+                }));
         }
     }
 }

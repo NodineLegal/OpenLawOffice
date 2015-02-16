@@ -45,7 +45,77 @@
     <% using (Html.BeginForm())
        {%>
     <%: Html.ValidationSummary(true) %>
-    <table class="listing_table">
+    <table class="listing_table"> 
+        <tr>
+            <td colspan="8" class="listing_table_heading">
+                Billing Groups
+            </td>
+        </tr>
+        <tr>
+            <th style="text-align: center; width: 20px;" />
+            <th style="text-align: center;">Title</th>
+            <th style="text-align: center;">Bill To</th>
+            <th style="text-align: center;">Last Run</th>
+            <th style="text-align: center;">Next Run</th>
+            <th style="text-align: center;">Amount</th>
+            <th style="text-align: center;">Expenses</th>
+            <th style="text-align: center;">Fees</th>
+            <th style="text-align: center;">Time</th>
+            <th style="width: 20px;">
+            </th>
+        </tr>
+        <% 
+           foreach (var item in Model.GroupItems)
+           { %>
+        <tr>
+            <td>
+                <input type="checkbox" id="Checkbox1" name="CB_<%: item.Matter.Id.Value %>" />
+            </td>
+            <td>
+                <%: item.BillingGroup.Title %>
+            </td>
+            <td>
+                <%: item.BillingGroup.BillTo.DisplayName %>
+            </td>
+            <td>
+                <% if (item.BillingGroup.LastRun.HasValue)
+                   { %>
+                    <%: item.BillingGroup.LastRun.Value.ToShortDateString() %>
+                <% } %>
+            </td>
+            <td>
+                <% if (item.BillingGroup.NextRun.HasValue)
+                   { %>
+                    <%: item.BillingGroup.NextRun.Value.ToShortDateString()%>
+                <% } %>
+            </td>
+            <td>
+                <%: string.Format("{0:C}", item.BillingGroup.Amount) %>
+            </td>
+            <td>
+                <%: string.Format("{0:C}", item.Expenses) %>
+            </td>
+            <td>
+                <%: string.Format("{0:C}", item.Fees) %>
+            </td>
+            <td>
+                <%: TimeSpanHelper.TimeSpan(item.Time, false) %>
+            </td>
+            <td style="text-align: center;">
+                <%: Html.ActionLink("Bill", "SingleGroupBill", "Billing", new { id = item.BillingGroup.Id }, new { @class = "btn-money-arrow", title = "Bill" })%>
+            </td>
+        </tr>
+        <% } %>
+    </table>
+
+
+
+    <table class="listing_table"> 
+        <tr>
+            <td colspan="8" class="listing_table_heading">
+                Individual Matters
+            </td>
+        </tr>
         <tr>
             <th style="text-align: center; width: 20px;" />
             <th style="text-align: center;">Bill To</th>

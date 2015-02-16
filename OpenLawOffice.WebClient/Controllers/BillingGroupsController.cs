@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="BillingRatesController.cs" company="Nodine Legal, LLC">
+// <copyright file="BillingGroupsController.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -26,19 +26,21 @@ namespace OpenLawOffice.WebClient.Controllers
     using AutoMapper;
 
     [HandleError(View = "Errors/Index", Order = 10)]
-    public class BillingRatesController : BaseController
+    public class BillingGroupsController : BaseController
     {
         [Authorize(Roles = "Login, User")]
         public ActionResult Index()
         {
-            List<ViewModels.Billing.BillingRateViewModel> rates = new List<ViewModels.Billing.BillingRateViewModel>();
+            List<ViewModels.Billing.BillingGroupViewModel> groups = new List<ViewModels.Billing.BillingGroupViewModel>();
 
-            Data.Billing.BillingRate.List().ForEach(x =>
+            Data.Billing.BillingGroup.List().ForEach(x =>
             {
-                rates.Add(Mapper.Map<ViewModels.Billing.BillingRateViewModel>(x));
+                ViewModels.Billing.BillingGroupViewModel vm = Mapper.Map<ViewModels.Billing.BillingGroupViewModel>(x);
+                vm.BillTo = Mapper.Map<ViewModels.Contacts.ContactViewModel>(Data.Contacts.Contact.Get(x.BillTo.Id.Value));
+                groups.Add(vm);
             });
 
-            return View(rates);
+            return View(groups);
         }
 
         [Authorize(Roles = "Login, User")]
@@ -49,15 +51,15 @@ namespace OpenLawOffice.WebClient.Controllers
 
         [Authorize(Roles = "Login, User")]
         [HttpPost]
-        public ActionResult Create(ViewModels.Billing.BillingRateViewModel viewModel)
+        public ActionResult Create(ViewModels.Billing.BillingGroupViewModel viewModel)
         {
             Common.Models.Account.Users currentUser;
-            Common.Models.Billing.BillingRate model;
+            Common.Models.Billing.BillingGroup model;
 
-            model = Mapper.Map<Common.Models.Billing.BillingRate>(viewModel);
+            model = Mapper.Map<Common.Models.Billing.BillingGroup>(viewModel);
             currentUser = Data.Account.Users.Get(User.Identity.Name);
 
-            Data.Billing.BillingRate.Create(model, currentUser);
+            Data.Billing.BillingGroup.Create(model, currentUser);
 
             return RedirectToAction("Index");
         }
@@ -65,24 +67,25 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult Edit(int id)
         {
-            ViewModels.Billing.BillingRateViewModel vm;
+            ViewModels.Billing.BillingGroupViewModel vm;
 
-            vm = Mapper.Map<ViewModels.Billing.BillingRateViewModel>(Data.Billing.BillingRate.Get(id));
+            vm = Mapper.Map<ViewModels.Billing.BillingGroupViewModel>(Data.Billing.BillingGroup.Get(id));
+            vm.BillTo = Mapper.Map<ViewModels.Contacts.ContactViewModel>(Data.Contacts.Contact.Get(vm.BillTo.Id.Value));
 
             return View(vm);
         }
 
         [Authorize(Roles = "Login, User")]
         [HttpPost]
-        public ActionResult Edit(int id, ViewModels.Billing.BillingRateViewModel viewModel)
+        public ActionResult Edit(int id, ViewModels.Billing.BillingGroupViewModel viewModel)
         {
             Common.Models.Account.Users currentUser;
-            Common.Models.Billing.BillingRate model;
+            Common.Models.Billing.BillingGroup model;
 
-            model = Mapper.Map<Common.Models.Billing.BillingRate>(viewModel);
+            model = Mapper.Map<Common.Models.Billing.BillingGroup>(viewModel);
             currentUser = Data.Account.Users.Get(User.Identity.Name);
 
-            Data.Billing.BillingRate.Edit(model, currentUser);
+            Data.Billing.BillingGroup.Edit(model, currentUser);
 
             return RedirectToAction("Index");
         }

@@ -38,6 +38,12 @@
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" runat="server">   
     <script language="javascript">
         $(document).ready(function () {
+            $('#ClearRateButton').click(function () {
+                $('#Matter_DefaultBillingRate_Id').val([]);
+            });
+            $('#ClearGroupButton').click(function () {
+                $('#Matter_BillingGroup_Id').val([]);
+            });
             $('#Matter_BillTo_DisplayName').autocomplete({
                 source: "/Contacts/ListDisplayNameOnly",
                 minLength: 2,
@@ -84,7 +90,7 @@
                 Title<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Matter.Title)%>
+                <%: Html.TextBoxFor(model => model.Matter.Title, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Matter.Title)%>
             </td>
         </tr>
@@ -102,7 +108,7 @@
                 Jurisdiction
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Matter.Jurisdiction)%>
+                <%: Html.TextBoxFor(model => model.Matter.Jurisdiction, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Matter.Jurisdiction)%>
             </td>
         </tr>
@@ -111,7 +117,7 @@
                 Case Number
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Matter.CaseNumber)%>
+                <%: Html.TextBoxFor(model => model.Matter.CaseNumber, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Matter.CaseNumber)%>
             </td>
         </tr>
@@ -120,10 +126,49 @@
                 Lead Attorney<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                <%: Html.ValidationMessageFor(model => model.LeadAttorney)%>
                 <%: Html.DropDownListFor(x => x.LeadAttorney.Contact.Id,
                         new SelectList((IList)ViewData["EmployeeContactList"], "Id", "DisplayName"),
                         new { @size = 5, @style = "width: 100%" })%>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
+                Default Billing Rate<br />
+                <input type="button" value="Clear Rate" name="ClearRateButton" id="ClearRateButton" />
+            </td>
+            <td class="display-field">
+            <% if (Model.Matter.DefaultBillingRate != null)
+               { %>
+                <%: Html.DropDownListFor(x => x.Matter.DefaultBillingRate.Id,
+                        new SelectList((IList)ViewData["BillingRateList"], "Id", "Title", Model.Matter.DefaultBillingRate.Id),
+                        new { @size = 5, @style = "width: 100%" })%>
+            <% }
+               else
+               { %>
+                <%: Html.DropDownListFor(x => x.Matter.DefaultBillingRate.Id,
+                        new SelectList((IList)ViewData["BillingRateList"], "Id", "Title"),
+                        new { @size = 5, @style = "width: 100%" })%>
+            <% } %>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
+                Billing Group<br />
+                <input type="button" value="Clear Group" name="ClearGroupButton" id="ClearGroupButton" />
+            </td>
+            <td class="display-field">
+            <% if (Model.Matter.BillingGroup != null)
+               { %>
+                <%: Html.DropDownListFor(x => x.Matter.BillingGroup.Id,
+                        new SelectList((IList)ViewData["BillingGroupList"], "Id", "Title", Model.Matter.BillingGroup.Id),
+                        new { @size = 5, @style = "width: 100%" })%>
+            <% }
+               else
+               { %>
+                <%: Html.DropDownListFor(x => x.Matter.BillingGroup.Id,
+                        new SelectList((IList)ViewData["BillingGroupList"], "Id", "Title"),
+                        new { @size = 5, @style = "width: 100%" })%>
+            <% } %>
             </td>
         </tr>
         <tr>
@@ -132,7 +177,7 @@
             </td>
             <td class="display-field">
                 <%: Html.HiddenFor(model => model.Matter.BillTo.Id) %>
-                <%: Html.TextBoxFor(model => model.Matter.BillTo.DisplayName) %>
+                <%: Html.TextBoxFor(model => model.Matter.BillTo.DisplayName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Matter.BillTo.DisplayName)%>
             </td>
         </tr>

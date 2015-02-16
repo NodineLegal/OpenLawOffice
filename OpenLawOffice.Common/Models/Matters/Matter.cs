@@ -48,5 +48,9 @@ namespace OpenLawOffice.Common.Models.Matters
         public decimal? EstimatedCharge { get; set; }
 
         public decimal? MaximumCharge { get; set; }
+
+        public Billing.BillingRate DefaultBillingRate { get; set; }
+
+        public Billing.BillingGroup BillingGroup { get; set; }
     }
 }

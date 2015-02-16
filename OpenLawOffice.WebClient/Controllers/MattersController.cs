@@ -269,6 +269,12 @@ namespace OpenLawOffice.WebClient.Controllers
             viewModel.Tasks = TasksController.GetListForMatter(id, true);
             viewModel.LeadAttorney = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.LeadAttorney);
             viewModel.BillTo = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.BillTo);
+            if (viewModel.DefaultBillingRate != null)
+                viewModel.DefaultBillingRate = Mapper.Map<ViewModels.Billing.BillingRateViewModel>(
+                    Data.Billing.BillingRate.Get(viewModel.DefaultBillingRate.Id.Value));
+            if (viewModel.BillingGroup != null)
+                viewModel.BillingGroup = Mapper.Map<ViewModels.Billing.BillingGroupViewModel>(
+                    Data.Billing.BillingGroup.Get(viewModel.BillingGroup.Id.Value));
 
             // -- Financial Info
             billedExpenseList = Data.Billing.InvoiceExpense.ListForMatter(model.Id.Value);
@@ -378,9 +384,13 @@ namespace OpenLawOffice.WebClient.Controllers
         {
             List<ViewModels.Account.UsersViewModel> userList;
             List<ViewModels.Contacts.ContactViewModel> employeeContactList;
+            List<ViewModels.Billing.BillingRateViewModel> billingRateList;
+            List<ViewModels.Billing.BillingGroupViewModel> billingGroupList;
 
             userList = new List<ViewModels.Account.UsersViewModel>();
             employeeContactList = new List<ViewModels.Contacts.ContactViewModel>();
+            billingRateList = new List<ViewModels.Billing.BillingRateViewModel>();
+            billingGroupList = new List<ViewModels.Billing.BillingGroupViewModel>();
 
             Data.Account.Users.List().ForEach(x =>
             {
@@ -392,8 +402,24 @@ namespace OpenLawOffice.WebClient.Controllers
                 employeeContactList.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(x));
             });
 
+            Data.Billing.BillingRate.List().ForEach(x =>
+            {
+                ViewModels.Billing.BillingRateViewModel vm = Mapper.Map<ViewModels.Billing.BillingRateViewModel>(x);
+                vm.Title += " (" + vm.PricePerUnit.ToString("C") + ")";
+                billingRateList.Add(vm);
+            });
+
+            Data.Billing.BillingGroup.List().ForEach(x =>
+            {
+                ViewModels.Billing.BillingGroupViewModel vm = Mapper.Map<ViewModels.Billing.BillingGroupViewModel>(x);
+                vm.Title += " (" + vm.Amount.ToString("C") + ")";
+                billingGroupList.Add(vm);
+            });
+
             ViewData["UserList"] = userList;
             ViewData["EmployeeContactList"] = employeeContactList;
+            ViewData["BillingRateList"] = billingRateList;
+            ViewData["BillingGroupList"] = billingGroupList;
 
             return View();
         }
@@ -414,9 +440,13 @@ namespace OpenLawOffice.WebClient.Controllers
             {
                 List<ViewModels.Account.UsersViewModel> userList;
                 List<ViewModels.Contacts.ContactViewModel> employeeContactList;
+                List<ViewModels.Billing.BillingRateViewModel> billingRateList;
+                List<ViewModels.Billing.BillingGroupViewModel> billingGroupList;
 
                 userList = new List<ViewModels.Account.UsersViewModel>();
                 employeeContactList = new List<ViewModels.Contacts.ContactViewModel>();
+                billingRateList = new List<ViewModels.Billing.BillingRateViewModel>();
+                billingGroupList = new List<ViewModels.Billing.BillingGroupViewModel>();
 
                 Data.Account.Users.List().ForEach(x =>
                 {
@@ -428,10 +458,26 @@ namespace OpenLawOffice.WebClient.Controllers
                     employeeContactList.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(x));
                 });
 
+                Data.Billing.BillingRate.List().ForEach(x =>
+                {
+                    ViewModels.Billing.BillingRateViewModel vm = Mapper.Map<ViewModels.Billing.BillingRateViewModel>(x);
+                    vm.Title += " (" + vm.PricePerUnit.ToString("C") + ")";
+                    billingRateList.Add(vm);
+                });
+
+                Data.Billing.BillingGroup.List().ForEach(x =>
+                {
+                    ViewModels.Billing.BillingGroupViewModel vm = Mapper.Map<ViewModels.Billing.BillingGroupViewModel>(x);
+                    vm.Title += " (" + vm.Amount.ToString("C") + ")";
+                    billingGroupList.Add(vm);
+                });
+
                 ModelState.AddModelError("LeadAttorney", "Lead Attorney is required");
 
                 ViewData["UserList"] = userList;
                 ViewData["EmployeeContactList"] = employeeContactList;
+                ViewData["BillingRateList"] = billingRateList;
+                ViewData["BillingGroupList"] = billingGroupList;
                 return View(viewModel);
             }
 
@@ -482,6 +528,39 @@ namespace OpenLawOffice.WebClient.Controllers
                 }, currentUser);
             }
 
+            if (viewModel.Contact4 != null && viewModel.Contact4.Id.HasValue &&
+                !string.IsNullOrEmpty(viewModel.Role4))
+            {
+                Data.Matters.MatterContact.Create(new Common.Models.Matters.MatterContact()
+                {
+                    Matter = model,
+                    Role = viewModel.Role4,
+                    Contact = Mapper.Map<Common.Models.Contacts.Contact>(viewModel.Contact4)
+                }, currentUser);
+            }
+
+            if (viewModel.Contact5 != null && viewModel.Contact5.Id.HasValue &&
+                !string.IsNullOrEmpty(viewModel.Role5))
+            {
+                Data.Matters.MatterContact.Create(new Common.Models.Matters.MatterContact()
+                {
+                    Matter = model,
+                    Role = viewModel.Role5,
+                    Contact = Mapper.Map<Common.Models.Contacts.Contact>(viewModel.Contact5)
+                }, currentUser);
+            }
+
+            if (viewModel.Contact6 != null && viewModel.Contact6.Id.HasValue &&
+                !string.IsNullOrEmpty(viewModel.Role6))
+            {
+                Data.Matters.MatterContact.Create(new Common.Models.Matters.MatterContact()
+                {
+                    Matter = model,
+                    Role = viewModel.Role6,
+                    Contact = Mapper.Map<Common.Models.Contacts.Contact>(viewModel.Contact6)
+                }, currentUser);
+            }
+
             return RedirectToAction("Details", new { Id = model.Id });
         }
 
@@ -489,10 +568,15 @@ namespace OpenLawOffice.WebClient.Controllers
         public ActionResult Edit(Guid id)
         {
             List<ViewModels.Contacts.ContactViewModel> employeeContactList;
+            List<ViewModels.Billing.BillingRateViewModel> billingRateList;
+            List<ViewModels.Billing.BillingGroupViewModel> billingGroupList;
             ViewModels.Matters.EditMatterViewModel viewModel;
             Common.Models.Matters.Matter model;
 
             employeeContactList = new List<ViewModels.Contacts.ContactViewModel>();
+            billingRateList = new List<ViewModels.Billing.BillingRateViewModel>();
+            billingGroupList = new List<ViewModels.Billing.BillingGroupViewModel>();
+
             model = Data.Matters.Matter.Get(id);
 
             if (model.LeadAttorney != null)
@@ -500,10 +584,30 @@ namespace OpenLawOffice.WebClient.Controllers
 
             if (model.BillTo != null)
                 model.BillTo = Data.Contacts.Contact.Get(model.BillTo.Id.Value);
-            
+
+            if (model.DefaultBillingRate != null)
+                model.DefaultBillingRate = Data.Billing.BillingRate.Get(model.DefaultBillingRate.Id.Value);
+
+            if (model.BillingGroup != null)
+                model.BillingGroup = Data.Billing.BillingGroup.Get(model.BillingGroup.Id.Value);
+
             Data.Contacts.Contact.ListEmployeesOnly().ForEach(x =>
             {
                 employeeContactList.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(x));
+            });
+
+            Data.Billing.BillingRate.List().ForEach(x =>
+            {
+                ViewModels.Billing.BillingRateViewModel vm = Mapper.Map<ViewModels.Billing.BillingRateViewModel>(x);
+                vm.Title += " (" + vm.PricePerUnit.ToString("C") + ")";
+                billingRateList.Add(vm);
+            });
+
+            Data.Billing.BillingGroup.List().ForEach(x =>
+            {
+                ViewModels.Billing.BillingGroupViewModel vm = Mapper.Map<ViewModels.Billing.BillingGroupViewModel>(x);
+                vm.Title += " (" + vm.Amount.ToString("C") + ")";
+                billingGroupList.Add(vm);
             });
 
             viewModel = new ViewModels.Matters.EditMatterViewModel();
@@ -511,8 +615,12 @@ namespace OpenLawOffice.WebClient.Controllers
             viewModel.LeadAttorney = new ViewModels.Matters.MatterContactViewModel();
             viewModel.LeadAttorney.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.LeadAttorney);
             viewModel.Matter.BillTo = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.BillTo);
+            viewModel.Matter.DefaultBillingRate = Mapper.Map<ViewModels.Billing.BillingRateViewModel>(model.DefaultBillingRate);
+            viewModel.Matter.BillingGroup = Mapper.Map<ViewModels.Billing.BillingGroupViewModel>(model.BillingGroup);
 
             ViewData["EmployeeContactList"] = employeeContactList;
+            ViewData["BillingRateList"] = billingRateList;
+            ViewData["BillingGroupList"] = billingGroupList;
             ViewData["Matter"] = model.Title;
             ViewData["MatterId"] = model.Id;
 

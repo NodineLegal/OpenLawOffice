@@ -22,5 +22,13 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
         public Contacts.ContactViewModel Contact3 { get; set; }
         public string Role3 { get; set; }
 
+        public Contacts.ContactViewModel Contact4 { get; set; }
+        public string Role4 { get; set; }
+
+        public Contacts.ContactViewModel Contact5 { get; set; }
+        public string Role5 { get; set; }
+
+        public Contacts.ContactViewModel Contact6 { get; set; }
+        public string Role6 { get; set; }
     }
 }

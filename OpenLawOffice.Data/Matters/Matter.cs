@@ -244,10 +244,11 @@ namespace OpenLawOffice.Data.Matters
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("INSERT INTO \"matter\" (\"id\", \"title\", \"active\", \"parent_id\", \"synopsis\", " +
-                    "\"minimum_charge\", \"estimated_charge\", \"maximum_charge\", " +
+                    "\"minimum_charge\", \"estimated_charge\", \"maximum_charge\", \"default_billing_rate_id\", \"billing_group_id\", " +
                     "\"utc_created\", \"utc_modified\", " +
                     "\"created_by_user_pid\", \"modified_by_user_pid\", \"jurisdiction\", \"case_number\", \"lead_attorney_contact_id\", \"bill_to_contact_id\") " +
-                    "VALUES (@Id, @Title, @Active, @ParentId, @Synopsis, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId, " +
+                    "VALUES (@Id, @Title, @Active, @ParentId, @Synopsis, @MinimumCharge, @EstimatedCharge, @MaximumCharge, @DefaultBillingRateId, @BillingGroupId, " +
+                    "@UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId, " +
                     "@Jurisdiction, @CaseNumber, @LeadAttorneyContactId, @BillToContactId)",
                     dbo);
             }
@@ -275,6 +276,7 @@ namespace OpenLawOffice.Data.Matters
                 conn.Execute("UPDATE \"matter\" SET " +
                     "\"title\"=@Title, \"active\"=@Active, \"parent_id\"=@ParentId, \"synopsis\"=@Synopsis, \"utc_modified\"=@UtcModified, " +
                     "\"minimum_charge\"=@MinimumCharge, \"estimated_charge\"=@EstimatedCharge, \"maximum_charge\"=@MaximumCharge, " +
+                    "\"default_billing_rate_id\"=@DefaultBillingRateId, \"billing_group_id\"=@BillingGroupId, " +
                     "\"modified_by_user_pid\"=@ModifiedByUserPId, \"jurisdiction\"=@Jurisdiction, \"case_number\"=@CaseNumber, \"lead_attorney_contact_id\"=@LeadAttorneyContactId, \"bill_to_contact_id\"=@BillToContactId " +
                     "WHERE \"id\"=@Id", dbo);
             }

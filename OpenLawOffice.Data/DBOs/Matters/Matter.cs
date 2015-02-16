@@ -63,6 +63,12 @@ namespace OpenLawOffice.Data.DBOs.Matters
         [ColumnMapping(Name = "maximum_charge")]
         public decimal? MaximumCharge { get; set; }
 
+        [ColumnMapping(Name = "default_billing_rate_id")]
+        public int? DefaultBillingRateId { get; set; }
+
+        [ColumnMapping(Name = "billing_group_id")]
+        public int? BillingGroupId { get; set; }
+
         public void BuildMappings()
         {
             Dapper.SqlMapper.SetTypeMap(typeof(Matter), new ColumnAttributeTypeMapper<Matter>());
@@ -132,7 +138,25 @@ namespace OpenLawOffice.Data.DBOs.Matters
                 }))
                 .ForMember(dst => dst.MinimumCharge, opt => opt.MapFrom(src => src.MinimumCharge))
                 .ForMember(dst => dst.EstimatedCharge, opt => opt.MapFrom(src => src.EstimatedCharge))
-                .ForMember(dst => dst.MaximumCharge, opt => opt.MapFrom(src => src.MaximumCharge));
+                .ForMember(dst => dst.MaximumCharge, opt => opt.MapFrom(src => src.MaximumCharge))
+                .ForMember(dst => dst.DefaultBillingRate, opt => opt.ResolveUsing(db =>
+                {
+                    if (!db.DefaultBillingRateId.HasValue) return null;
+                    return new Common.Models.Billing.BillingRate()
+                    {
+                        Id = db.DefaultBillingRateId.Value,
+                        IsStub = true
+                    };
+                }))
+                .ForMember(dst => dst.BillingGroup, opt => opt.ResolveUsing(db =>
+                {
+                    if (!db.BillingGroupId.HasValue) return null;
+                    return new Common.Models.Billing.BillingGroup()
+                    {
+                        Id = db.BillingGroupId.Value,
+                        IsStub = true
+                    };
+                }));
 
             Mapper.CreateMap<Common.Models.Matters.Matter, DBOs.Matters.Matter>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.ResolveUsing(db =>
@@ -183,7 +207,17 @@ namespace OpenLawOffice.Data.DBOs.Matters
                 }))
                 .ForMember(dst => dst.MinimumCharge, opt => opt.MapFrom(src => src.MinimumCharge))
                 .ForMember(dst => dst.EstimatedCharge, opt => opt.MapFrom(src => src.EstimatedCharge))
-                .ForMember(dst => dst.MaximumCharge, opt => opt.MapFrom(src => src.MaximumCharge));
+                .ForMember(dst => dst.MaximumCharge, opt => opt.MapFrom(src => src.MaximumCharge))
+                .ForMember(dst => dst.DefaultBillingRateId, opt => opt.ResolveUsing(model =>
+                {
+                    if (model.DefaultBillingRate == null) return null;
+                    return model.DefaultBillingRate.Id;
+                }))
+                .ForMember(dst => dst.BillingGroupId, opt => opt.ResolveUsing(model =>
+                {
+                    if (model.BillingGroup == null) return null;
+                    return model.BillingGroup.Id;
+                }));
         }
     }
 }

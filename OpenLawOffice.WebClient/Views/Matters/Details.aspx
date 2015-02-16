@@ -151,6 +151,32 @@
         </tr>
         <tr>
             <td class="display-label" style="width: 125px;">
+                Default Billing Rate
+            </td>
+            <td class="display-field">
+                <% if (Model.DefaultBillingRate != null)
+                   { %>
+                    <%: Model.DefaultBillingRate.Title %> (<%: Model.DefaultBillingRate.PricePerUnit.ToString("C") %>)
+                <% } %>
+            </td>
+            <td>
+            </td>
+            <td class="display-label" style="width: 125px;">
+                Billing Group
+            </td>
+            <td class="display-field">
+                <% if (Model.BillingGroup != null)
+                   { %>
+                    <%: Model.BillingGroup.Title %>
+                    <% if (Model.BillingGroup.NextRun.HasValue)
+                       { %> 
+                        (Next Bill: <%: Model.BillingGroup.NextRun.Value.ToShortDateString()%>)
+                    <% } %>
+                <% } %>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label" style="width: 125px;">
                 Synopsis
             </td>
             <td class="display-field" colspan="4">

@@ -65,17 +65,14 @@ namespace OpenLawOffice.WebClient.Controllers
             viewModel.Date = DateTime.Now;
             viewModel.Due = DateTime.Now.AddDays(30);
 
-            Data.Timing.Time.ListUnbilledTimeForMatter(matter.Id.Value).ForEach(x =>
+            Data.Timing.Time.ListUnbilledAndBillableTimeForMatter(matter.Id.Value).ForEach(x =>
             {
                 viewModel.Times.Add(new ViewModels.Billing.InvoiceTimeViewModel()
-                    {
-                        Time = new ViewModels.Timing.TimeViewModel()
-                        {
-                            Start = x.Start,
-                            Stop = x.Stop, 
-                            Duration = x.d
-                        Invoice = viewModel,
-                        Details = x.Details
+                {
+                    Invoice = viewModel,
+                    Time = Mapper.Map<ViewModels.Timing.TimeViewModel>(x),
+                    Details = x.Details
+                });
             });
 
             ViewData["MatterTitle"] = matter.Title;
