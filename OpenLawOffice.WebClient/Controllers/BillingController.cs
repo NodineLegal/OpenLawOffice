@@ -37,6 +37,7 @@ namespace OpenLawOffice.WebClient.Controllers
         {
             ViewModels.Billing.BillingViewModel viewModel = new ViewModels.Billing.BillingViewModel();
             ViewModels.Billing.BillingViewModel.Item item;
+            ViewModels.Billing.BillingViewModel.GroupItem groupItem;
 
             Data.Billing.Invoice.ListBillableMatters().ForEach(matter =>
             {
@@ -49,6 +50,15 @@ namespace OpenLawOffice.WebClient.Controllers
                 viewModel.Items.Add(item);
             });
 
+            Data.Billing.Invoice.ListBillableBillingGroups().ForEach(group =>
+            {
+                groupItem = new ViewModels.Billing.BillingViewModel.GroupItem();
+                groupItem.BillingGroup = Mapper.Map<ViewModels.Billing.BillingGroupViewModel>(group);
+                groupItem.BillingGroup.BillTo = Mapper.Map<ViewModels.Contacts.ContactViewModel>(Data.Contacts.Contact.Get(group.BillTo.Id.Value));
+                groupItem.Expenses = Data.Billing.BillingGroup.SumExpensesForGroup(group.Id.Value);
+                viewModel.GroupItems.Add(groupItem);
+            });
+            
             return View(viewModel);
         }
 

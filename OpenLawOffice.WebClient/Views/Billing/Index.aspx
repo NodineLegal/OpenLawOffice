@@ -8,46 +8,13 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
     <h2>Billing<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
-
-    <div style="width: 70px; padding-bottom: 5px;">
-        <a id="SelectAll" href="javascript:void(0);">Select All</a><br />
-        <a id="DeselectAll" href="javascript:void(0);">Deselect All</a>
-<script language="javascript">
-
-    $(function () {    
-        var cbs = [];
-
-        <% 
-        foreach (var item in Model.Items)
-        { %>
-            <%= "cbs.push('" + item.Matter.Id.Value + "');" %>
-          <%
-        }
-        %>
-
-        $("#SelectAll").click(function () {
-            for (var i = 0; i < cbs.length; i++)
-            {
-                $("#CB_" + cbs[i]).prop('checked', true);
-            }
-        });
-
-        $("#DeselectAll").click(function () {
-            for (var i = 0; i < cbs.length; i++)
-            {
-                $("#CB_" + cbs[i]).prop('checked', false);
-            }
-        });
-    });
-</script>
-    </div>
-
+    
     <% using (Html.BeginForm())
        {%>
     <%: Html.ValidationSummary(true) %>
     <table class="listing_table"> 
         <tr>
-            <td colspan="8" class="listing_table_heading">
+            <td colspan="10" class="listing_table_heading">
                 Billing Groups
             </td>
         </tr>
@@ -69,7 +36,7 @@
            { %>
         <tr>
             <td>
-                <input type="checkbox" id="Checkbox1" name="CB_<%: item.Matter.Id.Value %>" />
+                <input type="checkbox" id="Checkbox1" name="CB_<%: item.BillingGroup.Id.Value %>" />
             </td>
             <td>
                 <%: item.BillingGroup.Title %>
@@ -108,7 +75,39 @@
         <% } %>
     </table>
 
+    
+    <div style="width: 70px; padding-bottom: 5px; margin-top: 20px;">
+        <a id="SelectAll_Matters" href="javascript:void(0);">Select All</a><br />
+        <a id="DeselectAll_Matters" href="javascript:void(0);">Deselect All</a>
+<script language="javascript">
 
+    $(function () {    
+        var cbs = [];
+
+        <% 
+        foreach (var item in Model.Items)
+        { %>
+            <%= "cbs.push('" + item.Matter.Id.Value + "');" %>
+          <%
+        }
+        %>
+
+        $("#SelectAll_Matters").click(function () {
+            for (var i = 0; i < cbs.length; i++)
+            {
+                $("#CB_" + cbs[i]).prop('checked', true);
+            }
+        });
+
+        $("#DeselectAll_Matters").click(function () {
+            for (var i = 0; i < cbs.length; i++)
+            {
+                $("#CB_" + cbs[i]).prop('checked', false);
+            }
+        });
+    });
+</script>
+    </div>
 
     <table class="listing_table"> 
         <tr>

@@ -1,4 +1,18 @@
 ﻿2/15/2015
+
+Add columns to matter
+
+ALTER TABLE matter
+  ADD COLUMN default_billing_rate_id integer;
+ALTER TABLE matter
+  ADD COLUMN billing_group_id integer;
+ALTER TABLE matter
+  ADD CONSTRAINT "FK_matter_billing_rate_DefaultBillingRateId_Id" FOREIGN KEY (default_billing_rate_id) REFERENCES billing_rate (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE matter
+  ADD CONSTRAINT "FK_matter_billing_group_BillingGroupId_Id" FOREIGN KEY (billing_group_id) REFERENCES billing_group (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+
+
 Add billing_group table
 
 -- Table: billing_group
@@ -31,17 +45,6 @@ WITH (
 ALTER TABLE billing_group
   OWNER TO postgres;
 
-
-Add columns to matter
-
-ALTER TABLE matter
-  ADD COLUMN default_billing_rate_id integer;
-ALTER TABLE matter
-  ADD COLUMN billing_group_id integer;
-ALTER TABLE matter
-  ADD CONSTRAINT "FK_matter_billing_rate_DefaultBillingRateId_Id" FOREIGN KEY (default_billing_rate_id) REFERENCES billing_rate (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
-ALTER TABLE matter
-  ADD CONSTRAINT "FK_matter_billing_group_BillingGroupId_Id" FOREIGN KEY (billing_group_id) REFERENCES billing_group (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
 
 2/8/2015

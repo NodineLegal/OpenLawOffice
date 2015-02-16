@@ -42,7 +42,13 @@ namespace OpenLawOffice.Data.Billing
                 "   SELECT \"matter_id\" FROM \"expense_matter\" WHERE \"expense_id\" NOT IN (SELECT \"expense_id\" FROM \"invoice_expense\" WHERE \"utc_disabled\" is NULL) AND \"utc_disabled\" is NULL " +
                 "   UNION " +
                 "   SELECT \"matter_id\" FROM \"fee_matter\" WHERE \"fee_id\" NOT IN (SELECT \"fee_id\" FROM \"invoice_fee\" WHERE \"utc_disabled\" is NULL) AND \"utc_disabled\" is NULL " +
-                ") ORDER BY \"contact\".\"display_name\" ASC");
+                ") AND \"matter\".\"billing_group_id\" IS NULL ORDER BY \"contact\".\"display_name\" ASC");
+        }
+
+        public static List<Common.Models.Billing.BillingGroup> ListBillableBillingGroups()
+        {
+            return DataHelper.List<Common.Models.Billing.BillingGroup, DBOs.Billing.BillingGroup>(
+                "SELECT * FROM \"billing_group\" WHERE \"next_run\" <= now() at time zone 'utc'");
         }
     }
 }
