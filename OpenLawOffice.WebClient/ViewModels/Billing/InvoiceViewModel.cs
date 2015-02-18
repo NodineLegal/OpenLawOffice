@@ -37,6 +37,13 @@ namespace OpenLawOffice.WebClient.ViewModels.Billing
         public decimal TaxAmount { get; set; }
         public decimal Total { get; set; }
         public string ExternalInvoiceId { get; set; }
+        public string BillTo_NameLine1 { get; set; }
+        public string BillTo_NameLine2 { get; set; }
+        public string BillTo_AddressLine1 { get; set; }
+        public string BillTo_AddressLine2 { get; set; }
+        public string BillTo_City { get; set; }
+        public string BillTo_State { get; set; }
+        public string BillTo_Zip { get; set; }
 
         public List<InvoiceTimeViewModel> Times { get; set; }
         public List<InvoiceExpenseViewModel> Expenses { get; set; }
@@ -97,6 +104,13 @@ namespace OpenLawOffice.WebClient.ViewModels.Billing
                 .ForMember(dst => dst.TaxAmount, opt => opt.MapFrom(src => src.TaxAmount))
                 .ForMember(dst => dst.Total, opt => opt.MapFrom(src => src.Total))
                 .ForMember(dst => dst.ExternalInvoiceId, opt => opt.MapFrom(src => src.ExternalInvoiceId))
+                .ForMember(dst => dst.BillTo_NameLine1, opt => opt.MapFrom(src => src.BillTo_NameLine1))
+                .ForMember(dst => dst.BillTo_NameLine2, opt => opt.MapFrom(src => src.BillTo_NameLine2))
+                .ForMember(dst => dst.BillTo_AddressLine1, opt => opt.MapFrom(src => src.BillTo_AddressLine1))
+                .ForMember(dst => dst.BillTo_AddressLine2, opt => opt.MapFrom(src => src.BillTo_AddressLine2))
+                .ForMember(dst => dst.BillTo_City, opt => opt.MapFrom(src => src.BillTo_City))
+                .ForMember(dst => dst.BillTo_State, opt => opt.MapFrom(src => src.BillTo_State))
+                .ForMember(dst => dst.BillTo_Zip, opt => opt.MapFrom(src => src.BillTo_Zip))
                 .ForMember(dst => dst.Times, opt => opt.Ignore())
                 .ForMember(dst => dst.Expenses, opt => opt.Ignore())
                 .ForMember(dst => dst.Fees, opt => opt.Ignore());
@@ -152,7 +166,14 @@ namespace OpenLawOffice.WebClient.ViewModels.Billing
                 .ForMember(dst => dst.Subtotal, opt => opt.MapFrom(src => src.Subtotal))
                 .ForMember(dst => dst.TaxAmount, opt => opt.MapFrom(src => src.TaxAmount))
                 .ForMember(dst => dst.Total, opt => opt.MapFrom(src => src.Total))
-                .ForMember(dst => dst.ExternalInvoiceId, opt => opt.MapFrom(src => src.ExternalInvoiceId));
+                .ForMember(dst => dst.ExternalInvoiceId, opt => opt.MapFrom(src => src.ExternalInvoiceId))
+                .ForMember(dst => dst.BillTo_NameLine1, opt => opt.MapFrom(src => src.BillTo_NameLine1))
+                .ForMember(dst => dst.BillTo_NameLine2, opt => opt.MapFrom(src => src.BillTo_NameLine2))
+                .ForMember(dst => dst.BillTo_AddressLine1, opt => opt.MapFrom(src => src.BillTo_AddressLine1))
+                .ForMember(dst => dst.BillTo_AddressLine2, opt => opt.MapFrom(src => src.BillTo_AddressLine2))
+                .ForMember(dst => dst.BillTo_City, opt => opt.MapFrom(src => src.BillTo_City))
+                .ForMember(dst => dst.BillTo_State, opt => opt.MapFrom(src => src.BillTo_State))
+                .ForMember(dst => dst.BillTo_Zip, opt => opt.MapFrom(src => src.BillTo_Zip));
         }
     }
 }

@@ -165,7 +165,7 @@ namespace OpenLawOffice.Data.Timing
                 new { MatterId = matterId });
         }
 
-        public static TimeSpan SumUnbilledTimeForMatter(Guid matterId)
+        public static TimeSpan SumUnbilledAndBillableTimeForMatter(Guid matterId)
         {
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
@@ -174,8 +174,34 @@ namespace OpenLawOffice.Data.Timing
                 "   (SELECT \"time_id\" FROM \"task_time\" WHERE \"task_id\" IN " +
                 "       (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId)) AND " +
                 "   \"id\" NOT IN (SELECT \"time_id\" FROM \"invoice_time\" WHERE \"time_id\"=\"time\".\"id\") AND " +
-                "\"utc_disabled\" is null",
+                "\"billable\"=true AND \"utc_disabled\" is null",
                 new { MatterId = matterId });
+
+                IEnumerator<dynamic> enumerator = ie.GetEnumerator();
+                while (enumerator.MoveNext())
+                {
+                    return (TimeSpan)enumerator.Current.Interval;
+                }
+            }
+
+            return new TimeSpan();
+        }
+
+        public static TimeSpan SumUnbilledAndBillableTimeForBillingGroup(int billingGroupId)
+        {
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                IEnumerable<dynamic> ie = conn.Query(
+                "SELECT SUM(\"stop\" - \"start\") AS \"Interval\" FROM \"time\" WHERE \"id\" IN " +
+                "   (SELECT \"time_id\" FROM \"task_time\" WHERE \"task_id\" IN " +
+                "       (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\" IN " +
+                "           (SELECT \"id\" FROM \"matter\" WHERE \"billing_group_id\"=@BillingGroupId) " +
+                "       ) " +
+                "   ) " +
+                "AND " +
+                "\"id\" NOT IN (SELECT \"time_id\" FROM \"invoice_time\" WHERE \"time_id\"=\"time\".\"id\") AND " +
+                "\"billable\"=true AND \"utc_disabled\" is null",
+                new { BillingGroupId = billingGroupId });
 
                 IEnumerator<dynamic> enumerator = ie.GetEnumerator();
                 while (enumerator.MoveNext())

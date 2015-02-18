@@ -1,4 +1,24 @@
-﻿2/15/2015
+﻿2/16/2015
+
+Add columns to invoice
+
+ALTER TABLE invoice
+  ADD COLUMN bill_to_name_line_1 text NOT NULL;
+ALTER TABLE invoice
+  ADD COLUMN bill_to_name_line_2 text;
+ALTER TABLE invoice
+  ADD COLUMN bill_to_address_line_1 text NOT NULL;
+ALTER TABLE invoice
+  ADD COLUMN bill_to_address_line_2 text;
+ALTER TABLE invoice
+  ADD COLUMN bill_to_city text NOT NULL;
+ALTER TABLE invoice
+  ADD COLUMN bill_to_state text NOT NULL;
+ALTER TABLE invoice
+  ADD COLUMN bill_to_zip text NOT NULL;
+
+
+2/15/2015
 
 Add columns to matter
 

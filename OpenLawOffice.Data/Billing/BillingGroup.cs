@@ -92,6 +92,32 @@ namespace OpenLawOffice.Data.Billing
 
                 while (enumerator.MoveNext())
                 {
+                    if (enumerator.Current.Amount == null)
+                        return 0;
+
+                    return enumerator.Current.Amount;
+                }
+
+                return 0;
+            }
+        }
+
+        public static decimal SumFeesForGroup(int billingGroupId)
+        {
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                IEnumerable<dynamic> result = conn.Query("SELECT SUM(\"amount\") AS \"Amount\" FROM \"fee\" WHERE \"id\" IN " +
+                    "(SELECT \"fee_id\" FROM \"fee_matter\" WHERE \"matter_id\" IN " +
+                        "(SELECT \"id\" FROM \"matter\" WHERE \"billing_group_id\"=@BillingGroupId) " +
+                    ")", new { BillingGroupId = billingGroupId });
+
+                IEnumerator<dynamic> enumerator = result.GetEnumerator();
+
+                while (enumerator.MoveNext())
+                {
+                    if (enumerator.Current.Amount == null)
+                        return 0;
+
                     return enumerator.Current.Amount;
                 }
 

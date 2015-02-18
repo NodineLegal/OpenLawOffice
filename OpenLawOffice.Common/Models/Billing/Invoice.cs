@@ -33,5 +33,12 @@ namespace OpenLawOffice.Common.Models.Billing
         public decimal TaxAmount { get; set; }
         public decimal Total { get; set; }
         public string ExternalInvoiceId { get; set; }
+        public string BillTo_NameLine1 { get; set; }
+        public string BillTo_NameLine2 { get; set; }
+        public string BillTo_AddressLine1 { get; set; }
+        public string BillTo_AddressLine2 { get; set; }
+        public string BillTo_City { get; set; }
+        public string BillTo_State { get; set; }
+        public string BillTo_Zip { get; set; }
     }
 }

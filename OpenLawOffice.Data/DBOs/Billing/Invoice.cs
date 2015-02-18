@@ -33,6 +33,27 @@ namespace OpenLawOffice.Data.DBOs.Billing
         [ColumnMapping(Name = "bill_to_contact_id")]
         public int BillToContactId { get; set; }
 
+        [ColumnMapping(Name = "bill_to_name_line_1")]
+        public string BillTo_NameLine1 { get; set; }
+
+        [ColumnMapping(Name = "bill_to_name_line_2")]
+        public string BillTo_NameLine2 { get; set; }
+
+        [ColumnMapping(Name = "bill_to_address_line_1")]
+        public string BillTo_AddressLine1 { get; set; }
+
+        [ColumnMapping(Name = "bill_to_address_line_2")]
+        public string BillTo_AddressLine2 { get; set; }
+
+        [ColumnMapping(Name = "bill_to_city")]
+        public string BillTo_City { get; set; }
+
+        [ColumnMapping(Name = "bill_to_state")]
+        public string BillTo_State { get; set; }
+
+        [ColumnMapping(Name = "bill_to_zip")]
+        public string BillTo_Zip { get; set; }
+
         [ColumnMapping(Name = "date")]
         public DateTime Date { get; set; }
 
@@ -107,7 +128,14 @@ namespace OpenLawOffice.Data.DBOs.Billing
                 .ForMember(dst => dst.Subtotal, opt => opt.MapFrom(src => src.Subtotal))
                 .ForMember(dst => dst.TaxAmount, opt => opt.MapFrom(src => src.TaxAmount))
                 .ForMember(dst => dst.Total, opt => opt.MapFrom(src => src.Total))
-                .ForMember(dst => dst.ExternalInvoiceId, opt => opt.MapFrom(src => src.ExternalInvoiceId));
+                .ForMember(dst => dst.ExternalInvoiceId, opt => opt.MapFrom(src => src.ExternalInvoiceId))
+                .ForMember(dst => dst.BillTo_NameLine1, opt => opt.MapFrom(src => src.BillTo_NameLine1))
+                .ForMember(dst => dst.BillTo_NameLine2, opt => opt.MapFrom(src => src.BillTo_NameLine2))
+                .ForMember(dst => dst.BillTo_AddressLine1, opt => opt.MapFrom(src => src.BillTo_AddressLine1))
+                .ForMember(dst => dst.BillTo_AddressLine2, opt => opt.MapFrom(src => src.BillTo_AddressLine2))
+                .ForMember(dst => dst.BillTo_City, opt => opt.MapFrom(src => src.BillTo_City))
+                .ForMember(dst => dst.BillTo_State, opt => opt.MapFrom(src => src.BillTo_State))
+                .ForMember(dst => dst.BillTo_Zip, opt => opt.MapFrom(src => src.BillTo_Zip));
 
             Mapper.CreateMap<Common.Models.Billing.Invoice, DBOs.Billing.Invoice>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.ResolveUsing(db =>
@@ -149,7 +177,14 @@ namespace OpenLawOffice.Data.DBOs.Billing
                 .ForMember(dst => dst.Subtotal, opt => opt.MapFrom(src => src.Subtotal))
                 .ForMember(dst => dst.TaxAmount, opt => opt.MapFrom(src => src.TaxAmount))
                 .ForMember(dst => dst.Total, opt => opt.MapFrom(src => src.Total))
-                .ForMember(dst => dst.ExternalInvoiceId, opt => opt.MapFrom(src => src.ExternalInvoiceId));
+                .ForMember(dst => dst.ExternalInvoiceId, opt => opt.MapFrom(src => src.ExternalInvoiceId))
+                .ForMember(dst => dst.BillTo_NameLine1, opt => opt.MapFrom(src => src.BillTo_NameLine1))
+                .ForMember(dst => dst.BillTo_NameLine2, opt => opt.MapFrom(src => src.BillTo_NameLine2))
+                .ForMember(dst => dst.BillTo_AddressLine1, opt => opt.MapFrom(src => src.BillTo_AddressLine1))
+                .ForMember(dst => dst.BillTo_AddressLine2, opt => opt.MapFrom(src => src.BillTo_AddressLine2))
+                .ForMember(dst => dst.BillTo_City, opt => opt.MapFrom(src => src.BillTo_City))
+                .ForMember(dst => dst.BillTo_State, opt => opt.MapFrom(src => src.BillTo_State))
+                .ForMember(dst => dst.BillTo_Zip, opt => opt.MapFrom(src => src.BillTo_Zip));
         }
     }
 }

@@ -46,7 +46,7 @@ namespace OpenLawOffice.WebClient.Controllers
                 item.BillTo = Mapper.Map<ViewModels.Contacts.ContactViewModel>(Data.Contacts.Contact.Get(matter.BillTo.Id.Value));
                 item.Expenses = Data.Billing.Expense.SumUnbilledExpensesForMatter(matter.Id.Value);
                 item.Fees = Data.Billing.Fee.SumUnbilledFeesForMatter(matter.Id.Value);
-                item.Time = Data.Timing.Time.SumUnbilledTimeForMatter(matter.Id.Value);
+                item.Time = Data.Timing.Time.SumUnbilledAndBillableTimeForMatter(matter.Id.Value);
                 viewModel.Items.Add(item);
             });
 
@@ -56,6 +56,8 @@ namespace OpenLawOffice.WebClient.Controllers
                 groupItem.BillingGroup = Mapper.Map<ViewModels.Billing.BillingGroupViewModel>(group);
                 groupItem.BillingGroup.BillTo = Mapper.Map<ViewModels.Contacts.ContactViewModel>(Data.Contacts.Contact.Get(group.BillTo.Id.Value));
                 groupItem.Expenses = Data.Billing.BillingGroup.SumExpensesForGroup(group.Id.Value);
+                groupItem.Fees = Data.Billing.BillingGroup.SumFeesForGroup(group.Id.Value);
+                groupItem.Time = Data.Timing.Time.SumUnbilledAndBillableTimeForBillingGroup(group.Id.Value);
                 viewModel.GroupItems.Add(groupItem);
             });
             
@@ -65,23 +67,59 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult SingleMatterBill(Guid id)
         {
+            Common.Models.Billing.BillingRate defaultBillingRate = null;
             ViewModels.Billing.InvoiceViewModel viewModel = new ViewModels.Billing.InvoiceViewModel();
             Common.Models.Matters.Matter matter;
 
             matter = Data.Matters.Matter.Get(id);
+            if (matter.DefaultBillingRate != null && matter.DefaultBillingRate.Id.HasValue)
+                defaultBillingRate = Data.Billing.BillingRate.Get(matter.DefaultBillingRate.Id.Value);
 
             viewModel.Id = Guid.NewGuid();
             viewModel.BillTo = Mapper.Map<ViewModels.Contacts.ContactViewModel>(Data.Contacts.Contact.Get(matter.BillTo.Id.Value));
             viewModel.Date = DateTime.Now;
             viewModel.Due = DateTime.Now.AddDays(30);
+            viewModel.BillTo_NameLine1 = viewModel.BillTo.DisplayName;
+            if (string.IsNullOrEmpty(viewModel.BillTo.Address1AddressPostOfficeBox))
+                viewModel.BillTo_AddressLine1 = viewModel.BillTo.Address1AddressStreet;
+            else
+                viewModel.BillTo_AddressLine1 = "P.O. Box " + viewModel.BillTo.Address1AddressPostOfficeBox;
+            viewModel.BillTo_City = viewModel.BillTo.Address1AddressCity;
+            viewModel.BillTo_State = viewModel.BillTo.Address1AddressStateOrProvince;
+            viewModel.BillTo_Zip = viewModel.BillTo.Address1AddressPostalCode;
 
             Data.Timing.Time.ListUnbilledAndBillableTimeForMatter(matter.Id.Value).ForEach(x =>
             {
-                viewModel.Times.Add(new ViewModels.Billing.InvoiceTimeViewModel()
+                ViewModels.Billing.InvoiceTimeViewModel vm = new ViewModels.Billing.InvoiceTimeViewModel()
                 {
                     Invoice = viewModel,
                     Time = Mapper.Map<ViewModels.Timing.TimeViewModel>(x),
                     Details = x.Details
+                };
+                if (defaultBillingRate != null)
+                    vm.PricePerUnit = defaultBillingRate.PricePerUnit;
+                viewModel.Times.Add(vm);
+            });
+
+            Data.Billing.Expense.ListUnbilledExpensesForMatter(matter.Id.Value).ForEach(x =>
+            {
+                viewModel.Expenses.Add(new ViewModels.Billing.InvoiceExpenseViewModel()
+                {
+                    Invoice = viewModel,
+                    Expense = Mapper.Map<ViewModels.Billing.ExpenseViewModel>(x),
+                    Details = x.Details,
+                    Amount = x.Amount
+                });
+            });
+
+            Data.Billing.Fee.ListUnbilledFeesForMatter(matter.Id.Value).ForEach(x =>
+            {
+                viewModel.Fees.Add(new ViewModels.Billing.InvoiceFeeViewModel()
+                {
+                    Invoice = viewModel,
+                    Fee = Mapper.Map<ViewModels.Billing.FeeViewModel>(x),
+                    Details = x.Details,
+                    Amount = x.Amount
                 });
             });
 
@@ -96,6 +134,12 @@ namespace OpenLawOffice.WebClient.Controllers
             ViewData["FirmWeb"] = Common.Settings.Manager.Instance.System.BillingFirmWeb;
 
             return View(viewModel);
+        }
+
+        [Authorize(Roles = "Login, User")]
+        public ActionResult SingleMatterBill(Guid id, ViewModels.Billing.InvoiceViewModel viewModel)
+        {
+            return View();
         }
     }
 }
