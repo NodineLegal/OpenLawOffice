@@ -72,6 +72,12 @@ namespace OpenLawOffice.Data.DBOs.Billing
         [ColumnMapping(Name = "external_invoice_id")]
         public string ExternalInvoiceId { get; set; }
 
+        [ColumnMapping(Name = "matter_id")]
+        public Guid? MatterId { get; set; }
+
+        [ColumnMapping(Name = "billing_group_id")]
+        public int? BillingGroupId { get; set; }
+
         public void BuildMappings()
         {
             Dapper.SqlMapper.SetTypeMap(typeof(Invoice), new ColumnAttributeTypeMapper<Invoice>());
@@ -135,7 +141,23 @@ namespace OpenLawOffice.Data.DBOs.Billing
                 .ForMember(dst => dst.BillTo_AddressLine2, opt => opt.MapFrom(src => src.BillTo_AddressLine2))
                 .ForMember(dst => dst.BillTo_City, opt => opt.MapFrom(src => src.BillTo_City))
                 .ForMember(dst => dst.BillTo_State, opt => opt.MapFrom(src => src.BillTo_State))
-                .ForMember(dst => dst.BillTo_Zip, opt => opt.MapFrom(src => src.BillTo_Zip));
+                .ForMember(dst => dst.BillTo_Zip, opt => opt.MapFrom(src => src.BillTo_Zip))
+                .ForMember(dst => dst.Matter, opt => opt.ResolveUsing(db =>
+                {
+                    return new Common.Models.Matters.Matter()
+                    {
+                        Id = db.MatterId,
+                        IsStub = true
+                    };
+                }))
+                .ForMember(dst => dst.BillingGroup, opt => opt.ResolveUsing(db =>
+                {
+                    return new Common.Models.Billing.BillingGroup()
+                    {
+                        Id = db.BillingGroupId,
+                        IsStub = true
+                    };
+                }));
 
             Mapper.CreateMap<Common.Models.Billing.Invoice, DBOs.Billing.Invoice>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.ResolveUsing(db =>
@@ -184,7 +206,19 @@ namespace OpenLawOffice.Data.DBOs.Billing
                 .ForMember(dst => dst.BillTo_AddressLine2, opt => opt.MapFrom(src => src.BillTo_AddressLine2))
                 .ForMember(dst => dst.BillTo_City, opt => opt.MapFrom(src => src.BillTo_City))
                 .ForMember(dst => dst.BillTo_State, opt => opt.MapFrom(src => src.BillTo_State))
-                .ForMember(dst => dst.BillTo_Zip, opt => opt.MapFrom(src => src.BillTo_Zip));
+                .ForMember(dst => dst.BillTo_Zip, opt => opt.MapFrom(src => src.BillTo_Zip))
+                .ForMember(dst => dst.MatterId, opt => opt.ResolveUsing(model =>
+                {
+                    if (model.Matter != null && model.Matter.Id.HasValue)
+                        return model.Matter.Id.Value;
+                    return null;
+                }))
+                .ForMember(dst => dst.BillingGroupId, opt => opt.ResolveUsing(model =>
+                {
+                    if (model.BillingGroup != null && model.BillingGroup.Id.HasValue)
+                        return model.BillingGroup.Id.Value;
+                    return null;
+                }));
         }
     }
 }

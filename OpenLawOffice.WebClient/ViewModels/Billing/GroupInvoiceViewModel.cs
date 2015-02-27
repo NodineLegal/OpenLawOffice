@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="Invoice.cs" company="Nodine Legal, LLC">
+// <copyright file="GroupInvoiceViewModel.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,14 +19,17 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.Common.Models.Billing
+namespace OpenLawOffice.WebClient.ViewModels.Billing
 {
     using System;
+    using AutoMapper;
+    using OpenLawOffice.Common.Models;
+    using System.Collections.Generic;
 
-    public class Invoice : Core
+    public class GroupInvoiceViewModel
     {
         public Guid? Id { get; set; }
-        public Contacts.Contact BillTo { get; set; }
+        public Contacts.ContactViewModel BillTo { get; set; }
         public DateTime Date { get; set; }
         public DateTime Due { get; set; }
         public decimal Subtotal { get; set; }
@@ -40,7 +43,13 @@ namespace OpenLawOffice.Common.Models.Billing
         public string BillTo_City { get; set; }
         public string BillTo_State { get; set; }
         public string BillTo_Zip { get; set; }
-        public Matters.Matter Matter { get; set; }
-        public BillingGroup BillingGroup { get; set; }
+        public BillingGroupViewModel BillingGroup { get; set; }
+
+        public List<GroupInvoiceItemViewModel> Matters { get; set; }
+
+        public GroupInvoiceViewModel()
+        {
+            Matters = new List<GroupInvoiceItemViewModel>();
+        }
     }
 }

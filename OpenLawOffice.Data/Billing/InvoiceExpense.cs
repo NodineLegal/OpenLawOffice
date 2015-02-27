@@ -36,5 +36,42 @@ namespace OpenLawOffice.Data.Billing
                 "\"utc_disabled\" is null ORDER BY \"utc_created\" ASC",
                 new { MatterId = matterId });
         }
+
+        public static Common.Models.Billing.InvoiceExpense Get(Guid invoiceId, Guid expenseId)
+        {
+            return DataHelper.Get<Common.Models.Billing.InvoiceExpense, DBOs.Billing.InvoiceExpense>(
+                "SELECT * FROM \"invoice_expense\" WHERE \"invoice_id\"=@InvoiceId AND \"expense_id\"=@ExpenseId",
+                new { InvoiceId = invoiceId, ExpenseId = expenseId });
+        }
+
+        public static Common.Models.Billing.InvoiceExpense Create(Common.Models.Billing.InvoiceExpense model,
+            Common.Models.Account.Users creator)
+        {
+            if (!model.Id.HasValue) model.Id = Guid.NewGuid();
+            model.Created = model.Modified = DateTime.UtcNow;
+            model.CreatedBy = model.ModifiedBy = creator;
+            DBOs.Billing.InvoiceExpense dbo = Mapper.Map<DBOs.Billing.InvoiceExpense>(model);
+
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                Common.Models.Billing.InvoiceExpense currentModel = Get(model.Invoice.Id.Value, model.Expense.Id.Value);
+
+                if (currentModel != null)
+                { // Update
+                    conn.Execute("UPDATE \"invoice_expense\" SET \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserPId " +
+                        "\"utc_disabled\"=null, \"disabled_by_user_pid\"=null WHERE \"id\"=@Id", dbo);
+                    model.Created = currentModel.Created;
+                    model.CreatedBy = currentModel.CreatedBy;
+                }
+                else
+                { // Create
+                    conn.Execute("INSERT INTO \"invoice_expense\" (\"id\", \"expense_id\", \"invoice_id\", \"amount\", \"details\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
+                        "VALUES (@Id, @ExpenseId, @InvoiceId, @Amount, @Details, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
+                        dbo);
+                }
+            }
+
+            return model;
+        }
     }
 }

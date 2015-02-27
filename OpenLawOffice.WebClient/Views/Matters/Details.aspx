@@ -134,7 +134,7 @@
             <td class="display-field">
                 <% if (Model.LeadAttorney != null)
                    { %>
-                    <%: Model.LeadAttorney.DisplayName%>
+                    <%: Html.ActionLink(Model.LeadAttorney.DisplayName, "Details", "Contacts", new { Id = Model.LeadAttorney.Id }, null) %>
                 <% } %>
             </td>
             <td>
@@ -189,6 +189,7 @@
         <tr>
             <td colspan="4" class="detail_table_heading">
                 Financial Information
+                <div style="float: right;">[<%: Html.ActionLink("Invoices", "Invoices", "Matters", new { Id = Model.Id }, new { @style = "color: white;" })%>]</div>
             </td>
         </tr>
 

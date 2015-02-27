@@ -306,7 +306,7 @@ namespace OpenLawOffice.WebClient.Controllers
             {
                 if (x.Time.Stop.HasValue)
                     timeBilledSpan = timeBilledSpan.Add(x.Time.Stop.Value - x.Time.Start);
-                timeBilledDollars += (x.Quantity * x.PricePerUnit);
+                timeBilledDollars += ((decimal)x.Duration.TotalHours * x.PricePerHour);
             });
             unbilledTimeList.ForEach(x =>
             {
@@ -790,6 +790,24 @@ namespace OpenLawOffice.WebClient.Controllers
             ViewData["MatterId"] = matter.Id;
 
             return View(TasksController.GetListForMatter(id, active));
+        }
+
+        [Authorize(Roles = "Login, User")]
+        public ActionResult Invoices(Guid id)
+        {
+            Common.Models.Matters.Matter matter;
+            List<ViewModels.Billing.InvoiceViewModel> list = new List<ViewModels.Billing.InvoiceViewModel>();
+
+            Data.Billing.Invoice.ListInvoicesForMatter(id).ForEach(x =>
+            {
+                list.Add(Mapper.Map<ViewModels.Billing.InvoiceViewModel>(x));
+            });
+
+            matter = Data.Matters.Matter.Get(id);
+            ViewData["Matter"] = matter.Title;
+            ViewData["MatterId"] = matter.Id;
+
+            return View(list);
         }
 
         [Authorize(Roles = "Login, User")]

@@ -44,6 +44,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Billing
         public string BillTo_City { get; set; }
         public string BillTo_State { get; set; }
         public string BillTo_Zip { get; set; }
+        public Matters.MatterViewModel Matter { get; set; }
+        public BillingGroupViewModel BillingGroup { get; set; }
 
         public List<InvoiceTimeViewModel> Times { get; set; }
         public List<InvoiceExpenseViewModel> Expenses { get; set; }
@@ -89,7 +91,6 @@ namespace OpenLawOffice.WebClient.ViewModels.Billing
                     };
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.BillTo, opt => opt.MapFrom(src => src.BillTo))
                 .ForMember(dst => dst.BillTo, opt => opt.ResolveUsing(db =>
                 {
                     return new ViewModels.Contacts.ContactViewModel()
@@ -111,6 +112,22 @@ namespace OpenLawOffice.WebClient.ViewModels.Billing
                 .ForMember(dst => dst.BillTo_City, opt => opt.MapFrom(src => src.BillTo_City))
                 .ForMember(dst => dst.BillTo_State, opt => opt.MapFrom(src => src.BillTo_State))
                 .ForMember(dst => dst.BillTo_Zip, opt => opt.MapFrom(src => src.BillTo_Zip))
+                .ForMember(dst => dst.Matter, opt => opt.ResolveUsing(db =>
+                {
+                    return new ViewModels.Matters.MatterViewModel()
+                    {
+                        Id = db.Matter.Id,
+                        IsStub = true
+                    };
+                }))
+                .ForMember(dst => dst.BillingGroup, opt => opt.ResolveUsing(db =>
+                {
+                    return new ViewModels.Billing.BillingGroupViewModel()
+                    {
+                        Id = db.BillingGroup.Id,
+                        IsStub = true
+                    };
+                }))
                 .ForMember(dst => dst.Times, opt => opt.Ignore())
                 .ForMember(dst => dst.Expenses, opt => opt.Ignore())
                 .ForMember(dst => dst.Fees, opt => opt.Ignore());
@@ -150,7 +167,6 @@ namespace OpenLawOffice.WebClient.ViewModels.Billing
                     };
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.BillTo, opt => opt.MapFrom(src => src.BillTo))
                 .ForMember(dst => dst.BillTo, opt => opt.ResolveUsing(x =>
                 {
                     if (x.BillTo == null || !x.BillTo.Id.HasValue)
@@ -173,7 +189,27 @@ namespace OpenLawOffice.WebClient.ViewModels.Billing
                 .ForMember(dst => dst.BillTo_AddressLine2, opt => opt.MapFrom(src => src.BillTo_AddressLine2))
                 .ForMember(dst => dst.BillTo_City, opt => opt.MapFrom(src => src.BillTo_City))
                 .ForMember(dst => dst.BillTo_State, opt => opt.MapFrom(src => src.BillTo_State))
-                .ForMember(dst => dst.BillTo_Zip, opt => opt.MapFrom(src => src.BillTo_Zip));
+                .ForMember(dst => dst.BillTo_Zip, opt => opt.MapFrom(src => src.BillTo_Zip))
+                .ForMember(dst => dst.Matter, opt => opt.ResolveUsing(x =>
+                {
+                    if (x.Matter == null || !x.Matter.Id.HasValue)
+                        return null;
+                    return new ViewModels.Matters.MatterViewModel()
+                    {
+                        Id = x.Matter.Id,
+                        IsStub = true
+                    };
+                }))
+                .ForMember(dst => dst.BillingGroup, opt => opt.ResolveUsing(x =>
+                {
+                    if (x.BillingGroup == null || !x.BillingGroup.Id.HasValue)
+                        return null;
+                    return new ViewModels.Billing.BillingGroupViewModel()
+                    {
+                        Id = x.BillingGroup.Id,
+                        IsStub = true
+                    };
+                }));
         }
     }
 }

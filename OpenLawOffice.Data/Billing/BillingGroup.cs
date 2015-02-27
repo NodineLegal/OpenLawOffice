@@ -79,6 +79,13 @@ namespace OpenLawOffice.Data.Billing
             return model;
         }
 
+        public static List<Common.Models.Matters.Matter> ListMattersForGroup(int billingGroupId)
+        {
+            return DataHelper.List<Common.Models.Matters.Matter, DBOs.Matters.Matter>(
+                "SELECT * FROM \"matter\" WHERE \"billing_group_id\"=@BillingGroupId AND \"utc_disabled\" is null",
+                new { BillingGroupId = billingGroupId });
+        }
+
         public static decimal SumExpensesForGroup(int billingGroupId)
         {
             using (IDbConnection conn = Database.Instance.GetConnection())
@@ -102,6 +109,31 @@ namespace OpenLawOffice.Data.Billing
             }
         }
 
+        public static decimal SumBillableExpensesForGroup(int billingGroupId)
+        {
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                IEnumerable<dynamic> result = conn.Query("SELECT SUM(\"amount\") AS \"Amount\" FROM \"expense\" WHERE \"id\" IN " +
+                    "(SELECT \"expense_id\" FROM \"expense_matter\" WHERE \"matter_id\" IN " +
+                        "(SELECT \"id\" FROM \"matter\" WHERE \"billing_group_id\"=@BillingGroupId) " +
+                    "AND \"expense_id\" NOT IN " +
+                        "(SELECT \"expense_id\" FROM \"invoice_expense\" WHERE \"utc_disabled\" is NULL) " +
+                    ")", new { BillingGroupId = billingGroupId });
+
+                IEnumerator<dynamic> enumerator = result.GetEnumerator();
+
+                while (enumerator.MoveNext())
+                {
+                    if (enumerator.Current.Amount == null)
+                        return 0;
+
+                    return enumerator.Current.Amount;
+                }
+
+                return 0;
+            }
+        }
+
         public static decimal SumFeesForGroup(int billingGroupId)
         {
             using (IDbConnection conn = Database.Instance.GetConnection())
@@ -109,6 +141,31 @@ namespace OpenLawOffice.Data.Billing
                 IEnumerable<dynamic> result = conn.Query("SELECT SUM(\"amount\") AS \"Amount\" FROM \"fee\" WHERE \"id\" IN " +
                     "(SELECT \"fee_id\" FROM \"fee_matter\" WHERE \"matter_id\" IN " +
                         "(SELECT \"id\" FROM \"matter\" WHERE \"billing_group_id\"=@BillingGroupId) " +
+                    ")", new { BillingGroupId = billingGroupId });
+
+                IEnumerator<dynamic> enumerator = result.GetEnumerator();
+
+                while (enumerator.MoveNext())
+                {
+                    if (enumerator.Current.Amount == null)
+                        return 0;
+
+                    return enumerator.Current.Amount;
+                }
+
+                return 0;
+            }
+        }
+
+        public static decimal SumBillableFeesForGroup(int billingGroupId)
+        {
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                IEnumerable<dynamic> result = conn.Query("SELECT SUM(\"amount\") AS \"Amount\" FROM \"fee\" WHERE \"id\" IN " +
+                    "(SELECT \"fee_id\" FROM \"fee_matter\" WHERE \"matter_id\" IN " +
+                        "(SELECT \"id\" FROM \"matter\" WHERE \"billing_group_id\"=@BillingGroupId) " +
+                    "AND \"fee_id\" NOT IN " +
+                        "(SELECT \"fee_id\" FROM \"invoice_fee\" WHERE \"utc_disabled\" is NULL) " +
                     ")", new { BillingGroupId = billingGroupId });
 
                 IEnumerator<dynamic> enumerator = result.GetEnumerator();

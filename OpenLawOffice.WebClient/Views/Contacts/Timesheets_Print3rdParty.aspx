@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Contacts.TimesheetsViewModel>" %>
-
+<%@ Import Namespace="OpenLawOffice.WebClient.Helpers" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" >
@@ -39,10 +39,10 @@
     <%
         bool onePrinted = false;
         bool altRow = true;
-        double totalMinutes = 0;
+        TimeSpan totalTime = new TimeSpan(0);
         DateTime lastTimestampStart = DateTime.MinValue;// DateTime.Today;
         DateTime lastTimestampStop = DateTime.MinValue;// DateTime.Today;
-        List<Tuple<string, string, double>> summaryList = new List<Tuple<string, string, double>>();
+        List<Tuple<string, string, TimeSpan>> summaryList = new List<Tuple<string, string, TimeSpan>>();
 for (int i=0; i<Model.Matters.Count; i++)
 {
     OpenLawOffice.WebClient.ViewModels.Contacts.TimesheetsViewModel.MatterTimeList matter = Model.Matters[i];
@@ -70,14 +70,14 @@ for (int i=0; i<Model.Matters.Count; i++)
         
     <% 
        altRow = true;
-       totalMinutes = 0;
        lastTimestampStart = DateTime.MinValue;// DateTime.Today;
        lastTimestampStop = DateTime.MinValue;// DateTime.Today;
-
+       totalTime = new TimeSpan();
+        
        foreach (var item in matter.Times)
        {
            altRow = !altRow;
-           totalMinutes += item.Time.Duration.TotalMinutes;
+           totalTime = totalTime.Add(item.Time.Duration);
 
             %>
             
@@ -85,7 +85,7 @@ for (int i=0; i<Model.Matters.Count; i++)
                 if (altRow) {
                     %>style="background-color: #f5f5f5;"<% } %> >
                 <td style="width: 100px; text-align: center;">
-                    <%: item.Time.Duration.ToString(@"h\:mm")%>
+                    <%: TimeSpanHelper.TimeSpan(item.Time.Duration, false)%>
                 </td>
                 <td>
                     <%: item.Time.Details%>
@@ -103,7 +103,7 @@ for (int i=0; i<Model.Matters.Count; i++)
                 Total Time:
             </td>
             <td style="text-align: left; font-weight: bold;">
-                <%: TimeSpan.FromMinutes(Math.Round(totalMinutes, 0)).ToString(@"h\:mm")%>
+                <%: TimeSpanHelper.TimeSpan(totalTime, false)%>
             </td>
             <td colspan="4">
             </td>
@@ -112,7 +112,7 @@ for (int i=0; i<Model.Matters.Count; i++)
     <br />
     <div class="page-break"></div>
     <% 
-    summaryList.Add(new Tuple<string, string, double>(matter.Matter.Title, matter.Matter.CaseNumber, totalMinutes)); 
+    summaryList.Add(new Tuple<string, string, TimeSpan>(matter.Matter.Title, matter.Matter.CaseNumber, totalTime)); 
     %>
         
     <%
@@ -132,13 +132,13 @@ for (int i=0; i<Model.Matters.Count; i++)
         </tr>
         
     <% 
-       altRow = true;
-       totalMinutes = 0;
+        altRow = true;
+        totalTime = new TimeSpan(0);
 
        foreach (var item in summaryList)
        {
            altRow = !altRow;
-           totalMinutes += item.Item3;
+           totalTime = totalTime.Add(item.Item3);
 
             %>
             
@@ -152,7 +152,7 @@ for (int i=0; i<Model.Matters.Count; i++)
                     <%: item.Item2%>
                 </td>
                 <td style="width: 100px; text-align: center;">
-                    <%: TimeSpan.FromMinutes(Math.Round(item.Item3, 0)).ToString(@"h\:mm")%>
+                    <%: TimeSpanHelper.TimeSpan(item.Item3, false)%>
                 </td>
             </tr>
     
@@ -164,7 +164,7 @@ for (int i=0; i<Model.Matters.Count; i++)
                 Total Time:
             </td>
             <td style="text-align: center; font-weight: bold;">
-                <%: TimeSpan.FromMinutes(Math.Round(totalMinutes, 0)).ToString(@"h\:mm")%>
+                <%: TimeSpanHelper.TimeSpan(totalTime, true) %>
             </td>
             <td colspan="4">
             </td>

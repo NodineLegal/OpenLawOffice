@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="Invoice.cs" company="Nodine Legal, LLC">
+// <copyright file="GroupInvoiceViewModel.cs" company="Nodine Legal, LLC">
 // Licensed to Nodine Legal, LLC under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,28 +19,30 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace OpenLawOffice.Common.Models.Billing
+namespace OpenLawOffice.WebClient.ViewModels.Billing
 {
     using System;
+    using AutoMapper;
+    using OpenLawOffice.Common.Models;
+    using System.Collections.Generic;
 
-    public class Invoice : Core
+    public class GroupInvoiceItemViewModel
     {
-        public Guid? Id { get; set; }
-        public Contacts.Contact BillTo { get; set; }
-        public DateTime Date { get; set; }
-        public DateTime Due { get; set; }
-        public decimal Subtotal { get; set; }
-        public decimal TaxAmount { get; set; }
-        public decimal Total { get; set; }
-        public string ExternalInvoiceId { get; set; }
-        public string BillTo_NameLine1 { get; set; }
-        public string BillTo_NameLine2 { get; set; }
-        public string BillTo_AddressLine1 { get; set; }
-        public string BillTo_AddressLine2 { get; set; }
-        public string BillTo_City { get; set; }
-        public string BillTo_State { get; set; }
-        public string BillTo_Zip { get; set; }
-        public Matters.Matter Matter { get; set; }
-        public BillingGroup BillingGroup { get; set; }
+        public Matters.MatterViewModel Matter { get; set; }
+        public decimal ExpensesSum { get; set; }
+        public decimal FeesSum { get; set; }
+        public TimeSpan TimeSum { get; set; }
+        public decimal TimeSumMoney { get; set; }
+
+        public List<InvoiceTimeViewModel> Times { get; set; }
+        public List<InvoiceExpenseViewModel> Expenses { get; set; }
+        public List<InvoiceFeeViewModel> Fees { get; set; }
+
+        public GroupInvoiceItemViewModel()
+        {
+            Times = new List<InvoiceTimeViewModel>();
+            Expenses = new List<InvoiceExpenseViewModel>();
+            Fees = new List<InvoiceFeeViewModel>();
+        }
     }
 }

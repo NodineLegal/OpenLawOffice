@@ -36,5 +36,42 @@ namespace OpenLawOffice.Data.Billing
                 "\"utc_disabled\" is null ORDER BY \"utc_created\" ASC",
                 new { MatterId = matterId });
         }
+
+        public static Common.Models.Billing.InvoiceFee Get(Guid invoiceId, Guid feeId)
+        {
+            return DataHelper.Get<Common.Models.Billing.InvoiceFee, DBOs.Billing.InvoiceFee>(
+                "SELECT * FROM \"invoice_fee\" WHERE \"invoice_id\"=@InvoiceId AND \"fee_id\"=@FeeId",
+                new { InvoiceId = invoiceId, FeeId = feeId });
+        }
+
+        public static Common.Models.Billing.InvoiceFee Create(Common.Models.Billing.InvoiceFee model,
+            Common.Models.Account.Users creator)
+        {
+            if (!model.Id.HasValue) model.Id = Guid.NewGuid();
+            model.Created = model.Modified = DateTime.UtcNow;
+            model.CreatedBy = model.ModifiedBy = creator;
+            DBOs.Billing.InvoiceFee dbo = Mapper.Map<DBOs.Billing.InvoiceFee>(model);
+
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                Common.Models.Billing.InvoiceFee currentModel = Get(model.Invoice.Id.Value, model.Fee.Id.Value);
+
+                if (currentModel != null)
+                { // Update
+                    conn.Execute("UPDATE \"invoice_fee\" SET \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserPId " +
+                        "\"utc_disabled\"=null, \"disabled_by_user_pid\"=null WHERE \"id\"=@Id", dbo);
+                    model.Created = currentModel.Created;
+                    model.CreatedBy = currentModel.CreatedBy;
+                }
+                else
+                { // Create
+                    conn.Execute("INSERT INTO \"invoice_fee\" (\"id\", \"fee_id\", \"invoice_id\", \"amount\", \"details\", \"tax_amount\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
+                        "VALUES (@Id, @FeeId, @InvoiceId, @Amount, @Details, @TaxAmount, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
+                        dbo);
+                }
+            }
+
+            return model;
+        }
     }
 }

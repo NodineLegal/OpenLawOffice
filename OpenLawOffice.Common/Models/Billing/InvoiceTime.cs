@@ -25,11 +25,11 @@ namespace OpenLawOffice.Common.Models.Billing
 
     public class InvoiceTime : Core
     {
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
         public Invoice Invoice { get; set; }
         public Timing.Time Time { get; set; }
-        public decimal Quantity { get; set; }
-        public decimal PricePerUnit { get; set; }
+        public TimeSpan Duration { get; set; }
+        public decimal PricePerHour { get; set; }
         public string Details { get; set; }
     }
 }

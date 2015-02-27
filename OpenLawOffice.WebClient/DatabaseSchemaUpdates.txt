@@ -1,4 +1,36 @@
-﻿2/16/2015
+﻿2/20/2015
+
+Changes to invoice
+
+ALTER TABLE invoice
+  ADD COLUMN billing_group_id integer;
+ALTER TABLE invoice
+  ADD CONSTRAINT "FK_invoice_billing_group_BillingGroupIp" FOREIGN KEY (billing_group_id) REFERENCES billing_group (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+
+2/18/2015
+
+Changes to invoice
+
+ALTER TABLE invoice
+  ADD COLUMN matter_id uuid;
+ALTER TABLE invoice
+  ADD CONSTRAINT "FK_invoice_matter_MatterId" FOREIGN KEY (matter_id) REFERENCES matter (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+
+Table changes to invoice_time
+
+ALTER TABLE invoice_time
+  DROP COLUMN price_per_unit;
+ALTER TABLE invoice_time
+  DROP COLUMN quantity;
+ALTER TABLE invoice_time
+  ADD COLUMN duration interval NOT NULL;
+ALTER TABLE invoice_time
+  ADD COLUMN price_per_hour money NOT NULL;
+
+
+2/16/2015
 
 Add columns to invoice
 

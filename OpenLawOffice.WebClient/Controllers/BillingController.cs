@@ -30,7 +30,7 @@ namespace OpenLawOffice.WebClient.Controllers
     using System.Web.Security;
 
     [HandleError(View = "Errors/Index", Order = 10)]
-    public class BillingController : Controller
+    public class BillingController : BaseController
     {
         [Authorize(Roles = "Login, User")]
         public ActionResult Index()
@@ -47,7 +47,9 @@ namespace OpenLawOffice.WebClient.Controllers
                 item.Expenses = Data.Billing.Expense.SumUnbilledExpensesForMatter(matter.Id.Value);
                 item.Fees = Data.Billing.Fee.SumUnbilledFeesForMatter(matter.Id.Value);
                 item.Time = Data.Timing.Time.SumUnbilledAndBillableTimeForMatter(matter.Id.Value);
-                viewModel.Items.Add(item);
+
+                if ((item.Expenses + item.Fees + (decimal)item.Time.TotalHours) > 0)
+                    viewModel.Items.Add(item);
             });
 
             Data.Billing.Invoice.ListBillableBillingGroups().ForEach(group =>
@@ -55,8 +57,8 @@ namespace OpenLawOffice.WebClient.Controllers
                 groupItem = new ViewModels.Billing.BillingViewModel.GroupItem();
                 groupItem.BillingGroup = Mapper.Map<ViewModels.Billing.BillingGroupViewModel>(group);
                 groupItem.BillingGroup.BillTo = Mapper.Map<ViewModels.Contacts.ContactViewModel>(Data.Contacts.Contact.Get(group.BillTo.Id.Value));
-                groupItem.Expenses = Data.Billing.BillingGroup.SumExpensesForGroup(group.Id.Value);
-                groupItem.Fees = Data.Billing.BillingGroup.SumFeesForGroup(group.Id.Value);
+                groupItem.Expenses = Data.Billing.BillingGroup.SumBillableExpensesForGroup(group.Id.Value);
+                groupItem.Fees = Data.Billing.BillingGroup.SumBillableFeesForGroup(group.Id.Value);
                 groupItem.Time = Data.Timing.Time.SumUnbilledAndBillableTimeForBillingGroup(group.Id.Value);
                 viewModel.GroupItems.Add(groupItem);
             });
@@ -69,9 +71,13 @@ namespace OpenLawOffice.WebClient.Controllers
         {
             Common.Models.Billing.BillingRate defaultBillingRate = null;
             ViewModels.Billing.InvoiceViewModel viewModel = new ViewModels.Billing.InvoiceViewModel();
+            Common.Models.Billing.Invoice previousInvoice = null;
             Common.Models.Matters.Matter matter;
 
             matter = Data.Matters.Matter.Get(id);
+
+            previousInvoice = Data.Billing.Invoice.GetMostRecentInvoiceForContact(matter.BillTo.Id.Value);
+
             if (matter.DefaultBillingRate != null && matter.DefaultBillingRate.Id.HasValue)
                 defaultBillingRate = Data.Billing.BillingRate.Get(matter.DefaultBillingRate.Id.Value);
 
@@ -79,14 +85,29 @@ namespace OpenLawOffice.WebClient.Controllers
             viewModel.BillTo = Mapper.Map<ViewModels.Contacts.ContactViewModel>(Data.Contacts.Contact.Get(matter.BillTo.Id.Value));
             viewModel.Date = DateTime.Now;
             viewModel.Due = DateTime.Now.AddDays(30);
-            viewModel.BillTo_NameLine1 = viewModel.BillTo.DisplayName;
-            if (string.IsNullOrEmpty(viewModel.BillTo.Address1AddressPostOfficeBox))
-                viewModel.BillTo_AddressLine1 = viewModel.BillTo.Address1AddressStreet;
+            viewModel.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(matter);
+
+            if (previousInvoice == null)
+            {
+                viewModel.BillTo_NameLine1 = viewModel.BillTo.DisplayName;
+                if (string.IsNullOrEmpty(viewModel.BillTo.Address1AddressPostOfficeBox))
+                    viewModel.BillTo_AddressLine1 = viewModel.BillTo.Address1AddressStreet;
+                else
+                    viewModel.BillTo_AddressLine1 = "P.O. Box " + viewModel.BillTo.Address1AddressPostOfficeBox;
+                viewModel.BillTo_City = viewModel.BillTo.Address1AddressCity;
+                viewModel.BillTo_State = viewModel.BillTo.Address1AddressStateOrProvince;
+                viewModel.BillTo_Zip = viewModel.BillTo.Address1AddressPostalCode;
+            }
             else
-                viewModel.BillTo_AddressLine1 = "P.O. Box " + viewModel.BillTo.Address1AddressPostOfficeBox;
-            viewModel.BillTo_City = viewModel.BillTo.Address1AddressCity;
-            viewModel.BillTo_State = viewModel.BillTo.Address1AddressStateOrProvince;
-            viewModel.BillTo_Zip = viewModel.BillTo.Address1AddressPostalCode;
+            {
+                viewModel.BillTo_NameLine1 = previousInvoice.BillTo_NameLine1;
+                viewModel.BillTo_NameLine2 = previousInvoice.BillTo_NameLine2;
+                viewModel.BillTo_AddressLine1 = previousInvoice.BillTo_AddressLine1;
+                viewModel.BillTo_AddressLine2 = previousInvoice.BillTo_AddressLine2;
+                viewModel.BillTo_City = previousInvoice.BillTo_City;
+                viewModel.BillTo_State = previousInvoice.BillTo_State;
+                viewModel.BillTo_Zip = previousInvoice.BillTo_Zip;
+            }
 
             Data.Timing.Time.ListUnbilledAndBillableTimeForMatter(matter.Id.Value).ForEach(x =>
             {
@@ -96,8 +117,12 @@ namespace OpenLawOffice.WebClient.Controllers
                     Time = Mapper.Map<ViewModels.Timing.TimeViewModel>(x),
                     Details = x.Details
                 };
+                if (x.Stop.HasValue)
+                    vm.Duration = x.Stop.Value - x.Start;
+                else
+                    vm.Duration = new TimeSpan(0);
                 if (defaultBillingRate != null)
-                    vm.PricePerUnit = defaultBillingRate.PricePerUnit;
+                    vm.PricePerHour = defaultBillingRate.PricePerUnit;
                 viewModel.Times.Add(vm);
             });
 
@@ -137,9 +162,295 @@ namespace OpenLawOffice.WebClient.Controllers
         }
 
         [Authorize(Roles = "Login, User")]
+        [HttpPost]
         public ActionResult SingleMatterBill(Guid id, ViewModels.Billing.InvoiceViewModel viewModel)
         {
-            return View();
+            // Create Invoice
+            // Loop Expenses
+            // Loop Fees
+            // Loop Times
+            // Redirect to invoice viewing
+            decimal subtotal = 0;
+            Common.Models.Account.Users currentUser;
+            
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
+            Common.Models.Billing.Invoice invoice = Mapper.Map<Common.Models.Billing.Invoice>(viewModel);
+
+            // Any validation would need done here
+
+            invoice = Data.Billing.Invoice.Create(invoice, currentUser);
+
+            viewModel.Expenses.ForEach(vm =>
+            {
+                Common.Models.Billing.InvoiceExpense invexp = new Common.Models.Billing.InvoiceExpense()
+                {
+                    Invoice = invoice,
+                    Expense = new Common.Models.Billing.Expense()
+                    {
+                        Id = vm.Expense.Id
+                    },
+                    Amount = vm.Amount,
+                    Details = vm.Details
+                };
+
+                subtotal += vm.Amount;
+                Data.Billing.InvoiceExpense.Create(invexp, currentUser);
+            });
+
+            viewModel.Fees.ForEach(vm =>
+            {
+                Common.Models.Billing.InvoiceFee invfee = new Common.Models.Billing.InvoiceFee()
+                {
+                    Invoice = invoice,
+                    Fee = new Common.Models.Billing.Fee()
+                    {
+                        Id = vm.Fee.Id
+                    },
+                    Amount = vm.Amount,
+                    Details = vm.Details
+                };
+
+                subtotal += vm.Amount;
+                Data.Billing.InvoiceFee.Create(invfee, currentUser);
+            });
+
+            viewModel.Times.ForEach(vm =>
+            {
+                Common.Models.Billing.InvoiceTime invtime = new Common.Models.Billing.InvoiceTime()
+                {
+                    Invoice = invoice,
+                    Time = new Common.Models.Timing.Time()
+                    {
+                        Id = vm.Time.Id
+                    },
+                    Duration = vm.Duration,
+                    PricePerHour = vm.PricePerHour,
+                    Details = vm.Details
+                };
+
+                subtotal += ((decimal)invtime.Duration.TotalHours * invtime.PricePerHour);
+                Data.Billing.InvoiceTime.Create(invtime, currentUser);
+            });
+
+            invoice.Subtotal = subtotal;
+            invoice.Total = invoice.Subtotal + invoice.TaxAmount;
+
+            Data.Billing.Invoice.Edit(invoice, currentUser);
+
+            return RedirectToAction("Details", "Invoices", new { id = invoice.Id });
+        }
+        
+        [Authorize(Roles = "Login, User")]
+        public ActionResult SingleGroupBill(int id)
+        {
+            Common.Models.Billing.BillingGroup billingGroup;
+            Common.Models.Billing.Invoice previousInvoice = null;
+            ViewModels.Billing.GroupInvoiceViewModel viewModel = new ViewModels.Billing.GroupInvoiceViewModel();
+            List<Common.Models.Matters.Matter> mattersList;
+
+            billingGroup = Data.Billing.BillingGroup.Get(id);
+            previousInvoice = Data.Billing.Invoice.GetMostRecentInvoiceForContact(billingGroup.BillTo.Id.Value);
+
+            billingGroup.NextRun = new DateTime(DateTime.Now.Year, DateTime.Now.Month + 1, 1);
+
+            viewModel.Id = Guid.NewGuid();
+            viewModel.BillTo = Mapper.Map<ViewModels.Contacts.ContactViewModel>(Data.Contacts.Contact.Get(billingGroup.BillTo.Id.Value));
+            viewModel.Date = DateTime.Now;
+            viewModel.Due = DateTime.Now.AddDays(30);
+            viewModel.BillingGroup = Mapper.Map<ViewModels.Billing.BillingGroupViewModel>(billingGroup);
+            
+            if (previousInvoice == null)
+            {
+                viewModel.BillTo_NameLine1 = viewModel.BillTo.DisplayName;
+                if (string.IsNullOrEmpty(viewModel.BillTo.Address1AddressPostOfficeBox))
+                    viewModel.BillTo_AddressLine1 = viewModel.BillTo.Address1AddressStreet;
+                else
+                    viewModel.BillTo_AddressLine1 = "P.O. Box " + viewModel.BillTo.Address1AddressPostOfficeBox;
+                viewModel.BillTo_City = viewModel.BillTo.Address1AddressCity;
+                viewModel.BillTo_State = viewModel.BillTo.Address1AddressStateOrProvince;
+                viewModel.BillTo_Zip = viewModel.BillTo.Address1AddressPostalCode;
+            }
+            else
+            {
+                viewModel.BillTo_NameLine1 = previousInvoice.BillTo_NameLine1;
+                viewModel.BillTo_NameLine2 = previousInvoice.BillTo_NameLine2;
+                viewModel.BillTo_AddressLine1 = previousInvoice.BillTo_AddressLine1;
+                viewModel.BillTo_AddressLine2 = previousInvoice.BillTo_AddressLine2;
+                viewModel.BillTo_City = previousInvoice.BillTo_City;
+                viewModel.BillTo_State = previousInvoice.BillTo_State;
+                viewModel.BillTo_Zip = previousInvoice.BillTo_Zip;
+            }
+
+            mattersList = Data.Billing.BillingGroup.ListMattersForGroup(billingGroup.Id.Value);
+            
+            for (int i=0; i<mattersList.Count; i++) 
+            {
+                ViewModels.Billing.GroupInvoiceItemViewModel giivm = new ViewModels.Billing.GroupInvoiceItemViewModel();
+                Common.Models.Matters.Matter matter = mattersList[i];
+
+                giivm.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(matter);
+
+                Data.Timing.Time.ListUnbilledAndBillableTimeForMatter(matter.Id.Value).ForEach(x =>
+                {
+                    ViewModels.Billing.InvoiceTimeViewModel vm = new ViewModels.Billing.InvoiceTimeViewModel()
+                    {
+                        //Invoice = viewModel,
+                        Time = Mapper.Map<ViewModels.Timing.TimeViewModel>(x),
+                        Details = x.Details,
+                        PricePerHour = 0
+                    };
+                    if (x.Stop.HasValue)
+                        vm.Duration = x.Stop.Value - x.Start;
+                    else
+                        vm.Duration = new TimeSpan(0);
+                    giivm.Times.Add(vm);
+                });
+
+                Data.Billing.Expense.ListUnbilledExpensesForMatter(matter.Id.Value).ForEach(x =>
+                {
+                    giivm.Expenses.Add(new ViewModels.Billing.InvoiceExpenseViewModel()
+                    {
+                        //Invoice = viewModel,
+                        Expense = Mapper.Map<ViewModels.Billing.ExpenseViewModel>(x),
+                        Details = x.Details,
+                        Amount = x.Amount
+                    });
+                });
+
+                Data.Billing.Fee.ListUnbilledFeesForMatter(matter.Id.Value).ForEach(x =>
+                {
+                    giivm.Fees.Add(new ViewModels.Billing.InvoiceFeeViewModel()
+                    {
+                        //Invoice = viewModel,
+                        Fee = Mapper.Map<ViewModels.Billing.FeeViewModel>(x),
+                        Details = x.Details,
+                        Amount = x.Amount
+                    });
+                });
+
+                if ((giivm.Times.Count > 0) ||
+                    (giivm.Expenses.Count > 0) ||
+                    (giivm.Fees.Count > 0))
+                    viewModel.Matters.Add(giivm);
+            }            
+
+            ViewData["FirmName"] = Common.Settings.Manager.Instance.System.BillingFirmName;
+            ViewData["FirmAddress"] = Common.Settings.Manager.Instance.System.BillingFirmAddress;
+            ViewData["FirmCity"] = Common.Settings.Manager.Instance.System.BillingFirmCity;
+            ViewData["FirmState"] = Common.Settings.Manager.Instance.System.BillingFirmState;
+            ViewData["FirmZip"] = Common.Settings.Manager.Instance.System.BillingFirmZip;
+            ViewData["FirmPhone"] = Common.Settings.Manager.Instance.System.BillingFirmPhone;
+            ViewData["FirmWeb"] = Common.Settings.Manager.Instance.System.BillingFirmWeb;
+
+            return View(viewModel);
+        }
+        
+        [Authorize(Roles = "Login, User")]
+        [HttpPost]
+        public ActionResult SingleGroupBill(int id, ViewModels.Billing.GroupInvoiceViewModel viewModel)
+        {
+            // Create Invoice
+            // Loop Matters
+                // Loop Expenses
+                // Loop Fees
+                // Loop Times
+            // Redirect to invoice viewing
+            decimal subtotal = 0;
+            Common.Models.Account.Users currentUser;
+            Common.Models.Billing.BillingGroup billingGroup;
+
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
+            billingGroup = Data.Billing.BillingGroup.Get(id);
+
+            // Any validation would need done here
+
+            Common.Models.Billing.Invoice invoice = new Common.Models.Billing.Invoice()
+            {
+                Id = viewModel.Id,
+                BillTo = Mapper.Map<Common.Models.Contacts.Contact>(viewModel.BillTo),
+                Date = viewModel.Date,
+                Due = viewModel.Due,
+                Subtotal = viewModel.Subtotal,
+                TaxAmount = viewModel.TaxAmount,
+                Total = viewModel.Total,
+                ExternalInvoiceId = viewModel.ExternalInvoiceId,
+                BillTo_NameLine1 = viewModel.BillTo_NameLine1,
+                BillTo_NameLine2 = viewModel.BillTo_NameLine2,
+                BillTo_AddressLine1 = viewModel.BillTo_AddressLine1,
+                BillTo_AddressLine2 = viewModel.BillTo_AddressLine2,
+                BillTo_City = viewModel.BillTo_City,
+                BillTo_State = viewModel.BillTo_State,
+                BillTo_Zip = viewModel.BillTo_Zip,
+                BillingGroup = new Common.Models.Billing.BillingGroup() { Id = id }
+            };
+
+            invoice = Data.Billing.Invoice.Create(invoice, currentUser);
+
+            viewModel.Matters.ForEach(matterVM =>
+            {
+                matterVM.Expenses.ForEach(vm =>
+                {
+                    Common.Models.Billing.InvoiceExpense invexp = new Common.Models.Billing.InvoiceExpense()
+                    {
+                        Invoice = invoice,
+                        Expense = new Common.Models.Billing.Expense()
+                        {
+                            Id = vm.Expense.Id
+                        },
+                        Amount = vm.Amount,
+                        Details = vm.Details
+                    };
+
+                    subtotal += vm.Amount;
+                    Data.Billing.InvoiceExpense.Create(invexp, currentUser);
+                });
+
+                matterVM.Fees.ForEach(vm =>
+                {
+                    Common.Models.Billing.InvoiceFee invfee = new Common.Models.Billing.InvoiceFee()
+                    {
+                        Invoice = invoice,
+                        Fee = new Common.Models.Billing.Fee()
+                        {
+                            Id = vm.Fee.Id
+                        },
+                        Amount = vm.Amount,
+                        Details = vm.Details
+                    };
+
+                    subtotal += vm.Amount;
+                    Data.Billing.InvoiceFee.Create(invfee, currentUser);
+                });
+
+                matterVM.Times.ForEach(vm =>
+                {
+                    Common.Models.Billing.InvoiceTime invtime = new Common.Models.Billing.InvoiceTime()
+                    {
+                        Invoice = invoice,
+                        Time = new Common.Models.Timing.Time()
+                        {
+                            Id = vm.Time.Id
+                        },
+                        Duration = vm.Duration,
+                        PricePerHour = vm.PricePerHour,
+                        Details = vm.Details
+                    };
+
+                    subtotal += ((decimal)invtime.Duration.TotalHours * invtime.PricePerHour);
+                    Data.Billing.InvoiceTime.Create(invtime, currentUser);
+                });
+            });
+
+            invoice.Subtotal = subtotal;
+            invoice.Total = viewModel.BillingGroup.Amount + invoice.Subtotal + invoice.TaxAmount;
+
+            Data.Billing.Invoice.Edit(invoice, currentUser);
+
+            billingGroup.LastRun = DateTime.Now;
+            billingGroup.NextRun = viewModel.BillingGroup.NextRun;
+            Data.Billing.BillingGroup.Edit(billingGroup, currentUser);
+
+            return RedirectToAction("GroupDetails", "Invoices", new { id = invoice.Id });
         }
     }
 }

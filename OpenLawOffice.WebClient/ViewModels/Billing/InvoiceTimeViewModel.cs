@@ -32,8 +32,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Billing
         public Guid Id { get; set; }
         public InvoiceViewModel Invoice { get; set; }
         public Timing.TimeViewModel Time { get; set; }
-        public decimal Quantity { get; set; }
-        public decimal PricePerUnit { get; set; }
+        public TimeSpan Duration { get; set; }
+        public decimal PricePerHour { get; set; }
         public string Details { get; set; }
 
         public void BuildMappings()
@@ -85,8 +85,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Billing
                         IsStub = true
                     };
                 }))
-                .ForMember(dst => dst.Quantity, opt => opt.MapFrom(src => src.Quantity))
-                .ForMember(dst => dst.PricePerUnit, opt => opt.MapFrom(src => src.PricePerUnit))
+                .ForMember(dst => dst.Duration, opt => opt.MapFrom(src => src.Duration))
+                .ForMember(dst => dst.PricePerHour, opt => opt.MapFrom(src => src.PricePerHour))
                 .ForMember(dst => dst.Details, opt => opt.MapFrom(src => src.Details));
 
             Mapper.CreateMap<InvoiceTimeViewModel, OpenLawOffice.Common.Models.Billing.InvoiceTime>()
@@ -139,8 +139,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Billing
                         IsStub = true
                     };
                 }))
-                .ForMember(dst => dst.Quantity, opt => opt.MapFrom(src => src.Quantity))
-                .ForMember(dst => dst.PricePerUnit, opt => opt.MapFrom(src => src.PricePerUnit))
+                .ForMember(dst => dst.Duration, opt => opt.MapFrom(src => src.Duration))
+                .ForMember(dst => dst.PricePerHour, opt => opt.MapFrom(src => src.PricePerHour))
                 .ForMember(dst => dst.Details, opt => opt.MapFrom(src => src.Details));
         }
     }

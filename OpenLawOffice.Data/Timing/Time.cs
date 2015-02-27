@@ -180,7 +180,10 @@ namespace OpenLawOffice.Data.Timing
                 IEnumerator<dynamic> enumerator = ie.GetEnumerator();
                 while (enumerator.MoveNext())
                 {
-                    return (TimeSpan)enumerator.Current.Interval;
+                    if (enumerator.Current.Interval != null)
+                        return (TimeSpan)enumerator.Current.Interval;
+
+                    return new TimeSpan(0);
                 }
             }
 
@@ -206,7 +209,10 @@ namespace OpenLawOffice.Data.Timing
                 IEnumerator<dynamic> enumerator = ie.GetEnumerator();
                 while (enumerator.MoveNext())
                 {
-                    return (TimeSpan)enumerator.Current.Interval;
+                    if (enumerator.Current.Interval != null)
+                        return (TimeSpan)enumerator.Current.Interval;
+
+                    return new TimeSpan(0);
                 }
             }
 

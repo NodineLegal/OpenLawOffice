@@ -31,10 +31,10 @@ namespace OpenLawOffice.Data.DBOs.Billing
         public Guid Id { get; set; }
 
         [ColumnMapping(Name = "invoice_id")]
-        public Guid Invoice { get; set; }
+        public Guid InvoiceId { get; set; }
 
         [ColumnMapping(Name = "expense_id")]
-        public Guid Expense { get; set; }
+        public Guid ExpenseId { get; set; }
 
         [ColumnMapping(Name = "amount")]
         public decimal Amount { get; set; }
@@ -89,7 +89,7 @@ namespace OpenLawOffice.Data.DBOs.Billing
                 {
                     return new Common.Models.Billing.Invoice()
                     {
-                        Id = db.Invoice,
+                        Id = db.InvoiceId,
                         IsStub = true
                     };
                 }))
@@ -97,7 +97,7 @@ namespace OpenLawOffice.Data.DBOs.Billing
                 {
                     return new Common.Models.Billing.Expense()
                     {
-                        Id = db.Expense,
+                        Id = db.ExpenseId,
                         IsStub = true
                     };
                 }))
@@ -135,13 +135,13 @@ namespace OpenLawOffice.Data.DBOs.Billing
                     return model.DisabledBy.PId;
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.Invoice, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.InvoiceId, opt => opt.ResolveUsing(model =>
                 {
                     if (model.Invoice == null || !model.Invoice.Id.HasValue)
                         return Guid.Empty;
                     return model.Invoice.Id.Value;
                 }))
-                .ForMember(dst => dst.Expense, opt => opt.ResolveUsing(model =>
+                .ForMember(dst => dst.ExpenseId, opt => opt.ResolveUsing(model =>
                 {
                     if (model.Expense == null || !model.Expense.Id.HasValue)
                         return Guid.Empty;

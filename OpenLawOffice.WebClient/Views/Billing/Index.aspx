@@ -19,7 +19,7 @@
             </td>
         </tr>
         <tr>
-            <th style="text-align: center; width: 20px;" />
+            <%--<th style="text-align: center; width: 20px;" />--%>
             <th style="text-align: center;">Title</th>
             <th style="text-align: center;">Bill To</th>
             <th style="text-align: center;">Last Run</th>
@@ -35,9 +35,9 @@
            foreach (var item in Model.GroupItems)
            { %>
         <tr>
-            <td>
+            <%--<td>
                 <input type="checkbox" id="Checkbox1" name="CB_<%: item.BillingGroup.Id.Value %>" />
-            </td>
+            </td>--%>
             <td>
                 <%: item.BillingGroup.Title %>
             </td>
@@ -75,7 +75,7 @@
         <% } %>
     </table>
 
-    
+    <%--
     <div style="width: 70px; padding-bottom: 5px; margin-top: 20px;">
         <a id="SelectAll_Matters" href="javascript:void(0);">Select All</a><br />
         <a id="DeselectAll_Matters" href="javascript:void(0);">Deselect All</a>
@@ -107,7 +107,9 @@
         });
     });
 </script>
-    </div>
+    </div>--%>
+
+    <div style="height: 50px;"></div>
 
     <table class="listing_table"> 
         <tr>
@@ -116,7 +118,7 @@
             </td>
         </tr>
         <tr>
-            <th style="text-align: center; width: 20px;" />
+           <%-- <th style="text-align: center; width: 20px;" />--%>
             <th style="text-align: center;">Bill To</th>
             <th style="text-align: center;">Matter</th>
             <th style="text-align: center;">Case No.</th>
@@ -130,9 +132,9 @@
            foreach (var item in Model.Items)
            { %>
         <tr>
-            <td>
+            <%--<td>
                 <input type="checkbox" id="CB_<%: item.Matter.Id.Value %>" name="CB_<%: item.Matter.Id.Value %>" />
-            </td>
+            </td>--%>
             <td>
                 <%: item.BillTo.DisplayName %>
             </td>
@@ -157,8 +159,8 @@
         </tr>
         <% } %>
     </table>
-
-    <input type="submit" value="Bill all Selected" style="margin-top: 5px;" />
+<%--
+    <input type="submit" value="Bill all Selected" style="margin-top: 5px;" />--%>
     
     <% } %>
 

@@ -1,29 +1,23 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/SiteNoRightBar.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Billing.InvoiceViewModel>" %>
+﻿<%@ Page Language="C#" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Billing.InvoiceViewModel>" %>
 <%@ Import Namespace="OpenLawOffice.WebClient.Helpers" %>
 
-<asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-	SingleBill
-</asp:Content>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-
-    <script>
-        $(function () {
-            $("#Date").datepicker({
-                autoSize: true
-            });
-            $("#Due").datepicker({
-                autoSize: true
-            });
-        });
-    </script>
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head id="Head1" runat="server">
+    <title>Timesheet</title>
+    <style>
+    body
+    {
+        font-size: 8pt;
+        font-family: Verdana, Helvetica, Sans-Serif;
+    }
+    </style>
+</head>
+<body style="background: white; margin: 5px; width: 511pt;">
     
-    <% using (Html.BeginForm())
-       {%>
-    <%: Html.ValidationSummary(true) %>
-
-    <div style="width: 1200px; border: 1px solid black; color: Black; padding: 5px;">
-        <div style="height: 75px; display: inline-block;">
+    <div style="border: none; color: Black; padding: 5px;">
+        <div style="height: 75px; display: inline-block; font-size: 10pt;">
             <span style="font-weight: bold;"><%: ViewData["FirmName"] %></span><br />
             <%: ViewData["FirmAddress"] %><br />
             <%: ViewData["FirmCity"] %>, <%: ViewData["FirmState"] %> <%: ViewData["FirmZip"] %><br />
@@ -34,77 +28,63 @@
         <div style="float: right; font-weight: normal; font-size: 32px; display: inline-block;">
             Invoice
         </div>
-        <%: Html.HiddenFor(x => x.Matter.Id) %>
+        
         <br />
 
-        <div style="display: inline-block; margin-top: 25px; margin-left: 20px; border: 1px solid #c0c0c0; width: 450px;">
-            <div style="display: block; background: #dddddd;">Bill To:</div>
-            <%: Html.HiddenFor(x => x.BillTo.Id) %>
-            <table cellpadding="0" cellspacing="0" border="0" style="width: 100%; padding: 0; margin: 0;">
-                <tr>
-                    <td style="padding: 3px;">Name:</td>
-                    <td style="width: 365px; padding: 3px;"><%: Html.TextBoxFor(x => x.BillTo_NameLine1, new { @style = "width: 100%;" })%></td>
-                </tr>
-                <tr>
-                    <td style="padding: 3px;">Name 2:</td>
-                    <td style="width: 365px; padding: 3px;"><%: Html.TextBoxFor(x => x.BillTo_NameLine2, new { @style = "width: 100%;" })%></td>
-                </tr>
-                <tr>
-                    <td style="padding: 3px;">Address:</td>
-                    <td style="width: 365px; padding: 3px;"><%: Html.TextBoxFor(x => x.BillTo_AddressLine1, new { @style = "width: 100%;" })%></td>
-                </tr>
-                <tr>
-                    <td style="padding: 3px;">Address 2:</td>
-                    <td style="width: 365px; padding: 3px;"><%: Html.TextBoxFor(x => x.BillTo_AddressLine2, new { @style = "width: 100%;" })%></td>
-                </tr>
-                <tr>
-                    <td style="padding: 3px;">City:</td>
-                    <td style="width: 365px; padding: 3px;"><%: Html.TextBoxFor(x => x.BillTo_City, new { @style = "width: 100%;" })%></td>
-                </tr>
-                <tr>
-                    <td style="padding: 3px;">State:</td>
-                    <td style="width: 365px; padding: 3px;"><%: Html.TextBoxFor(x => x.BillTo_State, new { @style = "width: 100%;" })%></td>
-                </tr>
-                <tr>
-                    <td style="padding: 3px;">Zip:</td>
-                    <td style="width: 365px; padding: 3px;"><%: Html.TextBoxFor(x => x.BillTo_Zip, new { @style = "width: 100%;" })%></td>
-                </tr>
-            </table>
+        <div style="display: inline-block; margin-top: 25px; margin-left: 5px; border: 1px solid #c0c0c0; width: 185pt;">
+            <div style="display: block; background: #dddddd; font-size: 10pt;">Bill To:</div>
+            <div><%: Model.BillTo_NameLine1 %></div>
+            <% if (!string.IsNullOrEmpty(Model.BillTo_NameLine2))
+                { %>
+            <div><%: Model.BillTo_NameLine2 %></div>            
+            <% } %>
+            <div><%: Model.BillTo_AddressLine1%></div>
+            <% if (!string.IsNullOrEmpty(Model.BillTo_AddressLine2))
+                { %>
+            <div><%: Model.BillTo_AddressLine2%></div>            
+            <% } %>
+            <div><%: Model.BillTo_City%>, <%: Model.BillTo_State%> <%: Model.BillTo_Zip %></div>
         </div>
 
-        <div style="display: inline-block; vertical-align: top; padding-left: 15px;">
+        <div style="display: inline-block; vertical-align: top; padding-left: 15px; width: 290pt;">
             <table cellpadding="0" cellspacing="0" style="border: none; padding: 0px;">
                 <tr>
                     <td style="padding: 0px; text-align: right;">Invoice No.:</td>
-                    <td style="padding: 0 0 0 5px;"><%: Model.Id %><%: Html.HiddenFor(x => x.Id) %></td>
+                    <td style="padding: 0 0 0 5px;"><%: Model.Id %></td>
                 </tr>
                 <tr>
                     <td style="padding: 0px; text-align: right;">External Invoice No.:</td>
-                    <td style="padding: 0 0 0 5px;"><%: Html.TextBoxFor(x => x.ExternalInvoiceId, new { @style = "width: 300px;" })%></td>
+                    <td style="padding: 0 0 0 5px;"><%: Model.ExternalInvoiceId %></td>
                 </tr>
                 <tr>
                     <td style="padding: 0px; text-align: right;">Invoice Date:</td>
-                    <td style="padding: 0 0 0 5px;"><%: Html.TextBoxFor(x => x.Date, new { @Value = Model.Date.ToString("M/d/yyyy"), @style = "width: 300px;" })%></td>
+                    <td style="padding: 0 0 0 5px;"><%: Model.Date.ToString("M/d/yyyy") %></td>
                 </tr>
                 <tr>
                     <td style="padding: 0px; text-align: right;">Due Date:</td>
-                    <td style="padding: 0 0 0 5px;"><%: Html.TextBoxFor(x => x.Due, new { @Value = Model.Due.ToString("M/d/yyyy"), @style = "width: 300px;" })%></td>
+                    <td style="padding: 0 0 0 5px;"><%: Model.Due.ToString("M/d/yyyy") %></td>
                 </tr>
+                <% if (Model.Matter != null && !string.IsNullOrEmpty(Model.Matter.Title))
+                   { %>
                 <tr>
                     <td style="padding: 0px; text-align: right;">Matter:</td>
-                    <td style="padding: 0 0 0 5px;"><%: ViewData["MatterTitle"] %></td>
+                    <td style="padding: 0 0 0 5px;"><%: Model.Matter.Title%></td>
                 </tr>
+                <% } 
+                   if (Model.Matter != null && !string.IsNullOrEmpty(Model.Matter.Title))
+                   { %>
                 <tr>
                     <td style="padding: 0px; text-align: right;">Case No.:</td>
-                    <td style="padding: 0 0 0 5px;"><%: ViewData["CaseNumber"] %></td>
+                    <td style="padding: 0 0 0 5px;"><%: Model.Matter.CaseNumber %></td>
                 </tr>
+                <% } %>
             </table>
         </div>
 
         <br />
 
         <div style="width: 100%; text-align: left; margin: 5px 0 5px 0; 
-            font-size: 24px;">Expenses</div>
+            font-size: 14px;">Expenses</div>
         
         <div style="border: none; padding: 0;">            
             <table cellpadding="0" cellspacing="0" style="border: none; width: 100%;">
@@ -132,14 +112,14 @@
                         OpenLawOffice.WebClient.ViewModels.Billing.InvoiceExpenseViewModel item = Model.Expenses[i];
                         altRow = !altRow;
                         if (altRow)
-                        { %> <tr class="tr_alternate"> <% }
+                        { %> <tr style="background-color: #f5f5f5;"> <% }
                         else
                         { %> <tr> <% }
                         %>
                         <td><%: item.Expense.Incurred.ToShortDateString() %></td>
                         <td><%: item.Expense.Vendor %></td>
-                        <td><%: Html.TextBoxFor(x => x.Expenses[i].Details, new { @style = "width: 100%;" }) %></td>
-                        <td style="text-align: center;">$<%: Html.TextBoxFor(x => x.Expenses[i].Amount, new { @style = "width: 75px;" })%><%: Html.HiddenFor(x => x.Expenses[i].Expense.Id) %></td>
+                        <td><%: item.Details %></td>
+                        <td style="text-align: center;"><%: item.Expense.Amount.ToString("C") %></td>
                     </tr>
                     <% } %>
                 </tbody>
@@ -149,7 +129,7 @@
         <br />
 
         <div style="width: 100%; text-align: left; margin: 5px 0 5px 0; 
-            font-size: 24px;">Fees</div>
+            font-size: 14px;">Fees</div>
         
         <div style="border: none; padding: 0;">            
             <table cellpadding="0" cellspacing="0" style="border: none; width: 100%;">
@@ -174,13 +154,13 @@
                         OpenLawOffice.WebClient.ViewModels.Billing.InvoiceFeeViewModel item = Model.Fees[i];
                         altRow = !altRow;
                         if (altRow)
-                        { %> <tr class="tr_alternate"> <% }
+                        { %> <tr style="background-color: #f5f5f5;"> <% }
                         else
                         { %> <tr> <% }
                         %>
                         <td><%: item.Fee.Incurred.ToShortDateString() %></td>
-                        <td><%: Html.TextBoxFor(x => x.Fees[i].Details, new { @style = "width: 100%;" })%></td>
-                        <td style="text-align: center;">$<%: Html.TextBoxFor(x => x.Fees[i].Amount, new { @style = "width: 75px;" })%><%: Html.HiddenFor(x => x.Fees[i].Fee.Id) %></td>
+                        <td><%: item.Fee.Details %></td>
+                        <td style="text-align: center;"><%: item.Fee.Amount.ToString("C") %></td>
                     </tr>
                     <% } %>
                 </tbody>
@@ -190,7 +170,7 @@
         <br />
 
         <div style="width: 100%; text-align: left; margin: 5px 0 5px 0; 
-            font-size: 24px;">Time</div>
+            font-size: 14px;">Time</div>
         
         <div style="border: none; padding: 0;">            
             <table cellpadding="0" cellspacing="0" style="border: none; width: 100%;">
@@ -208,6 +188,9 @@
                         <td style="width: 100px;">
                             Rate ($/hr.)
                         </td>  
+                        <td style="width: 100px;">
+                            Amount
+                        </td>  
                     </tr>      
                 </thead>
                 <tbody>
@@ -218,28 +201,37 @@
                         OpenLawOffice.WebClient.ViewModels.Billing.InvoiceTimeViewModel item = Model.Times[i];
                         altRow = !altRow;
                         if (altRow)
-                        { %> <tr class="tr_alternate"> <% }
+                        { %> <tr style="background-color: #f5f5f5;"> <% }
                         else
                         { %> <tr> <% }
                         %>
                         <td><%: item.Time.Start.ToShortDateString() %></td>
-                        <td><%: Html.TextBoxFor(x => x.Times[i].Details, new { @style = "width: 100%;" })%></td>
-                        <td style="text-align: center;"><%: TimeSpanHelper.TimeSpan(item.Time.Duration, false) %><%: Html.HiddenFor(x => x.Times[i].Duration) %></td>
-                        <td style="text-align: center;">$<%: Html.TextBoxFor(x => x.Times[i].PricePerHour, new { @style = "width: 75px;" })%><%: Html.HiddenFor(x => x.Times[i].Time.Id) %></td>
+                        <td><%: item.Time.Details %></td>
+                        <td style="text-align: center;"><%: TimeSpanHelper.TimeSpan(item.Time.Duration, false) %></td>
+                        <td style="text-align: center;"><%: item.PricePerHour.ToString("C") %></td>
+                        <td style="text-align: center;"><%: string.Format("{0:C}", (decimal)item.Time.Duration.TotalHours * item.PricePerHour) %></td>
                     </tr>
                     <% } %>
                 </tbody>
             </table>
         </div>
         
-        <div style="display: block; text-align: right; padding-top: 20px; padding-right: 20px;">
-            Tax Amount: $<%: Html.TextBoxFor(x => x.TaxAmount, new { @style = "width: 75px;" }) %>
-        </div>
-        
-        <div style="display: block; text-align: right; padding-top: 20px; padding-right: 20px;">
-            <input type="submit" value="Save" style="width: 100px;" />
+        <div style="display: block; text-align: right; padding-top: 20px; padding-right: 20px; height: 100px;">
+            <table border="0" cellpadding="0" cellspacing="0" style="float: right; border: none;">
+                <tr>
+                    <td style="text-align: right; padding-right: 5px;">Subtotal:</td>
+                    <td><%: Model.Subtotal.ToString("C") %></td>
+                </tr>
+                <tr>
+                    <td style="text-align: right; padding-right: 5px;">Tax Amount:</td>
+                    <td><%: Model.TaxAmount.ToString("C") %></td>
+                </tr>
+                <tr style="font-weight: bold;">
+                    <td style="text-align: right; padding-right: 5px; padding-top: 5px;">Total Due:</td>
+                    <td style="padding-top: 5px;"><%: Model.Total.ToString("C") %></td>
+                </tr>
+            </table>
         </div>
     </div>
-
-    <% } %>
-</asp:Content>
+</body>
+</html>

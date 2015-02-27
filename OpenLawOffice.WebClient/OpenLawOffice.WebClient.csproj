@@ -116,6 +116,7 @@
     <Compile Include="Controllers\FeesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InstallationController.cs" />
+    <Compile Include="Controllers\InvoicesController.cs" />
     <Compile Include="Controllers\JsonInterfaceController.cs" />
     <Compile Include="Controllers\MatterContactController.cs" />
     <Compile Include="Controllers\MattersController.cs" />
@@ -159,6 +160,8 @@
     <Compile Include="ViewModels\Billing\ExpenseViewModel.cs" />
     <Compile Include="ViewModels\Billing\FeeMatterViewModel.cs" />
     <Compile Include="ViewModels\Billing\FeeViewModel.cs" />
+    <Compile Include="ViewModels\Billing\GroupInvoiceItemViewModel.cs" />
+    <Compile Include="ViewModels\Billing\GroupInvoiceViewModel.cs" />
     <Compile Include="ViewModels\Billing\InvoiceExpenseViewModel.cs" />
     <Compile Include="ViewModels\Billing\InvoiceFeeViewModel.cs" />
     <Compile Include="ViewModels\Billing\InvoiceTimeViewModel.cs" />
@@ -293,6 +296,7 @@
     <Content Include="Views\BillingRates\Edit.aspx" />
     <Content Include="Views\BillingRates\Index.aspx" />
     <Content Include="Views\Billing\Index.aspx" />
+    <Content Include="Views\Billing\SingleGroupBill.aspx" />
     <Content Include="Views\Billing\SingleMatterBill.aspx" />
     <Content Include="Views\Calendar\Contact.aspx" />
     <Content Include="Views\Calendar\Index.aspx" />
@@ -351,9 +355,15 @@
     <Content Include="Views\Expenses\Edit.aspx" />
     <Content Include="Views\Fees\Create.aspx" />
     <Content Include="Views\Fees\Edit.aspx" />
+    <Content Include="Views\Invoices\GroupDetails.aspx" />
+    <Content Include="Views\Invoices\GroupPrint_Full.aspx" />
+    <Content Include="Views\Invoices\GroupPrint_Summary.aspx" />
+    <Content Include="Views\Invoices\MatterDetails.aspx" />
+    <Content Include="Views\Invoices\MatterPrint.aspx" />
     <Content Include="Views\Matters\Events.aspx" />
     <Content Include="Views\Matters\Expenses.aspx" />
     <Content Include="Views\Matters\Fees.aspx" />
+    <Content Include="Views\Matters\Invoices.aspx" />
     <Content Include="Views\Matters\Timesheet.aspx" />
     <Content Include="Views\Matters\Timesheet_Print3rdParty.aspx" />
     <Content Include="Views\Matters\Timesheet_PrintClient.aspx" />
