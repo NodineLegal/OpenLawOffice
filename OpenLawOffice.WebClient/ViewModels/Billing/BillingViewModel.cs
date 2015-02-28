@@ -49,11 +49,13 @@ namespace OpenLawOffice.WebClient.ViewModels.Billing
 
         public List<Item> Items { get; set; }
         public List<GroupItem> GroupItems { get; set; }
+        public List<InvoiceViewModel> RecentInvoices { get; set; }
 
         public BillingViewModel()
         {
             Items = new List<Item>();
             GroupItems = new List<GroupItem>();
+            RecentInvoices = new List<InvoiceViewModel>();
         }
     }
 }

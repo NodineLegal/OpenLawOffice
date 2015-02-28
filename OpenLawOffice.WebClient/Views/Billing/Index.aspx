@@ -122,8 +122,62 @@
         </tr>
         <% } %>
     </table>
-<%--
-    <input type="submit" value="Bill all Selected" style="margin-top: 5px;" />--%>
+    
+    <div style="height: 50px;"></div>
+
+    <table class="listing_table"> 
+        <tr>
+            <td colspan="8" class="listing_table_heading">
+                Recently Created Invoices
+            </td>
+        </tr>
+        <tr>
+           <%-- <th style="text-align: center; width: 20px;" />--%>
+            <th style="text-align: center;">Bill To</th>
+            <th style="text-align: center;">Matter/Group</th>
+            <th style="text-align: center;">Case No.</th>
+            <th style="text-align: center;">Total</th>
+            <th style="width: 20px;">
+            </th>
+        </tr>
+        <% 
+           foreach (var item in Model.RecentInvoices)
+           { %>
+        <tr>
+            <td>
+                <%: Html.ActionLink(item.BillTo.DisplayName, "Details", "Contacts", new { Id = item.BillTo.Id }, null) %>
+            </td>
+            <td>
+                <% if (item.Matter != null)
+                   { %>
+                    <%: Html.ActionLink(item.Matter.Title, "Details", "Matters", new { Id = item.Matter.Id }, null)%>
+                <% }
+                   else
+                   { %>
+                    <%: Html.ActionLink(item.BillingGroup.Title, "Details", "BillingGroups", new { Id = item.BillingGroup.Id }, null)%>
+                <% } %>
+            </td>
+            <td>
+                <% if (item.Matter != null) { %>
+                    <%: item.Matter.CaseNumber %>
+                <% } %>
+            </td>
+            <td>
+                <%: string.Format("{0:C}", item.Total) %>
+            </td>
+            <td style="text-align: center;">
+                <% if (item.Matter != null)
+                   { %>
+                    <%: Html.ActionLink("View", "MatterDetails", "Invoices", new { id = item.Id }, new { @class = "btn-money-arrow", title = "Bill" })%>
+                <% }
+                   else
+                   { %>
+                    <%: Html.ActionLink("View", "GroupDetails", "Invoices", new { id = item.Id }, new { @class = "btn-money-arrow", title = "Bill" })%>
+                <% } %>
+            </td>
+        </tr>
+        <% } %>
+    </table>
     
     <% } %>
 

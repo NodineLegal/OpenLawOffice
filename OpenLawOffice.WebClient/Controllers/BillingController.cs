@@ -62,6 +62,25 @@ namespace OpenLawOffice.WebClient.Controllers
                 groupItem.Time = Data.Timing.Time.SumUnbilledAndBillableTimeForBillingGroup(group.Id.Value);
                 viewModel.GroupItems.Add(groupItem);
             });
+
+            Data.Billing.Invoice.GetMostRecentInvoices(10).ForEach(invoice =>
+            {
+                ViewModels.Billing.InvoiceViewModel vm = Mapper.Map<ViewModels.Billing.InvoiceViewModel>(invoice);
+
+                if (invoice.Matter != null && invoice.Matter.Id.HasValue)
+                    vm.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(Data.Matters.Matter.Get(invoice.Matter.Id.Value));
+                else
+                    vm.Matter = null;
+
+                if (invoice.BillingGroup != null && invoice.BillingGroup.Id.HasValue)
+                    vm.BillingGroup = Mapper.Map<ViewModels.Billing.BillingGroupViewModel>(Data.Billing.BillingGroup.Get(invoice.BillingGroup.Id.Value));
+                else
+                    vm.BillingGroup = null;
+
+                vm.BillTo = Mapper.Map<ViewModels.Contacts.ContactViewModel>(Data.Contacts.Contact.Get(invoice.BillTo.Id.Value));
+
+                viewModel.RecentInvoices.Add(vm);
+            });
             
             return View(viewModel);
         }

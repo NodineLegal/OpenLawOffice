@@ -86,6 +86,13 @@ namespace OpenLawOffice.Data.Billing
                 "SELECT * FROM \"billing_group\" WHERE \"next_run\" <= now() at time zone 'utc'");
         }
 
+        public static List<Common.Models.Billing.Invoice> GetMostRecentInvoices(int quantity)
+        {
+            return DataHelper.List<Common.Models.Billing.Invoice, DBOs.Billing.Invoice>(
+                "SELECT * FROM \"invoice\" ORDER BY \"utc_created\" DESC LIMIT @Limit",
+                new { Limit = quantity });
+        }
+
         public static Common.Models.Billing.Invoice GetMostRecentInvoiceForContact(int contactId)
         {
             return DataHelper.Get<Common.Models.Billing.Invoice, DBOs.Billing.Invoice>(

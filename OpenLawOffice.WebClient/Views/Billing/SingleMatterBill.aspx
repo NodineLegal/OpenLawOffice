@@ -104,7 +104,7 @@
         <br />
 
         <div style="width: 100%; text-align: left; margin: 5px 0 5px 0; 
-            font-size: 24px;">Expenses</div>
+            font-size: 14px;">Expenses</div>
         
         <div style="border: none; padding: 0;">            
             <table cellpadding="0" cellspacing="0" style="border: none; width: 100%;">
@@ -149,7 +149,7 @@
         <br />
 
         <div style="width: 100%; text-align: left; margin: 5px 0 5px 0; 
-            font-size: 24px;">Fees</div>
+            font-size: 14px;">Fees</div>
         
         <div style="border: none; padding: 0;">            
             <table cellpadding="0" cellspacing="0" style="border: none; width: 100%;">
@@ -190,7 +190,7 @@
         <br />
 
         <div style="width: 100%; text-align: left; margin: 5px 0 5px 0; 
-            font-size: 24px;">Time</div>
+            font-size: 14px;">Time</div>
         
         <div style="border: none; padding: 0;">            
             <table cellpadding="0" cellspacing="0" style="border: none; width: 100%;">
