@@ -44,6 +44,42 @@ namespace OpenLawOffice.WebClient.Controllers
         }
 
         [Authorize(Roles = "Login, User")]
+        public ActionResult Invoices(int id)
+        {
+            List<ViewModels.Billing.InvoiceViewModel> list = new List<ViewModels.Billing.InvoiceViewModel>();
+
+            Data.Billing.BillingGroup.ListInvoicesForGroup(id).ForEach(x =>
+            {
+                list.Add(Mapper.Map<ViewModels.Billing.InvoiceViewModel>(x));
+            });
+
+            return View(list);
+        }
+
+        [Authorize(Roles = "Login, User")]
+        public ActionResult Details(int id)
+        {
+            ViewModels.Billing.BillingGroupViewModel vm;
+            Common.Models.Billing.BillingGroup group;
+            List<Common.Models.Matters.Matter> matterMembers;
+
+            group = Data.Billing.BillingGroup.Get(id);
+            group.BillTo = Data.Contacts.Contact.Get(group.BillTo.Id.Value);
+            matterMembers = Data.Billing.BillingGroup.ListMattersForGroup(id);
+
+            vm = Mapper.Map<ViewModels.Billing.BillingGroupViewModel>(group);
+            vm.BillTo = Mapper.Map<ViewModels.Contacts.ContactViewModel>(group.BillTo);
+            vm.MatterMembers = new List<ViewModels.Matters.MatterViewModel>();
+            matterMembers.ForEach(x =>
+            {
+                vm.MatterMembers.Add(Mapper.Map<ViewModels.Matters.MatterViewModel>(x));
+            });
+            PopulateCoreDetails(vm);
+
+            return View(vm);
+        }
+
+        [Authorize(Roles = "Login, User")]
         public ActionResult Create()
         {
             return View();

@@ -31,7 +31,7 @@ namespace OpenLawOffice.Common.Models.Billing
 
         public DateTime? LastRun { get; set; }
 
-        public DateTime? NextRun { get; set; }
+        public DateTime NextRun { get; set; }
 
         public decimal Amount { get; set; }
 

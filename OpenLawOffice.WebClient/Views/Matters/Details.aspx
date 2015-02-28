@@ -167,11 +167,8 @@
             <td class="display-field">
                 <% if (Model.BillingGroup != null)
                    { %>
-                    <%: Model.BillingGroup.Title %>
-                    <% if (Model.BillingGroup.NextRun.HasValue)
-                       { %> 
-                        (Next Bill: <%: Model.BillingGroup.NextRun.Value.ToShortDateString()%>)
-                    <% } %>
+                    <%: Html.ActionLink(Model.BillingGroup.Title, "Details", "BillingGroups", new { Id = Model.BillingGroup.Id }, null) %>
+                        (Next Bill: <%: Model.BillingGroup.NextRun.ToShortDateString()%>)
                 <% } %>
             </td>
         </tr>
@@ -189,7 +186,16 @@
         <tr>
             <td colspan="4" class="detail_table_heading">
                 Financial Information
-                <div style="float: right;">[<%: Html.ActionLink("Invoices", "Invoices", "Matters", new { Id = Model.Id }, new { @style = "color: white;" })%>]</div>
+                <div style="float: right;">[
+                <% if (Model.BillingGroup == null)
+                   { %>
+                    <%: Html.ActionLink("Invoices", "Invoices", "Matters", new { Id = Model.Id }, new { @style = "color: white;" })%>
+                <% }
+                   else
+                   { %>
+                    <%: Html.ActionLink("Invoices", "Invoices", "BillingGroups", new { Id = Model.BillingGroup.Id }, new { @style = "color: white;" })%>
+                <% } %>]
+                </div>
             </td>
         </tr>
 

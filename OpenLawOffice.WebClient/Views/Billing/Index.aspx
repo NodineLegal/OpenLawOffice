@@ -39,10 +39,10 @@
                 <input type="checkbox" id="Checkbox1" name="CB_<%: item.BillingGroup.Id.Value %>" />
             </td>--%>
             <td>
-                <%: item.BillingGroup.Title %>
+                <%: Html.ActionLink(item.BillingGroup.Title, "Details", "BillingGroups", new { Id = item.BillingGroup.Id }, null) %>
             </td>
             <td>
-                <%: item.BillingGroup.BillTo.DisplayName %>
+                <%: Html.ActionLink(item.BillingGroup.BillTo.DisplayName, "Details", "Contacts", new { Id = item.BillingGroup.BillTo.Id }, null)%>
             </td>
             <td>
                 <% if (item.BillingGroup.LastRun.HasValue)
@@ -51,10 +51,7 @@
                 <% } %>
             </td>
             <td>
-                <% if (item.BillingGroup.NextRun.HasValue)
-                   { %>
-                    <%: item.BillingGroup.NextRun.Value.ToShortDateString()%>
-                <% } %>
+                <%: item.BillingGroup.NextRun.ToShortDateString()%>
             </td>
             <td>
                 <%: string.Format("{0:C}", item.BillingGroup.Amount) %>
@@ -74,41 +71,7 @@
         </tr>
         <% } %>
     </table>
-
-    <%--
-    <div style="width: 70px; padding-bottom: 5px; margin-top: 20px;">
-        <a id="SelectAll_Matters" href="javascript:void(0);">Select All</a><br />
-        <a id="DeselectAll_Matters" href="javascript:void(0);">Deselect All</a>
-<script language="javascript">
-
-    $(function () {    
-        var cbs = [];
-
-        <% 
-        foreach (var item in Model.Items)
-        { %>
-            <%= "cbs.push('" + item.Matter.Id.Value + "');" %>
-          <%
-        }
-        %>
-
-        $("#SelectAll_Matters").click(function () {
-            for (var i = 0; i < cbs.length; i++)
-            {
-                $("#CB_" + cbs[i]).prop('checked', true);
-            }
-        });
-
-        $("#DeselectAll_Matters").click(function () {
-            for (var i = 0; i < cbs.length; i++)
-            {
-                $("#CB_" + cbs[i]).prop('checked', false);
-            }
-        });
-    });
-</script>
-    </div>--%>
-
+    
     <div style="height: 50px;"></div>
 
     <table class="listing_table"> 
@@ -136,10 +99,10 @@
                 <input type="checkbox" id="CB_<%: item.Matter.Id.Value %>" name="CB_<%: item.Matter.Id.Value %>" />
             </td>--%>
             <td>
-                <%: item.BillTo.DisplayName %>
+                <%: Html.ActionLink(item.BillTo.DisplayName, "Details", "Contacts", new { Id = item.BillTo.Id }, null) %>
             </td>
             <td>
-                <%: item.Matter.Title %>
+                <%: Html.ActionLink(item.Matter.Title, "Details", "Matters", new { Id = item.Matter.Id }, null) %>
             </td>
             <td>
                 <%: item.Matter.CaseNumber %>

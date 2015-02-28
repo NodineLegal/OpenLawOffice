@@ -156,6 +156,9 @@ namespace OpenLawOffice.WebClient.Controllers
                     giivm.Times.Add(vm);
                 });
 
+                if ((giivm.Times.Count > 0) ||
+                    (giivm.Expenses.Count > 0) ||
+                    (giivm.Fees.Count > 0))
                 viewModel.Matters.Add(giivm);
             }
 

@@ -107,10 +107,12 @@
                 <tbody>
                 <%
                     bool altRow = true;
+                    decimal expSum = 0;
                     for (int i=0; i<Model.Expenses.Count; i++)
                     {
                         OpenLawOffice.WebClient.ViewModels.Billing.InvoiceExpenseViewModel item = Model.Expenses[i];
                         altRow = !altRow;
+                        expSum += item.Amount;
                         if (altRow)
                         { %> <tr style="background-color: #f5f5f5;"> <% }
                         else
@@ -119,9 +121,20 @@
                         <td><%: item.Expense.Incurred.ToShortDateString() %></td>
                         <td><%: item.Expense.Vendor %></td>
                         <td><%: item.Details %></td>
-                        <td style="text-align: center;"><%: item.Expense.Amount.ToString("C") %></td>
+                        <td style="text-align: center;"><%: item.Amount.ToString("C") %></td>
                     </tr>
-                    <% } %>
+                <% }
+                if (altRow)
+                { %> <tr class="tr_alternate"> <% }
+                else
+                { %> <tr> <% } %>
+                    <td colspan="3" style="text-align: right; font-weight: bold;">
+                        Total:
+                    </td>
+                    <td style="text-align: center; font-weight: bold;">
+                        <%: expSum.ToString("C") %>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -149,10 +162,12 @@
                 <tbody>
                 <%
                     altRow = true;
+                    decimal feeSum = 0;
                     for (int i=0; i<Model.Fees.Count; i++)
                     {
                         OpenLawOffice.WebClient.ViewModels.Billing.InvoiceFeeViewModel item = Model.Fees[i];
                         altRow = !altRow;
+                        feeSum += item.Amount;
                         if (altRow)
                         { %> <tr style="background-color: #f5f5f5;"> <% }
                         else
@@ -162,7 +177,18 @@
                         <td><%: item.Fee.Details %></td>
                         <td style="text-align: center;"><%: item.Fee.Amount.ToString("C") %></td>
                     </tr>
-                    <% } %>
+                <% } 
+                if (altRow)
+                { %> <tr class="tr_alternate"> <% }
+                else
+                { %> <tr> <% } %>
+                    <td colspan="2" style="text-align: right; font-weight: bold;">
+                        Total:
+                    </td>
+                    <td style="text-align: center; font-weight: bold;">
+                        <%: feeSum.ToString("C") %>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -196,10 +222,12 @@
                 <tbody>
                 <%
                     altRow = true;
+                    decimal timeSum = 0;
                     for (int i=0; i<Model.Times.Count; i++)
                     {
                         OpenLawOffice.WebClient.ViewModels.Billing.InvoiceTimeViewModel item = Model.Times[i];
                         altRow = !altRow;
+                        timeSum += (decimal)item.Duration.TotalHours * item.PricePerHour;
                         if (altRow)
                         { %> <tr style="background-color: #f5f5f5;"> <% }
                         else
@@ -211,7 +239,18 @@
                         <td style="text-align: center;"><%: item.PricePerHour.ToString("C") %></td>
                         <td style="text-align: center;"><%: string.Format("{0:C}", (decimal)item.Time.Duration.TotalHours * item.PricePerHour) %></td>
                     </tr>
-                    <% } %>
+                <% }
+                if (altRow)
+                { %> <tr class="tr_alternate"> <% }
+                else
+                { %> <tr> <% } %>
+                    <td colspan="4" style="text-align: right; font-weight: bold;">
+                        Total:
+                    </td>
+                    <td style="text-align: center; font-weight: bold;">
+                        <%: timeSum.ToString("C") %>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>

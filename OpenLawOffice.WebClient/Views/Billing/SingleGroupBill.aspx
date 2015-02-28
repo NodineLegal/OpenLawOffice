@@ -95,7 +95,7 @@
                 </tr>
                 <tr>
                     <td style="padding: 0px; text-align: right;">Next Run:</td>
-                    <td style="padding: 0 0 0 5px;"><%: Html.TextBoxFor(x => x.BillingGroup.NextRun, new { @Value = Model.BillingGroup.NextRun.Value.ToString("M/d/yyyy"), @style = "width: 300px;" })%></td>
+                    <td style="padding: 0 0 0 5px;"><%: Html.TextBoxFor(x => x.BillingGroup.NextRun, new { @Value = Model.BillingGroup.NextRun.ToString("M/d/yyyy"), @style = "width: 300px;" })%></td>
                 </tr>
             </table>
         </div>

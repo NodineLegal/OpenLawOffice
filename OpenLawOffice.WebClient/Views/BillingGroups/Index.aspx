@@ -39,7 +39,7 @@
                { %> <tr> <% }
                 %>
             <td>
-                <%: item.Title %>
+                <%: Html.ActionLink(item.Title, "Details", "BillingGroups", new { Id = item.Id }, null) %>
             </td>
             <td style="text-align: center;">
                 <% if (item.LastRun.HasValue)
@@ -48,10 +48,7 @@
                 <% } %>
             </td>
             <td style="text-align: center;">
-                <% if (item.NextRun.HasValue)
-                   { %>
-                    <%: item.NextRun.Value.ToShortDateString()%>
-                <% } %>
+                <%: item.NextRun.ToShortDateString()%>
             </td>
             <td style="text-align: center;">
                 <%: item.Amount.ToString("C") %>

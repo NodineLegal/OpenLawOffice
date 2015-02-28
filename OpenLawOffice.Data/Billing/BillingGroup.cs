@@ -43,6 +43,13 @@ namespace OpenLawOffice.Data.Billing
                 "SELECT * FROM \"billing_group\" WHERE \"utc_disabled\" is null");
         }
 
+        public static List<Common.Models.Billing.Invoice> ListInvoicesForGroup(int billingGroupId)
+        {
+            return DataHelper.List<Common.Models.Billing.Invoice, DBOs.Billing.Invoice>(
+                "SELECT * FROM \"invoice\" WHERE \"billing_group_id\"=@BillingGroupId AND \"utc_disabled\" is null",
+                new { BillingGroupId = billingGroupId });
+        }
+
         public static Common.Models.Billing.BillingGroup Create(Common.Models.Billing.BillingGroup model,
             Common.Models.Account.Users creator)
         {

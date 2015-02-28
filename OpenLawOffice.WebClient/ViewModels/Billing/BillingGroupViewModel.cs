@@ -35,11 +35,13 @@ namespace OpenLawOffice.WebClient.ViewModels.Billing
 
         public DateTime? LastRun { get; set; }
 
-        public DateTime? NextRun { get; set; }
+        public DateTime NextRun { get; set; }
 
         public decimal Amount { get; set; }
 
         public Contacts.ContactViewModel BillTo { get; set; }
+
+        public List<Matters.MatterViewModel> MatterMembers { get; set; }
 
         public void BuildMappings()
         {
@@ -86,7 +88,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Billing
                         Id = db.BillTo.Id.Value,
                         IsStub = true
                     };
-                }));
+                }))
+                .ForMember(dst => dst.MatterMembers, opt => opt.Ignore());
 
             Mapper.CreateMap<BillingGroupViewModel, Common.Models.Billing.BillingGroup>()
                 .ForMember(dst => dst.Created, opt => opt.MapFrom(src => src.Created))

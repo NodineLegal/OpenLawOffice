@@ -290,8 +290,10 @@
     <Content Include="Views\Azure\Connect.aspx" />
     <Content Include="Views\Azure\Index.aspx" />
     <Content Include="Views\BillingGroups\Create.aspx" />
+    <Content Include="Views\BillingGroups\Details.aspx" />
     <Content Include="Views\BillingGroups\Edit.aspx" />
     <Content Include="Views\BillingGroups\Index.aspx" />
+    <Content Include="Views\BillingGroups\Invoices.aspx" />
     <Content Include="Views\BillingRates\Create.aspx" />
     <Content Include="Views\BillingRates\Edit.aspx" />
     <Content Include="Views\BillingRates\Index.aspx" />

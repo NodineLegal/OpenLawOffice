@@ -37,7 +37,7 @@ namespace OpenLawOffice.Data.DBOs.Billing
         public DateTime? LastRun { get; set; }
 
         [ColumnMapping(Name = "next_run")]
-        public DateTime? NextRun { get; set; }
+        public DateTime NextRun { get; set; }
 
         [ColumnMapping(Name = "amount")]
         public decimal Amount { get; set; }
