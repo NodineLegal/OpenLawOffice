@@ -1,4 +1,14 @@
-﻿2/20/2015
+﻿2/28/2015
+
+ALTER TABLE contact
+  ADD COLUMN billing_rate_id integer;
+ALTER TABLE contact
+  ADD CONSTRAINT "FK_contact_billing_rate_BillingRateId" FOREIGN KEY (billing_rate_id) REFERENCES billing_rate (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE matter
+  ADD CONSTRAINT "FK_matter_billing_group_BillingGroupId" FOREIGN KEY (billing_group_id) REFERENCES billing_group (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+
+2/20/2015
 
 Changes to invoice
 

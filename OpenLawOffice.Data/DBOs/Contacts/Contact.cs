@@ -52,7 +52,11 @@ namespace OpenLawOffice.Data.DBOs.Contacts
         ///   <c>true</c> if a firm employee; otherwise, <c>false</c>.
         /// </value>
         /// <author>Lucas Nodine</author>
+        [ColumnMapping(Name = "is_our_employee")]
         public bool IsOurEmployee { get; set; }
+
+        [ColumnMapping(Name = "billing_rate_id")]
+        public int? BillingRateId { get; set; }
 
         #region Contact Name
 
@@ -927,6 +931,14 @@ namespace OpenLawOffice.Data.DBOs.Contacts
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.IsOrganization, opt => opt.MapFrom(src => src.IsOrganization))
                 .ForMember(dst => dst.IsOurEmployee, opt => opt.MapFrom(src => src.IsOurEmployee))
+                .ForMember(dst => dst.BillingRate, opt => opt.ResolveUsing(db =>
+                {
+                    return new Common.Models.Billing.BillingRate()
+                    {
+                        Id = db.BillingRateId,
+                        IsStub = true
+                    };
+                }))
                 .ForMember(dst => dst.Nickname, opt => opt.MapFrom(src => src.Nickname))
                 .ForMember(dst => dst.Generation, opt => opt.MapFrom(src => src.Generation))
                 .ForMember(dst => dst.DisplayNamePrefix, opt => opt.MapFrom(src => src.DisplayNamePrefix))
@@ -1046,6 +1058,12 @@ namespace OpenLawOffice.Data.DBOs.Contacts
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.IsOrganization, opt => opt.MapFrom(src => src.IsOrganization))
                 .ForMember(dst => dst.IsOurEmployee, opt => opt.MapFrom(src => src.IsOurEmployee))
+                .ForMember(dst => dst.BillingRateId, opt => opt.ResolveUsing(model =>
+                {
+                    if (model.BillingRate == null || !model.BillingRate.Id.HasValue)
+                        return null;
+                    return model.BillingRate.Id.Value;
+                }))
                 .ForMember(dst => dst.Nickname, opt => opt.MapFrom(src => src.Nickname))
                 .ForMember(dst => dst.Generation, opt => opt.MapFrom(src => src.Generation))
                 .ForMember(dst => dst.DisplayNamePrefix, opt => opt.MapFrom(src => src.DisplayNamePrefix))

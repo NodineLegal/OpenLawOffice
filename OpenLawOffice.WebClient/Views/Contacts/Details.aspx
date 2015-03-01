@@ -24,6 +24,35 @@
         </tr>
         <tr>
             <td class="display-label">
+                Our Employee
+            </td>
+            <td class="display-field">
+                <%: Model.IsOurEmployee %>
+                <% if (Model.IsOurEmployee) { %>
+                <table class="detail_table" style="margin-top: 5px;" id="BillingPane" name="BillingPane">
+                    <thead style="font-weight: bold;">
+                        <tr>
+                            <td colspan="2">
+                                Billing Details
+                            </td>
+                        </tr>
+                    </thead>                        
+                    <tr>
+                        <td class="display-label" style="width: 150px;">
+                            Billing Rate
+                        </td>
+                        <td class="display-field">
+                            <% if (Model.BillingRate != null && Model.BillingRate.Id.HasValue) { %>
+                            <%: Model.BillingRate.Title %> (<%: Model.BillingRate.PricePerUnit.ToString("C") %>)
+                            <% } %>
+                        </td>
+                    </tr>
+                </table>
+                <% } %>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
                 Is an Organization
             </td>
             <td class="display-field">

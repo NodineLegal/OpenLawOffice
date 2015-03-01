@@ -50,6 +50,8 @@ namespace OpenLawOffice.Common.Models.Contacts
         /// <author>Lucas Nodine</author>
         public bool IsOurEmployee { get; set; }
 
+        public Billing.BillingRate BillingRate { get; set; }
+
         #region Contact Name
 
         /// <summary>

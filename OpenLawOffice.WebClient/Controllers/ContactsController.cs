@@ -90,11 +90,18 @@ namespace OpenLawOffice.WebClient.Controllers
             ViewModels.Contacts.ContactViewModel viewModel;
 
             contact = OpenLawOffice.Data.Contacts.Contact.Get(id);
+            if (contact.BillingRate != null && contact.BillingRate.Id.HasValue)
+                contact.BillingRate = Data.Billing.BillingRate.Get(contact.BillingRate.Id.Value);
+            else
+                contact.BillingRate = null;
 
             if (contact == null)
                 return View("InvalidRequest");
 
             viewModel = Mapper.Map<ViewModels.Contacts.ContactViewModel>(contact);
+            if (contact.BillingRate != null)
+                viewModel.BillingRate = Mapper.Map<ViewModels.Billing.BillingRateViewModel>(contact.BillingRate);
+
             PopulateCoreDetails(viewModel);
 
             return View(viewModel);
@@ -184,6 +191,19 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult Create()
         {
+            List<ViewModels.Billing.BillingRateViewModel> billingRateList;
+
+            billingRateList = new List<ViewModels.Billing.BillingRateViewModel>();
+
+            Data.Billing.BillingRate.List().ForEach(x =>
+            {
+                ViewModels.Billing.BillingRateViewModel vm = Mapper.Map<ViewModels.Billing.BillingRateViewModel>(x);
+                vm.Title += " (" + vm.PricePerUnit.ToString("C") + ")";
+                billingRateList.Add(vm);
+            });
+
+            ViewData["BillingRateList"] = billingRateList;
+
             return View();
         }
 
@@ -208,10 +228,28 @@ namespace OpenLawOffice.WebClient.Controllers
         {
             Common.Models.Contacts.Contact model = null;
             ViewModels.Contacts.ContactViewModel viewModel;
+            List<ViewModels.Billing.BillingRateViewModel> billingRateList;
+
+            billingRateList = new List<ViewModels.Billing.BillingRateViewModel>();
 
             model = OpenLawOffice.Data.Contacts.Contact.Get(id);
 
             viewModel = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model);
+
+            if (model.BillingRate != null && model.BillingRate.Id.HasValue)
+            {
+                model.BillingRate = Data.Billing.BillingRate.Get(model.BillingRate.Id.Value);
+                viewModel.BillingRate = Mapper.Map<ViewModels.Billing.BillingRateViewModel>(model.BillingRate);
+            }
+
+            Data.Billing.BillingRate.List().ForEach(x =>
+            {
+                ViewModels.Billing.BillingRateViewModel vm = Mapper.Map<ViewModels.Billing.BillingRateViewModel>(x);
+                vm.Title += " (" + vm.PricePerUnit.ToString("C") + ")";
+                billingRateList.Add(vm);
+            });
+
+            ViewData["BillingRateList"] = billingRateList;
 
             return View(viewModel);
         }

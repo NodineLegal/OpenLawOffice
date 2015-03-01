@@ -1,9 +1,25 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Contacts.ContactViewModel>" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/SiteNoRightBar.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Contacts.ContactViewModel>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
     Create Contact
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
+
+    <script language="javascript">
+        $(function () {
+            $("#IsOurEmployee").change(function () {
+                if ($(this).is(":checked")) {
+                    $("#BillingPane").show();
+                } else {
+                    $("#BillingPane").hide();
+                    $("#BillingRate_Id").val([]);
+                }
+            });
+            $("#BillingPane").hide();
+        });
+    
+    </script>
+
     <h2>
         Create Contact<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></h2>
     <% using (Html.BeginForm())
@@ -22,10 +38,28 @@
                 Our Employee
             </td>
             <td class="display-field">
-                Check to indicate that this contact is employed by your company giving them rights
-                to bill within this system.<br />
-                <%: Html.CheckBoxFor(model => model.IsOurEmployee)%>
+                <%: Html.CheckBoxFor(model => model.IsOurEmployee)%>Check to indicate that this contact is employed by your company giving them rights
+                to bill within this system.
                 <%: Html.ValidationMessageFor(model => model.IsOurEmployee)%>
+                <table class="detail_table" style="margin-top: 5px;" id="BillingPane">
+                    <thead style="font-weight: bold;">
+                        <tr>
+                            <td colspan="2">
+                                Billing Details
+                            </td>
+                        </tr>
+                    </thead>                        
+                    <tr>
+                        <td class="display-label" style="width: 150px;">
+                            Billing Rate
+                        </td>
+                        <td class="display-field">                                
+                            <%: Html.DropDownListFor(model => model.BillingRate.Id,
+                                new SelectList((IList)ViewData["BillingRateList"], "Id", "Title"),
+                                new { @size = 5, @style = "width: 100%" })%>
+                        </td>
+                    </tr>
+                </table>
             </td>
         </tr>
         <tr>
@@ -33,8 +67,7 @@
                 Organization
             </td>
             <td class="display-field">
-                Check to indicate that this contact is for an organization, not an individual.<br />
-                <%: Html.CheckBoxFor(model => model.IsOrganization)%>
+                <%: Html.CheckBoxFor(model => model.IsOrganization)%>Check to indicate that this contact is for an organization, not an individual.
                 <%: Html.ValidationMessageFor(model => model.IsOrganization)%>
             </td>
         </tr>
@@ -837,11 +870,4 @@
         "Our Employee" checkbox be checked if the contact is an employee of the firm or will be billing time (e.g., of counsel).
         </p>
     </div>
-</asp:Content>
-<asp:Content ID="Content3" ContentPlaceHolderID="MenuContent" runat="server">
-    <li>Actions</li>
-    <ul style="list-style: none outside none; padding-left: 1em;">
-        <li>
-            <%: Html.ActionLink("List", "Index") %></li>
-    </ul>
 </asp:Content>

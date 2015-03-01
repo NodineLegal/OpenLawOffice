@@ -8,12 +8,37 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
     <script>
+        var vars = [], hash;
+        var q = document.URL.split('?')[1];
+        if (q != undefined) {
+            q = q.split('&');
+            for (var i = 0; i < q.length; i++) {
+                hash = q[i].split('=');
+                vars.push(hash[1]);
+                vars[hash[0]] = hash[1];
+            }
+        }
         $(function () {
+            if (vars['rateFrom'] != null)
+                $('#rateFrom').val(vars['rateFrom']);
             $("#Date").datepicker({
                 autoSize: true
             });
             $("#Due").datepicker({
                 autoSize: true
+            });
+            $("#rateFrom").change(function () {
+                var href;
+                var base;
+                var qMarkAt = window.location.href.lastIndexOf('?');
+                if (qMarkAt > 0)
+                    base = window.location.href.substr(0, qMarkAt);
+                else
+                    base = window.location.href;
+
+                href = base + '?rateFrom=' + $("#rateFrom").val();
+
+                window.location.href = href;
             });
         });
     </script>
@@ -99,8 +124,17 @@
                     <td style="padding: 0 0 0 5px;"><%: ViewData["CaseNumber"] %></td>
                 </tr>
             </table>
-        </div>
+            <br /><br />
+            <div style="float: right; font-size: 10px;">Rate From: 
+                <select id="rateFrom" style="font-size: 10px;">
+                    <option value="employee">Employee</option>
+                    <option selected="selected" value="matter">Matter</option>
+                </select>
+            </div>
 
+        </div>
+        
+            
         <br />
 
         <div style="width: 100%; text-align: left; margin: 5px 0 5px 0; 
@@ -190,8 +224,9 @@
         <br />
 
         <div style="width: 100%; text-align: left; margin: 5px 0 5px 0; 
-            font-size: 14px;">Time</div>
-        
+            font-size: 14px;">Time
+        </div>
+                
         <div style="border: none; padding: 0;">            
             <table cellpadding="0" cellspacing="0" style="border: none; width: 100%;">
                 <thead style="background: #dddddd; text-align: center; font-weight: bold;">

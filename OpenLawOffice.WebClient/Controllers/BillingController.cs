@@ -88,7 +88,7 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult SingleMatterBill(Guid id)
         {
-            Common.Models.Billing.BillingRate defaultBillingRate = null;
+            Common.Models.Billing.BillingRate billingRate = null;
             ViewModels.Billing.InvoiceViewModel viewModel = new ViewModels.Billing.InvoiceViewModel();
             Common.Models.Billing.Invoice previousInvoice = null;
             Common.Models.Matters.Matter matter;
@@ -98,7 +98,7 @@ namespace OpenLawOffice.WebClient.Controllers
             previousInvoice = Data.Billing.Invoice.GetMostRecentInvoiceForContact(matter.BillTo.Id.Value);
 
             if (matter.DefaultBillingRate != null && matter.DefaultBillingRate.Id.HasValue)
-                defaultBillingRate = Data.Billing.BillingRate.Get(matter.DefaultBillingRate.Id.Value);
+                billingRate = Data.Billing.BillingRate.Get(matter.DefaultBillingRate.Id.Value);
 
             viewModel.Id = Guid.NewGuid();
             viewModel.BillTo = Mapper.Map<ViewModels.Contacts.ContactViewModel>(Data.Contacts.Contact.Get(matter.BillTo.Id.Value));
@@ -140,8 +140,16 @@ namespace OpenLawOffice.WebClient.Controllers
                     vm.Duration = x.Stop.Value - x.Start;
                 else
                     vm.Duration = new TimeSpan(0);
-                if (defaultBillingRate != null)
-                    vm.PricePerHour = defaultBillingRate.PricePerUnit;
+
+                if (!string.IsNullOrEmpty(Request["rateFrom"]) && Request["rateFrom"] == "employee")
+                {
+                    Common.Models.Contacts.Contact contact = Data.Contacts.Contact.Get(x.Worker.Id.Value);
+                    if (contact.BillingRate != null && contact.BillingRate.Id.HasValue)
+                        billingRate = Data.Billing.BillingRate.Get(contact.BillingRate.Id.Value);
+                }
+
+                if (billingRate != null)
+                    vm.PricePerHour = billingRate.PricePerUnit;
                 viewModel.Times.Add(vm);
             });
 
