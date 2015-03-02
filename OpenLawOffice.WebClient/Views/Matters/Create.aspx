@@ -178,7 +178,7 @@
                 Title<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Matter.Title) %>
+                <%: Html.TextBoxFor(model => model.Matter.Title, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Matter.Title)%>
             </td>
         </tr>
@@ -190,6 +190,15 @@
                 <%: Html.DropDownListFor(x => x.Matter.DefaultBillingRate.Id,
                         new SelectList((IList)ViewData["BillingRateList"], "Id", "Title"),
                         new { @size = 5, @style = "width: 100%" })%>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
+                Employee Rate Override<span class="required-field" title="Required Field">*</span>
+            </td>
+            <td class="display-field">
+                <%: Html.CheckBoxFor(model => model.Matter.OverrideMatterRateWithEmployeeRate)%>
+                Check to override matter billing rate with rates set for each employee
             </td>
         </tr>
         <tr>
@@ -216,7 +225,7 @@
                 Jurisdiction
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Matter.Jurisdiction) %>
+                <%: Html.TextBoxFor(model => model.Matter.Jurisdiction, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Matter.Jurisdiction)%>
             </td>
         </tr>
@@ -225,7 +234,7 @@
                 Case Number
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Matter.CaseNumber)%>
+                <%: Html.TextBoxFor(model => model.Matter.CaseNumber, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Matter.CaseNumber)%>
             </td>
         </tr>
@@ -264,7 +273,7 @@
                 Responsiblity<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.ResponsibleUser.Responsibility) %>
+                <%: Html.TextBoxFor(model => model.ResponsibleUser.Responsibility, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.ResponsibleUser.Responsibility)%>
             </td>
         </tr>
@@ -274,7 +283,7 @@
             </td>
             <td class="display-field">
                 <%: Html.HiddenFor(model => model.Matter.BillTo.Id) %>
-                <%: Html.TextBoxFor(model => model.Matter.BillTo.DisplayName) %>
+                <%: Html.TextBoxFor(model => model.Matter.BillTo.DisplayName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Matter.BillTo.DisplayName)%>
             </td>
         </tr>

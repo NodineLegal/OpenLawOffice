@@ -65,6 +65,15 @@ namespace OpenLawOffice.WebClient.ViewModels.Contacts
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.IsOrganization, opt => opt.MapFrom(src => src.IsOrganization))
                 .ForMember(dst => dst.IsOurEmployee, opt => opt.MapFrom(src => src.IsOurEmployee))
+                .ForMember(dst => dst.BillingRate, opt => opt.ResolveUsing(db =>
+                {
+                    if (db.BillingRate == null || !db.BillingRate.Id.HasValue) return null;
+                    return new ViewModels.Billing.BillingRateViewModel()
+                    {
+                        Id = db.BillingRate.Id.Value,
+                        IsStub = true
+                    };
+                }))
                 .ForMember(dst => dst.Nickname, opt => opt.MapFrom(src => src.Nickname))
                 .ForMember(dst => dst.Generation, opt => opt.MapFrom(src => src.Generation))
                 .ForMember(dst => dst.DisplayNamePrefix, opt => opt.MapFrom(src => src.DisplayNamePrefix))
@@ -181,6 +190,15 @@ namespace OpenLawOffice.WebClient.ViewModels.Contacts
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.IsOrganization, opt => opt.MapFrom(src => src.IsOrganization))
                 .ForMember(dst => dst.IsOurEmployee, opt => opt.MapFrom(src => src.IsOurEmployee))
+                .ForMember(dst => dst.BillingRate, opt => opt.ResolveUsing(x =>
+                {
+                    if (x.BillingRate == null || !x.BillingRate.Id.HasValue)
+                        return null;
+                    return new ViewModels.Billing.BillingRateViewModel()
+                    {
+                        Id = x.BillingRate.Id
+                    };
+                }))
                 .ForMember(dst => dst.Nickname, opt => opt.MapFrom(src => src.Nickname))
                 .ForMember(dst => dst.Generation, opt => opt.MapFrom(src => src.Generation))
                 .ForMember(dst => dst.DisplayNamePrefix, opt => opt.MapFrom(src => src.DisplayNamePrefix))

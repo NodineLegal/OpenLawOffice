@@ -158,6 +158,15 @@
                    { %>
                     <%: Model.DefaultBillingRate.Title %> (<%: Model.DefaultBillingRate.PricePerUnit.ToString("C") %>)
                 <% } %>
+                Employee Rate Override: 
+                <% if (Model.OverrideMatterRateWithEmployeeRate)
+                   { %>
+                    On
+                <% }
+                   else
+                   { %>
+                    Off
+                <% } %>
             </td>
             <td>
             </td>

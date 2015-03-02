@@ -32,6 +32,11 @@ namespace OpenLawOffice.WebClient.Controllers
     [HandleError(View = "Errors/Index", Order = 10)]
     public class BillingController : BaseController
     {
+        public class RateListItem
+        {
+            public string Title { get; set; }
+        }
+
         [Authorize(Roles = "Login, User")]
         public ActionResult Index()
         {
@@ -88,6 +93,7 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult SingleMatterBill(Guid id)
         {
+            DateTime? start = null, stop = null;
             Common.Models.Billing.BillingRate billingRate = null;
             ViewModels.Billing.InvoiceViewModel viewModel = new ViewModels.Billing.InvoiceViewModel();
             Common.Models.Billing.Invoice previousInvoice = null;
@@ -97,6 +103,7 @@ namespace OpenLawOffice.WebClient.Controllers
 
             previousInvoice = Data.Billing.Invoice.GetMostRecentInvoiceForContact(matter.BillTo.Id.Value);
 
+            // Set default billing rate
             if (matter.DefaultBillingRate != null && matter.DefaultBillingRate.Id.HasValue)
                 billingRate = Data.Billing.BillingRate.Get(matter.DefaultBillingRate.Id.Value);
 
@@ -128,7 +135,12 @@ namespace OpenLawOffice.WebClient.Controllers
                 viewModel.BillTo_Zip = previousInvoice.BillTo_Zip;
             }
 
-            Data.Timing.Time.ListUnbilledAndBillableTimeForMatter(matter.Id.Value).ForEach(x =>
+            if (!string.IsNullOrEmpty(Request["StartDate"]))
+                start = DateTime.Parse(Request["StartDate"]);
+            if (!string.IsNullOrEmpty(Request["StopDate"]))
+                stop = DateTime.Parse(Request["StopDate"]);
+
+            Data.Timing.Time.ListUnbilledAndBillableTimeForMatter(matter.Id.Value, start, stop).ForEach(x =>
             {
                 ViewModels.Billing.InvoiceTimeViewModel vm = new ViewModels.Billing.InvoiceTimeViewModel()
                 {
@@ -141,11 +153,23 @@ namespace OpenLawOffice.WebClient.Controllers
                 else
                     vm.Duration = new TimeSpan(0);
 
-                if (!string.IsNullOrEmpty(Request["rateFrom"]) && Request["rateFrom"] == "employee")
-                {
-                    Common.Models.Contacts.Contact contact = Data.Contacts.Contact.Get(x.Worker.Id.Value);
-                    if (contact.BillingRate != null && contact.BillingRate.Id.HasValue)
-                        billingRate = Data.Billing.BillingRate.Get(contact.BillingRate.Id.Value);
+                if (string.IsNullOrEmpty(Request["rateFrom"]))
+                { // Not specified in URL
+                    if (matter.OverrideMatterRateWithEmployeeRate)
+                    {
+                        Common.Models.Contacts.Contact contact = Data.Contacts.Contact.Get(x.Worker.Id.Value);
+                        if (contact.BillingRate != null && contact.BillingRate.Id.HasValue)
+                            billingRate = Data.Billing.BillingRate.Get(contact.BillingRate.Id.Value);
+                    }
+                }
+                else
+                { // Overridden by current user in URL
+                    if (Request["rateFrom"] == "employee")
+                    {
+                        Common.Models.Contacts.Contact contact = Data.Contacts.Contact.Get(x.Worker.Id.Value);
+                        if (contact.BillingRate != null && contact.BillingRate.Id.HasValue)
+                            billingRate = Data.Billing.BillingRate.Get(contact.BillingRate.Id.Value);
+                    }
                 }
 
                 if (billingRate != null)
@@ -153,7 +177,7 @@ namespace OpenLawOffice.WebClient.Controllers
                 viewModel.Times.Add(vm);
             });
 
-            Data.Billing.Expense.ListUnbilledExpensesForMatter(matter.Id.Value).ForEach(x =>
+            Data.Billing.Expense.ListUnbilledExpensesForMatter(matter.Id.Value, start, stop).ForEach(x =>
             {
                 viewModel.Expenses.Add(new ViewModels.Billing.InvoiceExpenseViewModel()
                 {
@@ -164,7 +188,7 @@ namespace OpenLawOffice.WebClient.Controllers
                 });
             });
 
-            Data.Billing.Fee.ListUnbilledFeesForMatter(matter.Id.Value).ForEach(x =>
+            Data.Billing.Fee.ListUnbilledFeesForMatter(matter.Id.Value, start, stop).ForEach(x =>
             {
                 viewModel.Fees.Add(new ViewModels.Billing.InvoiceFeeViewModel()
                 {
@@ -270,6 +294,8 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult SingleGroupBill(int id)
         {
+            DateTime? start = null, stop = null;
+            Common.Models.Billing.BillingRate billingRate = null;
             Common.Models.Billing.BillingGroup billingGroup;
             Common.Models.Billing.Invoice previousInvoice = null;
             ViewModels.Billing.GroupInvoiceViewModel viewModel = new ViewModels.Billing.GroupInvoiceViewModel();
@@ -309,6 +335,11 @@ namespace OpenLawOffice.WebClient.Controllers
             }
 
             mattersList = Data.Billing.BillingGroup.ListMattersForGroup(billingGroup.Id.Value);
+
+            if (!string.IsNullOrEmpty(Request["StartDate"]))
+                start = DateTime.Parse(Request["StartDate"]);
+            if (!string.IsNullOrEmpty(Request["StopDate"]))
+                stop = DateTime.Parse(Request["StopDate"]);
             
             for (int i=0; i<mattersList.Count; i++) 
             {
@@ -317,23 +348,45 @@ namespace OpenLawOffice.WebClient.Controllers
 
                 giivm.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(matter);
 
-                Data.Timing.Time.ListUnbilledAndBillableTimeForMatter(matter.Id.Value).ForEach(x =>
+                Data.Timing.Time.ListUnbilledAndBillableTimeForMatter(matter.Id.Value, start, stop).ForEach(x =>
                 {
                     ViewModels.Billing.InvoiceTimeViewModel vm = new ViewModels.Billing.InvoiceTimeViewModel()
                     {
                         //Invoice = viewModel,
                         Time = Mapper.Map<ViewModels.Timing.TimeViewModel>(x),
-                        Details = x.Details,
-                        PricePerHour = 0
+                        Details = x.Details
                     };
                     if (x.Stop.HasValue)
                         vm.Duration = x.Stop.Value - x.Start;
                     else
                         vm.Duration = new TimeSpan(0);
+
+                    if (string.IsNullOrEmpty(Request["RateFrom"]))
+                    { // Not specified in URL
+                        if (matter.OverrideMatterRateWithEmployeeRate)
+                        {
+                            Common.Models.Contacts.Contact contact = Data.Contacts.Contact.Get(x.Worker.Id.Value);
+                            if (contact.BillingRate != null && contact.BillingRate.Id.HasValue)
+                                billingRate = Data.Billing.BillingRate.Get(contact.BillingRate.Id.Value);
+                        }
+                    }
+                    else
+                    { // Overridden by current user in URL
+                        if (Request["RateFrom"] == "Employee")
+                        {
+                            Common.Models.Contacts.Contact contact = Data.Contacts.Contact.Get(x.Worker.Id.Value);
+                            if (contact.BillingRate != null && contact.BillingRate.Id.HasValue)
+                                billingRate = Data.Billing.BillingRate.Get(contact.BillingRate.Id.Value);
+                        }
+                    }
+
+                    if (billingRate != null)
+                        vm.PricePerHour = billingRate.PricePerUnit;
+
                     giivm.Times.Add(vm);
                 });
 
-                Data.Billing.Expense.ListUnbilledExpensesForMatter(matter.Id.Value).ForEach(x =>
+                Data.Billing.Expense.ListUnbilledExpensesForMatter(matter.Id.Value, start, stop).ForEach(x =>
                 {
                     giivm.Expenses.Add(new ViewModels.Billing.InvoiceExpenseViewModel()
                     {
@@ -344,7 +397,7 @@ namespace OpenLawOffice.WebClient.Controllers
                     });
                 });
 
-                Data.Billing.Fee.ListUnbilledFeesForMatter(matter.Id.Value).ForEach(x =>
+                Data.Billing.Fee.ListUnbilledFeesForMatter(matter.Id.Value, start, stop).ForEach(x =>
                 {
                     giivm.Fees.Add(new ViewModels.Billing.InvoiceFeeViewModel()
                     {
@@ -368,7 +421,7 @@ namespace OpenLawOffice.WebClient.Controllers
             ViewData["FirmZip"] = Common.Settings.Manager.Instance.System.BillingFirmZip;
             ViewData["FirmPhone"] = Common.Settings.Manager.Instance.System.BillingFirmPhone;
             ViewData["FirmWeb"] = Common.Settings.Manager.Instance.System.BillingFirmWeb;
-
+            
             return View(viewModel);
         }
         

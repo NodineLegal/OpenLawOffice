@@ -51,6 +51,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
 
         public Billing.BillingGroupViewModel BillingGroup { get; set; }
 
+        public bool OverrideMatterRateWithEmployeeRate { get; set; }
+
         // -- Financial Information
             
             // -- DB Values
@@ -156,6 +158,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
                         IsStub = true
                     };
                 }))
+                .ForMember(dst => dst.OverrideMatterRateWithEmployeeRate, opt => opt.MapFrom(src => src.OverrideMatterRateWithEmployeeRate))
                 .ForMember(dst => dst.Tasks, opt => opt.Ignore())
                 .ForMember(dst => dst.Notes, opt => opt.Ignore())
                 .ForMember(dst => dst.TaskNotes, opt => opt.Ignore())
@@ -258,6 +261,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
                         IsStub = true
                     };
                 }))
+                .ForMember(dst => dst.OverrideMatterRateWithEmployeeRate, opt => opt.MapFrom(src => src.OverrideMatterRateWithEmployeeRate))
                 .ForMember(dst => dst.MinimumCharge, opt => opt.MapFrom(src => src.MinimumCharge))
                 .ForMember(dst => dst.EstimatedCharge, opt => opt.MapFrom(src => src.EstimatedCharge))
                 .ForMember(dst => dst.MaximumCharge, opt => opt.MapFrom(src => src.MaximumCharge));

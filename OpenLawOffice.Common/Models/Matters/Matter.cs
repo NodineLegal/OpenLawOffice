@@ -52,5 +52,7 @@ namespace OpenLawOffice.Common.Models.Matters
         public Billing.BillingRate DefaultBillingRate { get; set; }
 
         public Billing.BillingGroup BillingGroup { get; set; }
+
+        public bool OverrideMatterRateWithEmployeeRate { get; set; }
     }
 }

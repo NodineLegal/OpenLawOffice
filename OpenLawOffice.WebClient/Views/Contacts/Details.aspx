@@ -15,7 +15,7 @@
             </tr>
         </thead>
         <tr>
-            <td class="display-label">
+            <td class="display-label" style="width: 250px;">
                 Id
             </td>
             <td class="display-field">
@@ -69,7 +69,7 @@
             </tr>
         </thead>
         <tr>
-            <td class="display-label">
+            <td class="display-label" style="width: 250px;">
                 Nickname
             </td>
             <td class="display-field">
@@ -142,7 +142,7 @@
             </tr>
         </thead>
         <tr>
-            <td class="display-label">
+            <td class="display-label" style="width: 250px;">
                 Email 1 Display Name
             </td>
             <td class="display-field">
@@ -247,7 +247,7 @@
             </tr>
         </thead>
         <tr>
-            <td class="display-label">
+            <td class="display-label" style="width: 250px;">
                 Address 1 Display Name
             </td>
             <td class="display-field">
@@ -448,7 +448,7 @@
             </tr>
         </thead>
         <tr>
-            <td class="display-label">
+            <td class="display-label" style="width: 250px;">
                 Telephone 1 Display Name
             </td>
             <td class="display-field">
@@ -617,7 +617,7 @@
             </tr>
         </thead>
         <tr>
-            <td class="display-label">
+            <td class="display-label" style="width: 250px;">
                 Birthday
             </td>
             <td class="display-field">
@@ -642,7 +642,7 @@
             </tr>
         </thead>
         <tr>
-            <td class="display-label">
+            <td class="display-label" style="width: 250px;">
                 Title
             </td>
             <td class="display-field">
@@ -707,7 +707,7 @@
             </tr>
         </thead>
         <tr>
-            <td class="display-label">
+            <td class="display-label" style="width: 250px;">
                 Spouse's Name
             </td>
             <td class="display-field">

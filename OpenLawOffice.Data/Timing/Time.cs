@@ -154,15 +154,43 @@ namespace OpenLawOffice.Data.Timing
                 new { MatterId = matterId });
         }
 
-        public static List<Common.Models.Timing.Time> ListUnbilledAndBillableTimeForMatter(Guid matterId)
+        public static List<Common.Models.Timing.Time> ListUnbilledAndBillableTimeForMatter(Guid matterId, 
+            DateTime? start = null, DateTime? stop = null)
         {
-            return DataHelper.List<Common.Models.Timing.Time, DBOs.Timing.Time>(
-                "SELECT * FROM \"time\" WHERE \"billable\"=true AND \"id\" IN " +
-                "   (SELECT \"time_id\" FROM \"task_time\" WHERE \"task_id\" IN " +
-                "       (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId)) AND " +
-                "   \"id\" NOT IN (SELECT \"time_id\" FROM \"invoice_time\" WHERE \"time_id\"=\"time\".\"id\") AND " +
-                "\"utc_disabled\" is null ORDER BY \"utc_created\" ASC",
-                new { MatterId = matterId });
+            if (!start.HasValue && !stop.HasValue)
+                return DataHelper.List<Common.Models.Timing.Time, DBOs.Timing.Time>(
+                    "SELECT * FROM \"time\" WHERE \"billable\"=true AND \"id\" IN " +
+                    "   (SELECT \"time_id\" FROM \"task_time\" WHERE \"task_id\" IN " +
+                    "       (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId)) AND " +
+                    "   \"id\" NOT IN (SELECT \"time_id\" FROM \"invoice_time\" WHERE \"time_id\"=\"time\".\"id\") AND " +
+                    "\"utc_disabled\" is null ORDER BY \"utc_created\" ASC",
+                    new { MatterId = matterId });
+            else if (start.HasValue && !stop.HasValue)
+                return DataHelper.List<Common.Models.Timing.Time, DBOs.Timing.Time>(
+                    "SELECT * FROM \"time\" WHERE \"billable\"=true AND \"id\" IN " +
+                    "   (SELECT \"time_id\" FROM \"task_time\" WHERE \"task_id\" IN " +
+                    "       (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId)) AND " +
+                    "   \"id\" NOT IN (SELECT \"time_id\" FROM \"invoice_time\" WHERE \"time_id\"=\"time\".\"id\") AND " +
+                    "\"utc_disabled\" is null AND \"start\" >= @Start ORDER BY \"utc_created\" ASC",
+                    new { MatterId = matterId, Start = start.Value.ToDbTime() });
+            else if (!start.HasValue && stop.HasValue)
+                return DataHelper.List<Common.Models.Timing.Time, DBOs.Timing.Time>(
+                    "SELECT * FROM \"time\" WHERE \"billable\"=true AND \"id\" IN " +
+                    "   (SELECT \"time_id\" FROM \"task_time\" WHERE \"task_id\" IN " +
+                    "       (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId)) AND " +
+                    "   \"id\" NOT IN (SELECT \"time_id\" FROM \"invoice_time\" WHERE \"time_id\"=\"time\".\"id\") AND " +
+                    "\"utc_disabled\" is null AND \"start\" <= @Stop ORDER BY \"utc_created\" ASC",
+                    new { MatterId = matterId, 
+                        Stop = stop.Value.Date.AddDays(1).AddMilliseconds(-1).ToDbTime() });
+            else
+                return DataHelper.List<Common.Models.Timing.Time, DBOs.Timing.Time>(
+                    "SELECT * FROM \"time\" WHERE \"billable\"=true AND \"id\" IN " +
+                    "   (SELECT \"time_id\" FROM \"task_time\" WHERE \"task_id\" IN " +
+                    "       (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId)) AND " +
+                    "   \"id\" NOT IN (SELECT \"time_id\" FROM \"invoice_time\" WHERE \"time_id\"=\"time\".\"id\") AND " +
+                    "\"utc_disabled\" is null AND \"start\" >= @Start AND \"start\" <= @Stop ORDER BY \"utc_created\" ASC",
+                    new { MatterId = matterId, Start = start.Value.ToDbTime(), 
+                        Stop = stop.Value.Date.AddDays(1).AddMilliseconds(-1).ToDbTime() });
         }
 
         public static TimeSpan SumUnbilledAndBillableTimeForMatter(Guid matterId)

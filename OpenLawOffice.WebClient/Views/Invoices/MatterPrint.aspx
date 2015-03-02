@@ -83,8 +83,10 @@
 
         <br />
 
-        <div style="width: 100%; text-align: left; margin: 5px 0 5px 0; 
-            font-size: 14px;">Expenses</div>
+        <div style="text-align: left; margin: 5px 0 0 0; padding: 2px 0px 2px 5px;
+            font-size: 12px; font-weight: bold; border-collapse: collapse;
+            border-top-left-radius: 5px; border-top-right-radius: 5px; -moz-border-top-left-radius: 5px;
+            -moz-border-top-right-radius: 5px; background: #f5f5f5;">Expenses</div>
         
         <div style="border: none; padding: 0;">            
             <table cellpadding="0" cellspacing="0" style="border: none; width: 100%;">
@@ -124,8 +126,9 @@
                         <td style="text-align: center;"><%: item.Amount.ToString("C") %></td>
                     </tr>
                 <% }
+                    altRow = !altRow;
                 if (altRow)
-                { %> <tr class="tr_alternate"> <% }
+                { %> <tr style="background-color: #f5f5f5;"> <% }
                 else
                 { %> <tr> <% } %>
                     <td colspan="3" style="text-align: right; font-weight: bold;">
@@ -141,8 +144,10 @@
         
         <br />
 
-        <div style="width: 100%; text-align: left; margin: 5px 0 5px 0; 
-            font-size: 14px;">Fees</div>
+        <div style="text-align: left; margin: 5px 0 0 0; padding: 2px 0px 2px 5px;
+            font-size: 12px; font-weight: bold; border-collapse: collapse;
+            border-top-left-radius: 5px; border-top-right-radius: 5px; -moz-border-top-left-radius: 5px;
+            -moz-border-top-right-radius: 5px; background: #f5f5f5;">Fees</div>
         
         <div style="border: none; padding: 0;">            
             <table cellpadding="0" cellspacing="0" style="border: none; width: 100%;">
@@ -177,9 +182,10 @@
                         <td><%: item.Fee.Details %></td>
                         <td style="text-align: center;"><%: item.Fee.Amount.ToString("C") %></td>
                     </tr>
-                <% } 
+                <% }
+                    altRow = !altRow;
                 if (altRow)
-                { %> <tr class="tr_alternate"> <% }
+                { %> <tr style="background-color: #f5f5f5;"> <% }
                 else
                 { %> <tr> <% } %>
                     <td colspan="2" style="text-align: right; font-weight: bold;">
@@ -195,8 +201,10 @@
 
         <br />
 
-        <div style="width: 100%; text-align: left; margin: 5px 0 5px 0; 
-            font-size: 14px;">Time</div>
+        <div style="text-align: left; margin: 5px 0 0 0; padding: 2px 0px 2px 5px;
+            font-size: 12px; font-weight: bold; border-collapse: collapse;
+            border-top-left-radius: 5px; border-top-right-radius: 5px; -moz-border-top-left-radius: 5px;
+            -moz-border-top-right-radius: 5px; background: #f5f5f5;">Time</div>
         
         <div style="border: none; padding: 0;">            
             <table cellpadding="0" cellspacing="0" style="border: none; width: 100%;">
@@ -240,8 +248,9 @@
                         <td style="text-align: center;"><%: string.Format("{0:C}", (decimal)item.Time.Duration.TotalHours * item.PricePerHour) %></td>
                     </tr>
                 <% }
+                    altRow = !altRow;
                 if (altRow)
-                { %> <tr class="tr_alternate"> <% }
+                { %> <tr style="background-color: #f5f5f5;"> <% }
                 else
                 { %> <tr> <% } %>
                     <td colspan="4" style="text-align: right; font-weight: bold;">

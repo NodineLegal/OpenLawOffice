@@ -81,11 +81,11 @@
             </tr>
         </thead>
         <tr>
-            <td class="display-label">
+            <td class="display-label" style="width: 250px;">
                 Nickname
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Nickname)%>
+                <%: Html.TextBoxFor(model => model.Nickname, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Nickname)%>
             </td>
         </tr>
@@ -94,7 +94,7 @@
                 Generation
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Generation)%>
+                <%: Html.TextBoxFor(model => model.Generation, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Generation)%>
             </td>
         </tr>
@@ -103,7 +103,7 @@
                 Display Name Prefix
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.DisplayNamePrefix)%>
+                <%: Html.TextBoxFor(model => model.DisplayNamePrefix, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.DisplayNamePrefix)%>
             </td>
         </tr>
@@ -112,7 +112,7 @@
                 Display Name<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.DisplayName)%>
+                <%: Html.TextBoxFor(model => model.DisplayName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.DisplayName)%>
             </td>
         </tr>
@@ -121,7 +121,7 @@
                 Surname (Last)
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Surname)%>
+                <%: Html.TextBoxFor(model => model.Surname, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Surname)%>
             </td>
         </tr>
@@ -130,7 +130,7 @@
                 Middle Name
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.MiddleName)%>
+                <%: Html.TextBoxFor(model => model.MiddleName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.MiddleName)%>
             </td>
         </tr>
@@ -139,7 +139,7 @@
                 Given (First) Name
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.GivenName)%>
+                <%: Html.TextBoxFor(model => model.GivenName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.GivenName)%>
             </td>
         </tr>
@@ -148,7 +148,7 @@
                 Initials
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Initials)%>
+                <%: Html.TextBoxFor(model => model.Initials, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Initials)%>
             </td>
         </tr>
@@ -162,11 +162,11 @@
             </tr>
         </thead>
         <tr>
-            <td class="display-label">
+            <td class="display-label" style="width: 250px;">
                 Email 1 Display Name
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Email1DisplayName)%>
+                <%: Html.TextBoxFor(model => model.Email1DisplayName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Email1DisplayName)%>
             </td>
         </tr>
@@ -175,7 +175,7 @@
                 Email 1 Email Address
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Email1EmailAddress)%>
+                <%: Html.TextBoxFor(model => model.Email1EmailAddress, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Email1EmailAddress)%>
             </td>
         </tr>
@@ -184,7 +184,7 @@
                 Email 2 Display Name
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Email2DisplayName)%>
+                <%: Html.TextBoxFor(model => model.Email2DisplayName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Email2DisplayName)%>
             </td>
         </tr>
@@ -193,7 +193,7 @@
                 Email 2 Email Address
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Email2EmailAddress)%>
+                <%: Html.TextBoxFor(model => model.Email2EmailAddress, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Email2EmailAddress)%>
             </td>
         </tr>
@@ -202,7 +202,7 @@
                 Email 3 Display Name
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Email3DisplayName)%>
+                <%: Html.TextBoxFor(model => model.Email3DisplayName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Email3DisplayName)%>
             </td>
         </tr>
@@ -211,7 +211,7 @@
                 Email 3 Email Address
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Email3EmailAddress)%>
+                <%: Html.TextBoxFor(model => model.Email3EmailAddress, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Email3EmailAddress)%>
             </td>
         </tr>
@@ -220,7 +220,7 @@
                 Fax 1 Display Name
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Fax1DisplayName)%>
+                <%: Html.TextBoxFor(model => model.Fax1DisplayName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Fax1DisplayName)%>
             </td>
         </tr>
@@ -229,7 +229,7 @@
                 Fax 1 Fax Number
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Fax1FaxNumber)%>
+                <%: Html.TextBoxFor(model => model.Fax1FaxNumber, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Fax1FaxNumber)%>
             </td>
         </tr>
@@ -238,7 +238,7 @@
                 Fax 2 Display Name
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Fax2DisplayName)%>
+                <%: Html.TextBoxFor(model => model.Fax2DisplayName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Fax2DisplayName)%>
             </td>
         </tr>
@@ -247,7 +247,7 @@
                 Fax 2 Fax Number
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Fax2FaxNumber)%>
+                <%: Html.TextBoxFor(model => model.Fax2FaxNumber, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Fax2FaxNumber)%>
             </td>
         </tr>
@@ -256,7 +256,7 @@
                 Fax 3 Display Name
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Fax3DisplayName)%>
+                <%: Html.TextBoxFor(model => model.Fax3DisplayName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Fax3DisplayName)%>
             </td>
         </tr>
@@ -265,7 +265,7 @@
                 Fax 3 Fax Number
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Fax3FaxNumber)%>
+                <%: Html.TextBoxFor(model => model.Fax3FaxNumber, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Fax3FaxNumber)%>
             </td>
         </tr>
@@ -279,11 +279,11 @@
             </tr>
         </thead>
         <tr>
-            <td class="display-label">
+            <td class="display-label" style="width: 250px;">
                 Address 1 Display Name
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Address1DisplayName)%>
+                <%: Html.TextBoxFor(model => model.Address1DisplayName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Address1DisplayName)%>
             </td>
         </tr>
@@ -292,7 +292,7 @@
                 Address 1 Street
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Address1AddressStreet)%>
+                <%: Html.TextBoxFor(model => model.Address1AddressStreet, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Address1AddressStreet)%>
             </td>
         </tr>
@@ -301,7 +301,7 @@
                 Address 1 City
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Address1AddressCity)%>
+                <%: Html.TextBoxFor(model => model.Address1AddressCity, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Address1AddressCity)%>
             </td>
         </tr>
@@ -310,7 +310,7 @@
                 Address 1 State/Province
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Address1AddressStateOrProvince)%>
+                <%: Html.TextBoxFor(model => model.Address1AddressStateOrProvince, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Address1AddressStateOrProvince)%>
             </td>
         </tr>
@@ -319,7 +319,7 @@
                 Address 1 Postal Code
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Address1AddressPostalCode)%>
+                <%: Html.TextBoxFor(model => model.Address1AddressPostalCode, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Address1AddressPostalCode)%>
             </td>
         </tr>
@@ -328,7 +328,7 @@
                 Address 1 Country
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Address1AddressCountry)%>
+                <%: Html.TextBoxFor(model => model.Address1AddressCountry, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Address1AddressCountry)%>
             </td>
         </tr>
@@ -337,7 +337,7 @@
                 Address 1 Country Code
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Address1AddressCountryCode)%>
+                <%: Html.TextBoxFor(model => model.Address1AddressCountryCode, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Address1AddressCountryCode)%>
             </td>
         </tr>
@@ -346,7 +346,7 @@
                 Address 1 Post Office Box
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Address1AddressPostOfficeBox)%>
+                <%: Html.TextBoxFor(model => model.Address1AddressPostOfficeBox, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Address1AddressPostOfficeBox)%>
             </td>
         </tr>
@@ -355,7 +355,7 @@
                 Address 2 Display Name
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Address2DisplayName)%>
+                <%: Html.TextBoxFor(model => model.Address2DisplayName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Address2DisplayName)%>
             </td>
         </tr>
@@ -364,7 +364,7 @@
                 Address 2 Street
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Address2AddressStreet)%>
+                <%: Html.TextBoxFor(model => model.Address2AddressStreet, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Address2AddressStreet)%>
             </td>
         </tr>
@@ -373,7 +373,7 @@
                 Address 2 City
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Address2AddressCity)%>
+                <%: Html.TextBoxFor(model => model.Address2AddressCity, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Address2AddressCity)%>
             </td>
         </tr>
@@ -382,7 +382,7 @@
                 Address 2 State/Province
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Address2AddressStateOrProvince)%>
+                <%: Html.TextBoxFor(model => model.Address2AddressStateOrProvince, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Address2AddressStateOrProvince)%>
             </td>
         </tr>
@@ -391,7 +391,7 @@
                 Address 2 Postal Code
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Address2AddressPostalCode)%>
+                <%: Html.TextBoxFor(model => model.Address2AddressPostalCode, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Address2AddressPostalCode)%>
             </td>
         </tr>
@@ -400,7 +400,7 @@
                 Address 2 Country
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Address2AddressCountry)%>
+                <%: Html.TextBoxFor(model => model.Address2AddressCountry, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Address2AddressCountry)%>
             </td>
         </tr>
@@ -409,7 +409,7 @@
                 Address 2 Country Code
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Address2AddressCountryCode)%>
+                <%: Html.TextBoxFor(model => model.Address2AddressCountryCode, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Address2AddressCountryCode)%>
             </td>
         </tr>
@@ -418,7 +418,7 @@
                 Address 2 Post Office Box
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Address2AddressPostOfficeBox)%>
+                <%: Html.TextBoxFor(model => model.Address2AddressPostOfficeBox, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Address2AddressPostOfficeBox)%>
             </td>
         </tr>
@@ -427,7 +427,7 @@
                 Address 3 Display Name
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Address3DisplayName)%>
+                <%: Html.TextBoxFor(model => model.Address3DisplayName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Address3DisplayName)%>
             </td>
         </tr>
@@ -436,7 +436,7 @@
                 Address 3 Street
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Address3AddressStreet)%>
+                <%: Html.TextBoxFor(model => model.Address3AddressStreet, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Address3AddressStreet)%>
             </td>
         </tr>
@@ -445,7 +445,7 @@
                 Address 3 City
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Address3AddressCity)%>
+                <%: Html.TextBoxFor(model => model.Address3AddressCity, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Address3AddressCity)%>
             </td>
         </tr>
@@ -454,7 +454,7 @@
                 Address 3 State/Province
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Address3AddressStateOrProvince)%>
+                <%: Html.TextBoxFor(model => model.Address3AddressStateOrProvince, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Address3AddressStateOrProvince)%>
             </td>
         </tr>
@@ -463,7 +463,7 @@
                 Address 3 Postal Code
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Address3AddressPostalCode)%>
+                <%: Html.TextBoxFor(model => model.Address3AddressPostalCode, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Address3AddressPostalCode)%>
             </td>
         </tr>
@@ -472,7 +472,7 @@
                 Address 3 Country
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Address3AddressCountry)%>
+                <%: Html.TextBoxFor(model => model.Address3AddressCountry, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Address3AddressCountry)%>
             </td>
         </tr>
@@ -481,7 +481,7 @@
                 Address 3 Country Code
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Address3AddressCountryCode)%>
+                <%: Html.TextBoxFor(model => model.Address3AddressCountryCode, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Address3AddressCountryCode)%>
             </td>
         </tr>
@@ -490,7 +490,7 @@
                 Address 3 Post Office Box
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Address3AddressPostOfficeBox)%>
+                <%: Html.TextBoxFor(model => model.Address3AddressPostOfficeBox, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Address3AddressPostOfficeBox)%>
             </td>
         </tr>
@@ -504,11 +504,11 @@
             </tr>
         </thead>
         <tr>
-            <td class="display-label">
+            <td class="display-label" style="width: 250px;">
                 Telephone 1 Display Name
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Telephone1DisplayName)%>
+                <%: Html.TextBoxFor(model => model.Telephone1DisplayName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Telephone1DisplayName)%>
             </td>
         </tr>
@@ -517,7 +517,7 @@
                 Telephone 1 Telephone Number
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Telephone1TelephoneNumber)%>
+                <%: Html.TextBoxFor(model => model.Telephone1TelephoneNumber, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Telephone1TelephoneNumber)%>
             </td>
         </tr>
@@ -526,7 +526,7 @@
                 Telephone 2 Display Name
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Telephone2DisplayName)%>
+                <%: Html.TextBoxFor(model => model.Telephone2DisplayName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Telephone2DisplayName)%>
             </td>
         </tr>
@@ -535,7 +535,7 @@
                 Telephone 2 Telephone Number
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Telephone2TelephoneNumber)%>
+                <%: Html.TextBoxFor(model => model.Telephone2TelephoneNumber, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Telephone2TelephoneNumber)%>
             </td>
         </tr>
@@ -544,7 +544,7 @@
                 Telephone 3 Display Name
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Telephone3DisplayName)%>
+                <%: Html.TextBoxFor(model => model.Telephone3DisplayName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Telephone3DisplayName)%>
             </td>
         </tr>
@@ -553,7 +553,7 @@
                 Telephone 3 Telephone Number
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Telephone3TelephoneNumber)%>
+                <%: Html.TextBoxFor(model => model.Telephone3TelephoneNumber, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Telephone3TelephoneNumber)%>
             </td>
         </tr>
@@ -562,7 +562,7 @@
                 Telephone 4 Display Name
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Telephone4DisplayName)%>
+                <%: Html.TextBoxFor(model => model.Telephone4DisplayName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Telephone4DisplayName)%>
             </td>
         </tr>
@@ -571,7 +571,7 @@
                 Telephone 4 Telephone Number
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Telephone4TelephoneNumber)%>
+                <%: Html.TextBoxFor(model => model.Telephone4TelephoneNumber, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Telephone4TelephoneNumber)%>
             </td>
         </tr>
@@ -580,7 +580,7 @@
                 Telephone 5 Display Name
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Telephone5DisplayName)%>
+                <%: Html.TextBoxFor(model => model.Telephone5DisplayName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Telephone5DisplayName)%>
             </td>
         </tr>
@@ -589,7 +589,7 @@
                 Telephone 5 Telephone Number
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Telephone5TelephoneNumber)%>
+                <%: Html.TextBoxFor(model => model.Telephone5TelephoneNumber, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Telephone5TelephoneNumber)%>
             </td>
         </tr>
@@ -598,7 +598,7 @@
                 Telephone 6 Display Name
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Telephone6DisplayName)%>
+                <%: Html.TextBoxFor(model => model.Telephone6DisplayName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Telephone6DisplayName)%>
             </td>
         </tr>
@@ -607,7 +607,7 @@
                 Telephone 6 Telephone Number
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Telephone6TelephoneNumber)%>
+                <%: Html.TextBoxFor(model => model.Telephone6TelephoneNumber, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Telephone6TelephoneNumber)%>
             </td>
         </tr>
@@ -616,7 +616,7 @@
                 Telephone 7 Display Name
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Telephone7DisplayName)%>
+                <%: Html.TextBoxFor(model => model.Telephone7DisplayName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Telephone7DisplayName)%>
             </td>
         </tr>
@@ -625,7 +625,7 @@
                 Telephone 7 Telephone Number
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Telephone7TelephoneNumber)%>
+                <%: Html.TextBoxFor(model => model.Telephone7TelephoneNumber, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Telephone7TelephoneNumber)%>
             </td>
         </tr>
@@ -634,7 +634,7 @@
                 Telephone 8 Display Name
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Telephone8DisplayName)%>
+                <%: Html.TextBoxFor(model => model.Telephone8DisplayName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Telephone8DisplayName)%>
             </td>
         </tr>
@@ -643,7 +643,7 @@
                 Telephone 8 Telephone Number
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Telephone8TelephoneNumber)%>
+                <%: Html.TextBoxFor(model => model.Telephone8TelephoneNumber, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Telephone8TelephoneNumber)%>
             </td>
         </tr>
@@ -652,7 +652,7 @@
                 Telephone 9 Display Name
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Telephone9DisplayName)%>
+                <%: Html.TextBoxFor(model => model.Telephone9DisplayName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Telephone9DisplayName)%>
             </td>
         </tr>
@@ -661,7 +661,7 @@
                 Telephone 9 Telephone Number
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Telephone9TelephoneNumber)%>
+                <%: Html.TextBoxFor(model => model.Telephone9TelephoneNumber, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Telephone9TelephoneNumber)%>
             </td>
         </tr>
@@ -670,7 +670,7 @@
                 Telephone 10 Display Name
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Telephone10DisplayName)%>
+                <%: Html.TextBoxFor(model => model.Telephone10DisplayName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Telephone10DisplayName)%>
             </td>
         </tr>
@@ -679,7 +679,7 @@
                 Telephone 10 Telephone Number
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Telephone10TelephoneNumber)%>
+                <%: Html.TextBoxFor(model => model.Telephone10TelephoneNumber, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Telephone10TelephoneNumber)%>
             </td>
         </tr>
@@ -693,11 +693,11 @@
             </tr>
         </thead>
         <tr>
-            <td class="display-label">
+            <td class="display-label" style="width: 250px;">
                 Birthday
             </td>
             <td class="display-field">
-                <%: Html.EditorFor(model => model.Birthday)%>
+                <%: Html.TextBoxFor(model => model.Birthday, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Birthday)%>
             </td>
         </tr>
@@ -706,7 +706,7 @@
                 Wedding
             </td>
             <td class="display-field">
-                <%: Html.EditorFor(model => model.Wedding)%>
+                <%: Html.TextBoxFor(model => model.Wedding, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Wedding)%>
             </td>
         </tr>
@@ -720,11 +720,11 @@
             </tr>
         </thead>
         <tr>
-            <td class="display-label">
+            <td class="display-label" style="width: 250px;">
                 Title
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Title)%>
+                <%: Html.TextBoxFor(model => model.Title, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Title)%>
             </td>
         </tr>
@@ -733,7 +733,7 @@
                 Company Name
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.CompanyName)%>
+                <%: Html.TextBoxFor(model => model.CompanyName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.CompanyName)%>
             </td>
         </tr>
@@ -742,7 +742,7 @@
                 Department Name
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.DepartmentName)%>
+                <%: Html.TextBoxFor(model => model.DepartmentName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.DepartmentName)%>
             </td>
         </tr>
@@ -751,7 +751,7 @@
                 Office Location
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.OfficeLocation)%>
+                <%: Html.TextBoxFor(model => model.OfficeLocation, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.OfficeLocation)%>
             </td>
         </tr>
@@ -760,7 +760,7 @@
                 Manager Name
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.ManagerName)%>
+                <%: Html.TextBoxFor(model => model.ManagerName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.ManagerName)%>
             </td>
         </tr>
@@ -769,7 +769,7 @@
                 Assistant Name
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.AssistantName)%>
+                <%: Html.TextBoxFor(model => model.AssistantName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.AssistantName)%>
             </td>
         </tr>
@@ -778,7 +778,7 @@
                 Profession
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Profession)%>
+                <%: Html.TextBoxFor(model => model.Profession, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Profession)%>
             </td>
         </tr>
@@ -792,11 +792,11 @@
             </tr>
         </thead>
         <tr>
-            <td class="display-label">
+            <td class="display-label" style="width: 250px;">
                 Spouse's Name
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.SpouseName)%>
+                <%: Html.TextBoxFor(model => model.SpouseName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.SpouseName)%>
             </td>
         </tr>
@@ -805,7 +805,7 @@
                 Language
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Language)%>
+                <%: Html.TextBoxFor(model => model.Language, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Language)%>
             </td>
         </tr>
@@ -814,7 +814,7 @@
                 Instant Messaging Address
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.InstantMessagingAddress)%>
+                <%: Html.TextBoxFor(model => model.InstantMessagingAddress, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.InstantMessagingAddress)%>
             </td>
         </tr>
@@ -823,7 +823,7 @@
                 Personal Home Page
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.PersonalHomePage)%>
+                <%: Html.TextBoxFor(model => model.PersonalHomePage, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.PersonalHomePage)%>
             </td>
         </tr>
@@ -832,7 +832,7 @@
                 Business Home Page
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.BusinessHomePage)%>
+                <%: Html.TextBoxFor(model => model.BusinessHomePage, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.BusinessHomePage)%>
             </td>
         </tr>
@@ -841,7 +841,7 @@
                 Gender
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Gender)%>
+                <%: Html.TextBoxFor(model => model.Gender, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Gender)%>
             </td>
         </tr>
@@ -850,7 +850,7 @@
                 Referred By
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.ReferredByName)%>
+                <%: Html.TextBoxFor(model => model.ReferredByName, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.ReferredByName)%>
             </td>
         </tr>

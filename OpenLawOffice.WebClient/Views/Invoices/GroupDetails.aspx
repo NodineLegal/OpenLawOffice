@@ -121,10 +121,12 @@
         <br />
 
         
-        <div style="border: 1px solid gray; margin: 10px 0 10px 0;">
+        <div style="border: none; margin: 10px 0 10px 0;">
 
-            <div style="text-align: center; display: inline-block; width: 100%; font-weight: bold;">
-                Summary
+            <div style="text-align: left; margin: 5px 0 0 0; padding: 2px 0px 2px 5px;
+                font-size: 12px; font-weight: bold; border-collapse: collapse;
+                border-top-left-radius: 5px; border-top-right-radius: 5px; -moz-border-top-left-radius: 5px;
+                -moz-border-top-right-radius: 5px; background: #f5f5f5;">Summary
             </div>
 
             
@@ -179,6 +181,7 @@
                             </td>
                         </tr>
                         <% }
+                    altRow = !altRow;
                         if (altRow)
                         { %> <tr style="background-color: #f5f5f5;"> <% }
                         else
@@ -236,8 +239,10 @@
                 <%: Model.Matters[j].Matter.CaseNumber%>
             </div>
 
-            <div style="width: 100%; text-align: left; margin: 5px 0 5px 0; 
-                font-size: 12px;">Expenses</div>
+            <div style="text-align: left; margin: 5px 0 0 0; padding: 2px 0px 2px 5px;
+                font-size: 12px; font-weight: bold; border-collapse: collapse;
+                border-top-left-radius: 5px; border-top-right-radius: 5px; -moz-border-top-left-radius: 5px;
+                -moz-border-top-right-radius: 5px; background: #f5f5f5;">Expenses</div>
         
             <div style="border: none; padding: 0;">            
                 <table cellpadding="0" cellspacing="0" style="border: none; width: 100%; font-size: 10px;">
@@ -277,6 +282,7 @@
                     <td style="text-align: center;"><%: item.Amount.ToString("C")%></td>
                 </tr>
                 <% }
+            altRow = !altRow;
                 if (altRow)
                 { %> <tr style="background-color: #f5f5f5;"> <% }
                 else
@@ -294,8 +300,10 @@
         
             <br />
 
-            <div style="width: 100%; text-align: left; margin: 5px 0 5px 0; 
-                font-size: 12px;">Fees</div>
+            <div style="text-align: left; margin: 5px 0 0 0; padding: 2px 0px 2px 5px;
+                font-size: 12px; font-weight: bold; border-collapse: collapse;
+                border-top-left-radius: 5px; border-top-right-radius: 5px; -moz-border-top-left-radius: 5px;
+                -moz-border-top-right-radius: 5px; background: #f5f5f5;">Fees</div>
         
             <div style="border: none; padding: 0;">            
                 <table cellpadding="0" cellspacing="0" style="border: none; width: 100%; font-size: 10px;">
@@ -330,7 +338,8 @@
                     <td><%: item.Details %></td>
                     <td style="text-align: center;"><%: item.Amount.ToString("C") %></td>
                 </tr>
-        <% } 
+        <% }
+            altRow = !altRow;
                 if (altRow)
                 { %> <tr style="background-color: #f5f5f5;"> <% }
                 else
@@ -348,8 +357,10 @@
 
             <br />
 
-            <div style="width: 100%; text-align: left; margin: 5px 0 5px 0; 
-                font-size: 12px;">Time</div>
+            <div style="text-align: left; margin: 5px 0 0 0; padding: 2px 0px 2px 5px;
+                font-size: 12px; font-weight: bold; border-collapse: collapse;
+                border-top-left-radius: 5px; border-top-right-radius: 5px; -moz-border-top-left-radius: 5px;
+                -moz-border-top-right-radius: 5px; background: #f5f5f5;">Time</div>
         
             <div style="border: none; padding: 0;">            
                 <table cellpadding="0" cellspacing="0" style="border: none; width: 100%; font-size: 10px;">
@@ -393,6 +404,7 @@
                     <td style="text-align: center;"><%: string.Format("{0:C}", (decimal)item.Duration.TotalHours * item.PricePerHour)%></td>
                 </tr>
                 <% }
+            altRow = !altRow;
                 if (altRow)
                 { %> <tr style="background-color: #f5f5f5;"> <% }
                 else

@@ -69,6 +69,9 @@ namespace OpenLawOffice.Data.DBOs.Matters
         [ColumnMapping(Name = "billing_group_id")]
         public int? BillingGroupId { get; set; }
 
+        [ColumnMapping(Name = "override_matter_rate_with_employee_rate")]
+        public bool OverrideMatterRateWithEmployeeRate { get; set; }
+
         public void BuildMappings()
         {
             Dapper.SqlMapper.SetTypeMap(typeof(Matter), new ColumnAttributeTypeMapper<Matter>());
@@ -156,7 +159,8 @@ namespace OpenLawOffice.Data.DBOs.Matters
                         Id = db.BillingGroupId.Value,
                         IsStub = true
                     };
-                }));
+                }))
+                .ForMember(dst => dst.OverrideMatterRateWithEmployeeRate, opt => opt.MapFrom(src => src.OverrideMatterRateWithEmployeeRate));
 
             Mapper.CreateMap<Common.Models.Matters.Matter, DBOs.Matters.Matter>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.ResolveUsing(db =>
@@ -217,7 +221,8 @@ namespace OpenLawOffice.Data.DBOs.Matters
                 {
                     if (model.BillingGroup == null) return null;
                     return model.BillingGroup.Id;
-                }));
+                }))
+                .ForMember(dst => dst.OverrideMatterRateWithEmployeeRate, opt => opt.MapFrom(src => src.OverrideMatterRateWithEmployeeRate));
         }
     }
 }

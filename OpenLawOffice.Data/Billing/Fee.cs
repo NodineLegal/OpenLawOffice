@@ -63,14 +63,46 @@ namespace OpenLawOffice.Data.Billing
                 new { MatterId = matterId });
         }
 
-        public static List<Common.Models.Billing.Fee> ListUnbilledFeesForMatter(Guid matterId)
+        public static List<Common.Models.Billing.Fee> ListUnbilledFeesForMatter(Guid matterId,
+            DateTime? start = null, DateTime? stop = null)
         {
-            return DataHelper.List<Common.Models.Billing.Fee, DBOs.Billing.Fee>(
-                "SELECT * FROM \"fee\" WHERE " +
-                "   \"id\" IN (SELECT \"fee_id\" FROM \"fee_matter\" WHERE \"matter_id\"=@MatterId) AND " +
-                "   \"id\" NOT IN (SELECT \"fee_id\" FROM \"invoice_fee\" WHERE \"fee_id\"=\"fee\".\"id\") AND " +
-                "\"utc_disabled\" is null ORDER BY \"utc_created\" ASC",
-                new { MatterId = matterId });
+            if (!start.HasValue && !stop.HasValue)
+                return DataHelper.List<Common.Models.Billing.Fee, DBOs.Billing.Fee>(
+                    "SELECT * FROM \"fee\" WHERE " +
+                    "   \"id\" IN (SELECT \"fee_id\" FROM \"fee_matter\" WHERE \"matter_id\"=@MatterId) AND " +
+                    "   \"id\" NOT IN (SELECT \"fee_id\" FROM \"invoice_fee\" WHERE \"fee_id\"=\"fee\".\"id\") AND " +
+                    "\"utc_disabled\" is null ORDER BY \"utc_created\" ASC",
+                    new { MatterId = matterId });
+            else if (start.HasValue && !stop.HasValue)
+                return DataHelper.List<Common.Models.Billing.Fee, DBOs.Billing.Fee>(
+                    "SELECT * FROM \"fee\" WHERE " +
+                    "   \"id\" IN (SELECT \"fee_id\" FROM \"fee_matter\" WHERE \"matter_id\"=@MatterId) AND " +
+                    "   \"id\" NOT IN (SELECT \"fee_id\" FROM \"invoice_fee\" WHERE \"fee_id\"=\"fee\".\"id\") AND " +
+                    "\"utc_disabled\" is null AND \"incurred\" >= @Start ORDER BY \"utc_created\" ASC",
+                    new { MatterId = matterId, Start = start.Value.ToDbTime() });
+            else if (!start.HasValue && stop.HasValue)
+                return DataHelper.List<Common.Models.Billing.Fee, DBOs.Billing.Fee>(
+                    "SELECT * FROM \"fee\" WHERE " +
+                    "   \"id\" IN (SELECT \"fee_id\" FROM \"fee_matter\" WHERE \"matter_id\"=@MatterId) AND " +
+                    "   \"id\" NOT IN (SELECT \"fee_id\" FROM \"invoice_fee\" WHERE \"fee_id\"=\"fee\".\"id\") AND " +
+                    "\"utc_disabled\" is null AND \"incurred\" <= @Stop ORDER BY \"utc_created\" ASC",
+                    new
+                    {
+                        MatterId = matterId,
+                        Stop = stop.Value.Date.AddDays(1).AddMilliseconds(-1).ToDbTime()
+                    });
+            else
+                return DataHelper.List<Common.Models.Billing.Fee, DBOs.Billing.Fee>(
+                    "SELECT * FROM \"fee\" WHERE " +
+                    "   \"id\" IN (SELECT \"fee_id\" FROM \"fee_matter\" WHERE \"matter_id\"=@MatterId) AND " +
+                    "   \"id\" NOT IN (SELECT \"fee_id\" FROM \"invoice_fee\" WHERE \"fee_id\"=\"fee\".\"id\") AND " +
+                    "\"utc_disabled\" is null AND \"incurred\" >= @Start AND \"incurred\" <= @Stop ORDER BY \"utc_created\" ASC",
+                    new
+                    {
+                        MatterId = matterId,
+                        Start = start.Value.ToDbTime(),
+                        Stop = stop.Value.Date.AddDays(1).AddMilliseconds(-1).ToDbTime()
+                    });
         }
 
         public static decimal SumUnbilledFeesForMatter(Guid matterId)

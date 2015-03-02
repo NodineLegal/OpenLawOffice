@@ -63,14 +63,39 @@ namespace OpenLawOffice.Data.Billing
                 new { MatterId = matterId });
         }
 
-        public static List<Common.Models.Billing.Expense> ListUnbilledExpensesForMatter(Guid matterId)
+        public static List<Common.Models.Billing.Expense> ListUnbilledExpensesForMatter(Guid matterId,
+            DateTime? start = null, DateTime? stop = null)
         {
-            return DataHelper.List<Common.Models.Billing.Expense, DBOs.Billing.Expense>(
-                "SELECT * FROM \"expense\" WHERE " +
-                "   \"id\" IN (SELECT \"expense_id\" FROM \"expense_matter\" WHERE \"matter_id\"=@MatterId) AND " +
-                "   \"id\" NOT IN (SELECT \"expense_id\" FROM \"invoice_expense\" WHERE \"expense_id\"=\"expense\".\"id\") AND " +
-                "\"utc_disabled\" is null ORDER BY \"utc_created\" ASC",
-                new { MatterId = matterId });
+            if (!start.HasValue && !stop.HasValue)
+                return DataHelper.List<Common.Models.Billing.Expense, DBOs.Billing.Expense>(
+                    "SELECT * FROM \"expense\" WHERE " +
+                    "   \"id\" IN (SELECT \"expense_id\" FROM \"expense_matter\" WHERE \"matter_id\"=@MatterId) AND " +
+                    "   \"id\" NOT IN (SELECT \"expense_id\" FROM \"invoice_expense\" WHERE \"expense_id\"=\"expense\".\"id\") AND " +
+                    "\"utc_disabled\" is null ORDER BY \"utc_created\" ASC",
+                    new { MatterId = matterId });
+            else if (start.HasValue && !stop.HasValue)
+                return DataHelper.List<Common.Models.Billing.Expense, DBOs.Billing.Expense>(
+                    "SELECT * FROM \"expense\" WHERE " +
+                    "   \"id\" IN (SELECT \"expense_id\" FROM \"expense_matter\" WHERE \"matter_id\"=@MatterId) AND " +
+                    "   \"id\" NOT IN (SELECT \"expense_id\" FROM \"invoice_expense\" WHERE \"expense_id\"=\"expense\".\"id\") AND " +
+                    "\"utc_disabled\" is null AND \"incurred\" >= @Start ORDER BY \"utc_created\" ASC",
+                    new { MatterId = matterId, Start = start.Value.ToDbTime() });
+            else if (!start.HasValue && stop.HasValue)
+                return DataHelper.List<Common.Models.Billing.Expense, DBOs.Billing.Expense>(
+                    "SELECT * FROM \"expense\" WHERE " +
+                    "   \"id\" IN (SELECT \"expense_id\" FROM \"expense_matter\" WHERE \"matter_id\"=@MatterId) AND " +
+                    "   \"id\" NOT IN (SELECT \"expense_id\" FROM \"invoice_expense\" WHERE \"expense_id\"=\"expense\".\"id\") AND " +
+                    "\"utc_disabled\" is null AND \"incurred\" <= @Stop ORDER BY \"utc_created\" ASC",
+                    new { MatterId = matterId,
+                        Stop = stop.Value.Date.AddDays(1).AddMilliseconds(-1).ToDbTime() });
+            else
+                return DataHelper.List<Common.Models.Billing.Expense, DBOs.Billing.Expense>(
+                    "SELECT * FROM \"expense\" WHERE " +
+                    "   \"id\" IN (SELECT \"expense_id\" FROM \"expense_matter\" WHERE \"matter_id\"=@MatterId) AND " +
+                    "   \"id\" NOT IN (SELECT \"expense_id\" FROM \"invoice_expense\" WHERE \"expense_id\"=\"expense\".\"id\") AND " +
+                    "\"utc_disabled\" is null AND \"incurred\" >= @Start AND \"incurred\" <= @Stop ORDER BY \"utc_created\" ASC",
+                    new { MatterId = matterId, Start = start.Value.ToDbTime(), 
+                        Stop = stop.Value.Date.AddDays(1).AddMilliseconds(-1).ToDbTime() });
         }
 
         public static decimal SumUnbilledExpensesForMatter(Guid matterId)

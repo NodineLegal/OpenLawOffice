@@ -8,7 +8,23 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
     <script>
+        var vars = [], hash;
+        var q = document.URL.split('?')[1];
+        if (q != undefined) {
+            q = q.split('&');
+            for (var i = 0; i < q.length; i++) {
+                hash = q[i].split('=');
+                vars.push(hash[1]);
+                vars[hash[0]] = hash[1];
+            }
+        }
         $(function () {
+            if (vars['RateFrom'] != null)
+                $('#RateFrom').val(vars['RateFrom']);
+            if (vars['StartDate'] != null)
+                $('#StartDate').val(vars['StartDate']);
+            if (vars['StopDate'] != null)
+                $('#StopDate').val(vars['StopDate']);
             $("#Date").datepicker({
                 autoSize: true
             });
@@ -18,7 +34,42 @@
             $("#BillingGroup_NextRun").datepicker({
                 autoSize: true
             });
+            $("#StartDate").datepicker({
+                autoSize: true
+            });
+            $("#StopDate").datepicker({
+                autoSize: true
+            });
+            $("#RateFrom").change(function () {
+                go();
+            });
+            $("#StartDate").change(function () {
+                go();
+            });
+            $("#StopDate").change(function () {
+                go();
+            });
         });
+        function go() {
+            var href;
+            var startDate = $('#StartDate').val().trim();
+            var stopDate = $('#StopDate').val().trim();
+            var base;
+            var qMarkAt = window.location.href.lastIndexOf('?');
+            if (qMarkAt > 0)
+                base = window.location.href.substr(0, qMarkAt);
+            else
+                base = window.location.href;
+
+            href = base + '?RateFrom=' + $("#RateFrom").val();
+
+            if (startDate.length > 0)
+                href += '&StartDate=' + startDate;
+            if (stopDate.length > 0)
+                href += '&StopDate=' + stopDate;
+
+            window.location.href = href;
+        };
     </script>
     
     <% using (Html.BeginForm())
@@ -98,6 +149,29 @@
                     <td style="padding: 0 0 0 5px;"><%: Html.TextBoxFor(x => x.BillingGroup.NextRun, new { @Value = Model.BillingGroup.NextRun.ToString("M/d/yyyy"), @style = "width: 300px;" })%></td>
                 </tr>
             </table>
+            
+            <div style="display: inline-block; margin-top: 25px; margin-left: 20px; border: 1px solid #c0c0c0; width: 450px;">
+                <div style="display: block; background: #dddddd;">Billing Options:</div>
+                <table cellpadding="0" cellspacing="0" border="0" style="width: 100%; padding: 0; margin: 0;">
+                    <tr>
+                        <td style="padding: 3px; font-size: 10px;">Rate From:</td>
+                        <td style="width: 365px; padding: 3px;">
+                            <select id="RateFrom" style="font-size: 10px;">
+                                <option value="Employee">Employee</option>
+                                <option selected="selected" value="Matter">Matter</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 3px; font-size: 10px;">Start Date:</td>
+                        <td style="width: 365px; padding: 3px;"><input type="text" name="StartDate" id="StartDate" style="width: 100px; font-size: 10px;" /></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 3px; font-size: 10px;">Stop Date:</td>
+                        <td style="width: 365px; padding: 3px;"><input type="text" name="StopDate" id="StopDate" style="width: 100px; font-size: 10px;" /></td>
+                    </tr>
+                </table>
+            </div>
         </div>
 
         <br />
@@ -113,11 +187,13 @@
                 <%: Model.Matters[j].Matter.CaseNumber%>
             </div>
 
-            <div style="width: 100%; text-align: left; margin: 5px 0 5px 0; 
-                font-size: 12px;">Expenses</div>
+            <div style="text-align: left; margin: 5px 0 0 0; padding: 2px 0px 2px 5px;
+            font-size: 12px; font-weight: bold; border-collapse: collapse;
+            border-top-left-radius: 5px; border-top-right-radius: 5px; -moz-border-top-left-radius: 5px;
+            -moz-border-top-right-radius: 5px; background: #f5f5f5;">Expenses</div>
         
             <div style="border: none; padding: 0;">            
-                <table cellpadding="0" cellspacing="0" style="border: none; width: 100%; font-size: 10px;"">
+                <table cellpadding="0" cellspacing="0" style="border: none; width: 100%; font-size: 10px;">
                     <thead style="background: #dddddd; text-align: center; font-weight: bold;">
                         <tr>
                             <td style="width: 100px;">
@@ -151,15 +227,30 @@
                             <td><%: Html.TextBoxFor(x => x.Matters[j].Expenses[i].Details, new { @style = "width: 100%; font-size: 11px;" })%></td>
                             <td style="text-align: center;">$<%: Html.TextBoxFor(x => x.Matters[j].Expenses[i].Amount, new { @style = "width: 75px; font-size: 11px;" })%><%: Html.HiddenFor(x => x.Matters[j].Expenses[i].Expense.Id)%></td>
                         </tr>
-                        <% } %>
+                    <% }
+                        if (Model.Matters[j].Expenses.Count <= 0)
+                        {
+                            altRow = !altRow;
+                            if (altRow)
+                            { %> <tr class="tr_alternate"> <% }
+                            else
+                            { %> <tr> <% }
+                        %>
+                        <td colspan="4" style="text-align: center;">
+                            No Expenses
+                        </td>
+                        </tr>
+                    <% } %>
                     </tbody>
                 </table>
             </div>
         
             <br />
 
-            <div style="width: 100%; text-align: left; margin: 5px 0 5px 0; 
-                font-size: 12px;">Fees</div>
+            <div style="text-align: left; margin: 5px 0 0 0; padding: 2px 0px 2px 5px;
+            font-size: 12px; font-weight: bold; border-collapse: collapse;
+            border-top-left-radius: 5px; border-top-right-radius: 5px; -moz-border-top-left-radius: 5px;
+            -moz-border-top-right-radius: 5px; background: #f5f5f5;">Fees</div>
         
             <div style="border: none; padding: 0;">            
                 <table cellpadding="0" cellspacing="0" style="border: none; width: 100%; font-size: 10px;"">
@@ -192,15 +283,30 @@
                             <td><%: Html.TextBoxFor(x => x.Matters[j].Fees[i].Details, new { @style = "width: 100%; font-size: 11px;" })%></td>
                             <td style="text-align: center;">$<%: Html.TextBoxFor(x => x.Matters[j].Fees[i].Amount, new { @style = "width: 75px; font-size: 11px;" })%><%: Html.HiddenFor(x => x.Matters[j].Fees[i].Fee.Id)%></td>
                         </tr>
-                        <% } %>
+                    <% }
+                        if (Model.Matters[j].Fees.Count <= 0)
+                        {
+                            altRow = !altRow;
+                            if (altRow)
+                            { %> <tr class="tr_alternate"> <% }
+                            else
+                            { %> <tr> <% }
+                        %>
+                        <td colspan="3" style="text-align: center;">
+                            No Fees
+                        </td>
+                        </tr>
+                    <% } %>
                     </tbody>
                 </table>
             </div>
 
             <br />
 
-            <div style="width: 100%; text-align: left; margin: 5px 0 5px 0; 
-                font-size: 12px;">Time</div>
+            <div style="text-align: left; margin: 5px 0 0 0; padding: 2px 0px 2px 5px;
+            font-size: 12px; font-weight: bold; border-collapse: collapse;
+            border-top-left-radius: 5px; border-top-right-radius: 5px; -moz-border-top-left-radius: 5px;
+            -moz-border-top-right-radius: 5px; background: #f5f5f5;">Time</div>
         
             <div style="border: none; padding: 0;">            
                 <table cellpadding="0" cellspacing="0" style="border: none; width: 100%; font-size: 10px;"">
@@ -215,6 +321,9 @@
                             <td style="width: 120px;">
                                 Duration (h:m)
                             </td>
+                            <td style="width: 100px;">
+                                Rate ($/hr.)
+                            </td>  
                         </tr>      
                     </thead>
                     <tbody>
@@ -233,8 +342,22 @@
                             <td><%: Html.TextBoxFor(x => x.Matters[j].Times[i].Details, new { @style = "width: 100%; font-size: 11px;" })%></td>
                             <td style="text-align: center;"><%: TimeSpanHelper.TimeSpan(item.Time.Duration, false)%><%: Html.HiddenFor(x => x.Matters[j].Times[i].Duration)%>
                                 <%: Html.HiddenFor(x => x.Matters[j].Times[i].Time.Id)%></td>
+                            <td style="text-align: center;">$<%: Html.TextBoxFor(x => x.Matters[j].Times[i].PricePerHour, new { @style = "width: 75px; font-size: 11px;" })%></td>
                         </tr>
-                        <% } %>
+                    <% }
+                        if (Model.Matters[j].Times.Count <= 0)
+                        {
+                            altRow = !altRow;
+                            if (altRow)
+                            { %> <tr class="tr_alternate"> <% }
+                            else
+                            { %> <tr> <% }
+                        %>
+                        <td colspan="4" style="text-align: center;">
+                            No Time
+                        </td>
+                        </tr>
+                    <% } %>
                     </tbody>
                 </table>
             </div>
@@ -244,12 +367,12 @@
         <% } %>
 
 
-        <div style="display: block; text-align: right; padding-top: 20px; padding-right: 20px;">
-            Contract Amount: $<%: Html.TextBoxFor(x => Model.BillingGroup.Amount, new { @style = "width: 75px;" })%>
+        <div style="display: block; text-align: right; padding-top: 20px; padding-right: 20px; font-size: 10px;">
+            Contract Amount: $<%: Html.TextBoxFor(x => Model.BillingGroup.Amount, new { @style = "width: 75px; font-size: 11px;" })%>
         </div>
 
-        <div style="display: block; text-align: right; padding-top: 20px; padding-right: 20px;">
-            Tax Amount: $<%: Html.TextBoxFor(x => x.TaxAmount, new { @style = "width: 75px;" }) %>
+        <div style="display: block; text-align: right; padding-top: 20px; padding-right: 20px; font-size: 10px;">
+            Tax Amount: $<%: Html.TextBoxFor(x => x.TaxAmount, new { @style = "width: 75px; font-size: 11px;" })%>
         </div>
         
         <div style="display: block; text-align: right; padding-top: 20px; padding-right: 20px;">

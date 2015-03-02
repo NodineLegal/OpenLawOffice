@@ -153,6 +153,15 @@
         </tr>
         <tr>
             <td class="display-label">
+                Employee Rate Override<span class="required-field" title="Required Field">*</span>
+            </td>
+            <td class="display-field">
+                <%: Html.CheckBoxFor(model => model.Matter.OverrideMatterRateWithEmployeeRate)%>
+                Check to override matter billing rate with rates set for each employee
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
                 Billing Group<br />
                 <input type="button" value="Clear Group" name="ClearGroupButton" id="ClearGroupButton" />
             </td>
