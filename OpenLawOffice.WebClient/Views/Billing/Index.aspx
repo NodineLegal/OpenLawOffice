@@ -99,7 +99,10 @@
                 <input type="checkbox" id="CB_<%: item.Matter.Id.Value %>" name="CB_<%: item.Matter.Id.Value %>" />
             </td>--%>
             <td>
-                <%: Html.ActionLink(item.BillTo.DisplayName, "Details", "Contacts", new { Id = item.BillTo.Id }, null) %>
+            <% if (item.BillTo != null && item.BillTo.Id.HasValue)
+               { %>
+                <%: Html.ActionLink(item.BillTo.DisplayName, "Details", "Contacts", new { Id = item.BillTo.Id }, null)%>
+            <% } %>
             </td>
             <td>
                 <%: Html.ActionLink(item.Matter.Title, "Details", "Matters", new { Id = item.Matter.Id }, null) %>
@@ -145,7 +148,10 @@
            { %>
         <tr>
             <td>
-                <%: Html.ActionLink(item.BillTo.DisplayName, "Details", "Contacts", new { Id = item.BillTo.Id }, null) %>
+            <% if (item.BillTo != null && item.BillTo.Id.HasValue)
+               { %>
+                <%: Html.ActionLink(item.BillTo.DisplayName, "Details", "Contacts", new { Id = item.BillTo.Id }, null)%>
+            <% } %>
             </td>
             <td>
                 <% if (item.Matter != null)

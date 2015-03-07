@@ -79,10 +79,20 @@ namespace OpenLawOffice.Data
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("UPDATE \"" + tableName + "\" SET " +
-                    "\"utc_disabled\"=@Now, \"disabled_by_user_pid\"=@UserPId " +
-                    "WHERE \"id\"=@Id",
-                    new { Now = Now, UserPId = userPId, Id = id });
+                if (id.GetType() == typeof(Guid))
+                {
+                    conn.Execute("UPDATE \"" + tableName + "\" SET " +
+                        "\"utc_disabled\"=@Now, \"disabled_by_user_pid\"=@UserPId " +
+                        "WHERE \"id\"=@Id",
+                        new { Now = Now, UserPId = userPId, Id = (Guid)id });
+                }
+                else
+                {
+                    conn.Execute("UPDATE \"" + tableName + "\" SET " +
+                        "\"utc_disabled\"=@Now, \"disabled_by_user_pid\"=@UserPId " +
+                        "WHERE \"id\"=@Id",
+                        new { Now = Now, UserPId = userPId, Id = id });
+                }
             }
         }
 
@@ -94,10 +104,20 @@ namespace OpenLawOffice.Data
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("UPDATE \"" + tableName + "\" SET " +
-                    "\"utc_modified\"=@Now, \"modified_by_user_pid\"=@UserPId, \"utc_disabled\"=null, \"disabled_by_user_pid\"=null " +
-                    "WHERE \"id\"=@Id",
-                    new { Now = Now, UserPId = userPId, Id = id });
+                if (id.GetType() == typeof(Guid))
+                {
+                    conn.Execute("UPDATE \"" + tableName + "\" SET " +
+                        "\"utc_modified\"=@Now, \"modified_by_user_pid\"=@UserPId, \"utc_disabled\"=null, \"disabled_by_user_pid\"=null " +
+                        "WHERE \"id\"=@Id",
+                        new { Now = Now, UserPId = userPId, Id = (Guid)id });
+                }
+                else
+                {
+                    conn.Execute("UPDATE \"" + tableName + "\" SET " +
+                        "\"utc_modified\"=@Now, \"modified_by_user_pid\"=@UserPId, \"utc_disabled\"=null, \"disabled_by_user_pid\"=null " +
+                        "WHERE \"id\"=@Id",
+                        new { Now = Now, UserPId = userPId, Id = id });
+                }
             }
         }
     }

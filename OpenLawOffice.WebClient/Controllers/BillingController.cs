@@ -48,7 +48,8 @@ namespace OpenLawOffice.WebClient.Controllers
             {
                 item = new ViewModels.Billing.BillingViewModel.Item();
                 item.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(matter);
-                item.BillTo = Mapper.Map<ViewModels.Contacts.ContactViewModel>(Data.Contacts.Contact.Get(matter.BillTo.Id.Value));
+                if (matter.BillTo != null && matter.BillTo.Id.HasValue)
+                    item.BillTo = Mapper.Map<ViewModels.Contacts.ContactViewModel>(Data.Contacts.Contact.Get(matter.BillTo.Id.Value));
                 item.Expenses = Data.Billing.Expense.SumUnbilledExpensesForMatter(matter.Id.Value);
                 item.Fees = Data.Billing.Fee.SumUnbilledFeesForMatter(matter.Id.Value);
                 item.Time = Data.Timing.Time.SumUnbilledAndBillableTimeForMatter(matter.Id.Value);

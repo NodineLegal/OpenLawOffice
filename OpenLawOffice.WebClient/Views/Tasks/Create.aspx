@@ -21,7 +21,7 @@
                 Title<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Task.Title) %>
+                <%: Html.TextBoxFor(model => model.Task.Title, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Task.Title)%>
             </td>
         </tr>
@@ -94,7 +94,7 @@
                 Responsiblity<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.ResponsibleUser.Responsibility) %>
+                <%: Html.TextBoxFor(model => model.ResponsibleUser.Responsibility, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.ResponsibleUser.Responsibility)%>
             </td>
         </tr>
