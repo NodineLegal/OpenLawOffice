@@ -58,6 +58,10 @@
     </ul>
     <ul>
     </ul>
+    <li>
+        <%: Html.ActionLink("Form Fields", "", "FormFields")%> <%: Html.ActionLink("New Field", "Create", "FormFields", null, new { @class = "btn-plus" })%></li>
+    <ul>
+    </ul>
     <li>Settings</li>
     <ul>
         <li>
