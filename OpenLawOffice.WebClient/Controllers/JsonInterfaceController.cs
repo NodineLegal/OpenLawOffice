@@ -3,13 +3,101 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 
 namespace OpenLawOffice.WebClient.Controllers
 {
     [HandleError(View = "Errors/Index", Order = 10)]
     public class JsonInterfaceController : Controller
     {
-        public ActionResult Matters(bool Active = true)
+        public AccountMembershipService MembershipService { get; set; }
+
+        protected override void Initialize(RequestContext requestContext)
+        {
+            if (MembershipService == null) { MembershipService = new AccountMembershipService(); }
+
+            base.Initialize(requestContext);
+        }
+
+        [HttpPost]
+        public ActionResult Authenticate()
+        {
+            Common.Net.Request<Common.Net.AuthPackage> request;
+            Common.Net.Response<Guid> response = new Common.Net.Response<Guid>();
+
+            request = Request.InputStream.JsonDeserialize<Common.Net.Request<Common.Net.AuthPackage>>();
+
+            response.RequestReceived = DateTime.Now;
+
+            if (MembershipService.ValidateUser(request.Package.Username, request.Package.Password))
+            {
+                Common.Models.External.ExternalSession session =
+                    Data.External.ExternalSession.Get(request.Package.AppName, request.Package.MachineId, request.Package.Username);
+                Common.Models.Account.Users user =
+                    Data.Account.Users.Get(request.Package.Username);
+
+                if (session == null)
+                { // create
+                    session = Data.External.ExternalSession.Create(new Common.Models.External.ExternalSession()
+                    {
+                        MachineId = request.Package.MachineId,
+                        User = user,
+                        AppName = request.Package.AppName
+                    });
+                }
+                else
+                { // update
+                    session = Data.External.ExternalSession.Update(new Common.Models.External.ExternalSession()
+                    {
+                        Id = session.Id,
+                        MachineId = request.Package.MachineId,
+                        User = user,
+                        AppName = request.Package.AppName
+                    });
+                }
+
+                response.Successful = true;
+                response.Package = session.Id.Value;
+            }
+            else
+            {
+                response.Successful = false;
+                response.Package = Guid.Empty;
+            }
+
+            response.ResponseSent = DateTime.Now;
+
+            return Json(response, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult CloseSession()
+        {
+            Guid token;
+            Common.Net.Response<bool> response = new Common.Net.Response<bool>();
+
+            response.RequestReceived = DateTime.Now;
+
+            if ((token = GetToken(Request)) == Guid.Empty)
+            {
+                response.Successful = false;
+                response.Error = "Invalid Token";
+            }
+
+            if (!VerifyToken(token))
+            {
+                response.Successful = false;
+                response.Error = "Invalid Token";
+            }
+
+            // Close the session here
+
+            response.Successful = true;
+            response.ResponseSent = DateTime.Now;
+            return Json(response, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult Matters(string contactFilter, string titleFilter, string caseNumberFilter, string jurisdictionFilter, bool activeFilter = true)
         {
             Guid token;
             Common.Net.Response<List<Common.Models.Matters.Matter>> response 
@@ -30,7 +118,7 @@ namespace OpenLawOffice.WebClient.Controllers
             }
 
             response.Successful = true;
-            response.Package = Data.Matters.Matter.List(Active);
+            response.Package = Data.Matters.Matter.List(activeFilter, contactFilter, titleFilter, caseNumberFilter, jurisdictionFilter);
             response.ResponseSent = DateTime.Now;
             return Json(response, JsonRequestBehavior.AllowGet);
         }
