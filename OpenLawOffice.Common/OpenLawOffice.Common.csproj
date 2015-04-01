@@ -94,6 +94,8 @@
     <Compile Include="Models\Events\EventTag.cs" />
     <Compile Include="Models\Events\EventTask.cs" />
     <Compile Include="Models\External\ExternalSession.cs" />
+    <Compile Include="Models\Forms\FormField.cs" />
+    <Compile Include="Models\Forms\FormFieldMatter.cs" />
     <Compile Include="Models\MapMeAttribute.cs" />
     <Compile Include="Models\Matters\Matter.cs" />
     <Compile Include="Models\Matters\MatterContact.cs" />

@@ -182,6 +182,8 @@
     <Compile Include="ViewModels\Documents\SelectableDocumentViewModel.cs" />
     <Compile Include="ViewModels\Documents\VersionViewModel.cs" />
     <Compile Include="FormsAuthenticationService.cs" />
+    <Compile Include="ViewModels\Forms\FormFieldMatterViewModel.cs" />
+    <Compile Include="ViewModels\Forms\FormFieldViewModel.cs" />
     <Compile Include="ViewModels\Home\DashboardViewModel.cs" />
     <Compile Include="IFormsAuthenticationService.cs" />
     <Compile Include="ViewModels\Installation\InstallationViewModel.cs" />
@@ -469,6 +471,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\FormFields\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenLawOffice.Common\OpenLawOffice.Common.csproj">
