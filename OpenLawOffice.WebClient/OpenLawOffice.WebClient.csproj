@@ -114,6 +114,7 @@
     <Compile Include="Controllers\EventTaskController.cs" />
     <Compile Include="Controllers\ExpensesController.cs" />
     <Compile Include="Controllers\FeesController.cs" />
+    <Compile Include="Controllers\FormFieldsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InstallationController.cs" />
     <Compile Include="Controllers\InvoicesController.cs" />
@@ -359,6 +360,11 @@
     <Content Include="Views\Expenses\Edit.aspx" />
     <Content Include="Views\Fees\Create.aspx" />
     <Content Include="Views\Fees\Edit.aspx" />
+    <Content Include="Views\FormFields\Create.aspx" />
+    <Content Include="Views\FormFields\Delete.aspx" />
+    <Content Include="Views\FormFields\Details.aspx" />
+    <Content Include="Views\FormFields\Edit.aspx" />
+    <Content Include="Views\FormFields\Index.aspx" />
     <Content Include="Views\Invoices\GroupDetails.aspx" />
     <Content Include="Views\Invoices\GroupPrint_Full.aspx" />
     <Content Include="Views\Invoices\GroupPrint_Summary.aspx" />
@@ -471,7 +477,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\FormFields\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenLawOffice.Common\OpenLawOffice.Common.csproj">

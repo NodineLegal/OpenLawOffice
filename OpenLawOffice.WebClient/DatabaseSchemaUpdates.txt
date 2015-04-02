@@ -1,4 +1,62 @@
-﻿2/28/2015
+﻿4/2/2015
+-- Table: form_field
+
+-- DROP TABLE form_field;
+
+CREATE TABLE form_field
+(
+-- Inherited from table core:  created_by_user_pid uuid NOT NULL,
+-- Inherited from table core:  modified_by_user_pid uuid NOT NULL,
+-- Inherited from table core:  disabled_by_user_pid uuid,
+-- Inherited from table core:  utc_created timestamp without time zone NOT NULL,
+-- Inherited from table core:  utc_modified timestamp without time zone NOT NULL,
+-- Inherited from table core:  utc_disabled timestamp without time zone,
+  id serial NOT NULL,
+  title text NOT NULL,
+  description text,
+  CONSTRAINT "form_field_PK" PRIMARY KEY (id),
+  CONSTRAINT form_field_title_unique UNIQUE (title)
+)
+INHERITS (core)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE form_field
+  OWNER TO postgres;
+
+-- Table: form_field_matter
+
+-- DROP TABLE form_field_matter;
+
+CREATE TABLE form_field_matter
+(
+-- Inherited from table core:  created_by_user_pid uuid NOT NULL,
+-- Inherited from table core:  modified_by_user_pid uuid NOT NULL,
+-- Inherited from table core:  disabled_by_user_pid uuid,
+-- Inherited from table core:  utc_created timestamp without time zone NOT NULL,
+-- Inherited from table core:  utc_modified timestamp without time zone NOT NULL,
+-- Inherited from table core:  utc_disabled timestamp without time zone,
+  id uuid NOT NULL,
+  matter_id uuid NOT NULL,
+  form_field_id integer NOT NULL,
+  CONSTRAINT "form_field_matter_PK" PRIMARY KEY (id),
+  CONSTRAINT "form_field_matter_form_field_FormFieldId" FOREIGN KEY (form_field_id)
+      REFERENCES form_field (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT "form_field_matter_matter_MatterId" FOREIGN KEY (matter_id)
+      REFERENCES matter (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+INHERITS (core)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE form_field_matter
+  OWNER TO postgres;
+
+
+
+2/28/2015
 
 ALTER TABLE contact
   ADD COLUMN billing_rate_id integer;

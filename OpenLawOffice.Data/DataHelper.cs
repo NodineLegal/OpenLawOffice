@@ -86,6 +86,13 @@ namespace OpenLawOffice.Data
                         "WHERE \"id\"=@Id",
                         new { Now = Now, UserPId = userPId, Id = (Guid)id });
                 }
+                else if (id.GetType() == typeof(int))
+                {
+                    conn.Execute("UPDATE \"" + tableName + "\" SET " +
+                        "\"utc_disabled\"=@Now, \"disabled_by_user_pid\"=@UserPId " +
+                        "WHERE \"id\"=@Id",
+                        new { Now = Now, UserPId = userPId, Id = (int)id });
+                }
                 else
                 {
                     conn.Execute("UPDATE \"" + tableName + "\" SET " +

@@ -52,8 +52,8 @@ namespace OpenLawOffice.Data.Forms
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("INSERT INTO \"form_field\" (\"id\", \"title\", \"description\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
-                    "VALUES (@Id, @Title, @Description, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
+                conn.Execute("INSERT INTO \"form_field\" (\"title\", \"description\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
+                    "VALUES (@Title, @Description, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
                     dbo);
                 model.Id = conn.Query<DBOs.Forms.FormField>("SELECT currval(pg_get_serial_sequence('form_field', 'id')) AS \"id\"").Single().Id;
             }
