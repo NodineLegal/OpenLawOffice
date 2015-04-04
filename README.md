@@ -3,7 +3,7 @@
 Status: Development
 
 ## What?
-OpenLawOffice is a web (HTTP) based client-server system for management of larm firm resource including matters, billing, tasking and documents.
+OpenLawOffice is a web based system for management of law firm assets including matters, billing and tasking.
 
 ## Why?
 
@@ -24,19 +24,64 @@ Absolutely!  There is much to be done.  If you would like to assist, simply cont
 
 ## Installation
 ### Step 1 - Prerequisites
-The below are currently considered the prerequisites and this software is only tested within the Visual Studio (R) 2010 IDE with Postgres 9.2 all on windows 7.
+The below are currently considered the prerequisites and this software is only tested within the Visual Studio (R) 2010 IDE with Postgres 9.2 all on Windows 8.
 
-*.NET Framework v4
-*MVC2
-*Postgresql
+* .NET Framework v4
+* MVC2
+* Postgresql
 
 ### Step 2 - Database
 Create a database within your postgresql server.  It doesn't matter what you call it, you can change the name in the web.config disucssed later.
 
 ### Step 3 - Webapp
-* Modify the "fileStorageSettings" to point to existing locations.  This will be where your documents are stored, so make sure you have ample space.
 * Modify your connection string
 * Modify the DbProviderFactories as needed.  I have it commented out as I have Npgsql installed on my system (See 2.2 http://npgsql.projects.pgfoundry.org/docs/manual/UserManual.html for details on installing).
 
 ### Step 4 - Let me know
 If you find problems with installation, file an issue and let me know.
+
+
+## Quick Feature List
+Below is a list of some of the more commonly used features.
+
+### Matter Management
+* Jurisdiction, Case Number
+* Lead Attorney
+* Who is billed for the matter
+* Billing rates for the matter (based on matter specific rates or employee specific rates)
+* Support basic expense tracking and billing
+* Support basic fee tracking and billing (copies, flat fee basis, etc.)
+* Tracks billed, unbilled and billable times
+* Notes
+
+### Task Management
+* Assignment of responsible contacts and users
+* Due date
+* Dashboard shows todo list with highlighting of tasks past due and due today
+* Notes
+* Tracking of billable and non-billable time
+
+### Contact Management
+* Storage for contact data
+* Contacts can be related to matters with assigned roles
+* Conflict lists for conflict checking
+
+### Billing
+* Daily Time - view start/stop times on each matter with durations for any employee on any date
+* Groups - commonly used for situations in which an attorney accepts multiple cases and receives a set monthly fee for those cases
+* Rates - setup billing rates
+* Supports flat fees on a per matter basis
+* Basic expense tracking
+* Display matters with any billable time, expenses or fees
+* Invoice generation
+
+### Invoicing
+* Generate invoices based on logged time, expenses and fees
+* Detailed time records
+* Pull rates from matter rates or employee rates
+* Selectable date ranges
+* Track external invoice numbers (handy for pairing with Quickbooks or other accounting software)
+* Overridable details for each entry
+* Overridable rate or amount for each entry
+* Support for group billing (useful for appointment contracts)
+* Printable invoices with timesheets and summaries
