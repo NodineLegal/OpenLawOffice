@@ -167,6 +167,14 @@
     <% using (Html.BeginForm())
        {%>
     <%: Html.ValidationSummary(true) %>
+    <% if (ViewData["ErrorMessage"] != null)
+       { %>
+        <div style="color: Red;"><%= ViewData["ErrorMessage"]%></div>
+    <% } %>
+    <% if (ViewData["OverrideConflict"] != null)
+       { %>
+    <%: Html.Hidden("OverrideConflict", ViewData["OverrideConflict"])%>
+    <% } %>
     <table class="detail_table">
         <tr>
             <td colspan="3" class="listing_table_heading">

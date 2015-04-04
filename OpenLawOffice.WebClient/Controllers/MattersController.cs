@@ -428,12 +428,70 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult Create(ViewModels.Matters.CreateMatterViewModel viewModel)
         {
+            string errorListString = "";
             Common.Models.Account.Users currentUser;
             Common.Models.Matters.Matter model;
+            List<Common.Models.Matters.Matter> possibleDuplicateList;
 
             currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             model = Mapper.Map<Common.Models.Matters.Matter>(viewModel.Matter);
+            
+            if (Request["OverrideConflict"] != "True")
+            {
+                possibleDuplicateList = Data.Matters.Matter.ListPossibleDuplicates(model);
+
+                if (possibleDuplicateList.Count > 0)
+                {
+                    List<ViewModels.Account.UsersViewModel> userList;
+                    List<ViewModels.Contacts.ContactViewModel> employeeContactList;
+                    List<ViewModels.Billing.BillingRateViewModel> billingRateList;
+                    List<ViewModels.Billing.BillingGroupViewModel> billingGroupList;
+
+                    possibleDuplicateList.ForEach(x =>
+                    {
+                        errorListString += "<li><a href=\"/Matters/Details/" + x.Id.Value + "\">" + x.Title + "</a> [<a href=\"/Matters/Edit/" + x.Id.Value + "\">edit</a>]</li>";
+                    });
+
+                    userList = new List<ViewModels.Account.UsersViewModel>();
+                    employeeContactList = new List<ViewModels.Contacts.ContactViewModel>();
+                    billingRateList = new List<ViewModels.Billing.BillingRateViewModel>();
+                    billingGroupList = new List<ViewModels.Billing.BillingGroupViewModel>();
+
+                    Data.Account.Users.List().ForEach(x =>
+                    {
+                        userList.Add(Mapper.Map<ViewModels.Account.UsersViewModel>(x));
+                    });
+
+                    Data.Contacts.Contact.ListEmployeesOnly().ForEach(x =>
+                    {
+                        employeeContactList.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(x));
+                    });
+
+                    Data.Billing.BillingRate.List().ForEach(x =>
+                    {
+                        ViewModels.Billing.BillingRateViewModel vm = Mapper.Map<ViewModels.Billing.BillingRateViewModel>(x);
+                        vm.Title += " (" + vm.PricePerUnit.ToString("C") + ")";
+                        billingRateList.Add(vm);
+                    });
+
+                    Data.Billing.BillingGroup.List().ForEach(x =>
+                    {
+                        ViewModels.Billing.BillingGroupViewModel vm = Mapper.Map<ViewModels.Billing.BillingGroupViewModel>(x);
+                        vm.Title += " (" + vm.Amount.ToString("C") + ")";
+                        billingGroupList.Add(vm);
+                    });
+
+                    ViewData["ErrorMessage"] = "Matter possibly conflicts with the following existing matters:<ul>" + errorListString + "</ul>Click Save again to create the matter anyway.";
+                    ViewData["OverrideConflict"] = "True";
+                    ViewData["UserList"] = userList;
+                    ViewData["EmployeeContactList"] = employeeContactList;
+                    ViewData["BillingRateList"] = billingRateList;
+                    ViewData["BillingGroupList"] = billingGroupList; 
+                    return View(viewModel);
+                }
+            }
+            
 
             if (viewModel.LeadAttorney == null || viewModel.LeadAttorney.Contact == null ||
                 !viewModel.LeadAttorney.Contact.Id.HasValue)

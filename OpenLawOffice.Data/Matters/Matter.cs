@@ -32,6 +32,17 @@ namespace OpenLawOffice.Data.Matters
     /// </summary>
     public static class Matter
     {
+        public static List<Common.Models.Matters.Matter> ListPossibleDuplicates(Common.Models.Matters.Matter model)
+        {
+            DBOs.Matters.Matter dbo = Mapper.Map<DBOs.Matters.Matter>(model);
+            return DataHelper.List<Common.Models.Matters.Matter, DBOs.Matters.Matter>(
+                "SELECT * FROM \"matter\" WHERE (LOWER(\"title\") LIKE '%' || LOWER(@Title) || '%') OR " +
+                //"OR (LOWER(\"title\") LIKE '%' || @Title || '%') OR " +
+                "(\"jurisdiction\"=@Jurisdiction AND " +
+                "\"case_number\"=@CaseNumber) OR (\"bill_to_contact_id\"=@BillToContactId AND \"case_number\"=@CaseNumber) AND \"utc_disabled\" is null",
+                dbo);
+        }
+
         public static Common.Models.Matters.Matter Get(Guid id)
         {
             return DataHelper.Get<Common.Models.Matters.Matter, DBOs.Matters.Matter>(
