@@ -30,7 +30,7 @@ namespace OpenLawOffice.Data.Forms
 
     public static class FormFieldMatter
     {
-        public static Common.Models.Forms.FormFieldMatter Get(int id)
+        public static Common.Models.Forms.FormFieldMatter Get(Guid id)
         {
             return DataHelper.Get<Common.Models.Forms.FormFieldMatter, DBOs.Forms.FormFieldMatter>(
                 "SELECT * FROM \"form_field_matter\" WHERE \"id\"=@id AND \"utc_disabled\" is null",
@@ -46,14 +46,27 @@ namespace OpenLawOffice.Data.Forms
 
         public static List<Common.Models.Forms.FormFieldMatter> ListForMatter(Guid matterId)
         {
-            List<Common.Models.Forms.FormFieldMatter> list =
-                DataHelper.List<Common.Models.Forms.FormFieldMatter, DBOs.Forms.FormFieldMatter>(
-                "SELECT * FROM \"form_field_matter\" WHERE \"matter_id\"=@MatterId AND \"utc_disabled\" is null",
-                new { MatterId = matterId });
+            List<Common.Models.Forms.FormFieldMatter> list;
+            List<Common.Models.Forms.FormField> fieldList;
 
-            list.ForEach(x =>
+            fieldList = Data.Forms.FormField.List();
+            list = new List<Common.Models.Forms.FormFieldMatter>();
+
+            fieldList.ForEach(x =>
             {
-                x.FormField = Forms.FormField.Get(x.FormField.Id.Value);
+                Common.Models.Forms.FormFieldMatter ffm;
+
+                ffm = Data.Forms.FormFieldMatter.Get(matterId, x.Id.Value);
+
+                if (ffm == null)
+                    ffm = new Common.Models.Forms.FormFieldMatter() 
+                    { 
+                        FormField = x
+                    };
+                else
+                    ffm.FormField = x;
+
+                list.Add(ffm);
             });
 
             return list;
@@ -69,8 +82,8 @@ namespace OpenLawOffice.Data.Forms
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                conn.Execute("INSERT INTO \"form_field_matter\" (\"matter_id\", \"form_field_id\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
-                    "VALUES (@MatterId, @FormFieldId, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
+                conn.Execute("INSERT INTO \"form_field_matter\" (\"id\", \"matter_id\", \"form_field_id\", \"value\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
+                    "VALUES (@Id, @MatterId, @FormFieldId, @Value, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
                     dbo);
             }
 
@@ -87,7 +100,7 @@ namespace OpenLawOffice.Data.Forms
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 conn.Execute("UPDATE \"form_field_matter\" SET " +
-                    "\"matter_id\"=@MatterId, \"form_field_id\"=@FormFieldId, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserPId " +
+                    "\"matter_id\"=@MatterId, \"form_field_id\"=@FormFieldId, \"value\"=@Value, \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserPId " +
                     "WHERE \"id\"=@Id", dbo);
             }
 

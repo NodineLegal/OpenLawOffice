@@ -47,6 +47,13 @@ namespace OpenLawOffice.Data.Contacts
                 new { displayName = displayName });
         }
 
+        public static List<Common.Models.Contacts.Contact> ListPossibleDuplicates(Common.Models.Contacts.Contact model)
+        {
+            return DataHelper.List<Common.Models.Contacts.Contact, DBOs.Contacts.Contact>(
+                "SELECT * FROM \"contact\" WHERE (\"given_name\"=@GivenName AND \"surname\"=@Surname) OR (\"display_name\"=@DisplayName) AND \"utc_disabled\" is null",
+                model);
+        }
+
         public static List<Common.Models.Matters.Matter> ListMattersForContact(int contactId)
         {
             List<DBOs.Matters.Matter> dbo = null;

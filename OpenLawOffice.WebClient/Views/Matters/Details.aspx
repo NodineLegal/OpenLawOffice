@@ -27,6 +27,8 @@
         <%: Html.ActionLink("Tasks", "Tasks", "Matters", new { id = Model.Id }, null)%>
         (<%: Html.ActionLink("Add", "Create", "Tasks", new { controller = "Matters", MatterId = Model.Id }, null)%>)</li>
     <li>
+        <%: Html.ActionLink("Form Fields", "FormFields", "Matters", new { id = Model.Id }, null)%></li>
+    <li>
         <%: Html.ActionLink("Events", "Events", "Matters", new { id = Model.Id }, null)%>
         (<%: Html.ActionLink("Add", "Create", "Events", new { controller = "Matters", MatterId = Model.Id }, null)%>)</li>
     <li>

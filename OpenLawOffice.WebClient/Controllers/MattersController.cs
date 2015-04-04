@@ -793,6 +793,71 @@ namespace OpenLawOffice.WebClient.Controllers
         }
 
         [Authorize(Roles = "Login, User")]
+        public ActionResult FormFields(Guid id)
+        {
+            List<ViewModels.Forms.FormFieldMatterViewModel> vmList = new List<ViewModels.Forms.FormFieldMatterViewModel>();
+            Common.Models.Matters.Matter matter;
+
+            matter = Data.Matters.Matter.Get(id);
+            ViewData["Matter"] = matter.Title;
+            ViewData["MatterId"] = matter.Id;
+
+            Data.Forms.FormFieldMatter.ListForMatter(id).ForEach(x =>
+            {
+                ViewModels.Forms.FormFieldMatterViewModel vm = new ViewModels.Forms.FormFieldMatterViewModel();
+                x.FormField = Data.Forms.FormField.Get(x.FormField.Id.Value);
+                if (x.Matter != null)
+                    vm = Mapper.Map<ViewModels.Forms.FormFieldMatterViewModel>(x);
+                else
+                    vm = new ViewModels.Forms.FormFieldMatterViewModel();
+                vm.FormField = Mapper.Map<ViewModels.Forms.FormFieldViewModel>(x.FormField);
+                vmList.Add(vm);
+            });
+
+            return View(vmList);
+        }
+
+        [Authorize(Roles = "Login, User")]
+        [HttpPost]
+        public ActionResult FormFields(Guid id, IEnumerable<ViewModels.Forms.FormFieldMatterViewModel> viewModel)
+        {
+            Common.Models.Matters.Matter matter;
+            Common.Models.Account.Users currentUser;
+
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
+            matter = Data.Matters.Matter.Get(id);
+
+            viewModel.Each(x =>
+            {
+                Common.Models.Forms.FormFieldMatter model = Data.Forms.FormFieldMatter.Get(matter.Id.Value, x.FormField.Id.Value);
+
+                if (model != null)
+                {
+                    //model = Data.Forms.FormFieldMatter.Get(x.Id.Value);
+                    // Edit
+                    if (model.Value != x.Value)
+                    {
+                        model.Value = x.Value;
+                        model = Data.Forms.FormFieldMatter.Edit(model, currentUser);
+                    }
+                }
+                else
+                {
+                    // Create
+                    model = new Common.Models.Forms.FormFieldMatter();
+                    model.FormField = new Common.Models.Forms.FormField();
+                    model.FormField.Id = x.FormField.Id;
+                    model.Matter = matter;
+                    model.Value = x.Value;
+                    model = Data.Forms.FormFieldMatter.Create(model, currentUser);
+                }
+
+            });
+
+            return RedirectToAction("Details", new { Id = id });
+        }
+
+        [Authorize(Roles = "Login, User")]
         public ActionResult Invoices(Guid id)
         {
             Common.Models.Matters.Matter matter;

@@ -30,5 +30,7 @@ namespace OpenLawOffice.Common.Models.Forms
         public Matters.Matter Matter { get; set; }
 
         public FormField FormField { get; set; }
+
+        public string Value { get; set; }
     }
 }

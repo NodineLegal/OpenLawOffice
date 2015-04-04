@@ -373,6 +373,7 @@
     <Content Include="Views\Matters\Events.aspx" />
     <Content Include="Views\Matters\Expenses.aspx" />
     <Content Include="Views\Matters\Fees.aspx" />
+    <Content Include="Views\Matters\FormFields.aspx" />
     <Content Include="Views\Matters\Invoices.aspx" />
     <Content Include="Views\Matters\Timesheet.aspx" />
     <Content Include="Views\Matters\Timesheet_Print3rdParty.aspx" />

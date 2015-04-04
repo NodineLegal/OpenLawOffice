@@ -34,6 +34,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Forms
 
         public FormFieldViewModel FormField { get; set; }
 
+        public string Value { get; set; }
+
         public void BuildMappings()
         {
             Mapper.CreateMap<OpenLawOffice.Common.Models.Forms.FormFieldMatter, FormFieldMatterViewModel>()
@@ -82,7 +84,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Forms
                         Id = db.FormField.Id,
                         IsStub = true
                     };
-                }));
+                }))
+                .ForMember(dst => dst.Value, opt => opt.MapFrom(src => src.Value));
 
             Mapper.CreateMap<FormFieldMatterViewModel, OpenLawOffice.Common.Models.Forms.FormFieldMatter>()
                 .ForMember(dst => dst.Created, opt => opt.MapFrom(src => src.Created))
@@ -133,7 +136,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Forms
                         Id = model.FormField.Id,
                         IsStub = true
                     };
-                }));
+                }))
+                .ForMember(dst => dst.Value, opt => opt.MapFrom(src => src.Value));
         }
     }
 }

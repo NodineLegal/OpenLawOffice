@@ -36,6 +36,9 @@ namespace OpenLawOffice.Data.DBOs.Forms
         [ColumnMapping(Name = "form_field_id")]
         public int FormFieldId { get; set; }
 
+        [ColumnMapping(Name = "value")]
+        public string Value { get; set; }
+
         public void BuildMappings()
         {
             Dapper.SqlMapper.SetTypeMap(typeof(FormFieldMatter), new ColumnAttributeTypeMapper<FormFieldMatter>());
@@ -94,7 +97,8 @@ namespace OpenLawOffice.Data.DBOs.Forms
                         Id = db.MatterId,
                         IsStub = true
                     };
-                }));
+                }))
+                .ForMember(dst => dst.Value, opt => opt.MapFrom(src => src.Value));
 
             Mapper.CreateMap<Common.Models.Forms.FormFieldMatter, DBOs.Forms.FormFieldMatter>()
                 .ForMember(dst => dst.UtcCreated, opt => opt.ResolveUsing(db =>
@@ -134,7 +138,8 @@ namespace OpenLawOffice.Data.DBOs.Forms
                 .ForMember(dst => dst.MatterId, opt => opt.ResolveUsing(db =>
                 {
                     return db.Matter.Id.Value;
-                }));
+                }))
+                .ForMember(dst => dst.Value, opt => opt.MapFrom(src => src.Value));
         }
     }
 }

@@ -1,4 +1,9 @@
-﻿4/2/2015
+﻿4/2/2015 - 2
+ALTER TABLE form_field_matter
+  ADD COLUMN value text;
+
+
+4/2/2015
 -- Table: form_field
 
 -- DROP TABLE form_field;

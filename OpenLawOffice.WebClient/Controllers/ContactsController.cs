@@ -211,13 +211,43 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult Create(ViewModels.Contacts.ContactViewModel viewModel)
         {
+            string errorListString = "";
+            List<ViewModels.Billing.BillingRateViewModel> billingRateList;
             Common.Models.Account.Users currentUser = null;
             Common.Models.Contacts.Contact model;
+            List<Common.Models.Contacts.Contact> possibleDuplicateList;
 
             currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             model = Mapper.Map<Common.Models.Contacts.Contact>(viewModel);
 
+            if (Request["OverrideConflict"] != "True")
+            {
+                possibleDuplicateList = Data.Contacts.Contact.ListPossibleDuplicates(model);
+
+                if (possibleDuplicateList.Count > 0)
+                {
+                    billingRateList = new List<ViewModels.Billing.BillingRateViewModel>();
+
+                    possibleDuplicateList.ForEach(x =>
+                    {
+                        errorListString += "<li><a href=\"/Contacts/Details/" + x.Id.Value + "\">" + x.DisplayName + "</a> [<a href=\"/Contacts/Edit/" + x.Id.Value + "\">edit</a>]</li>";
+                    });
+
+                    Data.Billing.BillingRate.List().ForEach(x =>
+                    {
+                        ViewModels.Billing.BillingRateViewModel vm = Mapper.Map<ViewModels.Billing.BillingRateViewModel>(x);
+                        vm.Title += " (" + vm.PricePerUnit.ToString("C") + ")";
+                        billingRateList.Add(vm);
+                    });
+
+                    ViewData["ErrorMessage"] = "Contact possibly conflicts with the following existing contacts:<ul>" + errorListString + "</ul>Click Save again to create the contact anyway.";
+                    ViewData["OverrideConflict"] = "True";
+                    ViewData["BillingRateList"] = billingRateList;
+                    return View(viewModel);
+                }
+            }
+            
             model = OpenLawOffice.Data.Contacts.Contact.Create(model, currentUser);
 
             return RedirectToAction("Index");
