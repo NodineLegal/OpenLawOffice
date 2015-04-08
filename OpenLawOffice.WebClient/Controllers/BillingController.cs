@@ -22,6 +22,7 @@
 namespace OpenLawOffice.WebClient.Controllers
 {
     using System;
+    using System.Linq;
     using System.Collections.Generic;
     using System.Web.Mvc;
     using AutoMapper;
@@ -91,10 +92,8 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
-        [Authorize(Roles = "Login, User")]
-        public ActionResult SingleMatterBill(Guid id)
+        public ViewModels.Billing.InvoiceViewModel BuildSingleMatterViewModel(Guid id, DateTime? startDate = null, DateTime? stopDate = null, string rateFrom = null)
         {
-            DateTime? start = null, stop = null;
             Common.Models.Billing.BillingRate billingRate = null;
             ViewModels.Billing.InvoiceViewModel viewModel = new ViewModels.Billing.InvoiceViewModel();
             Common.Models.Billing.Invoice previousInvoice = null;
@@ -136,12 +135,7 @@ namespace OpenLawOffice.WebClient.Controllers
                 viewModel.BillTo_Zip = previousInvoice.BillTo_Zip;
             }
 
-            if (!string.IsNullOrEmpty(Request["StartDate"]))
-                start = DateTime.Parse(Request["StartDate"]);
-            if (!string.IsNullOrEmpty(Request["StopDate"]))
-                stop = DateTime.Parse(Request["StopDate"]);
-
-            Data.Timing.Time.ListUnbilledAndBillableTimeForMatter(matter.Id.Value, start, stop).ForEach(x =>
+            Data.Timing.Time.ListUnbilledAndBillableTimeForMatter(matter.Id.Value, startDate, stopDate).ForEach(x =>
             {
                 ViewModels.Billing.InvoiceTimeViewModel vm = new ViewModels.Billing.InvoiceTimeViewModel()
                 {
@@ -154,7 +148,7 @@ namespace OpenLawOffice.WebClient.Controllers
                 else
                     vm.Duration = new TimeSpan(0);
 
-                if (string.IsNullOrEmpty(Request["rateFrom"]))
+                if (string.IsNullOrEmpty(rateFrom))
                 { // Not specified in URL
                     if (matter.OverrideMatterRateWithEmployeeRate)
                     {
@@ -165,7 +159,7 @@ namespace OpenLawOffice.WebClient.Controllers
                 }
                 else
                 { // Overridden by current user in URL
-                    if (Request["rateFrom"] == "employee")
+                    if (rateFrom == "employee")
                     {
                         Common.Models.Contacts.Contact contact = Data.Contacts.Contact.Get(x.Worker.Id.Value);
                         if (contact.BillingRate != null && contact.BillingRate.Id.HasValue)
@@ -178,7 +172,7 @@ namespace OpenLawOffice.WebClient.Controllers
                 viewModel.Times.Add(vm);
             });
 
-            Data.Billing.Expense.ListUnbilledExpensesForMatter(matter.Id.Value, start, stop).ForEach(x =>
+            Data.Billing.Expense.ListUnbilledExpensesForMatter(matter.Id.Value, startDate, stopDate).ForEach(x =>
             {
                 viewModel.Expenses.Add(new ViewModels.Billing.InvoiceExpenseViewModel()
                 {
@@ -189,7 +183,7 @@ namespace OpenLawOffice.WebClient.Controllers
                 });
             });
 
-            Data.Billing.Fee.ListUnbilledFeesForMatter(matter.Id.Value, start, stop).ForEach(x =>
+            Data.Billing.Fee.ListUnbilledFeesForMatter(matter.Id.Value, startDate, stopDate).ForEach(x =>
             {
                 viewModel.Fees.Add(new ViewModels.Billing.InvoiceFeeViewModel()
                 {
@@ -200,6 +194,34 @@ namespace OpenLawOffice.WebClient.Controllers
                 });
             });
 
+            ViewData["MatterTitle"] = matter.Title;
+            ViewData["CaseNumber"] = matter.CaseNumber;
+            ViewData["FirmName"] = Common.Settings.Manager.Instance.System.BillingFirmName;
+            ViewData["FirmAddress"] = Common.Settings.Manager.Instance.System.BillingFirmAddress;
+            ViewData["FirmCity"] = Common.Settings.Manager.Instance.System.BillingFirmCity;
+            ViewData["FirmState"] = Common.Settings.Manager.Instance.System.BillingFirmState;
+            ViewData["FirmZip"] = Common.Settings.Manager.Instance.System.BillingFirmZip;
+            ViewData["FirmPhone"] = Common.Settings.Manager.Instance.System.BillingFirmPhone;
+            ViewData["FirmWeb"] = Common.Settings.Manager.Instance.System.BillingFirmWeb;
+
+            return viewModel;
+        }
+
+        [Authorize(Roles = "Login, User")]
+        public ActionResult SingleMatterBill(Guid id)
+        {
+            Common.Models.Matters.Matter matter;
+            DateTime? start = null, stop = null;
+            ViewModels.Billing.InvoiceViewModel viewModel = new ViewModels.Billing.InvoiceViewModel();
+            
+            if (!string.IsNullOrEmpty(Request["StartDate"]))
+                start = DateTime.Parse(Request["StartDate"]);
+            if (!string.IsNullOrEmpty(Request["StopDate"]))
+                stop = DateTime.Parse(Request["StopDate"]);
+
+            matter = Data.Matters.Matter.Get(id);
+            viewModel = BuildSingleMatterViewModel(id, start, stop, Request["rateFrom"]);
+            
             ViewData["MatterTitle"] = matter.Title;
             ViewData["CaseNumber"] = matter.CaseNumber;
             ViewData["FirmName"] = Common.Settings.Manager.Instance.System.BillingFirmName;
@@ -224,11 +246,59 @@ namespace OpenLawOffice.WebClient.Controllers
             // Redirect to invoice viewing
             decimal subtotal = 0;
             Common.Models.Account.Users currentUser;
+            Common.Models.Matters.Matter matter;
+            DateTime? start = null, stop = null;
+            
+            if (!string.IsNullOrEmpty(Request["StartDate"]))
+                start = DateTime.Parse(Request["StartDate"]);
+            if (!string.IsNullOrEmpty(Request["StopDate"]))
+                stop = DateTime.Parse(Request["StopDate"]);
             
             currentUser = Data.Account.Users.Get(User.Identity.Name);
             Common.Models.Billing.Invoice invoice = Mapper.Map<Common.Models.Billing.Invoice>(viewModel);
+            ViewModels.Billing.InvoiceViewModel builtInvoice = BuildSingleMatterViewModel(id, start, stop, Request["rateFrom"]);
+            ViewModels.Billing.InvoiceExpenseViewModel ievm;
+            ViewModels.Billing.InvoiceFeeViewModel ifvm;
+            ViewModels.Billing.InvoiceTimeViewModel itvm;
 
-            // Any validation would need done here
+
+            for (int i = 0; i < viewModel.Expenses.Count; i++)
+            {
+                ievm = builtInvoice.Expenses.Single(x => x.Expense.Id.Value == viewModel.Expenses[i].Expense.Id.Value);
+                viewModel.Expenses[i].Expense = ievm.Expense;
+                if (string.IsNullOrEmpty(viewModel.Expenses[i].Details))
+                    ModelState.AddModelError(string.Format("Expenses[{0}].Details", i), "Required");
+            };
+            for (int i = 0; i < viewModel.Fees.Count; i++)
+            {
+                ifvm = builtInvoice.Fees.Single(x => x.Fee.Id.Value == viewModel.Fees[i].Fee.Id.Value);
+                viewModel.Fees[i].Fee = ifvm.Fee;
+                if (string.IsNullOrEmpty(viewModel.Fees[i].Details))
+                    ModelState.AddModelError(string.Format("Fees[{0}].Details", i), "Required");
+            };
+            for (int i = 0; i < viewModel.Times.Count; i++)
+            {
+                itvm = builtInvoice.Times.Single(x => x.Time.Id.Value == viewModel.Times[i].Time.Id);
+                viewModel.Times[i].Time = itvm.Time;
+                if (string.IsNullOrEmpty(viewModel.Times[i].Details))
+                    ModelState.AddModelError(string.Format("Times[{0}].Details", i), "Required");
+            };
+
+            if (!ModelState.IsValid)
+            {
+                // Errors - do nothing, but tell user and show again for fixing
+                matter = Data.Matters.Matter.Get(id);
+                ViewData["MatterTitle"] = matter.Title;
+                ViewData["CaseNumber"] = matter.CaseNumber;
+                ViewData["FirmName"] = Common.Settings.Manager.Instance.System.BillingFirmName;
+                ViewData["FirmAddress"] = Common.Settings.Manager.Instance.System.BillingFirmAddress;
+                ViewData["FirmCity"] = Common.Settings.Manager.Instance.System.BillingFirmCity;
+                ViewData["FirmState"] = Common.Settings.Manager.Instance.System.BillingFirmState;
+                ViewData["FirmZip"] = Common.Settings.Manager.Instance.System.BillingFirmZip;
+                ViewData["FirmPhone"] = Common.Settings.Manager.Instance.System.BillingFirmPhone;
+                ViewData["FirmWeb"] = Common.Settings.Manager.Instance.System.BillingFirmWeb;
+                return View(viewModel);
+            }
 
             invoice = Data.Billing.Invoice.Create(invoice, currentUser);
 

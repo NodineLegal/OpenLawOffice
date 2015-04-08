@@ -81,7 +81,12 @@
     
     <% using (Html.BeginForm())
        {%>
-    <%: Html.ValidationSummary(true) %>
+    <% if (!ViewContext.ViewData.ModelState.IsValid)
+       { %>
+
+       <div style="color: #ff0000; font-weight: bold;">Please correct the fields with errors below.  The fields with errors are denoted with red shading.  Once corrected, please click save to again attempt to save the invoice.</div>
+       <br />
+    <% } %>
 
     <div style="width: 1200px; border: 1px solid black; color: Black; padding: 5px;">
         <div style="height: 75px; display: inline-block;">
@@ -217,6 +222,7 @@
                     bool altRow = true;
                     for (int i=0; i<Model.Expenses.Count; i++)
                     {
+                        object o = ViewContext.ViewData.ModelState;
                         OpenLawOffice.WebClient.ViewModels.Billing.InvoiceExpenseViewModel item = Model.Expenses[i];
                         altRow = !altRow;
                         if (altRow)
