@@ -27,52 +27,72 @@ namespace OpenLawOffice.Data.Billing
     using AutoMapper;
     using Dapper;
 
-    public class InvoiceTime
+    public class InvoiceTime : Base
     {
-        public static List<Common.Models.Billing.InvoiceTime> ListForMatter(Guid matterId)
+        public static List<Common.Models.Billing.InvoiceTime> ListForMatter(Guid matterId,
+            IDbConnection conn = null, bool closeConnection = true)
         {
-            return DataHelper.List<Common.Models.Billing.InvoiceTime, DBOs.Billing.InvoiceTime>(
+            List<Common.Models.Billing.InvoiceTime> list;
+
+            OpenIfNeeded(conn);
+
+            list = DataHelper.List<Common.Models.Billing.InvoiceTime, DBOs.Billing.InvoiceTime>(
                 "SELECT * FROM \"invoice_time\" WHERE \"time_id\" IN " +
                 "   (SELECT \"time_id\" FROM \"task_time\" WHERE \"task_id\" IN " +
                 "       (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId) " +
                 "   ) AND " +
                 "\"utc_disabled\" is null ORDER BY \"utc_created\" ASC",
                 new { MatterId = matterId });
+
+            Close(conn, closeConnection);
+
+            return list;
         }
 
-        public static Common.Models.Billing.InvoiceTime Get(Guid invoiceId, Guid timeId)
+        public static Common.Models.Billing.InvoiceTime Get(Guid invoiceId, Guid timeId,
+            IDbConnection conn = null, bool closeConnection = true)
         {
-            return DataHelper.Get<Common.Models.Billing.InvoiceTime, DBOs.Billing.InvoiceTime>(
+            Common.Models.Billing.InvoiceTime item;
+
+            OpenIfNeeded(conn);
+
+            item = DataHelper.Get<Common.Models.Billing.InvoiceTime, DBOs.Billing.InvoiceTime>(
                 "SELECT * FROM \"invoice_time\" WHERE \"invoice_id\"=@InvoiceId AND \"time_id\"=@TimeId",
                 new { InvoiceId = invoiceId, TimeId = timeId });
+
+            Close(conn, closeConnection);
+
+            return item;
         }
 
         public static Common.Models.Billing.InvoiceTime Create(Common.Models.Billing.InvoiceTime model,
-            Common.Models.Account.Users creator)
+            Common.Models.Account.Users creator,
+            IDbConnection conn = null, bool closeConnection = true)
         {
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
             model.Created = model.Modified = DateTime.UtcNow;
             model.CreatedBy = model.ModifiedBy = creator;
             DBOs.Billing.InvoiceTime dbo = Mapper.Map<DBOs.Billing.InvoiceTime>(model);
+            
+            OpenIfNeeded(conn);
 
-            using (IDbConnection conn = Database.Instance.GetConnection())
-            {
-                Common.Models.Billing.InvoiceTime currentModel = Get(model.Invoice.Id.Value, model.Time.Id.Value);
+            Common.Models.Billing.InvoiceTime currentModel = Get(model.Invoice.Id.Value, model.Time.Id.Value);
 
-                if (currentModel != null)
-                { // Update
-                    conn.Execute("UPDATE \"invoice_time\" SET \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserPId " +
-                        "\"utc_disabled\"=null, \"disabled_by_user_pid\"=null WHERE \"id\"=@Id", dbo);
-                    model.Created = currentModel.Created;
-                    model.CreatedBy = currentModel.CreatedBy;
-                }
-                else
-                { // Create
-                    conn.Execute("INSERT INTO \"invoice_time\" (\"id\", \"time_id\", \"invoice_id\", \"duration\", \"details\", \"price_per_hour\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
-                        "VALUES (@Id, @TimeId, @InvoiceId, @Duration, @Details, @PricePerHour, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
-                        dbo);
-                }
+            if (currentModel != null)
+            { // Update
+                conn.Execute("UPDATE \"invoice_time\" SET \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserPId " +
+                    "\"utc_disabled\"=null, \"disabled_by_user_pid\"=null WHERE \"id\"=@Id", dbo);
+                model.Created = currentModel.Created;
+                model.CreatedBy = currentModel.CreatedBy;
             }
+            else
+            { // Create
+                conn.Execute("INSERT INTO \"invoice_time\" (\"id\", \"time_id\", \"invoice_id\", \"duration\", \"details\", \"price_per_hour\", \"utc_created\", \"utc_modified\", \"created_by_user_pid\", \"modified_by_user_pid\") " +
+                    "VALUES (@Id, @TimeId, @InvoiceId, @Duration, @Details, @PricePerHour, @UtcCreated, @UtcModified, @CreatedByUserPId, @ModifiedByUserPId)",
+                    dbo);
+            }
+
+            Close(conn, closeConnection);
 
             return model;
         }

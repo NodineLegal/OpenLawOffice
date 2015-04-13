@@ -29,6 +29,9 @@ namespace OpenLawOffice.WebClient.Controllers
     using Ionic.Zip;
     using System.Web.Profile;
     using System.Web.Security;
+    using System.Data;
+    using OpenLawOffice.Data;
+    using Npgsql;
 
     [HandleError(View = "Errors/Index", Order = 10)]
     public class BillingController : BaseController
@@ -244,10 +247,12 @@ namespace OpenLawOffice.WebClient.Controllers
             // Loop Fees
             // Loop Times
             // Redirect to invoice viewing
-            decimal subtotal = 0;
             Common.Models.Account.Users currentUser;
             Common.Models.Matters.Matter matter;
             DateTime? start = null, stop = null;
+            List<Common.Models.Billing.InvoiceExpense> invoiceExpenseList;
+            List<Common.Models.Billing.InvoiceFee> invoiceFeeList;
+            List<Common.Models.Billing.InvoiceTime> invoiceTimeList;
             
             if (!string.IsNullOrEmpty(Request["StartDate"]))
                 start = DateTime.Parse(Request["StartDate"]);
@@ -300,11 +305,13 @@ namespace OpenLawOffice.WebClient.Controllers
                 return View(viewModel);
             }
 
-            invoice = Data.Billing.Invoice.Create(invoice, currentUser);
-
+            invoiceExpenseList = new List<Common.Models.Billing.InvoiceExpense>();
+            invoiceFeeList = new List<Common.Models.Billing.InvoiceFee>();
+            invoiceTimeList = new List<Common.Models.Billing.InvoiceTime>();
+            
             viewModel.Expenses.ForEach(vm =>
             {
-                Common.Models.Billing.InvoiceExpense invexp = new Common.Models.Billing.InvoiceExpense()
+                invoiceExpenseList.Add(new Common.Models.Billing.InvoiceExpense()
                 {
                     Invoice = invoice,
                     Expense = new Common.Models.Billing.Expense()
@@ -313,15 +320,12 @@ namespace OpenLawOffice.WebClient.Controllers
                     },
                     Amount = vm.Amount,
                     Details = vm.Details
-                };
-
-                subtotal += vm.Amount;
-                Data.Billing.InvoiceExpense.Create(invexp, currentUser);
+                });
             });
 
             viewModel.Fees.ForEach(vm =>
             {
-                Common.Models.Billing.InvoiceFee invfee = new Common.Models.Billing.InvoiceFee()
+                invoiceFeeList.Add(new Common.Models.Billing.InvoiceFee()
                 {
                     Invoice = invoice,
                     Fee = new Common.Models.Billing.Fee()
@@ -330,15 +334,12 @@ namespace OpenLawOffice.WebClient.Controllers
                     },
                     Amount = vm.Amount,
                     Details = vm.Details
-                };
-
-                subtotal += vm.Amount;
-                Data.Billing.InvoiceFee.Create(invfee, currentUser);
+                });
             });
 
             viewModel.Times.ForEach(vm =>
             {
-                Common.Models.Billing.InvoiceTime invtime = new Common.Models.Billing.InvoiceTime()
+                invoiceTimeList.Add(new Common.Models.Billing.InvoiceTime()
                 {
                     Invoice = invoice,
                     Time = new Common.Models.Timing.Time()
@@ -348,16 +349,16 @@ namespace OpenLawOffice.WebClient.Controllers
                     Duration = vm.Duration,
                     PricePerHour = vm.PricePerHour,
                     Details = vm.Details
-                };
-
-                subtotal += ((decimal)invtime.Duration.TotalHours * invtime.PricePerHour);
-                Data.Billing.InvoiceTime.Create(invtime, currentUser);
+                });
             });
 
-            invoice.Subtotal = subtotal;
-            invoice.Total = invoice.Subtotal + invoice.TaxAmount;
-
-            Data.Billing.Invoice.Edit(invoice, currentUser);
+            invoice = Data.Billing.Billing.SingleMatterBill(
+                invoice,
+                invoiceExpenseList,
+                invoiceFeeList,
+                invoiceTimeList,
+                currentUser,
+                null, true);
 
             return RedirectToAction("Details", "Invoices", new { id = invoice.Id });
         }

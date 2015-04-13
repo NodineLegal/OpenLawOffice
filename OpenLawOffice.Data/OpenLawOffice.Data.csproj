@@ -64,6 +64,8 @@
   <ItemGroup>
     <Compile Include="Account\UserRole.cs" />
     <Compile Include="Account\Users.cs" />
+    <Compile Include="Base.cs" />
+    <Compile Include="Billing\Billing.cs" />
     <Compile Include="Billing\BillingGroup.cs" />
     <Compile Include="Billing\BillingRate.cs" />
     <Compile Include="Billing\Expense.cs" />
