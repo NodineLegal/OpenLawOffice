@@ -26,8 +26,7 @@ namespace OpenLawOffice.Data.Billing
     using System.Data;
     using AutoMapper;
     using Dapper;
-    using Npgsql;
-    
+
     public class Invoice : Base
     {
         public static Common.Models.Billing.Invoice Get(Guid id,
@@ -35,7 +34,7 @@ namespace OpenLawOffice.Data.Billing
         {
             Common.Models.Billing.Invoice item;
 
-            OpenIfNeeded(conn);
+            conn = OpenIfNeeded(conn);
 
             item = DataHelper.Get<Common.Models.Billing.Invoice, DBOs.Billing.Invoice>(
                 "SELECT * FROM \"invoice\" WHERE \"id\"=@id AND \"utc_disabled\" is null",
@@ -46,12 +45,12 @@ namespace OpenLawOffice.Data.Billing
             return item;
         }
 
-        public static List<Common.Models.Matters.Matter> ListBillableMatters(IDbConnection conn = null, 
+        public static List<Common.Models.Matters.Matter> ListBillableMatters(IDbConnection conn = null,
             bool closeConnection = true)
         {
             List<Common.Models.Matters.Matter> list;
 
-            OpenIfNeeded(conn);
+            conn = OpenIfNeeded(conn);
 
             list = DataHelper.List<Common.Models.Matters.Matter, DBOs.Matters.Matter>(
                 "SELECT \"matter\".*, \"contact\".\"display_name\" FROM \"matter\" LEFT JOIN \"contact\" ON \"matter\".\"bill_to_contact_id\"=\"contact\".\"id\" " +
@@ -76,7 +75,7 @@ namespace OpenLawOffice.Data.Billing
         {
             List<Common.Models.Billing.Invoice> list;
 
-            OpenIfNeeded(conn);
+            conn = OpenIfNeeded(conn);
 
             list = DataHelper.List<Common.Models.Billing.Invoice, DBOs.Billing.Invoice>(
                 "SELECT * FROM \"invoice\" WHERE \"matter_id\"=@MatterId ORDER BY \"date\" DESC",
@@ -92,7 +91,7 @@ namespace OpenLawOffice.Data.Billing
         {
             List<Common.Models.Billing.InvoiceExpense> list;
 
-            OpenIfNeeded(conn);
+            conn = OpenIfNeeded(conn);
 
             list = DataHelper.List<Common.Models.Billing.InvoiceExpense, DBOs.Billing.InvoiceExpense>(
                 "SELECT * FROM \"invoice_expense\" WHERE \"invoice_id\"=@InvoiceId AND \"utc_disabled\" is NULL",
@@ -108,7 +107,7 @@ namespace OpenLawOffice.Data.Billing
         {
             List<Common.Models.Billing.InvoiceFee> list;
 
-            OpenIfNeeded(conn);
+            conn = OpenIfNeeded(conn);
 
             list = DataHelper.List<Common.Models.Billing.InvoiceFee, DBOs.Billing.InvoiceFee>(
                 "SELECT * FROM \"invoice_fee\" WHERE \"invoice_id\"=@InvoiceId AND \"utc_disabled\" is NULL",
@@ -124,7 +123,7 @@ namespace OpenLawOffice.Data.Billing
         {
             List<Common.Models.Billing.InvoiceTime> list;
 
-            OpenIfNeeded(conn);
+            conn = OpenIfNeeded(conn);
 
             list = DataHelper.List<Common.Models.Billing.InvoiceTime, DBOs.Billing.InvoiceTime>(
                 "SELECT * FROM \"invoice_time\" WHERE \"invoice_id\"=@InvoiceId AND \"utc_disabled\" is NULL",
@@ -135,12 +134,12 @@ namespace OpenLawOffice.Data.Billing
             return list;
         }
 
-        public static List<Common.Models.Billing.BillingGroup> ListBillableBillingGroups(IDbConnection conn = null, 
+        public static List<Common.Models.Billing.BillingGroup> ListBillableBillingGroups(IDbConnection conn = null,
             bool closeConnection = true)
         {
             List<Common.Models.Billing.BillingGroup> list;
 
-            OpenIfNeeded(conn);
+            conn = OpenIfNeeded(conn);
 
             list = DataHelper.List<Common.Models.Billing.BillingGroup, DBOs.Billing.BillingGroup>(
                 "SELECT * FROM \"billing_group\" WHERE \"next_run\" <= now() at time zone 'utc'");
@@ -155,7 +154,7 @@ namespace OpenLawOffice.Data.Billing
         {
             List<Common.Models.Billing.Invoice> list;
 
-            OpenIfNeeded(conn);
+            conn = OpenIfNeeded(conn);
 
             list = DataHelper.List<Common.Models.Billing.Invoice, DBOs.Billing.Invoice>(
                 "SELECT * FROM \"invoice\" ORDER BY \"utc_created\" DESC LIMIT @Limit",
@@ -171,7 +170,7 @@ namespace OpenLawOffice.Data.Billing
         {
             Common.Models.Billing.Invoice item;
 
-            OpenIfNeeded(conn);
+            conn = OpenIfNeeded(conn);
 
             item = DataHelper.Get<Common.Models.Billing.Invoice, DBOs.Billing.Invoice>(
                 "SELECT * FROM \"invoice\" WHERE \"bill_to_contact_id\"=@BillToContactId ORDER BY \"utc_created\" DESC LIMIT 1",
@@ -182,7 +181,7 @@ namespace OpenLawOffice.Data.Billing
             return item;
         }
 
-        public static Common.Models.Billing.Invoice Create(Common.Models.Billing.Invoice model, Common.Models.Account.Users creator, 
+        public static Common.Models.Billing.Invoice Create(Common.Models.Billing.Invoice model, Common.Models.Account.Users creator,
             IDbConnection conn = null, bool closeConnection = true)
         {
             if (!model.Id.HasValue) model.Id = Guid.NewGuid();
@@ -190,7 +189,7 @@ namespace OpenLawOffice.Data.Billing
             model.Created = model.Modified = DateTime.UtcNow;
             DBOs.Billing.Invoice dbo = Mapper.Map<DBOs.Billing.Invoice>(model);
 
-            OpenIfNeeded(conn);
+            conn = OpenIfNeeded(conn);
 
             conn.Execute("INSERT INTO \"invoice\" (\"id\", \"bill_to_contact_id\", \"date\", \"due\", " +
                 "\"subtotal\", \"tax_amount\", \"total\", \"external_invoice_id\", \"bill_to_name_line_1\", " +
@@ -216,7 +215,7 @@ namespace OpenLawOffice.Data.Billing
             model.Modified = DateTime.UtcNow;
             DBOs.Billing.Invoice dbo = Mapper.Map<DBOs.Billing.Invoice>(model);
 
-            OpenIfNeeded(conn);
+            conn = OpenIfNeeded(conn);
 
             conn.Execute("UPDATE \"invoice\" SET " +
                 "\"bill_to_contact_id\"=@BillToContactId, \"date\"=@Date, \"due\"=@Due, \"subtotal\"=@Subtotal, \"tax_amount\"=@TaxAmount, " +

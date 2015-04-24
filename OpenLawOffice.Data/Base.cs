@@ -25,13 +25,15 @@ namespace OpenLawOffice.Data
 
     public class Base
     {
-        protected static void OpenIfNeeded(IDbConnection conn = null)
+        protected static IDbConnection OpenIfNeeded(IDbConnection conn = null)
         {
             if (conn == null)
             {
                 conn = Database.Instance.GetConnection();
                 conn.Open();
             }
+
+            return conn;
         }
 
         protected static void Close(IDbConnection conn = null, bool closeConnection = false)

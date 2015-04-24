@@ -34,7 +34,7 @@ namespace OpenLawOffice.Data.Billing
         {
             List<Common.Models.Billing.InvoiceFee> list;
 
-            OpenIfNeeded(conn);
+            conn = OpenIfNeeded(conn);
 
             list = DataHelper.List<Common.Models.Billing.InvoiceFee, DBOs.Billing.InvoiceFee>(
                 "SELECT * FROM \"invoice_fee\" WHERE \"fee_id\" IN (SELECT \"fee_id\" FROM \"fee_matter\" WHERE \"matter_id\"=@MatterId) AND " +
@@ -51,7 +51,7 @@ namespace OpenLawOffice.Data.Billing
         {
             Common.Models.Billing.InvoiceFee item;
 
-            OpenIfNeeded(conn);
+            conn = OpenIfNeeded(conn);
 
             item = DataHelper.Get<Common.Models.Billing.InvoiceFee, DBOs.Billing.InvoiceFee>(
                 "SELECT * FROM \"invoice_fee\" WHERE \"invoice_id\"=@InvoiceId AND \"fee_id\"=@FeeId",
@@ -71,7 +71,7 @@ namespace OpenLawOffice.Data.Billing
             model.CreatedBy = model.ModifiedBy = creator;
             DBOs.Billing.InvoiceFee dbo = Mapper.Map<DBOs.Billing.InvoiceFee>(model);
 
-            OpenIfNeeded(conn);
+            conn = OpenIfNeeded(conn);
 
             Common.Models.Billing.InvoiceFee currentModel = Get(model.Invoice.Id.Value, model.Fee.Id.Value);
 

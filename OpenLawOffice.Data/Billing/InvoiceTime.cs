@@ -34,7 +34,7 @@ namespace OpenLawOffice.Data.Billing
         {
             List<Common.Models.Billing.InvoiceTime> list;
 
-            OpenIfNeeded(conn);
+            conn = OpenIfNeeded(conn);
 
             list = DataHelper.List<Common.Models.Billing.InvoiceTime, DBOs.Billing.InvoiceTime>(
                 "SELECT * FROM \"invoice_time\" WHERE \"time_id\" IN " +
@@ -54,7 +54,7 @@ namespace OpenLawOffice.Data.Billing
         {
             Common.Models.Billing.InvoiceTime item;
 
-            OpenIfNeeded(conn);
+            conn = OpenIfNeeded(conn);
 
             item = DataHelper.Get<Common.Models.Billing.InvoiceTime, DBOs.Billing.InvoiceTime>(
                 "SELECT * FROM \"invoice_time\" WHERE \"invoice_id\"=@InvoiceId AND \"time_id\"=@TimeId",
@@ -74,7 +74,7 @@ namespace OpenLawOffice.Data.Billing
             model.CreatedBy = model.ModifiedBy = creator;
             DBOs.Billing.InvoiceTime dbo = Mapper.Map<DBOs.Billing.InvoiceTime>(model);
             
-            OpenIfNeeded(conn);
+            conn = OpenIfNeeded(conn);
 
             Common.Models.Billing.InvoiceTime currentModel = Get(model.Invoice.Id.Value, model.Time.Id.Value);
 

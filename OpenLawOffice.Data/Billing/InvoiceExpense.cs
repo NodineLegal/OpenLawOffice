@@ -34,7 +34,7 @@ namespace OpenLawOffice.Data.Billing
         {
             List<Common.Models.Billing.InvoiceExpense> list;
 
-            OpenIfNeeded(conn);
+            conn = OpenIfNeeded(conn);
 
             list = DataHelper.List<Common.Models.Billing.InvoiceExpense, DBOs.Billing.InvoiceExpense>(
                 "SELECT * FROM \"invoice_expense\" WHERE \"expense_id\" IN (SELECT \"expense_id\" FROM \"expense_matter\" WHERE \"matter_id\"=@MatterId) AND " +
@@ -51,7 +51,7 @@ namespace OpenLawOffice.Data.Billing
         {
             Common.Models.Billing.InvoiceExpense ie;
 
-            OpenIfNeeded(conn);
+            conn = OpenIfNeeded(conn);
 
             ie = DataHelper.Get<Common.Models.Billing.InvoiceExpense, DBOs.Billing.InvoiceExpense>(
                 "SELECT * FROM \"invoice_expense\" WHERE \"invoice_id\"=@InvoiceId AND \"expense_id\"=@ExpenseId",
@@ -71,7 +71,7 @@ namespace OpenLawOffice.Data.Billing
             model.CreatedBy = model.ModifiedBy = creator;
             DBOs.Billing.InvoiceExpense dbo = Mapper.Map<DBOs.Billing.InvoiceExpense>(model);
             
-            OpenIfNeeded(conn);
+            conn = OpenIfNeeded(conn);
 
             Common.Models.Billing.InvoiceExpense currentModel = Get(model.Invoice.Id.Value, model.Expense.Id.Value, conn, closeConnection);
 

@@ -24,14 +24,11 @@ namespace OpenLawOffice.Data.Billing
     using System;
     using System.Collections.Generic;
     using System.Data;
-    using AutoMapper;
-    using Dapper;
-    using Npgsql;
 
     public class Billing : Base
     {
         public static Common.Models.Billing.Invoice SingleMatterBill(
-            Common.Models.Billing.Invoice invoice, 
+            Common.Models.Billing.Invoice invoice,
             List<Common.Models.Billing.InvoiceExpense> invoiceExpenseList,
             List<Common.Models.Billing.InvoiceFee> invoiceFeeList,
             List<Common.Models.Billing.InvoiceTime> invoiceTimeList,
@@ -41,10 +38,10 @@ namespace OpenLawOffice.Data.Billing
             decimal subtotal = 0;
             IDbTransaction trans;
 
-            OpenIfNeeded(conn);
+            conn = OpenIfNeeded(conn);
 
             trans = conn.BeginTransaction();
-            
+
             invoice = Data.Billing.Invoice.Create(invoice, currentUser, conn, false);
 
             invoiceExpenseList.ForEach(invoiceExpense =>
@@ -52,13 +49,13 @@ namespace OpenLawOffice.Data.Billing
                 subtotal += invoiceExpense.Amount;
                 Data.Billing.InvoiceExpense.Create(invoiceExpense, currentUser, conn, false);
             });
-            
+
             invoiceFeeList.ForEach(invoiceFee =>
             {
                 subtotal += invoiceFee.Amount;
                 Data.Billing.InvoiceFee.Create(invoiceFee, currentUser, conn, false);
             });
-            
+
             invoiceTimeList.ForEach(invoiceTime =>
             {
                 subtotal += ((decimal)invoiceTime.Duration.TotalHours * invoiceTime.PricePerHour);
@@ -69,6 +66,58 @@ namespace OpenLawOffice.Data.Billing
             invoice.Total = invoice.Subtotal + invoice.TaxAmount;
 
             Data.Billing.Invoice.Edit(invoice, currentUser, conn, false);
+
+            trans.Commit();
+
+            Close(conn, closeConnection);
+
+            return invoice;
+        }
+
+        public static Common.Models.Billing.Invoice SingleGroupBill(
+            Common.Models.Billing.BillingGroup billingGroup,
+            Common.Models.Billing.Invoice invoice,
+            List<Common.Models.Billing.InvoiceExpense> invoiceExpenseList,
+            List<Common.Models.Billing.InvoiceFee> invoiceFeeList,
+            List<Common.Models.Billing.InvoiceTime> invoiceTimeList,
+            Common.Models.Account.Users currentUser,
+            IDbConnection conn = null, bool closeConnection = true)
+        {
+            decimal subtotal = 0;
+            IDbTransaction trans;
+
+            conn = OpenIfNeeded(conn);
+
+            trans = conn.BeginTransaction();
+
+            invoice = Data.Billing.Invoice.Create(invoice, currentUser, conn, false);
+
+            invoiceExpenseList.ForEach(invoiceExpense =>
+            {
+                subtotal += invoiceExpense.Amount;
+                Data.Billing.InvoiceExpense.Create(invoiceExpense, currentUser, conn, false);
+            });
+
+            invoiceFeeList.ForEach(invoiceFee =>
+            {
+                subtotal += invoiceFee.Amount;
+                Data.Billing.InvoiceFee.Create(invoiceFee, currentUser, conn, false);
+            });
+
+            invoiceTimeList.ForEach(invoiceTime =>
+            {
+                subtotal += ((decimal)invoiceTime.Duration.TotalHours * invoiceTime.PricePerHour);
+                Data.Billing.InvoiceTime.Create(invoiceTime, currentUser, conn, false);
+            });
+
+            invoice.Subtotal = subtotal + billingGroup.Amount;
+            invoice.Total = invoice.Subtotal + invoice.TaxAmount;
+
+            Data.Billing.Invoice.Edit(invoice, currentUser, conn, false);
+
+            billingGroup.LastRun = DateTime.Now;
+            billingGroup.NextRun = billingGroup.NextRun;
+            Data.Billing.BillingGroup.Edit(billingGroup, currentUser, conn, false);
 
             trans.Commit();
 

@@ -74,7 +74,12 @@
     
     <% using (Html.BeginForm())
        {%>
-    <%: Html.ValidationSummary(true) %>
+    <% if (!ViewContext.ViewData.ModelState.IsValid)
+       { %>
+
+       <div style="color: #ff0000; font-weight: bold;">Please correct the fields with errors below.  The fields with errors are denoted with red shading.  Once corrected, please click save to again attempt to save the invoice.</div>
+       <br />
+    <% } %>
 
     <div style="width: 1200px; border: 1px solid black; color: Black; padding: 5px;">
         <div style="height: 75px; display: inline-block;">
@@ -185,6 +190,7 @@
             <div style="text-align: center; display: inline-block; width: 100%; font-weight: bold;">
                 <%: Model.Matters[j].Matter.Title%><br />
                 <%: Model.Matters[j].Matter.CaseNumber%>
+                <%: Html.HiddenFor(x => x.Matters[j].Matter.Id) %>
             </div>
 
             <div style="text-align: left; margin: 5px 0 0 0; padding: 2px 0px 2px 5px;
