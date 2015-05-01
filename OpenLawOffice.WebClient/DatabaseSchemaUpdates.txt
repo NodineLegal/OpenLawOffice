@@ -1,4 +1,65 @@
-﻿4/2/2015 - 2
+﻿4/27/2015
+-- Table: form
+
+-- DROP TABLE form;
+
+CREATE TABLE form
+(
+-- Inherited from table core:  created_by_user_pid uuid NOT NULL,
+-- Inherited from table core:  modified_by_user_pid uuid NOT NULL,
+-- Inherited from table core:  disabled_by_user_pid uuid,
+-- Inherited from table core:  utc_created timestamp without time zone NOT NULL,
+-- Inherited from table core:  utc_modified timestamp without time zone NOT NULL,
+-- Inherited from table core:  utc_disabled timestamp without time zone,
+  id serial NOT NULL,
+  title text NOT NULL,
+  matter_type_id integer NOT NULL,
+  path text NOT NULL,
+  CONSTRAINT form_pkey PRIMARY KEY (id),
+  CONSTRAINT "form_matter_type_MatterTypeId_Id" FOREIGN KEY (matter_type_id)
+      REFERENCES matter_type (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+INHERITS (core)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE form
+  OWNER TO postgres;
+
+
+4/26/2015
+-- Table: matter_type
+
+-- DROP TABLE matter_type;
+
+CREATE TABLE matter_type
+(
+-- Inherited from table core:  created_by_user_pid uuid NOT NULL,
+-- Inherited from table core:  modified_by_user_pid uuid NOT NULL,
+-- Inherited from table core:  disabled_by_user_pid uuid,
+-- Inherited from table core:  utc_created timestamp without time zone NOT NULL,
+-- Inherited from table core:  utc_modified timestamp without time zone NOT NULL,
+-- Inherited from table core:  utc_disabled timestamp without time zone,
+  id serial NOT NULL,
+  title text NOT NULL,
+  CONSTRAINT matter_type_pkey PRIMARY KEY (id)
+)
+INHERITS (core)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE matter_type
+  OWNER TO postgres;
+
+ALTER TABLE matter
+  ADD COLUMN matter_type_id integer;
+
+ALTER TABLE matter
+  ADD CONSTRAINT "FK_matter_matter_type_MatterTypeId_Id" FOREIGN KEY (matter_type_id) REFERENCES matter_type (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+
+4/2/2015 - 2
 ALTER TABLE form_field_matter
   ADD COLUMN value text;
 

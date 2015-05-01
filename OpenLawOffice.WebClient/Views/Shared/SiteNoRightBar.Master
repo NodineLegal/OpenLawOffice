@@ -41,8 +41,14 @@
     <div class="page">
         <div id="header">
             <div id="title">
-                <h1>
-                    OpenLawOffice</h1>
+                <h1><% 
+                if (string.IsNullOrEmpty(OpenLawOffice.Common.Settings.Manager.Instance.System.BillingFirmName)) 
+                { %>
+                   OpenLawOffice 
+                <%     
+                } else { %>
+                    <%: OpenLawOffice.Common.Settings.Manager.Instance.System.BillingFirmName %>
+                <% } %></h1>
             </div>
             <div id="logindisplay">
                 <% if (Request.IsAuthenticated)

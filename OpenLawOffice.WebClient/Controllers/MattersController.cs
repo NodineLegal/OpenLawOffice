@@ -266,6 +266,9 @@ namespace OpenLawOffice.WebClient.Controllers
                 model.BillTo = Data.Contacts.Contact.Get(model.BillTo.Id.Value);
 
             viewModel = Mapper.Map<ViewModels.Matters.MatterViewModel>(model);
+            if (viewModel.MatterType != null)
+                viewModel.MatterType = Mapper.Map<ViewModels.Matters.MatterTypeViewModel>(
+                    Data.Matters.MatterType.Get(viewModel.MatterType.Id.Value));
             viewModel.Tasks = TasksController.GetListForMatter(id, true);
             viewModel.LeadAttorney = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.LeadAttorney);
             viewModel.BillTo = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.BillTo);
@@ -386,11 +389,13 @@ namespace OpenLawOffice.WebClient.Controllers
             List<ViewModels.Contacts.ContactViewModel> employeeContactList;
             List<ViewModels.Billing.BillingRateViewModel> billingRateList;
             List<ViewModels.Billing.BillingGroupViewModel> billingGroupList;
+            List<ViewModels.Matters.MatterTypeViewModel> matterTypeList;
 
             userList = new List<ViewModels.Account.UsersViewModel>();
             employeeContactList = new List<ViewModels.Contacts.ContactViewModel>();
             billingRateList = new List<ViewModels.Billing.BillingRateViewModel>();
             billingGroupList = new List<ViewModels.Billing.BillingGroupViewModel>();
+            matterTypeList = new List<ViewModels.Matters.MatterTypeViewModel>();
 
             Data.Account.Users.List().ForEach(x =>
             {
@@ -416,10 +421,17 @@ namespace OpenLawOffice.WebClient.Controllers
                 billingGroupList.Add(vm);
             });
 
+            Data.Matters.MatterType.List().ForEach(x =>
+            {
+                ViewModels.Matters.MatterTypeViewModel vm = Mapper.Map<ViewModels.Matters.MatterTypeViewModel>(x);
+                matterTypeList.Add(vm);
+            });
+
             ViewData["UserList"] = userList;
             ViewData["EmployeeContactList"] = employeeContactList;
             ViewData["BillingRateList"] = billingRateList;
             ViewData["BillingGroupList"] = billingGroupList;
+            ViewData["MatterTypeList"] = matterTypeList;
 
             return View();
         }
@@ -628,12 +640,14 @@ namespace OpenLawOffice.WebClient.Controllers
             List<ViewModels.Contacts.ContactViewModel> employeeContactList;
             List<ViewModels.Billing.BillingRateViewModel> billingRateList;
             List<ViewModels.Billing.BillingGroupViewModel> billingGroupList;
+            List<ViewModels.Matters.MatterTypeViewModel> matterTypeList;
             ViewModels.Matters.EditMatterViewModel viewModel;
             Common.Models.Matters.Matter model;
 
             employeeContactList = new List<ViewModels.Contacts.ContactViewModel>();
             billingRateList = new List<ViewModels.Billing.BillingRateViewModel>();
             billingGroupList = new List<ViewModels.Billing.BillingGroupViewModel>();
+            matterTypeList = new List<ViewModels.Matters.MatterTypeViewModel>();
 
             model = Data.Matters.Matter.Get(id);
 
@@ -668,6 +682,12 @@ namespace OpenLawOffice.WebClient.Controllers
                 billingGroupList.Add(vm);
             });
 
+            Data.Matters.MatterType.List().ForEach(x =>
+            {
+                ViewModels.Matters.MatterTypeViewModel vm = Mapper.Map<ViewModels.Matters.MatterTypeViewModel>(x);
+                matterTypeList.Add(vm);
+            });
+
             viewModel = new ViewModels.Matters.EditMatterViewModel();
             viewModel.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(model);
             viewModel.LeadAttorney = new ViewModels.Matters.MatterContactViewModel();
@@ -679,6 +699,7 @@ namespace OpenLawOffice.WebClient.Controllers
             ViewData["EmployeeContactList"] = employeeContactList;
             ViewData["BillingRateList"] = billingRateList;
             ViewData["BillingGroupList"] = billingGroupList;
+            ViewData["MatterTypeList"] = matterTypeList;
             ViewData["Matter"] = model.Title;
             ViewData["MatterId"] = model.Id;
 

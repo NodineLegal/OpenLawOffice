@@ -30,6 +30,9 @@ namespace OpenLawOffice.Data.DBOs.Matters
         [ColumnMapping(Name = "id")]
         public Guid Id { get; set; }
 
+        [ColumnMapping(Name = "matter_type_id")]
+        public int? MatterTypeId { get; set; }
+
         [ColumnMapping(Name = "title")]
         public string Title { get; set; }
 
@@ -116,6 +119,15 @@ namespace OpenLawOffice.Data.DBOs.Matters
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.ParentId, opt => opt.MapFrom(src => src.ParentId))
+                .ForMember(dst => dst.MatterType, opt => opt.ResolveUsing(db =>
+                {
+                    if (!db.MatterTypeId.HasValue) return null;
+                    return new Common.Models.Matters.MatterType()
+                    {
+                        Id = db.MatterTypeId.Value,
+                        IsStub = true
+                    };
+                }))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis))
                 .ForMember(dst => dst.Active, opt => opt.MapFrom(src => src.Active))
@@ -194,6 +206,11 @@ namespace OpenLawOffice.Data.DBOs.Matters
                 }))
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.ParentId, opt => opt.MapFrom(src => src.ParentId))
+                .ForMember(dst => dst.MatterTypeId, opt => opt.ResolveUsing(model =>
+                {
+                    if (model.MatterType == null) return null;
+                    return model.MatterType.Id;
+                }))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis))
                 .ForMember(dst => dst.Active, opt => opt.MapFrom(src => src.Active))

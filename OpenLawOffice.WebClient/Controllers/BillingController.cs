@@ -346,6 +346,9 @@ namespace OpenLawOffice.WebClient.Controllers
                 });
             });
 
+            // Clear id from invoice as the ID is the ID of the matter
+            invoice.Id = null;
+
             invoice = Data.Billing.Billing.SingleMatterBill(
                 invoice,
                 invoiceExpenseList,

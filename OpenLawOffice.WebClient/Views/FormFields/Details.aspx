@@ -31,7 +31,7 @@
     <div id="pageInfoDialog" title="Help">
         <p>
         <span style="font-weight: bold; text-decoration: underline;">Info:</span>
-        Displays detailed information regarding the form field.
+        Displays detailed information regarding the form.
         </p>
     </div>
 </asp:Content>

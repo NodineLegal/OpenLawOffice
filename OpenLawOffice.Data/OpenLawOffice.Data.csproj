@@ -93,8 +93,10 @@
     <Compile Include="DBOs\Events\EventTag.cs" />
     <Compile Include="DBOs\Events\EventTask.cs" />
     <Compile Include="DBOs\External\ExternalSession.cs" />
+    <Compile Include="DBOs\Forms\Form.cs" />
     <Compile Include="DBOs\Forms\FormField.cs" />
     <Compile Include="DBOs\Forms\FormFieldMatter.cs" />
+    <Compile Include="DBOs\Matters\MatterType.cs" />
     <Compile Include="Events\Event.cs" />
     <Compile Include="DataHelper.cs" />
     <Compile Include="Contacts\Contact.cs" />
@@ -141,12 +143,14 @@
     <Compile Include="Events\EventResponsibleUser.cs" />
     <Compile Include="Events\EventTask.cs" />
     <Compile Include="External\ExternalSession.cs" />
+    <Compile Include="Forms\Form.cs" />
     <Compile Include="Forms\FormField.cs" />
     <Compile Include="Forms\FormFieldMatter.cs" />
     <Compile Include="Installation\Setup.cs" />
     <Compile Include="Matters\Matter.cs" />
     <Compile Include="Matters\MatterContact.cs" />
     <Compile Include="Matters\MatterTag.cs" />
+    <Compile Include="Matters\MatterType.cs" />
     <Compile Include="Matters\ResponsibleUser.cs" />
     <Compile Include="Notes\Note.cs" />
     <Compile Include="Notes\NoteMatter.cs" />

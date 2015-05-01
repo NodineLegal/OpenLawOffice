@@ -24,6 +24,8 @@
     <li>
         <%: Html.ActionLink("Matters", "", "Matters")%> <%: Html.ActionLink("New Matter", "Create", "Matters", null, new { @class = "btn-plus" })%></li>
     <ul>
+        <li>
+            <%: Html.ActionLink("Types", "", "MatterTypes")%> <%: Html.ActionLink("New Type", "Create", "MatterTypes", null, new { @class = "btn-plus" })%></li>
     </ul>
     <%--<li>
         Calendar</li>
@@ -58,8 +60,10 @@
     </ul>
     <ul>
     </ul>
-    <li>
-        <%: Html.ActionLink("Form Fields", "", "FormFields")%> <%: Html.ActionLink("New Field", "Create", "FormFields", null, new { @class = "btn-plus" })%></li>
+    <li><%: Html.ActionLink("Forms", "", "Forms")%> <%: Html.ActionLink("New Form", "Create", "Forms", null, new { @class = "btn-plus" })%></li>
+    <ul>
+        <li><%: Html.ActionLink("Form Fields", "", "FormFields")%> <%: Html.ActionLink("New Field", "Create", "FormFields", null, new { @class = "btn-plus" })%></li>
+    </ul>
     <ul>
     </ul>
     <li>Settings</li>

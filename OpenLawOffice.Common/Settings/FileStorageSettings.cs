@@ -49,5 +49,12 @@ namespace OpenLawOffice.Common.Settings
             get { return (string)this["jurisdictionsPath"]; }
             set { this["jurisdictionsPath"] = value; }
         }
+
+        [ConfigurationProperty("formsPath", IsRequired = true)]
+        public string FormsPath
+        {
+            get { return (string)this["formsPath"]; }
+            set { this["formsPath"] = value; }
+        }
     }
 }

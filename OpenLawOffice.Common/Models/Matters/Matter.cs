@@ -29,6 +29,8 @@ namespace OpenLawOffice.Common.Models.Matters
 
         public Guid? ParentId { get; set; }
 
+        public MatterType MatterType { get; set; }
+
         public string Title { get; set; }
 
         public string Synopsis { get; set; }

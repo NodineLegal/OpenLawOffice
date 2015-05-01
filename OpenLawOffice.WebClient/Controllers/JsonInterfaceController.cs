@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using System.IO;
 
 namespace OpenLawOffice.WebClient.Controllers
 {
@@ -74,8 +75,12 @@ namespace OpenLawOffice.WebClient.Controllers
         public ActionResult CloseSession()
         {
             Guid token;
+            Common.Net.Request<Common.Net.AuthPackage> request;
+            Common.Models.External.ExternalSession session;
             Common.Net.Response<bool> response = new Common.Net.Response<bool>();
-
+            
+            request = Request.InputStream.JsonDeserialize<Common.Net.Request<Common.Net.AuthPackage>>();
+            
             response.RequestReceived = DateTime.Now;
 
             if ((token = GetToken(Request)) == Guid.Empty)
@@ -91,6 +96,8 @@ namespace OpenLawOffice.WebClient.Controllers
             }
 
             // Close the session here
+            session = Data.External.ExternalSession.Get(request.Package.AppName, request.Package.MachineId, request.Package.Username);
+            session = Data.External.ExternalSession.Delete(session);
 
             response.Successful = true;
             response.ResponseSent = DateTime.Now;
@@ -121,6 +128,56 @@ namespace OpenLawOffice.WebClient.Controllers
             response.Package = Data.Matters.Matter.List(activeFilter, contactFilter, titleFilter, caseNumberFilter, jurisdictionFilter);
             response.ResponseSent = DateTime.Now;
             return Json(response, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult ListFormsForMatter(Guid matterId)
+        {
+            Guid token;
+            Common.Net.Response<List<Common.Models.Forms.Form>> response
+                = new Common.Net.Response<List<Common.Models.Forms.Form>>();
+
+            response.RequestReceived = DateTime.Now;
+
+            if ((token = GetToken(Request)) == Guid.Empty)
+            {
+                response.Successful = false;
+                response.Error = "Invalid Token";
+            }
+
+            if (!VerifyToken(token))
+            {
+                response.Successful = false;
+                response.Error = "Invalid Token";
+            }
+
+            response.Successful = true;
+            response.Package = Data.Forms.Form.ListForMatter(matterId);
+            response.ResponseSent = DateTime.Now;
+            return Json(response, JsonRequestBehavior.AllowGet);
+        }
+
+        public FileResult DownloadForm(int id)
+        {
+            Guid token;
+            string ext = "";
+            Common.Models.Forms.Form model;
+
+            if ((token = GetToken(Request)) == Guid.Empty)
+            {
+                return null;
+            }
+
+            if (!VerifyToken(token))
+            {
+                return null;
+            }
+
+            model = Data.Forms.Form.Get(id);
+
+            if (Path.HasExtension(model.Path))
+                ext = Path.GetExtension(model.Path);
+
+            return File(model.Path, Common.Utilities.GetMimeType(ext), model.Title + ext);
         }
 
         private Guid GetToken(HttpRequestBase request)

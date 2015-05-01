@@ -185,6 +185,17 @@
         </tr>
         <tr>
             <td class="display-label" style="width: 125px;">
+                Matter Type:
+            </td>
+            <td class="display-field" colspan="4">
+                <% if (Model.MatterType != null)
+                   { %>
+                    <%: Model.MatterType.Title%>
+                <% } %>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label" style="width: 125px;">
                 Synopsis
             </td>
             <td class="display-field" colspan="4">

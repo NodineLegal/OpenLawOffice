@@ -33,6 +33,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
 
         public MatterViewModel Parent { get; set; }
 
+        public MatterTypeViewModel MatterType { get; set; }
+
         public string Title { get; set; }
 
         public string Synopsis { get; set; }
@@ -114,6 +116,15 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
                     return new ViewModels.Matters.MatterViewModel()
                     {
                         Id = db.ParentId.Value,
+                        IsStub = true
+                    };
+                }))
+                .ForMember(dst => dst.MatterType, opt => opt.ResolveUsing(db =>
+                {
+                    if (db.MatterType == null || !db.MatterType.Id.HasValue) return null;
+                    return new ViewModels.Matters.MatterTypeViewModel()
+                    {
+                        Id = db.MatterType.Id.Value,
                         IsStub = true
                     };
                 }))
@@ -215,6 +226,16 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
                     if (model.Parent == null || !model.Parent.Id.HasValue)
                         return null;
                     return model.Parent.Id.Value;
+                }))
+                .ForMember(dst => dst.MatterType, opt => opt.ResolveUsing(x =>
+                {
+                    if (x.MatterType == null || !x.MatterType.Id.HasValue)
+                        return null;
+                    return new ViewModels.Matters.MatterTypeViewModel()
+                    {
+                        Id = x.MatterType.Id.Value,
+                        IsStub = true
+                    };
                 }))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dst => dst.Synopsis, opt => opt.MapFrom(src => src.Synopsis))

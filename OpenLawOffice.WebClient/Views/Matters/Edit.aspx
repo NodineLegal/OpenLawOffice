@@ -96,6 +96,16 @@
         </tr>
         <tr>
             <td class="display-label">
+                Matter Type
+            </td>
+            <td class="display-field">
+                <%: Html.DropDownListFor(x => x.Matter.MatterType.Id,
+                        new SelectList((IList)ViewData["MatterTypeList"], "Id", "Title"),
+                        new { @size = 5, @style = "width: 100%" })%>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
                 Synopsis<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
