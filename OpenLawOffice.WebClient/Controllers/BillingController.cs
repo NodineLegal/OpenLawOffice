@@ -664,6 +664,7 @@ namespace OpenLawOffice.WebClient.Controllers
             currentUser = Data.Account.Users.Get(User.Identity.Name);
             billingGroup = Data.Billing.BillingGroup.Get(id);
             billingGroup.Amount = viewModel.BillingGroup.Amount;
+            billingGroup.NextRun = viewModel.BillingGroup.NextRun;
 
             builtGroupInvoice = BuildGroupInvoiceViewModel(id, start, stop, Request["rateFrom"]);
 
