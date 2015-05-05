@@ -46,6 +46,24 @@ namespace OpenLawOffice.Data.Billing
             return list;
         }
 
+        public static List<Common.Models.Billing.InvoiceExpense> ListForMatterAndInvoice(Guid invoiceId, Guid matterId, 
+            IDbConnection conn = null, bool closeConnection = true)
+        {
+            List<Common.Models.Billing.InvoiceExpense> list;
+
+            conn = OpenIfNeeded(conn);
+
+            list = DataHelper.List<Common.Models.Billing.InvoiceExpense, DBOs.Billing.InvoiceExpense>(
+                "SELECT * FROM \"invoice_expense\" WHERE \"expense_id\" IN (SELECT \"expense_id\" FROM \"expense_matter\" WHERE \"matter_id\"=@MatterId) AND " +
+                "\"invoice_id\"=@InvoiceId AND " +
+                "\"utc_disabled\" is null ORDER BY \"utc_created\" ASC",
+                new { InvoiceId = invoiceId, MatterId = matterId });
+
+            Close(conn, closeConnection);
+
+            return list;
+        }
+
         public static Common.Models.Billing.InvoiceExpense Get(Guid invoiceId, Guid expenseId,
             IDbConnection conn = null, bool closeConnection = true)
         {

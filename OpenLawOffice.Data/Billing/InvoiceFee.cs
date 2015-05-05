@@ -29,7 +29,7 @@ namespace OpenLawOffice.Data.Billing
 
     public class InvoiceFee : Base
     {
-        public static List<Common.Models.Billing.InvoiceFee> ListForMatter(Guid matterId, 
+        public static List<Common.Models.Billing.InvoiceFee> ListForMatter(Guid matterId,
             IDbConnection conn = null, bool closeConnection = true)
         {
             List<Common.Models.Billing.InvoiceFee> list;
@@ -40,6 +40,24 @@ namespace OpenLawOffice.Data.Billing
                 "SELECT * FROM \"invoice_fee\" WHERE \"fee_id\" IN (SELECT \"fee_id\" FROM \"fee_matter\" WHERE \"matter_id\"=@MatterId) AND " +
                 "\"utc_disabled\" is null ORDER BY \"utc_created\" ASC",
                 new { MatterId = matterId });
+
+            Close(conn, closeConnection);
+
+            return list;
+        }
+
+        public static List<Common.Models.Billing.InvoiceFee> ListForMatterAndInvoice(Guid invoiceId, Guid matterId, 
+            IDbConnection conn = null, bool closeConnection = true)
+        {
+            List<Common.Models.Billing.InvoiceFee> list;
+
+            conn = OpenIfNeeded(conn);
+
+            list = DataHelper.List<Common.Models.Billing.InvoiceFee, DBOs.Billing.InvoiceFee>(
+                "SELECT * FROM \"invoice_fee\" WHERE \"fee_id\" IN (SELECT \"fee_id\" FROM \"fee_matter\" WHERE \"matter_id\"=@MatterId) AND " +
+                "\"invoice_id\"=@InvoiceId AND " +
+                "\"utc_disabled\" is null ORDER BY \"utc_created\" ASC",
+                new { InvoiceId = invoiceId, MatterId = matterId });
 
             Close(conn, closeConnection);
 

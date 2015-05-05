@@ -131,7 +131,7 @@ namespace OpenLawOffice.WebClient.Controllers
                 ViewModels.Billing.GroupInvoiceItemViewModel giivm = new ViewModels.Billing.GroupInvoiceItemViewModel();
                 giivm.Matter = Mapper.Map<ViewModels.Matters.MatterViewModel>(mattersList[i]);
 
-                Data.Billing.InvoiceExpense.ListForMatter(mattersList[i].Id.Value).ForEach(x =>
+                Data.Billing.InvoiceExpense.ListForMatterAndInvoice(id, mattersList[i].Id.Value).ForEach(x =>
                 {
                     ViewModels.Billing.InvoiceExpenseViewModel vm = Mapper.Map<ViewModels.Billing.InvoiceExpenseViewModel>(x);
                     vm.Expense = Mapper.Map<ViewModels.Billing.ExpenseViewModel>(Data.Billing.Expense.Get(vm.Expense.Id.Value));
@@ -139,7 +139,7 @@ namespace OpenLawOffice.WebClient.Controllers
                     giivm.Expenses.Add(vm);
                 });
 
-                Data.Billing.InvoiceFee.ListForMatter(mattersList[i].Id.Value).ForEach(x =>
+                Data.Billing.InvoiceFee.ListForMatterAndInvoice(id, mattersList[i].Id.Value).ForEach(x =>
                 {
                     ViewModels.Billing.InvoiceFeeViewModel vm = Mapper.Map<ViewModels.Billing.InvoiceFeeViewModel>(x);
                     vm.Fee = Mapper.Map<ViewModels.Billing.FeeViewModel>(Data.Billing.Fee.Get(vm.Fee.Id.Value));
@@ -147,7 +147,7 @@ namespace OpenLawOffice.WebClient.Controllers
                     giivm.Fees.Add(vm);
                 });
 
-                Data.Billing.InvoiceTime.ListForMatter(mattersList[i].Id.Value).ForEach(x =>
+                Data.Billing.InvoiceTime.ListForMatterAndInvoice(id, mattersList[i].Id.Value).ForEach(x =>
                 {
                     ViewModels.Billing.InvoiceTimeViewModel vm = Mapper.Map<ViewModels.Billing.InvoiceTimeViewModel>(x);
                     vm.Time = Mapper.Map<ViewModels.Timing.TimeViewModel>(Data.Timing.Time.Get(vm.Time.Id.Value));
