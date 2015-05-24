@@ -4,7 +4,28 @@
     Task Details
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-           
+
+    <script language="javascript">
+        $(function () {
+            $("#closeTaskDialog").dialog({
+                autoOpen: false,
+                width: 400,
+                show: {
+                    effect: "blind",
+                    duration: 100
+                },
+                hide: {
+                    effect: "fade",
+                    duration: 100
+                }
+            });
+
+            $("#newTaskHelp").click(function () {
+                $("#closeTaskDialog").dialog("open");
+            });
+        });
+    </script>
+
     <div id="roadmap">
         <div class="zero">Matter: [<%: Html.ActionLink((string)ViewData["Matter"], "Details", "Matters", new { id = ViewData["MatterId"] }, null) %>]</div>
         <div id="current" class="one">Task: <%: Model.Title %><a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></div>
@@ -16,6 +37,11 @@
     <% using (Html.BeginForm("Close", "Tasks", new { Id = RouteData.Values["Id"] }, FormMethod.Post, new { id = "CloseForm" }))
        {%>
     <%: Html.ValidationSummary(true)%>
+        <div style="padding-right: 10px; display:inline;">
+            <a id="newTaskHelp" class="btn-question" style="padding-left: 15px;"></a>
+            <input type="checkbox" id="NewTask" name="NewTask" checked="checked" /> Create Follow-up Task 
+        </div>
+        
         <input type="submit" value="Close" 
             style="background-image: url('/Content/fugue-icons-3.5.6/icons-shadowless/cross.png'); 
             background-position: left center; background-repeat: no-repeat; padding-left: 20px;" />
@@ -136,6 +162,15 @@
         <p>
         <span style="font-weight: bold; text-decoration: underline;">Info:</span>
         Displays detailed information about the task.
+        </p>
+    </div>
+    <div id="closeTaskDialog" title="Close Task">
+        <p>
+        <span style="font-weight: bold; text-decoration: underline;">Create Follow-Up Task:</span>
+        <br />
+        In most situations, a task being closed should be followed by another task.  For example:
+        Completing a task to send a client an request for information should have a task to follow-up
+        created, or completing a task to draft a motion should be followed by a task to file the motion.
         </p>
     </div>
 </asp:Content>

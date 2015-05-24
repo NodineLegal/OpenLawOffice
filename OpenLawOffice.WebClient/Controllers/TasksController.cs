@@ -333,6 +333,12 @@ namespace OpenLawOffice.WebClient.Controllers
 
             model = Data.Tasks.Task.Edit(model, currentUser);
 
+            if (!string.IsNullOrEmpty(Request["NewTask"]) && Request["NewTask"] == "on")
+            { // not empty & "on"
+                Common.Models.Matters.Matter matter = Data.Tasks.Task.GetRelatedMatter(id);
+                return RedirectToAction("Create", "Tasks", new { MatterId = matter.Id });
+            }
+
             return RedirectToAction("Details", new { Id = id });
         }
 
