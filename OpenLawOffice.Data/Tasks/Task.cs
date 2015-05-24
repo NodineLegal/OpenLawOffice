@@ -252,7 +252,8 @@ namespace OpenLawOffice.Data.Tasks
                     tags.Add(x.Tag.ToLower());
             });
 
-            sql = "SELECT * FROM \"task\" WHERE \"active\"=true AND \"id\" IN (SELECT \"task_id\" FROM \"task_assigned_contact\" WHERE \"contact_id\"=@ContactId) ";
+            sql = "SELECT * FROM \"task\" WHERE \"active\"=true AND \"id\" IN (SELECT \"task_id\" FROM \"task_assigned_contact\" WHERE \"contact_id\"=@ContactId AND " +
+                "\"task_id\" NOT IN (SELECT \"task_id\" FROM \"task_assigned_contact\" WHERE \"assignment_type\"=2 AND \"contact_id\"!=@ContactId AND \"utc_disabled\" is null)) ";
 
             if (cats.Count > 0 || tags.Count > 0)
             {
