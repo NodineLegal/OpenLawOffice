@@ -74,6 +74,7 @@ namespace OpenLawOffice.Data.Notes
         public static Common.Models.Notes.NoteMatter Create(Common.Models.Notes.NoteMatter model,
             Common.Models.Account.Users creator)
         {
+            if (!model.Id.HasValue) model.Id = Guid.NewGuid();
             model.Created = model.Modified = DateTime.UtcNow;
             model.CreatedBy = model.ModifiedBy = creator;
             DBOs.Notes.NoteMatter dbo = Mapper.Map<DBOs.Notes.NoteMatter>(model);

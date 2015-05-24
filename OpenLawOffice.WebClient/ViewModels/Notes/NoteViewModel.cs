@@ -24,6 +24,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Notes
     using System;
     using AutoMapper;
     using OpenLawOffice.Common.Models;
+    using System.Collections.Generic;
 
     [MapMe]
     public class NoteViewModel : CoreViewModel
@@ -35,6 +36,9 @@ namespace OpenLawOffice.WebClient.ViewModels.Notes
         public string Body { get; set; }
 
         public DateTime? Timestamp { get; set; }
+
+        public string[] NotifyContactIds { get; set; }
+        public List<NoteNotificationViewModel> NoteNotifications { get; set; }
 
         public void BuildMappings()
         {
@@ -71,7 +75,9 @@ namespace OpenLawOffice.WebClient.ViewModels.Notes
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dst => dst.Body, opt => opt.MapFrom(src => src.Body))
-                .ForMember(dst => dst.Timestamp, opt => opt.MapFrom(src => src.Timestamp));
+                .ForMember(dst => dst.Timestamp, opt => opt.MapFrom(src => src.Timestamp))
+                .ForMember(dst => dst.NotifyContactIds, opt => opt.Ignore())
+                .ForMember(dst => dst.NoteNotifications, opt => opt.Ignore());
 
             Mapper.CreateMap<NoteViewModel, Common.Models.Notes.Note>()
                 .ForMember(dst => dst.Created, opt => opt.MapFrom(src => src.Created))

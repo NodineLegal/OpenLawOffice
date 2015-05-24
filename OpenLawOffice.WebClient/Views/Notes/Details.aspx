@@ -52,6 +52,40 @@
             </td>
         </tr>
     </table>
+    
+    <table class="listing_table">    
+        <tr>
+            <td colspan="3" class="listing_table_heading">
+                Notifications
+            </td>
+        </tr>
+        <tr>
+            <th style="text-align: center;">
+                Contact
+            </th>
+            <th style="text-align: center; width: 170px; padding-right: 10px;">
+                Cleared At
+            </th>
+        </tr>
+        <% bool altRow = true;
+           foreach (var item in Model.NoteNotifications)
+           {
+               altRow = !altRow;
+               if (altRow)
+               { %> <tr class="tr_alternate"> <% }
+               else
+               { %> <tr> <% }
+                %>
+            <td>
+                <%: Html.ActionLink(item.Contact.DisplayName, "Details", "Contacts", new { id = item.Contact.Id.Value }, null) %>
+            </td>
+            <td>
+                <%: item.Cleared %>
+            </td>
+        </tr>
+        <% } %>
+    </table>
+    <br />
 <% Html.RenderPartial("CoreDetailsView"); %>
     <div id="pageInfoDialog" title="Help">
         <p>

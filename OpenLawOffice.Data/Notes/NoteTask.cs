@@ -77,7 +77,7 @@ namespace OpenLawOffice.Data.Notes
 
                 if (currentModel != null)
                 { // Update
-                    conn.Execute("UPDATE \"note_task\" SET \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserPId " +
+                    conn.Execute("UPDATE \"note_task\" SET \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserPId, " +
                         "\"utc_disabled\"=null, \"disabled_by_user_pid\"=null WHERE \"id\"=@Id", dbo);
                     model.Created = currentModel.Created;
                     model.CreatedBy = currentModel.CreatedBy;

@@ -97,6 +97,7 @@
     <Compile Include="DBOs\Forms\FormField.cs" />
     <Compile Include="DBOs\Forms\FormFieldMatter.cs" />
     <Compile Include="DBOs\Matters\MatterType.cs" />
+    <Compile Include="DBOs\Notes\NoteNotification.cs" />
     <Compile Include="Events\Event.cs" />
     <Compile Include="DataHelper.cs" />
     <Compile Include="Contacts\Contact.cs" />
@@ -154,6 +155,7 @@
     <Compile Include="Matters\ResponsibleUser.cs" />
     <Compile Include="Notes\Note.cs" />
     <Compile Include="Notes\NoteMatter.cs" />
+    <Compile Include="Notes\NoteNotification.cs" />
     <Compile Include="Notes\NoteTask.cs" />
     <Compile Include="PostgreSQLProvider\PgMembershipProvider.cs" />
     <Compile Include="PostgreSQLProvider\PgProfileProvider.cs" />

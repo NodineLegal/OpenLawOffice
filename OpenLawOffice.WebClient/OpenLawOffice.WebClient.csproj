@@ -200,6 +200,7 @@
     <Compile Include="ViewModels\Matters\MatterTypeViewModel.cs" />
     <Compile Include="ViewModels\Matters\MatterViewModel.cs" />
     <Compile Include="ViewModels\Matters\ResponsibleUserViewModel.cs" />
+    <Compile Include="ViewModels\Notes\NoteNotificationViewModel.cs" />
     <Compile Include="ViewModels\Notes\NoteViewModel.cs" />
     <Compile Include="ViewModels\PermissionsViewModel.cs" />
     <Compile Include="ViewModels\PropertiesMustMatchAttribute.cs" />

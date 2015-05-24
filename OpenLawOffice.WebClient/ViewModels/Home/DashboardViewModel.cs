@@ -30,5 +30,6 @@ namespace OpenLawOffice.WebClient.ViewModels.Home
     {
         public ViewModels.Contacts.ContactViewModel Employee { get; set; }
         public List<Tuple<Matters.MatterViewModel, Tasks.TaskViewModel>> MyTodoList { get; set; }
+        public List<ViewModels.Notes.NoteNotificationViewModel> NotificationList { get; set; }
     }
 }

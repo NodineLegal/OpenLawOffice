@@ -91,6 +91,14 @@ namespace OpenLawOffice.WebClient.Controllers
                     Mapper.Map<ViewModels.Tasks.TaskViewModel>(x)));
             });
 
+            viewModel.NotificationList = new List<ViewModels.Notes.NoteNotificationViewModel>();
+            Data.Notes.NoteNotification.ListAllNoteNotificationsForContact(employee.Id.Value).ForEach(x =>
+            {
+                ViewModels.Notes.NoteNotificationViewModel nnvm = Mapper.Map<ViewModels.Notes.NoteNotificationViewModel>(x);
+                nnvm.Note = Mapper.Map<ViewModels.Notes.NoteViewModel>(Data.Notes.Note.Get(x.Note.Id.Value));
+                viewModel.NotificationList.Add(nnvm);
+            });
+
             Data.Contacts.Contact.ListEmployeesOnly().ForEach(x =>
             {
                 employeeContactList.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(x));

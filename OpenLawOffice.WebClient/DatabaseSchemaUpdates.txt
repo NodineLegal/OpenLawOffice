@@ -1,4 +1,38 @@
-﻿4/27/2015
+﻿5/24/2015
+-- Table: note_notification
+
+-- DROP TABLE note_notification;
+
+CREATE TABLE note_notification
+(
+-- Inherited from table core:  created_by_user_pid uuid NOT NULL,
+-- Inherited from table core:  modified_by_user_pid uuid NOT NULL,
+-- Inherited from table core:  disabled_by_user_pid uuid,
+-- Inherited from table core:  utc_created timestamp without time zone NOT NULL,
+-- Inherited from table core:  utc_modified timestamp without time zone NOT NULL,
+-- Inherited from table core:  utc_disabled timestamp without time zone,
+  id uuid NOT NULL,
+  contact_id integer NOT NULL,
+  note_id uuid NOT NULL,
+  cleared timestamp without time zone,
+  CONSTRAINT note_notification_pkey PRIMARY KEY (id),
+  CONSTRAINT "note_notification_contact_ContactId" FOREIGN KEY (contact_id)
+      REFERENCES contact (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT "note_notification_note_NoteId" FOREIGN KEY (note_id)
+      REFERENCES note (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+INHERITS (core)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE note_notification
+  OWNER TO postgres;
+
+
+
+4/27/2015
 -- Table: form
 
 -- DROP TABLE form;

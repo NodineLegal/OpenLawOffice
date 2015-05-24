@@ -107,6 +107,7 @@
     <Compile Include="Models\ModelWithDatesOnly.cs" />
     <Compile Include="Models\Notes\Note.cs" />
     <Compile Include="Models\Notes\NoteMatter.cs" />
+    <Compile Include="Models\Notes\NoteNotification.cs" />
     <Compile Include="Models\Notes\NoteTask.cs" />
     <Compile Include="Models\PermissionType.cs" />
     <Compile Include="Models\Settings\TagFilter.cs" />

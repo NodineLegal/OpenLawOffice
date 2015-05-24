@@ -25,6 +25,7 @@ namespace OpenLawOffice.WebClient.Controllers
     using System.Web;
     using System.Web.Mvc;
     using AutoMapper;
+    using System.Collections.Generic;
 
     [HandleError(View = "Errors/Index", Order = 10)]
     public class NotesController : BaseController
@@ -51,6 +52,15 @@ namespace OpenLawOffice.WebClient.Controllers
                 ViewData["TaskId"] = noteTask.Id.Value;
                 ViewData["Task"] = noteTask.Title;
             }
+            
+            viewModel.NoteNotifications = new List<ViewModels.Notes.NoteNotificationViewModel>();
+            Data.Notes.NoteNotification.ListForNote(id).ForEach(x =>
+            {
+                x.Contact = Data.Contacts.Contact.Get(x.Contact.Id.Value);
+                ViewModels.Notes.NoteNotificationViewModel vm = Mapper.Map<ViewModels.Notes.NoteNotificationViewModel>(x);
+                vm.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(x.Contact);
+                viewModel.NoteNotifications.Add(vm);
+            });
 
             PopulateCoreDetails(viewModel);
 
@@ -60,12 +70,30 @@ namespace OpenLawOffice.WebClient.Controllers
         }
 
         [Authorize(Roles = "Login, User")]
+        public ActionResult ClearNotification(Guid id)
+        {
+            Common.Models.Account.Users currentUser;
+            Common.Models.Notes.NoteNotification model;
+
+            currentUser = Data.Account.Users.Get(User.Identity.Name);
+
+            model = Data.Notes.NoteNotification.Get(id);
+
+            model = Data.Notes.NoteNotification.Clear(model, currentUser);
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        [Authorize(Roles = "Login, User")]
         public ActionResult Edit(Guid id)
         {
+            List<ViewModels.Contacts.ContactViewModel> employeeContactList;
             Common.Models.Notes.Note model;
             Common.Models.Matters.Matter matter;
             Common.Models.Tasks.Task task;
             ViewModels.Notes.NoteViewModel viewModel;
+
+            employeeContactList = new List<ViewModels.Contacts.ContactViewModel>();
 
             model = Data.Notes.Note.Get(id);
             matter = Data.Notes.Note.GetMatter(id);
@@ -80,8 +108,22 @@ namespace OpenLawOffice.WebClient.Controllers
                 ViewData["Task"] = task.Title;
             }
 
+            Data.Contacts.Contact.ListEmployeesOnly().ForEach(x =>
+            {
+                employeeContactList.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(x));
+            });
+
+            List<Common.Models.Notes.NoteNotification> notesNotifications = Data.Notes.NoteNotification.ListForNote(id);
+            viewModel.NotifyContactIds = new string[notesNotifications.Count];
+            for (int i = 0; i < notesNotifications.Count; i++)
+            {
+                viewModel.NotifyContactIds[i] = notesNotifications[i].Contact.Id.Value.ToString();
+            }
+
             ViewData["MatterId"] = matter.Id.Value;
             ViewData["Matter"] = matter.Title;
+            ViewData["EmployeeContactList"] = employeeContactList;
+
             return View(viewModel);
         }
 
@@ -98,14 +140,30 @@ namespace OpenLawOffice.WebClient.Controllers
 
             model = Data.Notes.Note.Edit(model, currentUser);
 
+            if (viewModel.NotifyContactIds != null)
+            {
+                viewModel.NotifyContactIds.Each(x =>
+                {
+                    Data.Notes.NoteNotification.Create(new Common.Models.Notes.NoteNotification()
+                    {
+                        Contact = new Common.Models.Contacts.Contact() { Id = int.Parse(x) },
+                        Note = model,
+                        Cleared = null
+                    }, currentUser);
+                });
+            }
+
             return RedirectToAction("Details", new { Id = id });
         }
 
         [Authorize(Roles = "Login, User")]
         public ActionResult Create()
         {
+            List<ViewModels.Contacts.ContactViewModel> employeeContactList;
             Common.Models.Matters.Matter matter = null;
             Common.Models.Tasks.Task task = null;
+
+            employeeContactList = new List<ViewModels.Contacts.ContactViewModel>();
 
             if (Request["MatterId"] != null)
             {
@@ -119,8 +177,14 @@ namespace OpenLawOffice.WebClient.Controllers
                 ViewData["Task"] = task.Title;
             }
 
+            Data.Contacts.Contact.ListEmployeesOnly().ForEach(x =>
+            {
+                employeeContactList.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(x));
+            });
+
             ViewData["MatterId"] = matter.Id.Value;
             ViewData["Matter"] = matter.Title;
+            ViewData["EmployeeContactList"] = employeeContactList;
 
             return View(new ViewModels.Notes.NoteViewModel() { Timestamp = DateTime.Now });
         }
@@ -139,6 +203,19 @@ namespace OpenLawOffice.WebClient.Controllers
             model = Mapper.Map<Common.Models.Notes.Note>(viewModel);
 
             model = Data.Notes.Note.Create(model, currentUser);
+
+            if (viewModel.NotifyContactIds != null)
+            {
+                viewModel.NotifyContactIds.Each(x =>
+                {
+                    Data.Notes.NoteNotification.Create(new Common.Models.Notes.NoteNotification()
+                    {
+                        Contact = new Common.Models.Contacts.Contact() { Id = int.Parse(x) },
+                        Note = model,
+                        Cleared = null
+                    }, currentUser);
+                });
+            }
 
             if (Request["MatterId"] != null)
             {

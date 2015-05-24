@@ -4,6 +4,14 @@
     Create Note
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
+ 
+    <script language="javascript">
+        $(document).ready(function () {
+            $('#ClearNoticeButton').click(function () {
+                $('#NotifyContactIds').val([]);
+            });
+        });
+    </script>
 
     <div id="roadmap">
         <div class="zero">Matter: [<%: Html.ActionLink((string)ViewData["Matter"], "Details", "Matters", new { id = ViewData["MatterId"] }, null) %>]</div>
@@ -36,8 +44,20 @@
                 Title<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Title) %>
+                <%: Html.TextBoxFor(model => model.Title, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Title) %>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
+                Send Notice To<br />
+                <input type="button" value="Clear Notices" name="ClearNoticeButton" id="ClearNoticeButton" />
+            </td>
+            <td class="display-field">
+                <div style="font-size: 7pt; font-style: italic; padding-bottom: 3px;">Hold ctrl while clicking to select multiple items.</div>
+                <%: Html.ListBoxFor(x => x.NotifyContactIds, 
+                        new SelectList((IList)ViewData["EmployeeContactList"], "Id", "DisplayName"),
+                        new { @size = 5, @style = "width: 100%" }) %>
             </td>
         </tr>
         <tr>

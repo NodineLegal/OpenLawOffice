@@ -16,10 +16,55 @@
         });
     </script>
     <h4>
-        Todo List for <%: Html.DropDownListFor(x => x.Employee.Id,
+        Dashboard for <%: Html.DropDownListFor(x => x.Employee.Id,
                 new SelectList((IList)ViewData["EmployeeContactList"], "Id", "DisplayName"),
                 new { @size = 1, @style = "width: 200px" })%></h4>
-    <table class="listing_table">
+                
+    <table class="listing_table">   
+        <tr>
+            <td colspan="3" class="listing_table_heading">
+                Notifications
+            </td>
+        </tr>
+        <tr>
+            <th style="text-align: center;">
+                Title
+            </th>
+            <th style="text-align: center;">
+                Body
+            </th>
+            <th style="text-align: center; width: 25px;">
+                
+            </th>
+        </tr>
+        <% bool altRow = true;
+           foreach (OpenLawOffice.WebClient.ViewModels.Notes.NoteNotificationViewModel item in Model.NotificationList)
+           {
+               altRow = !altRow;
+               if (altRow)
+               { %> <tr class="tr_alternate"> <% }
+               else
+               { %> <tr> <% }
+                %>
+            <td>
+                <%: Html.ActionLink(item.Note.Title, "Details", "Notes", new { id = item.Note.Id.Value }, null)%>
+            </td>
+            <td>
+                <%: item.Note.Body %>
+            </td>
+            <td>
+                <%: Html.ActionLink("Clear", "ClearNotification", "Notes", new { id = item.Id.Value }, new { @class = "btn-remove", title = "Clear" })%>   
+            </td>
+        </tr>
+        <% } %>
+    </table>
+    <br />
+    <table class="listing_table">   
+        <tr>
+            <td colspan="3" class="listing_table_heading">
+                Todo List
+            </td>
+        </tr>
         <tr>
             <th style="text-align: center;">
                 Matter
