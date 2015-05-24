@@ -53,7 +53,7 @@
             </td>
             <td>
                 <%: Html.ActionLink(item.Item2.Title, "Details", "Tasks", new { id = item.Item2.Id.Value }, null)%>
-                <%: Html.ActionLink("Add Time", "SelectContactToAssign", "TaskTime", new { TaskId = item.Item2.Id.Value }, new { @class = "btn-addtimeentry" })%>
+                <%: Html.ActionLink("Add Time", "Create", "TaskTime", new { ContactId = Model.Employee.Id, TaskId = item.Item2.Id.Value }, new { @class = "btn-addtimeentry", title = "Add Time" })%>
             </td>
             <td>
                 <% if (item.Item2.DueDate.HasValue)
