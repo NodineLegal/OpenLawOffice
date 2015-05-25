@@ -5,7 +5,7 @@
         My</li>
     <ul>
         <li>
-            <%: Html.ActionLink("Dashboard", "Index", "Home") %></li>
+            <%: Html.ActionLink("Dashboard", "Index", "Home", new { Id = "" }, null)%></li>
         <li>
             <%: Html.ActionLink("Daily Time", "DayView", "Timing") %></li>
        <%-- <li>

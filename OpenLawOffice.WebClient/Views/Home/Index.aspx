@@ -11,7 +11,8 @@
     <script>
         $(function () {
             $('#Employee_Id').change(function () {
-                $("form").submit();
+                window.location = "/Home/Index/" + $("#Employee_Id").val();
+                //$("form").submit();
             });
         });
     </script>
@@ -53,7 +54,7 @@
                 <%: item.Note.Body %>
             </td>
             <td>
-                <%: Html.ActionLink("Clear", "ClearNotification", "Notes", new { id = item.Id.Value }, new { @class = "btn-remove", title = "Clear" })%>   
+                <%: Html.ActionLink("Clear", "ClearNotification", "Notes", new { id = item.Id.Value, EmployeeId = Model.Employee.Id }, new { @class = "btn-remove", title = "Clear" })%>   
             </td>
         </tr>
         <% } %>

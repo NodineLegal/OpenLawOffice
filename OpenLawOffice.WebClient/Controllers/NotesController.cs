@@ -70,7 +70,7 @@ namespace OpenLawOffice.WebClient.Controllers
         }
 
         [Authorize(Roles = "Login, User")]
-        public ActionResult ClearNotification(Guid id)
+        public ActionResult ClearNotification(Guid id, int? employeeId)
         {
             Common.Models.Account.Users currentUser;
             Common.Models.Notes.NoteNotification model;
@@ -81,7 +81,7 @@ namespace OpenLawOffice.WebClient.Controllers
 
             model = Data.Notes.NoteNotification.Clear(model, currentUser);
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home", new { Id = employeeId });
         }
 
         [Authorize(Roles = "Login, User")]

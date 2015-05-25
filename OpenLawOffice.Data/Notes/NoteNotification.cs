@@ -73,10 +73,10 @@ namespace OpenLawOffice.Data.Notes
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
                 Common.Models.Notes.NoteNotification currentModel = Get(model.Note.Id.Value, model.Contact.Id.Value);
-                dbo = Mapper.Map<DBOs.Notes.NoteNotification>(currentModel);
 
                 if (currentModel != null)
                 { // Update
+                    dbo = Mapper.Map<DBOs.Notes.NoteNotification>(currentModel);
                     conn.Execute("UPDATE \"note_notification\" SET \"utc_modified\"=@UtcModified, \"modified_by_user_pid\"=@ModifiedByUserPId, " +
                         "\"utc_disabled\"=null, \"disabled_by_user_pid\"=null, \"cleared\"=null WHERE \"id\"=@Id", dbo);
                     model.Created = currentModel.Created;
