@@ -24,20 +24,25 @@ Absolutely!  There is much to be done.  If you would like to assist, simply cont
 
 ## Installation
 ### Step 1 - Prerequisites
-The below are currently considered the prerequisites and this software is only tested within the Visual Studio (R) 2010 IDE with Postgres 9.2 all on Windows 8.
+The below are currently considered the prerequisites and this software is only tested within the Visual Studio (R) 2013 IDE with Postgres 9.2 all on Windows 8.
 
-* .NET Framework v4
-* MVC2
+* .NET Framework v4.5
+* MVC 5.2.3
 * Postgresql
 
 ### Step 2 - Database
 Create a database within your postgresql server.  It doesn't matter what you call it, you can change the name in the web.config disucssed later.
 
-### Step 3 - Webapp
+### Step 3 - Webapp (web.config)
 * Modify your connection string
-* Modify the DbProviderFactories as needed.  I have it commented out as I have Npgsql installed on my system (See 2.2 http://npgsql.projects.pgfoundry.org/docs/manual/UserManual.html for details on installing).
+* Modify the elements of the openLawOffice section
 
-### Step 4 - Let me know
+That should be all you must do in order to configure the system for installation.
+
+### Step 4 - Installation
+Launch the site and run the web-based installation.
+
+### Step 5 - Let me know
 If you find problems with installation, file an issue and let me know.
 
 
