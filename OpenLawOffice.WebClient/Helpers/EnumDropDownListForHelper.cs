@@ -30,6 +30,7 @@ namespace OpenLawOffice.WebClient.Helpers
 
     public static class EnumDropDownListForHelper
     {
+        [Obsolete("System.Web.MVC now has this method.")]
         public static IHtmlString EnumDropDownListFor<TModel, TEnum>(this HtmlHelper<TModel> html, Expression<Func<TModel, TEnum>> expression)
         {
             var metadata = ModelMetadata.FromLambdaExpression(expression, html.ViewData);

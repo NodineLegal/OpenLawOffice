@@ -13,3 +13,4 @@ OpenLawOffice.WinClient
 OpenLawOffice.Server
 
 /OpenLawOffice.WebClient/OpenLawOffice.WebClient.Publish.xml
+/OpenLawOffice.WebClient/Properties/PublishProfiles

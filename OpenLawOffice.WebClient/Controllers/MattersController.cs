@@ -28,6 +28,7 @@ namespace OpenLawOffice.WebClient.Controllers
     using Ionic.Zip;
     using System.Web.Profile;
     using System.Web.Security;
+    using System.Linq;
 
     [HandleError(View = "Errors/Index", Order = 10)]
     public class MattersController : BaseController

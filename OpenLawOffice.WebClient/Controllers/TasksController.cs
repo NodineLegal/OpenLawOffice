@@ -368,7 +368,13 @@ namespace OpenLawOffice.WebClient.Controllers
             ViewData["UserList"] = userList;
             ViewData["EmployeeContactList"] = employeeContactList;
 
-            return View();
+            return View(new ViewModels.Tasks.CreateTaskViewModel()
+            {
+                TaskContact = new ViewModels.Tasks.TaskAssignedContactViewModel()
+                {
+                    AssignmentType = ViewModels.AssignmentTypeViewModel.Direct
+                }
+            });
         }
 
         [HttpPost]
