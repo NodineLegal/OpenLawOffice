@@ -123,5 +123,12 @@ namespace OpenLawOffice.Data.DBOs
             }
             return null;
         }
+
+        public ConstructorInfo FindExplicitConstructor()
+        {
+            return _mappers
+                .Select(mapper => mapper.FindExplicitConstructor())
+                .FirstOrDefault(result => result != null);
+        }
     }
 }

@@ -70,7 +70,7 @@ namespace OpenLawOffice.WebClient.Controllers
             ViewData.Model = model;
             using (var writer = new StringWriter())
             {
-                var view = new WebFormView(viewPath);
+                var view = new WebFormView(ControllerContext, viewPath);
                 var vdd = new ViewDataDictionary<T>(model);
                 var viewCxt = new ViewContext(ControllerContext, view, vdd, new TempDataDictionary(), writer);
                 viewCxt.View.Render(viewCxt, writer);

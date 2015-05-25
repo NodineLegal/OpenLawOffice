@@ -1,11 +1,13 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenLawOffice.WebClient", "OpenLawOffice.WebClient.csproj", "{7AFFDB3F-08D6-40DE-BBF2-4A4158995CE6}"
-EndProject
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenLawOffice.Data", "..\OpenLawOffice.Data\OpenLawOffice.Data.csproj", "{596A8BCB-2716-47BD-82C3-5B52F0082F10}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenLawOffice.Common", "..\OpenLawOffice.Common\OpenLawOffice.Common.csproj", "{042206B5-2D13-42E0-B1B9-30254952BACA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenLawOffice.WebClient", "OpenLawOffice.WebClient.csproj", "{86B8A28F-68E0-4F8A-B96A-72B72829C494}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,10 +15,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7AFFDB3F-08D6-40DE-BBF2-4A4158995CE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7AFFDB3F-08D6-40DE-BBF2-4A4158995CE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7AFFDB3F-08D6-40DE-BBF2-4A4158995CE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7AFFDB3F-08D6-40DE-BBF2-4A4158995CE6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{596A8BCB-2716-47BD-82C3-5B52F0082F10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{596A8BCB-2716-47BD-82C3-5B52F0082F10}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{596A8BCB-2716-47BD-82C3-5B52F0082F10}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -25,6 +23,10 @@ Global
 		{042206B5-2D13-42E0-B1B9-30254952BACA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{042206B5-2D13-42E0-B1B9-30254952BACA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{042206B5-2D13-42E0-B1B9-30254952BACA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86B8A28F-68E0-4F8A-B96A-72B72829C494}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86B8A28F-68E0-4F8A-B96A-72B72829C494}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86B8A28F-68E0-4F8A-B96A-72B72829C494}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86B8A28F-68E0-4F8A-B96A-72B72829C494}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

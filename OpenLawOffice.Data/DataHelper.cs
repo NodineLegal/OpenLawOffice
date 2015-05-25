@@ -58,7 +58,8 @@ namespace OpenLawOffice.Data
 
             using (IDbConnection conn = Database.Instance.GetConnection())
             {
-                dbo = conn.Query<TDbo>(sql, anon).ToList<TDbo>();
+                IEnumerable<TDbo> asd = conn.Query<TDbo>(sql, anon);
+                dbo = asd.ToList<TDbo>();
             }
 
             if (dbo == null) return null;

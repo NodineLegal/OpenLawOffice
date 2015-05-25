@@ -1,20 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{7AFFDB3F-08D6-40DE-BBF2-4A4158995CE6}</ProjectGuid>
-    <ProjectTypeGuids>{F85E285D-A4E0-4152-9332-AB1D724D3325};{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <ProjectGuid>{86B8A28F-68E0-4F8A-B96A-72B72829C494}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OpenLawOffice.WebClient</RootNamespace>
     <AssemblyName>OpenLawOffice.WebClient</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -34,65 +39,122 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoMapper, Version=3.2.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+    <Reference Include="AutoMapper, Version=3.3.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>packages\AutoMapper.3.2.1\lib\net40\AutoMapper.dll</HintPath>
+      <HintPath>packages\AutoMapper.3.3.1\lib\net40\AutoMapper.dll</HintPath>
     </Reference>
-    <Reference Include="AutoMapper.Net4, Version=3.2.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+    <Reference Include="AutoMapper.Net4, Version=3.3.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>packages\AutoMapper.3.2.1\lib\net40\AutoMapper.Net4.dll</HintPath>
+      <HintPath>packages\AutoMapper.3.3.1\lib\net40\AutoMapper.Net4.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Logging">
+      <HintPath>packages\Common.Logging.3.1.0\lib\net40\Common.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Logging.Core">
+      <HintPath>packages\Common.Logging.Core.3.1.0\lib\net40\Common.Logging.Core.dll</HintPath>
     </Reference>
     <Reference Include="Elmah, Version=1.2.14706.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
     </Reference>
-    <Reference Include="Ionic.Zip">
-      <HintPath>packages\DotNetZip.1.9.2\lib\net20\Ionic.Zip.dll</HintPath>
+    <Reference Include="Ionic.Zip, Version=1.9.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\DotNetZip.1.9.3\lib\net20\Ionic.Zip.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Mono.Security, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.Web.Helpers">
+      <HintPath>packages\Microsoft.AspNet.WebHelpers.3.2.3\lib\net45\Microsoft.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
-      <HintPath>packages\Npgsql.2.1.3\lib\net40\Mono.Security.dll</HintPath>
+      <HintPath>packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>packages\Newtonsoft.Json.6.0.4\lib\net40\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Mono.Security, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Npgsql.2.2.5\lib\net45\Mono.Security.dll</HintPath>
     </Reference>
-    <Reference Include="Npgsql">
-      <HintPath>packages\Npgsql.2.1.3\lib\net40\Npgsql.dll</HintPath>
+    <Reference Include="Npgsql, Version=2.2.5.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Npgsql.2.2.5\lib\net45\Npgsql.dll</HintPath>
+    </Reference>
+    <Reference Include="pgProvider">
+      <HintPath>packages\pgProvider.1.8\lib\pgProvider.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
-    <Reference Include="System.ComponentModel.DataAnnotations">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
     </Reference>
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
     </Reference>
-    <Reference Include="System.Web.Mvc, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
     </Reference>
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Abstractions" />
     <Reference Include="System.Web.Routing" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.4.0.30506.0\lib\net40\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+    </Reference>
+    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.4.0.30506.0\lib\net40\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.4.0.30506.0\lib\net40\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.WebPages.OAuth, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.OAuth.2.0.30506.0\lib\net40\Microsoft.Web.WebPages.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="WebMatrix.Data, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Microsoft.AspNet.WebPages.Data.3.2.3\lib\net45\WebMatrix.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="WebMatrix.WebData, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Microsoft.AspNet.WebPages.WebData.3.2.3\lib\net45\WebMatrix.WebData.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccountMembershipService.cs" />
     <Compile Include="AccountRoleService.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
@@ -116,6 +178,7 @@
     <Compile Include="Controllers\FeesController.cs" />
     <Compile Include="Controllers\FormFieldsController.cs" />
     <Compile Include="Controllers\FormsController.cs" />
+    <Compile Include="Controllers\HandleErrorAttribute.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InstallationController.cs" />
     <Compile Include="Controllers\InvoicesController.cs" />
@@ -136,19 +199,19 @@
     <Compile Include="Controllers\TimingController.cs" />
     <Compile Include="Controllers\UserTaskSettingsController.cs" />
     <Compile Include="Controllers\VersionsController.cs" />
-    <Compile Include="Controllers\HandleErrorAttribute.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="FormsAuthenticationService.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\EnumDropDownListForHelper.cs" />
     <Compile Include="Helpers\TimeSpanHelper.cs" />
+    <Compile Include="IFormsAuthenticationService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security.cs" />
-    <Compile Include="AccountMembershipService.cs" />
     <Compile Include="ViewModels\AccountValidation.cs" />
     <Compile Include="ViewModels\Account\ChangePasswordViewModel.cs" />
     <Compile Include="ViewModels\Account\LoginViewModel.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\Account\ProfileViewModel.cs" />
     <Compile Include="ViewModels\Account\RecoveryViewModel.cs" />
     <Compile Include="ViewModels\Account\RegisterViewModel.cs" />
@@ -169,27 +232,25 @@
     <Compile Include="ViewModels\Billing\InvoiceFeeViewModel.cs" />
     <Compile Include="ViewModels\Billing\InvoiceTimeViewModel.cs" />
     <Compile Include="ViewModels\Billing\InvoiceViewModel.cs" />
+    <Compile Include="ViewModels\Contacts\ConflictViewModel.cs" />
+    <Compile Include="ViewModels\Contacts\ContactViewModel.cs" />
+    <Compile Include="ViewModels\Contacts\SelectableContactViewModel.cs" />
     <Compile Include="ViewModels\Contacts\TimesheetsViewModel.cs" />
+    <Compile Include="ViewModels\CoreViewModel.cs" />
+    <Compile Include="ViewModels\DateOnlyViewModelBase.cs" />
+    <Compile Include="ViewModels\Documents\DocumentViewModel.cs" />
+    <Compile Include="ViewModels\Documents\SelectableDocumentViewModel.cs" />
+    <Compile Include="ViewModels\Documents\VersionViewModel.cs" />
     <Compile Include="ViewModels\Events\EventAssignedContactViewModel.cs" />
     <Compile Include="ViewModels\Events\EventMatterViewModel.cs" />
     <Compile Include="ViewModels\Events\EventResponsibleUserViewModel.cs" />
     <Compile Include="ViewModels\Events\EventTagViewModel.cs" />
     <Compile Include="ViewModels\Events\EventTaskViewModel.cs" />
     <Compile Include="ViewModels\Events\EventViewModel.cs" />
-    <Compile Include="ViewModels\Contacts\ConflictViewModel.cs" />
-    <Compile Include="ViewModels\Contacts\ContactViewModel.cs" />
-    <Compile Include="ViewModels\Contacts\SelectableContactViewModel.cs" />
-    <Compile Include="ViewModels\CoreViewModel.cs" />
-    <Compile Include="ViewModels\DateOnlyViewModelBase.cs" />
-    <Compile Include="ViewModels\Documents\DocumentViewModel.cs" />
-    <Compile Include="ViewModels\Documents\SelectableDocumentViewModel.cs" />
-    <Compile Include="ViewModels\Documents\VersionViewModel.cs" />
-    <Compile Include="FormsAuthenticationService.cs" />
-    <Compile Include="ViewModels\Forms\FormViewModel.cs" />
     <Compile Include="ViewModels\Forms\FormFieldMatterViewModel.cs" />
     <Compile Include="ViewModels\Forms\FormFieldViewModel.cs" />
+    <Compile Include="ViewModels\Forms\FormViewModel.cs" />
     <Compile Include="ViewModels\Home\DashboardViewModel.cs" />
-    <Compile Include="IFormsAuthenticationService.cs" />
     <Compile Include="ViewModels\Installation\InstallationViewModel.cs" />
     <Compile Include="ViewModels\JqGridObject.cs" />
     <Compile Include="ViewModels\Matters\CreateMatterViewModel.cs" />
@@ -222,6 +283,9 @@
     <Compile Include="ViewModels\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Readme\Elmah.PostgreSQL.sql" />
+    <Content Include="App_Readme\Elmah.PostgreSQL.txt" />
+    <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\alarm-clock-pencil.png" />
     <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\alarm-clock-plus.png" />
     <Content Include="Content\fugue-icons-3.5.6\icons-shadowless\alarm-clock-select.png" />
@@ -259,6 +323,7 @@
     <Content Include="Content\images\ui-icons_f9bd01_256x240.png" />
     <Content Include="Content\jquery-ui-1.10.4.custom.css" />
     <Content Include="Content\jquery-ui-1.10.4.custom.min.css" />
+    <Content Include="Content\Site.css" />
     <Content Include="DatabaseSchemaUpdates.txt" />
     <Content Include="Global.asax" />
     <Content Include="LICENSE.txt" />
@@ -281,12 +346,12 @@
     <Content Include="Scripts\moment.min.js" />
     <Content Include="Views\Account\ChangePassword.aspx" />
     <Content Include="Views\Account\ChangePasswordSuccess.aspx" />
+    <Content Include="Views\Account\EditUser.aspx" />
     <Content Include="Views\Account\Login.aspx" />
     <Content Include="Views\Account\Profile.aspx" />
     <Content Include="Views\Account\Recovery.aspx" />
     <Content Include="Views\Account\RecoveryEmailSent.aspx" />
     <Content Include="Views\Account\Register.aspx" />
-    <Content Include="Views\Account\EditUser.aspx" />
     <Content Include="Views\Admin\ChangePassword.aspx" />
     <Content Include="Views\Admin\CreateUser.aspx" />
     <Content Include="Views\Admin\DetailsUser.aspx" />
@@ -339,8 +404,8 @@
     <Content Include="Views\EventResponsibleUsers\Delete.aspx" />
     <Content Include="Views\EventResponsibleUsers\Details.aspx" />
     <Content Include="Views\EventResponsibleUsers\Edit.aspx" />
-    <Content Include="Views\Events\Contacts.aspx" />
     <Content Include="Views\Events\ContactAgenda.aspx" />
+    <Content Include="Views\Events\Contacts.aspx" />
     <Content Include="Views\Events\Create.aspx" />
     <Content Include="Views\Events\Details.aspx" />
     <Content Include="Views\Events\Edit.aspx" />
@@ -375,31 +440,16 @@
     <Content Include="Views\Forms\Details.aspx" />
     <Content Include="Views\Forms\Edit.aspx" />
     <Content Include="Views\Forms\Index.aspx" />
+    <Content Include="Views\Home\About.aspx" />
+    <Content Include="Views\Home\Index.aspx" />
+    <Content Include="Views\Installation\Complete.aspx" />
+    <Content Include="Views\Installation\Index.aspx" />
+    <Content Include="Views\Installation\MissingDbInstallScript.aspx" />
     <Content Include="Views\Invoices\GroupDetails.aspx" />
     <Content Include="Views\Invoices\GroupPrint_Full.aspx" />
     <Content Include="Views\Invoices\GroupPrint_Summary.aspx" />
     <Content Include="Views\Invoices\MatterDetails.aspx" />
     <Content Include="Views\Invoices\MatterPrint.aspx" />
-    <Content Include="Views\Matters\Events.aspx" />
-    <Content Include="Views\Matters\Expenses.aspx" />
-    <Content Include="Views\Matters\Fees.aspx" />
-    <Content Include="Views\Matters\FormFields.aspx" />
-    <Content Include="Views\Matters\Invoices.aspx" />
-    <Content Include="Views\Matters\Timesheet.aspx" />
-    <Content Include="Views\Matters\Timesheet_Print3rdParty.aspx" />
-    <Content Include="Views\Matters\Timesheet_PrintClient.aspx" />
-    <Content Include="Views\Matters\Timesheet_PrintInternal.aspx" />
-    <Content Include="Views\MatterTypes\Create.aspx" />
-    <Content Include="Views\MatterTypes\Delete.aspx" />
-    <Content Include="Views\MatterTypes\Details.aspx" />
-    <Content Include="Views\MatterTypes\Edit.aspx" />
-    <Content Include="Views\MatterTypes\Index.aspx" />
-    <Content Include="Views\Shared\CoreDetailsView.ascx" />
-    <Content Include="Views\Shared\Errors\Index.aspx" />
-    <Content Include="Views\Shared\Errors\NotFound.aspx" />
-    <Content Include="Views\Installation\Complete.aspx" />
-    <Content Include="Views\Installation\Index.aspx" />
-    <Content Include="Views\Installation\MissingDbInstallScript.aspx" />
     <Content Include="Views\MatterContact\AssignContact.aspx" />
     <Content Include="Views\MatterContact\Delete.aspx" />
     <Content Include="Views\MatterContact\Details.aspx" />
@@ -410,16 +460,30 @@
     <Content Include="Views\Matters\Details.aspx" />
     <Content Include="Views\Matters\Documents.aspx" />
     <Content Include="Views\Matters\Edit.aspx" />
+    <Content Include="Views\Matters\Events.aspx" />
+    <Content Include="Views\Matters\Expenses.aspx" />
+    <Content Include="Views\Matters\Fees.aspx" />
+    <Content Include="Views\Matters\FormFields.aspx" />
     <Content Include="Views\Matters\Index.aspx" />
+    <Content Include="Views\Matters\Invoices.aspx" />
     <Content Include="Views\Matters\Notes.aspx" />
     <Content Include="Views\Matters\ResponsibleUsers.aspx" />
     <Content Include="Views\Matters\Tags.aspx" />
     <Content Include="Views\Matters\Tasks.aspx" />
     <Content Include="Views\Matters\Time.aspx" />
+    <Content Include="Views\Matters\Timesheet.aspx" />
+    <Content Include="Views\Matters\Timesheet_Print3rdParty.aspx" />
+    <Content Include="Views\Matters\Timesheet_PrintClient.aspx" />
+    <Content Include="Views\Matters\Timesheet_PrintInternal.aspx" />
     <Content Include="Views\MatterTags\Create.aspx" />
     <Content Include="Views\MatterTags\Delete.aspx" />
     <Content Include="Views\MatterTags\Details.aspx" />
     <Content Include="Views\MatterTags\Edit.aspx" />
+    <Content Include="Views\MatterTypes\Create.aspx" />
+    <Content Include="Views\MatterTypes\Delete.aspx" />
+    <Content Include="Views\MatterTypes\Details.aspx" />
+    <Content Include="Views\MatterTypes\Edit.aspx" />
+    <Content Include="Views\MatterTypes\Index.aspx" />
     <Content Include="Views\Notes\Create.aspx" />
     <Content Include="Views\Notes\Details.aspx" />
     <Content Include="Views\Notes\Edit.aspx" />
@@ -428,10 +492,13 @@
     <Content Include="Views\ResponsibleUsers\Details.aspx" />
     <Content Include="Views\ResponsibleUsers\Edit.aspx" />
     <Content Include="Views\Search\Tags.aspx" />
+    <Content Include="Views\Shared\CoreDetailsView.ascx" />
     <Content Include="Views\Shared\DisplayTemplates\PermissionViewModel.ascx" />
     <Content Include="Views\Shared\EditorTemplates\PermissionViewModel.ascx" />
-    <Content Include="Views\Shared\InsufficientRights.aspx" />
+    <Content Include="Views\Shared\Errors\Index.aspx" />
     <Content Include="Views\Shared\Errors\InvalidRequest.aspx" />
+    <Content Include="Views\Shared\Errors\NotFound.aspx" />
+    <Content Include="Views\Shared\InsufficientRights.aspx" />
     <Content Include="Views\Shared\LeftMenu.ascx" />
     <Content Include="Views\TaskAssignedContacts\AssignContact.aspx" />
     <Content Include="Views\TaskAssignedContacts\Delete.aspx" />
@@ -475,65 +542,59 @@
     <Content Include="Views\Versions\Details.aspx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Site.css" />
-    <Content Include="Views\Home\About.aspx" />
-    <Content Include="Views\Home\Index.aspx" />
-    <Content Include="Views\Shared\Site.Master" />
-    <Content Include="Views\Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\OpenLawOffice.Common\OpenLawOffice.Common.csproj">
-      <Project>{042206B5-2D13-42E0-B1B9-30254952BACA}</Project>
+      <Project>{042206b5-2d13-42e0-b1b9-30254952baca}</Project>
       <Name>OpenLawOffice.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\OpenLawOffice.Data\OpenLawOffice.Data.csproj">
-      <Project>{596A8BCB-2716-47BD-82C3-5B52F0082F10}</Project>
+      <Project>{596a8bcb-2716-47bd-82c3-5b52f0082f10}</Project>
       <Name>OpenLawOffice.Data</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
+    <Content Include="Scripts\jui_dropdown-1.0.4\MIT_LICENSE" />
     <Content Include="Views\Shared\Calendar.Master" />
-  </ItemGroup>
-  <ItemGroup>
+    <Content Include="Views\Shared\Site.Master" />
     <Content Include="Views\Shared\SiteNoRightBar.Master" />
+    <Content Include="Views\Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Scripts\jui_dropdown-1.0.4\MIT_LICENSE" />
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target> -->
-  <Target Name="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
-    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(ProjectDir)" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
   </Target>
   <ProjectExtensions>
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>False</UseIIS>
-          <AutoAssignPort>False</AutoAssignPort>
-          <DevelopmentServerPort>62914</DevelopmentServerPort>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>47265</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>https://localhost:44301/</IISUrl>
+          <IISUrl>http://localhost:47265/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
@@ -543,5 +604,11 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-  <Import Project="packages\AutoMapper.3.2.1\tools\AutoMapper.targets" Condition="Exists('packages\AutoMapper.3.2.1\tools\AutoMapper.targets')" />
+  <Import Project="packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
 </Project>

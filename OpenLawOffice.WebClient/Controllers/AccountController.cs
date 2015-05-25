@@ -52,7 +52,7 @@ namespace OpenLawOffice.WebClient.Controllers
             {
                 users = Data.Account.Users.List();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return RedirectToAction("Index", "Installation");
             }
