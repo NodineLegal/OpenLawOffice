@@ -460,6 +460,7 @@ namespace OpenLawOffice.WebClient.Controllers
                     List<ViewModels.Contacts.ContactViewModel> employeeContactList;
                     List<ViewModels.Billing.BillingRateViewModel> billingRateList;
                     List<ViewModels.Billing.BillingGroupViewModel> billingGroupList;
+                    List<ViewModels.Matters.MatterTypeViewModel> matterTypeList;
 
                     possibleDuplicateList.ForEach(x =>
                     {
@@ -470,6 +471,7 @@ namespace OpenLawOffice.WebClient.Controllers
                     employeeContactList = new List<ViewModels.Contacts.ContactViewModel>();
                     billingRateList = new List<ViewModels.Billing.BillingRateViewModel>();
                     billingGroupList = new List<ViewModels.Billing.BillingGroupViewModel>();
+                    matterTypeList = new List<ViewModels.Matters.MatterTypeViewModel>();
 
                     Data.Account.Users.List().ForEach(x =>
                     {
@@ -495,12 +497,21 @@ namespace OpenLawOffice.WebClient.Controllers
                         billingGroupList.Add(vm);
                     });
 
+                    Data.Matters.MatterType.List().ForEach(x =>
+                    {
+                        ViewModels.Matters.MatterTypeViewModel vm = Mapper.Map<ViewModels.Matters.MatterTypeViewModel>(x);
+                        matterTypeList.Add(vm);
+                    });
+
                     ViewData["ErrorMessage"] = "Matter possibly conflicts with the following existing matters:<ul>" + errorListString + "</ul>Click Save again to create the matter anyway.";
                     ViewData["OverrideConflict"] = "True";
+
                     ViewData["UserList"] = userList;
                     ViewData["EmployeeContactList"] = employeeContactList;
                     ViewData["BillingRateList"] = billingRateList;
-                    ViewData["BillingGroupList"] = billingGroupList; 
+                    ViewData["BillingGroupList"] = billingGroupList;
+                    ViewData["MatterTypeList"] = matterTypeList;
+
                     return View(viewModel);
                 }
             }
