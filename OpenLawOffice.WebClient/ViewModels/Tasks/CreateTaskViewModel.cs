@@ -12,5 +12,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Tasks
         public Tasks.TaskResponsibleUserViewModel ResponsibleUser { get; set; }
 
         public Tasks.TaskAssignedContactViewModel TaskContact { get; set; }
+
+        public List<TaskTemplateViewModel> TaskTemplates { get; set; }
     }
 }

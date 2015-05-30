@@ -1,9 +1,44 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Tasks.CreateTaskViewModel>" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" 
+    Inherits="System.Web.Mvc.ViewPage<OpenLawOffice.WebClient.ViewModels.Tasks.CreateTaskViewModel>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
     Create Task
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
+    <script type="text/javascript" src="/Scripts/moment.min.js"></script>
+
+    <script language="javascript">
+        var templates = <%= ViewData["TemplateJson"] %>;
+        function taskTemplateClick(id) {
+            for (var i = 0; i < templates.length; i++) {
+                if (templates[i].Id == id) {
+                    $("#Task_Title").val(templates[i].Title);
+                    $("#Task_Description").val(templates[i].Description);
+                    if (templates[i].Active)
+                        $("#Task_Active").prop('checked',true);
+                    else
+                        $("#Task_Active").prop('checked',false);
+                    if (templates[i].ProjectedStart != null)
+                        $("#Task_ProjectedStart").val(moment(templates[i].ProjectedStart).format("M/D/YYYY h:mm:ss A"));
+                    else 
+                        $("#Task_ProjectedStart").val(null);
+                    if (templates[i].DueDate != null)
+                        $("#Task_DueDate").val(moment(templates[i].DueDate).format("M/D/YYYY h:mm:ss A"));
+                    else 
+                        $("#Task_DueDate").val(null);
+                    if (templates[i].ProjectedEnd != null)
+                        $("#Task_ProjectedEnd").val(moment(templates[i].ProjectedEnd).format("M/D/YYYY h:mm:ss A"));
+                    else 
+                        $("#Task_ProjectedEnd").val(null);
+                    if (templates[i].ActualEnd != null)
+                        $("#Task_ActualEnd").val(moment(templates[i].ActualEnd).format("M/D/YYYY h:mm:ss A"));
+                    else 
+                        $("#Task_ActualEnd").val(null);
+                }
+            }
+            return false;
+        }
+    </script>
             
     <div id="roadmap">
         <div class="zero">Matter: [<%: Html.ActionLink((string)ViewData["Matter"], "Details", "Matters", new { id = ViewData["MatterId"] }, null) %>]</div>
@@ -22,6 +57,18 @@
             <td class="display-field">
                 <%: Html.TextBoxFor(model => model.Task.Title, new { @style = "width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Task.Title)%>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <% Model.TaskTemplates.ForEach(x =>
+                    {
+                        // Needs to build to the json being built to hold values
+                        %> 
+                [<a href="javascript:taskTemplateClick('<%: x.Id.Value %>')"><%: x.TaskTemplateTitle %></a>]
+                <%
+                    }); %>
             </td>
         </tr>
         <tr>

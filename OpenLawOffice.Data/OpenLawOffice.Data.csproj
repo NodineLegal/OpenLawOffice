@@ -103,6 +103,7 @@
     <Compile Include="DBOs\Forms\FormFieldMatter.cs" />
     <Compile Include="DBOs\Matters\MatterType.cs" />
     <Compile Include="DBOs\Notes\NoteNotification.cs" />
+    <Compile Include="DBOs\Tasks\TaskTemplate.cs" />
     <Compile Include="Events\Event.cs" />
     <Compile Include="DataHelper.cs" />
     <Compile Include="Contacts\Contact.cs" />
@@ -180,6 +181,7 @@
     <Compile Include="Tasks\TaskMatter.cs" />
     <Compile Include="Tasks\TaskResponsibleUser.cs" />
     <Compile Include="Tasks\TaskTag.cs" />
+    <Compile Include="Tasks\TaskTemplate.cs" />
     <Compile Include="Tasks\TaskTime.cs" />
     <Compile Include="Timing\Time.cs" />
   </ItemGroup>

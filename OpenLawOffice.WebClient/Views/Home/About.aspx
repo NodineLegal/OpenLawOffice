@@ -11,7 +11,7 @@
         <br /><br />
         <h4>Credits:</h4>
         Creator: <a href="http://nodinelegal.com">Lucas J. Nodine</a><br />
-        Framework: <a href="http://www.microsoft.com/net">Microsoft .NET Framework (using MVC2)</a><br />
+        Framework: <a href="http://www.microsoft.com/net">Microsoft .NET Framework (using MVC5)</a><br />
         Database: <a href="http://www.postgresql.org/">PostgreSQL</a><br />
         Database ORM: <a href="https://code.google.com/p/dapper-dot-net/">Dapper-dot-net</a><br />
         Database Provider: <a href="http://npgsql.projects.pgfoundry.org/index.html">Npgsql</a><br />

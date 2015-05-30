@@ -1,4 +1,36 @@
-﻿5/24/2015
+﻿5/25/2015
+-- Table: task_template
+
+-- DROP TABLE task_template;
+
+CREATE TABLE task_template
+(
+-- Inherited from table core:  created_by_user_pid uuid NOT NULL,
+-- Inherited from table core:  modified_by_user_pid uuid NOT NULL,
+-- Inherited from table core:  disabled_by_user_pid uuid,
+-- Inherited from table core:  utc_created timestamp without time zone NOT NULL,
+-- Inherited from table core:  utc_modified timestamp without time zone NOT NULL,
+-- Inherited from table core:  utc_disabled timestamp without time zone,
+  id serial NOT NULL,
+  task_template_title text NOT NULL,
+  title text,
+  description text,
+  active boolean NOT NULL,
+  projected_start text,
+  due_date text,
+  actual_end text,
+  projected_end text,
+  CONSTRAINT task_template_pkey PRIMARY KEY (id)
+)
+INHERITS (core)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE task_template
+  OWNER TO postgres;
+
+
+5/24/2015
 -- Table: note_notification
 
 -- DROP TABLE note_notification;

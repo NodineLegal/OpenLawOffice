@@ -122,6 +122,7 @@
     <Compile Include="Models\Tasks\TaskMatter.cs" />
     <Compile Include="Models\Tasks\TaskResponsibleUser.cs" />
     <Compile Include="Models\Tasks\TaskTag.cs" />
+    <Compile Include="Models\Tasks\TaskTemplate.cs" />
     <Compile Include="Models\Tasks\TaskTime.cs" />
     <Compile Include="Models\Timing\Time.cs" />
     <Compile Include="Net\AuthPackage.cs" />

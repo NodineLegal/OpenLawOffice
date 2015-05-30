@@ -26,6 +26,8 @@
     <ul>
         <li>
             <%: Html.ActionLink("Types", "", "MatterTypes")%> <%: Html.ActionLink("New Type", "Create", "MatterTypes", null, new { @class = "btn-plus" })%></li>
+        <li>
+            <%: Html.ActionLink("Task Templates", "", "TaskTemplates")%> <%: Html.ActionLink("New Template", "Create", "TaskTemplates", null, new { @class = "btn-plus" })%></li>
     </ul>
     <%--<li>
         Calendar</li>
@@ -51,7 +53,6 @@
     <ul>
         <li>
             <%: Html.ActionLink("Tags", "Tags", "Search")%></li>
-        <li>Document Text</li>
     </ul>
     <li><%: Html.ActionLink("Billing", "", "Billing")%> </li>
     <ul>

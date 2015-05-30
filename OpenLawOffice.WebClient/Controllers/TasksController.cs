@@ -345,9 +345,11 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult Create()
         {
+            ViewModels.Tasks.CreateTaskViewModel viewModel;
             Common.Models.Matters.Matter matter;
             List<ViewModels.Account.UsersViewModel> userList;
             List<ViewModels.Contacts.ContactViewModel> employeeContactList;
+            Newtonsoft.Json.Linq.JArray taskTemplates;
 
             userList = new List<ViewModels.Account.UsersViewModel>();
             employeeContactList = new List<ViewModels.Contacts.ContactViewModel>();
@@ -362,19 +364,75 @@ namespace OpenLawOffice.WebClient.Controllers
                 employeeContactList.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(x));
             });
 
+            viewModel = new ViewModels.Tasks.CreateTaskViewModel();
+            viewModel.TaskTemplates = new List<ViewModels.Tasks.TaskTemplateViewModel>();
+            taskTemplates = new Newtonsoft.Json.Linq.JArray();
+            Data.Tasks.TaskTemplate.List().ForEach(x =>
+            {
+                viewModel.TaskTemplates.Add(Mapper.Map<ViewModels.Tasks.TaskTemplateViewModel>(x));
+                Newtonsoft.Json.Linq.JObject template = new Newtonsoft.Json.Linq.JObject();
+                template.Add(new Newtonsoft.Json.Linq.JProperty("Id", x.Id.Value));
+                template.Add(new Newtonsoft.Json.Linq.JProperty("TaskTemplateTitle", x.TaskTemplateTitle));
+                template.Add(new Newtonsoft.Json.Linq.JProperty("Title", x.Title));
+                template.Add(new Newtonsoft.Json.Linq.JProperty("Description", x.Description));
+                template.Add(new Newtonsoft.Json.Linq.JProperty("ProjectedStart", DTProp(x.ProjectedStart)));
+                template.Add(new Newtonsoft.Json.Linq.JProperty("DueDate", DTProp(x.DueDate)));
+                template.Add(new Newtonsoft.Json.Linq.JProperty("ProjectedEnd", DTProp(x.ProjectedEnd)));
+                template.Add(new Newtonsoft.Json.Linq.JProperty("ActualEnd", DTProp(x.ActualEnd)));
+                template.Add(new Newtonsoft.Json.Linq.JProperty("Active", x.Active));
+                taskTemplates.Add(template);
+            });
+
             matter = Data.Matters.Matter.Get(Guid.Parse(Request["MatterId"]));
             ViewData["MatterId"] = matter.Id.Value;
             ViewData["Matter"] = matter.Title;
             ViewData["UserList"] = userList;
             ViewData["EmployeeContactList"] = employeeContactList;
+            ViewData["TemplateJson"] = taskTemplates.ToString();
 
             return View(new ViewModels.Tasks.CreateTaskViewModel()
             {
+                TaskTemplates = viewModel.TaskTemplates,
                 TaskContact = new ViewModels.Tasks.TaskAssignedContactViewModel()
                 {
                     AssignmentType = ViewModels.AssignmentTypeViewModel.Direct
                 }
             });
+        }
+
+        private string DTProp(string val)
+        {
+            if (string.IsNullOrEmpty(val)) return null;
+
+            if (val.Contains("[NOW]"))
+                val = val.Replace("[NOW]", DateTime.Now.ToString("M/d/yyyy h:mm tt"));
+            if (val.Contains("[DATE]"))
+                val = val.Replace("[DATE]", DateTime.Now.ToString("M/d/yyyy"));
+            if (val.Contains("[DATE+"))
+            {
+                int num = -1;
+                try
+                {
+                    // abc[DATE+12]asd
+                    string a = val.Substring(0, val.IndexOf("[DATE+"));
+                    // a=abc
+                    string b = val.Substring(val.IndexOf("[DATE+") + 6);
+                    // b=12]asd
+                    string c = b.Substring(0, b.IndexOf("]"));
+                    // c=12
+                    string d = b.Substring(b.IndexOf("]") + 1);
+                    // d=asd
+                    num = int.Parse(c);
+                    val = a + DateTime.Now.AddDays(num).ToString("M/d/yyyy") + d;
+                }
+                catch
+                {
+                    num = -1;
+                    val = "Invalid Format";
+                }
+            }
+
+            return val;
         }
 
         [HttpPost]
