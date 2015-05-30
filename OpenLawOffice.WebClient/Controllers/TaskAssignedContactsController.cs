@@ -73,6 +73,7 @@ namespace OpenLawOffice.WebClient.Controllers
             vm = new ViewModels.Tasks.TaskAssignedContactViewModel();
             vm.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(task);
             vm.Contact = Mapper.Map<ViewModels.Contacts.ContactViewModel>(Data.Contacts.Contact.Get(id));
+            vm.AssignmentType = ViewModels.AssignmentTypeViewModel.Delegated;
 
             ViewData["Task"] = task.Title;
             ViewData["TaskId"] = task.Id;
