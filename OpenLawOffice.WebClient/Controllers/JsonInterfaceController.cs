@@ -87,12 +87,14 @@ namespace OpenLawOffice.WebClient.Controllers
             {
                 response.Successful = false;
                 response.Error = "Invalid Token";
+                return Json(response, JsonRequestBehavior.AllowGet);
             }
 
             if (!VerifyToken(token))
             {
                 response.Successful = false;
                 response.Error = "Invalid Token";
+                return Json(response, JsonRequestBehavior.AllowGet);
             }
 
             // Close the session here
@@ -116,12 +118,16 @@ namespace OpenLawOffice.WebClient.Controllers
             {
                 response.Successful = false;
                 response.Error = "Invalid Token";
+                response.ResponseSent = DateTime.Now;
+                return Json(response, JsonRequestBehavior.AllowGet);
             }
 
             if (!VerifyToken(token))
             {
                 response.Successful = false;
                 response.Error = "Invalid Token";
+                response.ResponseSent = DateTime.Now;
+                return Json(response, JsonRequestBehavior.AllowGet);
             }
 
             response.Successful = true;
@@ -142,12 +148,16 @@ namespace OpenLawOffice.WebClient.Controllers
             {
                 response.Successful = false;
                 response.Error = "Invalid Token";
+                response.ResponseSent = DateTime.Now;
+                return Json(response, JsonRequestBehavior.AllowGet);
             }
 
             if (!VerifyToken(token))
             {
                 response.Successful = false;
                 response.Error = "Invalid Token";
+                response.ResponseSent = DateTime.Now;
+                return Json(response, JsonRequestBehavior.AllowGet);
             }
 
             response.Successful = true;
