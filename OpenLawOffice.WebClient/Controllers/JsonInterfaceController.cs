@@ -190,6 +190,36 @@ namespace OpenLawOffice.WebClient.Controllers
             return File(model.Path, Common.Utilities.GetMimeType(ext), model.Title + ext);
         }
 
+        public ActionResult GetFormDataForMatter(Guid id)
+        {
+            Guid token;
+            Common.Net.Response<List<Common.Models.Forms.FormFieldMatter>> response
+                = new Common.Net.Response<List<Common.Models.Forms.FormFieldMatter>>();
+
+            response.RequestReceived = DateTime.Now;
+
+            if ((token = GetToken(Request)) == Guid.Empty)
+            {
+                response.Successful = false;
+                response.Error = "Invalid Token";
+                response.ResponseSent = DateTime.Now;
+                return Json(response, JsonRequestBehavior.AllowGet);
+            }
+
+            if (!VerifyToken(token))
+            {
+                response.Successful = false;
+                response.Error = "Invalid Token";
+                response.ResponseSent = DateTime.Now;
+                return Json(response, JsonRequestBehavior.AllowGet);
+            }
+
+            response.Successful = true;
+            response.Package = Data.Forms.FormFieldMatter.ListForMatter(id);
+            response.ResponseSent = DateTime.Now;
+            return Json(response, JsonRequestBehavior.AllowGet);
+        }
+
         private Guid GetToken(HttpRequestBase request)
         {
             Guid token;
