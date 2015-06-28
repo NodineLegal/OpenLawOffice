@@ -59,7 +59,7 @@
                 <%: item.Details %>
             </td>
             <td>
-                <%: Html.ActionLink("Edit", "Edit", "Expenses", new { id = item.Id }, new { @class = "btn-edit", title = "Edit" })%>
+                <%: Html.ActionLink("Edit", "Edit", "Fees", new { id = item.Id }, new { @class = "btn-edit", title = "Edit" })%>
             </td>
         </tr>
         <% } %>
