@@ -68,6 +68,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Encryption.cs" />
     <Compile Include="FileSystem\OloFile.cs" />
     <Compile Include="FileSystem\OloMatter.cs" />
     <Compile Include="FileSystem\OloMatterDirectory.cs" />

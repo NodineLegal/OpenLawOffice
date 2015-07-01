@@ -30,12 +30,15 @@ namespace OpenLawOffice.WebClient.Controllers
 
             response.RequestReceived = DateTime.Now;
 
+            Common.Models.Account.Users user = Data.Account.Users.Get(request.Package.Username);
+            string hashFromDb = Security.ClientHashPassword(user.Password);
+            string hashFromWeb = Security.ClientHashPassword(request.Package.Password);
+            
             if (MembershipService.ValidateUser(request.Package.Username, request.Package.Password))
             {
                 Common.Models.External.ExternalSession session =
                     Data.External.ExternalSession.Get(request.Package.AppName, request.Package.MachineId, request.Package.Username);
-                Common.Models.Account.Users user =
-                    Data.Account.Users.Get(request.Package.Username);
+                user = Data.Account.Users.Get(request.Package.Username);
 
                 if (session == null)
                 { // create
