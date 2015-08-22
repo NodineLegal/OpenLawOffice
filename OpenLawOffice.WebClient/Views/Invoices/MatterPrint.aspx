@@ -180,7 +180,7 @@
                         %>
                         <td><%: item.Fee.Incurred.ToShortDateString() %></td>
                         <td><%: item.Fee.Details %></td>
-                        <td style="text-align: center;"><%: item.Fee.Amount.ToString("C") %></td>
+                        <td style="text-align: center;"><%: item.Amount.ToString("C") %></td>
                     </tr>
                 <% }
                     altRow = !altRow;

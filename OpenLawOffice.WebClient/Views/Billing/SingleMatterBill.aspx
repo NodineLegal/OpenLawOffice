@@ -6,7 +6,8 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-
+    
+    <script type="text/javascript" src="/Scripts/moment.min.js"></script>
     <script>
         var vars = [], hash;
         var q = document.URL.split('?')[1];
@@ -56,6 +57,36 @@
             $("#StopDate").change(function () {
                 go();
             });
+            $("#TaxAmount").change(function () {
+                updateTotals();
+            });
+
+            var i = 0;
+            var obj;
+            while ((obj = $("#Expenses_" + i + "__Amount")).length > 0) {
+                obj.change(function (data) {
+                    $("#expenseTotal").text("$" + sumAllExpenses());
+                    updateTotals();
+                });
+                i++;
+            }
+            i = 0;
+            while ((obj = $("#Fees_" + i + "__Amount")).length > 0) {
+                obj.change(function (data) {
+                    $("#feeTotal").text("$" + sumAllFees());
+                    updateTotals();
+                });
+                i++;
+            }
+            i = 0;
+            while ((obj = $("#Times_" + i + "__PricePerHour")).length > 0) {
+                obj.change(function (data) {
+                    $("#timeTotal").text("$" + sumAllTimes());
+                    updateTotals();
+                });
+                i++;
+            }
+           
         });
         function go() {
             var href;
@@ -77,6 +108,43 @@
 
             window.location.href = href;
         };
+        function sumAllExpenses() {
+            var sum = 0;
+            var i = 0;
+            var obj;
+            while ((obj = $("#Expenses_" + i + "__Amount")).length > 0) {
+                sum += Number(obj.val());
+                i++;
+            }
+            return sum;
+        }
+        function sumAllFees() {
+            var sum = 0;
+            var i = 0;
+            var obj;
+            while ((obj = $("#Fees_" + i + "__Amount")).length > 0) {
+                sum += Number(obj.val());
+                i++;
+            }
+            return sum;
+        }
+        function sumAllTimes() {
+            var sum = 0;
+            var i = 0;
+            var dur, pph;
+            while ((dur = $("#Times_" + i + "__Duration")).length > 0) {
+                pph = $("#Times_" + i + "__PricePerHour");
+                sum += (moment.duration(dur.val()).asMinutes() / 60) * Number(pph.val());
+                i++;
+            }
+            return sum;
+        }
+        function updateTotals() {
+            var taxAmount = Number($("#TaxAmount").val());
+            var subtotal = sumAllExpenses() + sumAllFees() + sumAllTimes();
+            $("#subtotal").text(subtotal);
+            $("#total").text(subtotal + taxAmount);
+        }
     </script>
     
     <% using (Html.BeginForm())
@@ -220,11 +288,13 @@
                 <tbody>
                 <%
                     bool altRow = true;
+                    decimal expSum = 0;
                     for (int i=0; i<Model.Expenses.Count; i++)
                     {
                         object o = ViewContext.ViewData.ModelState;
                         OpenLawOffice.WebClient.ViewModels.Billing.InvoiceExpenseViewModel item = Model.Expenses[i];
                         altRow = !altRow;
+                        expSum += item.Amount;
                         if (altRow)
                         { %> <tr class="tr_alternate"> <% }
                         else
@@ -243,10 +313,25 @@
                             { %> <tr class="tr_alternate"> <% }
                             else
                             { %> <tr> <% }
-                        %>
-                        <td colspan="4" style="text-align: center;">
-                            No Expenses
-                        </td>
+                            %>
+                            <td colspan="4" style="text-align: center;">
+                                No Expenses
+                            </td>
+                        </tr>
+                    <% } 
+                        else {
+                            altRow = !altRow;
+                            if (altRow)
+                            { %> <tr class="tr_alternate"> <% }
+                            else
+                            { %> <tr> <% }
+                            %>
+                            <td colspan="3" style="text-align: right; font-weight: bold;">
+                                Total:
+                            </td>
+                            <td style="text-align: center; font-weight: bold;">
+                                <span id="expenseTotal"><%: expSum.ToString("C") %></span>
+                            </td>
                         </tr>
                     <% } %>
                 </tbody>
@@ -277,11 +362,13 @@
                 </thead>
                 <tbody>
                 <%
+                    decimal feeSum = 0;
                     altRow = true;
                     for (int i=0; i<Model.Fees.Count; i++)
                     {
                         OpenLawOffice.WebClient.ViewModels.Billing.InvoiceFeeViewModel item = Model.Fees[i];
                         altRow = !altRow;
+                        feeSum += item.Amount;
                         if (altRow)
                         { %> <tr class="tr_alternate"> <% }
                         else
@@ -303,6 +390,21 @@
                         <td colspan="3" style="text-align: center;">
                             No Fees
                         </td>
+                        </tr>
+                    <% } 
+                        else {
+                            altRow = !altRow;
+                            if (altRow)
+                            { %> <tr class="tr_alternate"> <% }
+                            else
+                            { %> <tr> <% }
+                            %>
+                            <td colspan="2" style="text-align: right; font-weight: bold;">
+                                Total:
+                            </td>
+                            <td style="text-align: center; font-weight: bold;">
+                                <span id="feeTotal"><%: feeSum.ToString("C") %></span>
+                            </td>
                         </tr>
                     <% } %>
                 </tbody>
@@ -338,10 +440,12 @@
                 <tbody>
                 <%
                     altRow = true;
+                    decimal timeSum = 0;
                     for (int i=0; i<Model.Times.Count; i++)
                     {
                         OpenLawOffice.WebClient.ViewModels.Billing.InvoiceTimeViewModel item = Model.Times[i];
-                        altRow = !altRow;
+                        altRow = !altRow; 
+                        timeSum += (decimal)item.Duration.TotalHours * item.PricePerHour;                        
                         if (altRow)
                         { %> <tr class="tr_alternate"> <% }
                         else
@@ -365,15 +469,48 @@
                             No Time
                         </td>
                         </tr>
+                    <% } 
+                        else {
+                            altRow = !altRow;
+                            if (altRow)
+                            { %> <tr class="tr_alternate"> <% }
+                            else
+                            { %> <tr> <% }
+                            %>
+                            <td colspan="3" style="text-align: right; font-weight: bold;">
+                                Total:
+                            </td>
+                            <td style="text-align: center; font-weight: bold;">
+                                <span id="timeTotal"><%: timeSum.ToString("C") %></span>
+                            </td>
+                        </tr>
                     <% } %>
                 </tbody>
             </table>
         </div>
         
-        <div style="display: block; text-align: right; padding-top: 20px; padding-right: 20px; font-size: 10px;">
-            Tax Amount: $<%: Html.TextBoxFor(x => x.TaxAmount, new { @style = "width: 75px; font-size: 11px;" })%>
+        <%
+           decimal subtotal = expSum + feeSum + timeSum;
+           decimal total = subtotal;
+             %>
+
+        <div style="display: block; text-align: right; padding-top: 20px; padding-right: 20px; height: 100px; font-size: 10px;">
+            <table border="0" cellpadding="0" cellspacing="0" style="float: right; border: none;">
+                <tr>
+                    <td>Subtotal:</td>
+                    <td id="subtotal"><%: subtotal.ToString("C") %></td>
+                </tr>
+                <tr>
+                    <td>Tax Amount:</td>
+                    <td>$<%: Html.TextBoxFor(x => x.TaxAmount, new { @style = "width: 75px; font-size: 11px;" })%></td>
+                </tr>
+                <tr style="font-weight: bold;">
+                    <td>Total Due:</td>
+                    <td id="total"><%: total.ToString("C") %></td>
+                </tr>
+            </table>
         </div>
-        
+
         <div style="display: block; text-align: right; padding-top: 20px; padding-right: 20px;">
             <input type="submit" value="Save" style="width: 100px;" />
         </div>
