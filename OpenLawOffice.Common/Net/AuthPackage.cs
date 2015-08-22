@@ -8,6 +8,7 @@ namespace OpenLawOffice.Common.Net
         public string AppName { get; set; }
         public Guid MachineId { get; set; }
         public string Username { get; set; }
+        public string IV { get; set; }
         public string Password { get; set; }
     }
 }

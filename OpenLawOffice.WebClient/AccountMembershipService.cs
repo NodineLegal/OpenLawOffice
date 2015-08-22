@@ -128,7 +128,7 @@ namespace OpenLawOffice.WebClient
         public bool ValidateUser(string username, string password)
         {
             if (String.IsNullOrEmpty(username)) throw new ArgumentException("Value cannot be null or empty.", "username");
-            if (String.IsNullOrEmpty(password)) throw new ArgumentException("Value cannot be null or empty.", "password");
+            //if (String.IsNullOrEmpty(password)) throw new ArgumentException("Value cannot be null or empty.", "password");
             
             return _provider.ValidateUser(username, password);
         }

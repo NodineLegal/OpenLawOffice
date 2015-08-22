@@ -201,6 +201,7 @@ namespace OpenLawOffice.WebClient.Controllers
         public ActionResult Profile()
         {
             int? contactId = null;
+            string externalAppKey = null;
             dynamic profile;
             List<ViewModels.Contacts.ContactViewModel> employeeList;
             
@@ -209,6 +210,18 @@ namespace OpenLawOffice.WebClient.Controllers
             if (profile != null && profile.ContactId != null 
                 && !string.IsNullOrEmpty(profile.ContactId))
                 contactId = int.Parse(profile.ContactId);
+
+            if (profile != null && profile.ExternalAppKey != null
+                && !string.IsNullOrEmpty(profile.ExternalAppKey))
+                externalAppKey = profile.ExternalAppKey;
+
+            if (string.IsNullOrEmpty(externalAppKey) || 
+                (Request["newAppKey"] != null && Request["newAppKey"] == "true"))
+            {
+                Common.Encryption enc = new Common.Encryption();
+                enc.GenerateKey();
+                externalAppKey = enc.Key;
+            }
 
             employeeList = new List<ViewModels.Contacts.ContactViewModel>();
             employeeList.Add(new ViewModels.Contacts.ContactViewModel()
@@ -224,7 +237,7 @@ namespace OpenLawOffice.WebClient.Controllers
 
             ViewData["EmployeeContactList"] = employeeList;
 
-            return View(new ViewModels.Account.ProfileViewModel() { ContactId = contactId });
+            return View(new ViewModels.Account.ProfileViewModel() { ContactId = contactId, ExternalAppKey = externalAppKey });
         }
 
         [HttpPost]
@@ -246,6 +259,12 @@ namespace OpenLawOffice.WebClient.Controllers
                 else
                 {
                     profile.ContactId = "";
+                    update = true;
+                }
+
+                if (!string.IsNullOrEmpty(viewModel.ExternalAppKey))
+                {
+                    profile.ExternalAppKey = viewModel.ExternalAppKey;
                     update = true;
                 }
 

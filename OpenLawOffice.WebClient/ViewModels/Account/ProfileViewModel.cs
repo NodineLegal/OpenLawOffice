@@ -29,5 +29,9 @@ namespace OpenLawOffice.WebClient.ViewModels.Account
         [DataType(DataType.Text)]
         [DisplayName("Contact Info.")]
         public int? ContactId { get; set; }
+
+        [DataType(DataType.Text)]
+        [DisplayName("External App. Key")]
+        public string ExternalAppKey { get; set; }
     }
 }

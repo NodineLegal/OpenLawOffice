@@ -67,7 +67,7 @@
         </div>
         <div id="main" style="margin-right: 0px;">
             <asp:ContentPlaceHolder ID="MainContent" runat="server" />
-            <div id="footer">
+            <div id="footer">Version: <%: ViewContext.Controller.GetType().Assembly.GetName().Version %> created <%: System.IO.File.GetCreationTime(ViewContext.Controller.GetType().Assembly.Location) %>
             </div>
         </div>
     </div>

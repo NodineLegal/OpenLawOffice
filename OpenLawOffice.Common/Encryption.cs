@@ -12,17 +12,36 @@ namespace OpenLawOffice.Common
         private const PaddingMode PADDING_MODE = PaddingMode.PKCS7;
         private AesManaged _aesAlg;
 
+        public string Key
+        {
+            get { return Convert.ToBase64String(_aesAlg.Key); }
+            set { _aesAlg.Key = Convert.FromBase64String(value); }
+        }
+
+        public string IV
+        {
+            get { return Convert.ToBase64String(_aesAlg.IV); }
+            set { _aesAlg.IV = Convert.FromBase64String(value); }
+        }
+
         public Encryption()
         {
             _aesAlg = new AesManaged();
+        }
+
+        public Encryption(string iv, string key)
+        {
+            _aesAlg = new AesManaged();
+            Key = key;
+            IV = iv;
         }
 
         public Package Encrypt(Package package)
         {
             if (package == null)
                 throw new ArgumentNullException("package");
-            if (string.IsNullOrEmpty(package.Input))
-                throw new ArgumentNullException("package.Input");
+            //if (string.IsNullOrEmpty(package.Input))
+            //    throw new ArgumentNullException("package.Input");
             if (package.Key == null || package.Key.Length <= 0)
             {
                 if (_aesAlg.Key != null && _aesAlg.Key.Length > 0)

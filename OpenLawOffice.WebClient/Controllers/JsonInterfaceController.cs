@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.IO;
+using System.Web.Profile;
 
 namespace OpenLawOffice.WebClient.Controllers
 {
@@ -23,6 +24,7 @@ namespace OpenLawOffice.WebClient.Controllers
         [HttpPost]
         public ActionResult Authenticate()
         {
+            dynamic profile;
             Common.Net.Request<Common.Net.AuthPackage> request;
             Common.Net.Response<Guid> response = new Common.Net.Response<Guid>();
 
@@ -31,6 +33,31 @@ namespace OpenLawOffice.WebClient.Controllers
             response.RequestReceived = DateTime.Now;
 
             Common.Models.Account.Users user = Data.Account.Users.Get(request.Package.Username);
+            profile = ProfileBase.Create(user.Username);
+
+            // decrypt password
+            Common.Encryption enc = new Common.Encryption();
+            Common.Encryption.Package package;
+            enc.IV = request.Package.IV;
+            if (profile != null && profile.ExternalAppKey != null
+                && !string.IsNullOrEmpty(profile.ExternalAppKey))
+                enc.Key = profile.ExternalAppKey;
+            else
+            {
+                response.Successful = false;
+                response.Package = Guid.Empty;
+            }
+            package = enc.Decrypt(new Common.Encryption.Package()
+                {
+                    Input = request.Package.Password
+                });
+            if (string.IsNullOrEmpty(package.Output))
+            {
+                response.Successful = false;
+                response.Package = Guid.Empty;
+            }
+            request.Package.Password = package.Output;
+
             string hashFromDb = Security.ClientHashPassword(user.Password);
             string hashFromWeb = Security.ClientHashPassword(request.Package.Password);
             
@@ -67,6 +94,7 @@ namespace OpenLawOffice.WebClient.Controllers
             {
                 response.Successful = false;
                 response.Package = Guid.Empty;
+                response.Error = "Invalid security credentials.";
             }
 
             response.ResponseSent = DateTime.Now;

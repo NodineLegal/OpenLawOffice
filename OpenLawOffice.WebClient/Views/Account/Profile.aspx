@@ -20,9 +20,19 @@
                 My Contact Info
             </td>
             <td class="display-field">
-                    <%: Html.DropDownListFor(x => x.ContactId,
-                                new SelectList((IList)ViewData["EmployeeContactList"], "Id", "DisplayName")) %>
-                    <%: Html.ValidationMessageFor(m => m.ContactId)%>
+                <%: Html.DropDownListFor(x => x.ContactId,
+                    new SelectList((IList)ViewData["EmployeeContactList"], "Id", "DisplayName")) %>
+                <%: Html.ValidationMessageFor(m => m.ContactId)%>
+            </td>
+        </tr>
+        <tr>
+            <td class="display-label">
+                External App. Key
+            </td>
+            <td class="display-field">
+                <%: Html.TextBoxFor(x => x.ExternalAppKey, new { @style = "width: 400px;" }) %>
+                <%: Html.ValidationMessageFor(m => m.ContactId)%>
+                <a href="?newAppKey=true">Generate New Key</a>
             </td>
         </tr>
     </table>
