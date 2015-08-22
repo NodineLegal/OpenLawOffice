@@ -118,6 +118,7 @@ namespace OpenLawOffice.WebClient.Controllers
             {
                 response.Successful = false;
                 response.Error = "Invalid Token";
+                response.Package = false;
                 return Json(response, JsonRequestBehavior.AllowGet);
             }
 
@@ -125,6 +126,7 @@ namespace OpenLawOffice.WebClient.Controllers
             {
                 response.Successful = false;
                 response.Error = "Invalid Token";
+                response.Package = false;
                 return Json(response, JsonRequestBehavior.AllowGet);
             }
 
@@ -134,6 +136,7 @@ namespace OpenLawOffice.WebClient.Controllers
 
             response.Successful = true;
             response.ResponseSent = DateTime.Now;
+            response.Package = true;
             return Json(response, JsonRequestBehavior.AllowGet);
         }
 

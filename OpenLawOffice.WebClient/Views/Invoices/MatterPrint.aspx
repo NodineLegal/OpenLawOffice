@@ -242,10 +242,10 @@
                         { %> <tr> <% }
                         %>
                         <td><%: item.Time.Start.ToShortDateString() %></td>
-                        <td><%: item.Time.Details %></td>
-                        <td style="text-align: center;"><%: TimeSpanHelper.TimeSpan(item.Time.Duration, false) %></td>
+                        <td><%: item.Details %></td>
+                        <td style="text-align: center;"><%: TimeSpanHelper.TimeSpan(item.Duration, false) %></td>
                         <td style="text-align: center;"><%: item.PricePerHour.ToString("C") %></td>
-                        <td style="text-align: center;"><%: string.Format("{0:C}", (decimal)item.Time.Duration.TotalHours * item.PricePerHour) %></td>
+                        <td style="text-align: center;"><%: string.Format("{0:C}", (decimal)item.Duration.TotalHours * item.PricePerHour) %></td>
                     </tr>
                 <% }
                     altRow = !altRow;
