@@ -308,8 +308,7 @@ namespace OpenLawOffice.WebClient.Controllers
 
             billedTimeList.ForEach(x =>
             {
-                if (x.Time.Stop.HasValue)
-                    timeBilledSpan = timeBilledSpan.Add(x.Time.Stop.Value - x.Time.Start);
+                timeBilledSpan = timeBilledSpan.Add(x.Duration);
                 timeBilledDollars += ((decimal)x.Duration.TotalHours * x.PricePerHour);
             });
             unbilledTimeList.ForEach(x =>
@@ -339,7 +338,7 @@ namespace OpenLawOffice.WebClient.Controllers
             ViewData["TimeUnbilled"] = "(" + Helpers.TimeSpanHelper.TimeSpan(timeUnbilledSpan, false) + ")";
             ViewData["TotalValue"] = totalValue.ToString("C") + " (Unbilled Time: " + Helpers.TimeSpanHelper.TimeSpan(timeUnbilledSpan, false) + ")";
             ViewData["NonBillableTime"] = nonBillableTimeSpan;
-            ViewData["EffHourlyRate"] = string.Format("{0:C}", (((double)timeBilledDollars + (double)feesBilled) / timeBilledSpan.Add(nonBillableTimeSpan).TotalHours));
+            ViewData["EffHourlyRate"] = string.Format("{0:C}", (((double)timeBilledDollars + (double)feesBilled) / timeBilledSpan.TotalHours));
 
             viewModel.Notes = new List<ViewModels.Notes.NoteViewModel>();
             Data.Notes.NoteMatter.ListForMatter(id).ForEach(x =>
