@@ -15,6 +15,7 @@
     
     <link href="/Scripts/jui_dropdown-1.0.4/jquery.jui_dropdown.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="/Scripts/jui_dropdown-1.0.4/jquery.jui_dropdown.js"></script>
+    <script type="text/javascript" src="/Scripts/jquery.hoverIntent.min.js"></script>
 
     <script language="javascript">
         $(function () {

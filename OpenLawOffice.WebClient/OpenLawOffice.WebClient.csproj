@@ -347,6 +347,7 @@
     <Content Include="Scripts\jquery-ui-1.10.4.custom.min.js" />
     <Content Include="Scripts\jquery-ui-1.9.2.custom.min.js" />
     <Content Include="Scripts\jquery-ui.custom.min.js" />
+    <Content Include="Scripts\jquery.hoverIntent.min.js" />
     <Content Include="Scripts\jquery.min.js" />
     <Content Include="Scripts\jui_dropdown-1.0.4\jquery.jui_dropdown.css" />
     <Content Include="Scripts\jui_dropdown-1.0.4\jquery.jui_dropdown.js" />

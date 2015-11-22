@@ -28,9 +28,9 @@
         (<%: Html.ActionLink("Add", "Create", "Tasks", new { controller = "Matters", MatterId = Model.Id }, null)%>)</li>
     <li>
         <%: Html.ActionLink("Form Fields", "FormFields", "Matters", new { id = Model.Id }, null)%></li>
-    <li>
+   <%-- <li>
         <%: Html.ActionLink("Events", "Events", "Matters", new { id = Model.Id }, null)%>
-        (<%: Html.ActionLink("Add", "Create", "Events", new { controller = "Matters", MatterId = Model.Id }, null)%>)</li>
+        (<%: Html.ActionLink("Add", "Create", "Events", new { controller = "Matters", MatterId = Model.Id }, null)%>)</li>--%>
     <li>
         <%: Html.ActionLink("Notes", "Notes", "Matters", new { id = Model.Id }, null)%>
         (<%: Html.ActionLink("Add", "Create", "Notes", new { controller = "Matters", MatterId = Model.Id }, null)%>)</li>
@@ -153,7 +153,7 @@
         </tr>
         <tr>
             <td class="display-label" style="width: 125px;">
-                Default Billing Rate
+                Default Billing Rate:
             </td>
             <td class="display-field">
                 <% if (Model.DefaultBillingRate != null)
@@ -173,7 +173,7 @@
             <td>
             </td>
             <td class="display-label" style="width: 125px;">
-                Billing Group
+                Billing Group:
             </td>
             <td class="display-field">
                 <% if (Model.BillingGroup != null)
@@ -187,16 +187,68 @@
             <td class="display-label" style="width: 125px;">
                 Matter Type:
             </td>
-            <td class="display-field" colspan="4">
+            <td class="display-field">
                 <% if (Model.MatterType != null)
                    { %>
                     <%: Model.MatterType.Title%>
                 <% } %>
             </td>
+            <td></td>
+            <td class="display-label" style="width: 125px;">
+                Client(s):
+            </td>
+            <td class="display-field">
+                <%
+                foreach (var item in Model.Clients)
+                {
+                    %>
+                    <%: Html.ActionLink(item.DisplayName, "Details", "Contacts", new { Id = item.Id }, new { id = "link_" + item.Id.Value })%>
+                    <div id="Contact_<%: item.Id.Value %>" title="Contact Details">
+                        <div>Phone: <%: item.Telephone1TelephoneNumber %></div>
+                        <div>Email: <%: item.Email1EmailAddress %></div>
+                        <div>
+                            <div style="display:inline-block; vertical-align: top;">Address:</div>
+                            <div style="display:inline-block; padding: 0px; margin-left: 5px;">
+                                <div><%: item.Address1AddressStreet %></div>
+                                <div>
+                                    <% if (item.Address1AddressPostOfficeBox != null) { %>
+                                    PO Box <%: item.Address1AddressPostOfficeBox %>
+                                    <% } %>
+                                    <%: item.Address1AddressCity %>, <%: item.Address1AddressStateOrProvince %> <%: item.Address1AddressPostalCode %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>  
+                    <script language="javascript">
+                        $(function () {
+                            $("#Contact_<%: item.Id.Value %>").dialog({
+                                autoOpen: false,
+                                width: 400,
+                                show: {
+                                    effect: "clip",
+                                    duration: 100
+                                },
+                                hide: {
+                                    effect: "fade",
+                                    duration: 100
+                                }
+                            });
+
+                            $("#link_<%: item.Id.Value %>").hoverIntent(function () {
+                                $("#Contact_<%: item.Id.Value %>").dialog("open");
+                            }, function () {
+                                $("#Contact_<%: item.Id.Value %>").dialog("close");
+                            });
+                        });
+                    </script>
+                    <%
+                }
+                %>
+            </td>
         </tr>
         <tr>
             <td class="display-label" style="width: 125px;">
-                Synopsis
+                Synopsis:
             </td>
             <td class="display-field" colspan="4">
                 <%: Model.Synopsis %>

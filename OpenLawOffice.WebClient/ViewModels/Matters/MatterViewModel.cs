@@ -47,6 +47,8 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
 
         public Contacts.ContactViewModel LeadAttorney { get; set; }
 
+        public List<Contacts.ContactViewModel> Clients { get; set; }
+
         public Contacts.ContactViewModel BillTo { get; set; }
 
         public Billing.BillingRateViewModel DefaultBillingRate { get; set; }
@@ -170,6 +172,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
                     };
                 }))
                 .ForMember(dst => dst.OverrideMatterRateWithEmployeeRate, opt => opt.MapFrom(src => src.OverrideMatterRateWithEmployeeRate))
+                .ForMember(dst => dst.Clients, opt => opt.Ignore())
                 .ForMember(dst => dst.Tasks, opt => opt.Ignore())
                 .ForMember(dst => dst.Notes, opt => opt.Ignore())
                 .ForMember(dst => dst.TaskNotes, opt => opt.Ignore())

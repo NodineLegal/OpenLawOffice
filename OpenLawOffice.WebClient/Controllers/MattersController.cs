@@ -270,6 +270,7 @@ namespace OpenLawOffice.WebClient.Controllers
             if (viewModel.MatterType != null)
                 viewModel.MatterType = Mapper.Map<ViewModels.Matters.MatterTypeViewModel>(
                     Data.Matters.MatterType.Get(viewModel.MatterType.Id.Value));
+            viewModel.Clients = new List<ViewModels.Contacts.ContactViewModel>();
             viewModel.Tasks = TasksController.GetListForMatter(id, true);
             viewModel.LeadAttorney = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.LeadAttorney);
             viewModel.BillTo = Mapper.Map<ViewModels.Contacts.ContactViewModel>(model.BillTo);
@@ -366,9 +367,17 @@ namespace OpenLawOffice.WebClient.Controllers
                 if (x.Role == "Lead Attorney")
                     neededRoles.Remove("Lead Attorney");
                 if (x.Role == "Appointed Client")
+                {
                     neededRoles.Remove("Appointed Client");
+                    Common.Models.Contacts.Contact contactModel = Data.Contacts.Contact.Get(x.Contact.Id.Value);
+                    viewModel.Clients.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(contactModel));
+                }
                 if (x.Role == "Client")
+                {
                     neededRoles.Remove("Client");
+                    Common.Models.Contacts.Contact contactModel = Data.Contacts.Contact.Get(x.Id.Value);
+                    viewModel.Clients.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(contactModel));
+                }
             });
 
             if (neededRoles.Contains("Lead Attorney"))
