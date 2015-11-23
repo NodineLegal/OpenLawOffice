@@ -375,7 +375,7 @@ namespace OpenLawOffice.WebClient.Controllers
                 if (x.Role == "Client")
                 {
                     neededRoles.Remove("Client");
-                    Common.Models.Contacts.Contact contactModel = Data.Contacts.Contact.Get(x.Id.Value);
+                    Common.Models.Contacts.Contact contactModel = Data.Contacts.Contact.Get(x.Contact.Id.Value);
                     viewModel.Clients.Add(Mapper.Map<ViewModels.Contacts.ContactViewModel>(contactModel));
                 }
             });
