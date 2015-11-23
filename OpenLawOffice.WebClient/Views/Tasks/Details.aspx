@@ -111,7 +111,7 @@
                 Description
             </td>
             <td class="display-field" colspan="4">
-                <%: Model.Description%>
+                <%= Model.Description%>
             </td>
         </tr>
     </table>

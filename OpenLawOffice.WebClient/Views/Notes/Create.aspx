@@ -4,11 +4,16 @@
     Create Note
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
- 
+    <script type="text/javascript" src="/Scripts/tinymce/tinymce.min.js"></script>
     <script language="javascript">
         $(document).ready(function () {
             $('#ClearNoticeButton').click(function () {
                 $('#NotifyContactIds').val([]);
+            });
+            tinymce.init({
+                selector: "#Body",
+                theme: "modern",
+                toolbar: "insertfile undo redo | styleselect | bold underline italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
             });
         });
     </script>
@@ -65,7 +70,7 @@
                 Description<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                <%: Html.TextAreaFor(model => model.Body, new { @style = "width: 100%; height: 100px;" })%>
+                <%: Html.TextAreaFor(model => model.Body, new { @style = "width: 100%; height: 300px;" })%>
                 <%: Html.ValidationMessageFor(model => model.Body)%>
             </td>
         </tr>

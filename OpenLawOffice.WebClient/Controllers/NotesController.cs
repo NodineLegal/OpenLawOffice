@@ -127,6 +127,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
+        [ValidateInput(false)]
         [HttpPost]
         [Authorize(Roles = "Login, User")]
         public ActionResult Edit(Guid id, ViewModels.Notes.NoteViewModel viewModel)
@@ -137,7 +138,7 @@ namespace OpenLawOffice.WebClient.Controllers
             currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             model = Mapper.Map<Common.Models.Notes.Note>(viewModel);
-
+            model.Body = new Ganss.XSS.HtmlSanitizer().Sanitize(model.Body);
             model = Data.Notes.Note.Edit(model, currentUser);
 
             if (viewModel.NotifyContactIds != null)
@@ -189,6 +190,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(new ViewModels.Notes.NoteViewModel() { Timestamp = DateTime.Now });
         }
 
+        [ValidateInput(false)]
         [HttpPost]
         [Authorize(Roles = "Login, User")]
         public ActionResult Create(ViewModels.Notes.NoteViewModel viewModel)
@@ -201,6 +203,8 @@ namespace OpenLawOffice.WebClient.Controllers
             currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             model = Mapper.Map<Common.Models.Notes.Note>(viewModel);
+
+            model.Body = new Ganss.XSS.HtmlSanitizer().Sanitize(model.Body);
 
             model = Data.Notes.Note.Create(model, currentUser);
 

@@ -20,6 +20,8 @@
         Error Logging: <a href="https://code.google.com/p/elmah/">ELMAH</a><br />
         Zip Support: <a href="https://github.com/haf/DotNetZip.Semverd">DotNetZip.Semverd</a><br />
         Icons: <a href="http://p.yusukekamiyamane.com/">p.yusukekamiyamane - Fugue Icons</a><br />
-        Javascript Library: <a href="http://jquery.com/">jQuery</a>, <a href="http://jqueryui.com/">jQuery UI</a>, <a href="http://plugins.jquery.com/jqGrid/">jqGrid</a>, <a href="http://arshaw.com/fullcalendar/">FullCalendar</a>, <a href="https://github.com/briancherne/jquery-hoverIntent">hoverIntent</a>
+        Javascript Library: <a href="http://jquery.com/">jQuery</a>, <a href="http://jqueryui.com/">jQuery UI</a>, <a href="http://plugins.jquery.com/jqGrid/">jqGrid</a>, <a href="http://arshaw.com/fullcalendar/">FullCalendar</a>, <a href="https://github.com/briancherne/jquery-hoverIntent">hoverIntent</a><br />
+        Text Editor: <a href="http://www.tinymce.com/">TinyMCE</a><br />
+        HTML Sanitization: <a href="https://github.com/mganss/HtmlSanitizer">HtmlSanitizer</a>
     </p>
 </asp:Content>

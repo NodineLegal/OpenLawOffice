@@ -6,6 +6,7 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <script type="text/javascript" src="/Scripts/moment.min.js"></script>
+    <script type="text/javascript" src="/Scripts/tinymce/tinymce.min.js"></script>
 
     <script language="javascript">
         var templates = <%= ViewData["TemplateJson"] %>;
@@ -13,7 +14,8 @@
             for (var i = 0; i < templates.length; i++) {
                 if (templates[i].Id == id) {
                     $("#Task_Title").val(templates[i].Title);
-                    $("#Task_Description").val(templates[i].Description);
+                    tinymce.activeEditor.setContent(templates[i].Title);
+                    //$("#Task_Description").val(templates[i].Description);
                     if (templates[i].Active)
                         $("#Task_Active").prop('checked',true);
                     else
@@ -38,6 +40,13 @@
             }
             return false;
         }
+        $(document).ready(function () {
+            tinymce.init({
+                selector: "#Task_Description",
+                theme: "modern",
+                toolbar: "insertfile undo redo | styleselect | bold underline italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
+            });
+        });
     </script>
             
     <div id="roadmap">
@@ -76,7 +85,7 @@
                 Description<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                <%: Html.TextAreaFor(model => model.Task.Description, new { style = "height: 50px; width: 100%;" })%>
+                <%: Html.TextAreaFor(model => model.Task.Description, new { style = "height: 300px; width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Task.Description)%>
             </td>
         </tr>
@@ -140,7 +149,7 @@
                 Responsiblity<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.ResponsibleUser.Responsibility, new { @style = "width: 100%;" })%>
+                <%: Html.TextBoxFor(model => model.ResponsibleUser.Responsibility, new { @style = "width: 100%;", @Value = "Lead" })%>
                 <%: Html.ValidationMessageFor(model => model.ResponsibleUser.Responsibility)%>
             </td>
         </tr>

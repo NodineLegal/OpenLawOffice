@@ -5,6 +5,17 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
         
+    <script type="text/javascript" src="/Scripts/tinymce/tinymce.min.js"></script>
+    
+    <script language="javascript">
+        $(document).ready(function () {
+            tinymce.init({
+                selector: "#Description",
+                theme: "modern",
+                toolbar: "insertfile undo redo | styleselect | bold underline italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
+            });
+        });
+    </script>
     <div id="roadmap">
         <div class="zero">Matter: [<%: Html.ActionLink((string)ViewData["Matter"], "Details", "Matters", new { id = ViewData["MatterId"] }, null) %>]</div>
         <div id="current" class="one">Edit Task<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></div>
@@ -27,7 +38,7 @@
                 Title<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                <%: Html.TextBoxFor(model => model.Title) %>
+                <%: Html.TextBoxFor(model => model.Title, new { @style = "width: 100%;" }) %>
                 <%: Html.ValidationMessageFor(model => model.Title) %>
             </td>
         </tr>
@@ -36,7 +47,7 @@
                 Description<span class="required-field" title="Required Field">*</span>
             </td>
             <td class="display-field">
-                <%: Html.TextAreaFor(model => model.Description, new { style = "height: 50px; width: 100%;" })%>
+                <%: Html.TextAreaFor(model => model.Description, new { style = "height: 300px; width: 100%;" })%>
                 <%: Html.ValidationMessageFor(model => model.Description)%>
             </td>
         </tr>

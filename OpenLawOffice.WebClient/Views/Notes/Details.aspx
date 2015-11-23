@@ -48,7 +48,7 @@
                 Body
             </td>
             <td class="display-field">
-                <%: Model.Body%>
+                <%= Model.Body%>
             </td>
         </tr>
     </table>

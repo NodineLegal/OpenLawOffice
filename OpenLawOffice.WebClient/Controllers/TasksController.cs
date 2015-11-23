@@ -26,6 +26,8 @@ namespace OpenLawOffice.WebClient.Controllers
     using System.Web.Mvc;
     using AutoMapper;
     using System.Configuration;
+    using System.Web.Profile;
+    using System.Web.Security;
 
     [HandleError(View = "Errors/Index", Order = 10)]
     public class TasksController : BaseController
@@ -276,6 +278,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(viewModel);
         }
 
+        [ValidateInput(false)]
         [HttpPost]
         [Authorize(Roles = "Login, User")]
         public ActionResult Edit(long id, ViewModels.Tasks.TaskViewModel viewModel)
@@ -307,6 +310,7 @@ namespace OpenLawOffice.WebClient.Controllers
                 }
             }
 
+            model.Description = new Ganss.XSS.HtmlSanitizer().Sanitize(model.Description);
             model = Data.Tasks.Task.Edit(model, currentUser);
 
             return RedirectToAction("Details", new { Id = id });
@@ -345,6 +349,7 @@ namespace OpenLawOffice.WebClient.Controllers
         [Authorize(Roles = "Login, User")]
         public ActionResult Create()
         {
+            int contactId = -1;
             ViewModels.Tasks.CreateTaskViewModel viewModel;
             Common.Models.Matters.Matter matter;
             List<ViewModels.Account.UsersViewModel> userList;
@@ -353,6 +358,10 @@ namespace OpenLawOffice.WebClient.Controllers
 
             userList = new List<ViewModels.Account.UsersViewModel>();
             employeeContactList = new List<ViewModels.Contacts.ContactViewModel>();
+            
+            dynamic profile = ProfileBase.Create(Membership.GetUser().UserName);
+            if (profile.ContactId != null && !string.IsNullOrEmpty(profile.ContactId))
+                contactId = int.Parse(profile.ContactId);
 
             Data.Account.Users.List().ForEach(x =>
             {
@@ -382,6 +391,22 @@ namespace OpenLawOffice.WebClient.Controllers
                 template.Add(new Newtonsoft.Json.Linq.JProperty("Active", x.Active));
                 taskTemplates.Add(template);
             });
+            
+            viewModel.ResponsibleUser = new ViewModels.Tasks.TaskResponsibleUserViewModel()
+            {
+                User = new ViewModels.Account.UsersViewModel() { PId =  Data.Account.Users.Get(Membership.GetUser().UserName).PId },
+            };
+            if (contactId > 0)
+            {
+                viewModel.TaskContact = new ViewModels.Tasks.TaskAssignedContactViewModel()
+                {
+                    Contact = new ViewModels.Contacts.ContactViewModel()
+                    {
+                        Id = contactId
+                    }
+                };
+            }
+
 
             matter = Data.Matters.Matter.Get(Guid.Parse(Request["MatterId"]));
             ViewData["MatterId"] = matter.Id.Value;
@@ -393,9 +418,11 @@ namespace OpenLawOffice.WebClient.Controllers
             return View(new ViewModels.Tasks.CreateTaskViewModel()
             {
                 TaskTemplates = viewModel.TaskTemplates,
+                ResponsibleUser = viewModel.ResponsibleUser,                
                 TaskContact = new ViewModels.Tasks.TaskAssignedContactViewModel()
                 {
-                    AssignmentType = ViewModels.AssignmentTypeViewModel.Direct
+                    AssignmentType = ViewModels.AssignmentTypeViewModel.Direct,
+                    Contact = viewModel.TaskContact.Contact
                 }
             });
         }
@@ -435,6 +462,7 @@ namespace OpenLawOffice.WebClient.Controllers
             return val;
         }
 
+        [ValidateInput(false)]
         [HttpPost]
         [Authorize(Roles = "Login, User")]
         public ActionResult Create(ViewModels.Tasks.CreateTaskViewModel viewModel)
@@ -446,7 +474,7 @@ namespace OpenLawOffice.WebClient.Controllers
             currentUser = Data.Account.Users.Get(User.Identity.Name);
 
             model = Mapper.Map<Common.Models.Tasks.Task>(viewModel.Task);
-
+            model.Description = new Ganss.XSS.HtmlSanitizer().Sanitize(model.Description);
             model = Data.Tasks.Task.Create(model, currentUser);
 
             matterid = Guid.Parse(Request["MatterId"]);
