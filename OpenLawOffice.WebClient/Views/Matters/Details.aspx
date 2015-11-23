@@ -201,8 +201,9 @@
                 <%
                 foreach (var item in Model.Clients)
                 {
-                    %>
-                    <%: Html.ActionLink(item.DisplayName, "Details", "Contacts", new { Id = item.Id }, new { id = "link_" + item.Id.Value })%>
+                    if (item != null && item.Id.HasValue)
+                    { %>
+                        <%: Html.ActionLink(item.DisplayName, "Details", "Contacts", new { Id = item.Id }, new { id = "link_" + item.Id.Value })%>
                     <div id="Contact_<%: item.Id.Value %>" title="Contact Details">
                         <div>Phone: <%: item.Telephone1TelephoneNumber %></div>
                         <div>Email: <%: item.Email1EmailAddress %></div>
@@ -241,7 +242,7 @@
                             });
                         });
                     </script>
-                    <%
+                    <% }
                 }
                 %>
             </td>
