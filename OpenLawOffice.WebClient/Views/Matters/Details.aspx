@@ -502,28 +502,26 @@
         <% altRow = true; 
            foreach (var item in Model.TaskNotes)
            {
-               foreach (var note in item.Value)
-               {
-               altRow = !altRow;
-               if (altRow)
-               { %> <tr class="tr_alternate"> <% }
-               else
-               { %> <tr> <% }
-                %>
+            altRow = !altRow;
+            if (altRow)
+            { %> <tr class="tr_alternate"> <% }
+            else
+            { %> <tr> <% }
+            %>
             <td>
-                <%: Html.ActionLink(item.Key.Title, "Details", "Tasks", new { id = item.Key.Id.Value }, null)%>
+                <%: Html.ActionLink(item.Task.Title, "Details", "Tasks", new { id = item.Task.Id.Value }, null)%>
             </td>
             <td>
-                <%: note.Timestamp %>
+                <%: item.Note.Timestamp %>
             </td>
             <td>
-                <%: Html.ActionLink(note.Title, "Details", "Notes", new { id = note.Id.Value }, null)%>
+                <%: Html.ActionLink(item.Note.Title, "Details", "Notes", new { id = item.Note.Id.Value }, null)%>
             </td>
             <td>
-                <%: Html.ActionLink("Edit", "Edit", "Notes", new { id = note.Id.Value }, new { @class = "btn-edit", title = "Edit" })%>
+                <%: Html.ActionLink("Edit", "Edit", "Notes", new { id = item.Note.Id.Value }, new { @class = "btn-edit", title = "Edit" })%>
             </td>
         </tr>
-        <%     }
+        <%
            }%>
     </table>
     

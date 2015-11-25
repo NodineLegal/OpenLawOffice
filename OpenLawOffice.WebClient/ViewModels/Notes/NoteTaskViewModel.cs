@@ -27,19 +27,17 @@ namespace OpenLawOffice.WebClient.ViewModels.Notes
     using System.Collections.Generic;
 
     [MapMe]
-    public class NoteNotificationViewModel : CoreViewModel
+    public class NoteTaskViewModel : CoreViewModel
     {
         public Guid? Id { get; set; }
 
         public NoteViewModel Note { get; set; }
 
-        public Contacts.ContactViewModel Contact { get; set; }
-
-        public DateTime? Cleared { get; set; }
-
+        public Tasks.TaskViewModel Task { get; set; }
+        
         public void BuildMappings()
         {
-            Mapper.CreateMap<Common.Models.Notes.NoteNotification, NoteNotificationViewModel>()
+            Mapper.CreateMap<Common.Models.Notes.NoteTask, NoteTaskViewModel>()
                 .ForMember(dst => dst.IsStub, opt => opt.UseValue(false))
                 .ForMember(dst => dst.Created, opt => opt.MapFrom(src => src.Created))
                 .ForMember(dst => dst.Modified, opt => opt.MapFrom(src => src.Modified))
@@ -78,17 +76,16 @@ namespace OpenLawOffice.WebClient.ViewModels.Notes
                         IsStub = true
                     };
                 }))
-                .ForMember(dst => dst.Contact, opt => opt.ResolveUsing(db =>
+                .ForMember(dst => dst.Task, opt => opt.ResolveUsing(db =>
                 {
-                    return new ViewModels.Contacts.ContactViewModel()
+                    return new ViewModels.Tasks.TaskViewModel()
                     {
-                        Id = db.Contact.Id,
+                        Id = db.Task.Id,
                         IsStub = true
                     };
-                }))
-                .ForMember(dst => dst.Cleared, opt => opt.MapFrom(src => src.Cleared));
+                }));
 
-            Mapper.CreateMap<NoteNotificationViewModel, Common.Models.Notes.NoteNotification>()
+            Mapper.CreateMap<NoteTaskViewModel, Common.Models.Notes.NoteTask>()
                 .ForMember(dst => dst.Created, opt => opt.MapFrom(src => src.Created))
                 .ForMember(dst => dst.Modified, opt => opt.MapFrom(src => src.Modified))
                 .ForMember(dst => dst.Disabled, opt => opt.MapFrom(src => src.Disabled))
@@ -129,16 +126,15 @@ namespace OpenLawOffice.WebClient.ViewModels.Notes
                         Id = x.Note.Id
                     };
                 }))
-                .ForMember(dst => dst.Contact, opt => opt.ResolveUsing(x =>
+                .ForMember(dst => dst.Task, opt => opt.ResolveUsing(x =>
                 {
-                    if (x.Contact == null || !x.Contact.Id.HasValue)
+                    if (x.Task == null || !x.Task.Id.HasValue)
                         return null;
-                    return new ViewModels.Contacts.ContactViewModel()
+                    return new ViewModels.Tasks.TaskViewModel()
                     {
-                        Id = x.Contact.Id
+                        Id = x.Task.Id
                     };
-                }))
-                .ForMember(dst => dst.Cleared, opt => opt.MapFrom(src => src.Cleared));
+                }));
         }
     }
 }

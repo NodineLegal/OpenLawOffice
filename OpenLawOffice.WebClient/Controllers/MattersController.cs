@@ -347,15 +347,13 @@ namespace OpenLawOffice.WebClient.Controllers
                 viewModel.Notes.Add(Mapper.Map<ViewModels.Notes.NoteViewModel>(x));
             });
 
-            viewModel.TaskNotes = new Dictionary<ViewModels.Tasks.TaskViewModel,List<ViewModels.Notes.NoteViewModel>>();
-            Data.Tasks.Task.ListForMatter(id, null).ForEach(x =>
+            viewModel.TaskNotes = new List<ViewModels.Notes.NoteTaskViewModel>();
+            Data.Matters.Matter.ListAllTaskNotes(model).ForEach(x =>
             {
-                List<ViewModels.Notes.NoteViewModel> list = new List<ViewModels.Notes.NoteViewModel>();
-                Data.Notes.NoteTask.ListForTask(x.Id.Value).ForEach(y =>
-                {
-                    list.Add(Mapper.Map<ViewModels.Notes.NoteViewModel>(y));
-                });
-                viewModel.TaskNotes.Add(Mapper.Map<ViewModels.Tasks.TaskViewModel>(x), list);
+                ViewModels.Notes.NoteTaskViewModel ntvm = Mapper.Map<ViewModels.Notes.NoteTaskViewModel>(x);
+                ntvm.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(Data.Tasks.Task.Get(x.Task.Id.Value));
+                ntvm.Note = Mapper.Map<ViewModels.Notes.NoteViewModel>(Data.Notes.Note.Get(x.Note.Id.Value));
+                viewModel.TaskNotes.Add(ntvm);
             });
 
             PopulateCoreDetails(viewModel);
@@ -979,18 +977,20 @@ namespace OpenLawOffice.WebClient.Controllers
         {
             Common.Models.Matters.Matter matter;
             ViewModels.Notes.NoteViewModel viewModel;
-            List<ViewModels.Notes.NoteViewModel> viewModelList;
-
-            viewModelList = new List<ViewModels.Notes.NoteViewModel>();
-
-            Data.Notes.Note.ListForMatter(id).ForEach(x =>
-            {
-                viewModel = Mapper.Map<ViewModels.Notes.NoteViewModel>(x);
-
-                viewModelList.Add(viewModel);
-            });
+            List<ViewModels.Notes.NoteTaskViewModel> viewModelList;
 
             matter = Data.Matters.Matter.Get(id);
+
+            viewModelList = new List<ViewModels.Notes.NoteTaskViewModel>();
+            Data.Matters.Matter.ListAllNotes(matter).ForEach(x =>
+            {
+                ViewModels.Notes.NoteTaskViewModel ntvm = Mapper.Map<ViewModels.Notes.NoteTaskViewModel>(x);
+                if (x.Task != null && x.Task.Id.HasValue)
+                    ntvm.Task = Mapper.Map<ViewModels.Tasks.TaskViewModel>(Data.Tasks.Task.Get(x.Task.Id.Value));
+                ntvm.Note = Mapper.Map<ViewModels.Notes.NoteViewModel>(Data.Notes.Note.Get(x.Note.Id.Value));
+                viewModelList.Add(ntvm);
+            });
+
             ViewData["Matter"] = matter.Title;
             ViewData["MatterId"] = matter.Id;
 

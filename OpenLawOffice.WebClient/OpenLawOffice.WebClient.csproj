@@ -82,13 +82,9 @@
       <Private>True</Private>
       <HintPath>packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Security, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>packages\Npgsql.2.2.5\lib\net45\Mono.Security.dll</HintPath>
-    </Reference>
-    <Reference Include="Npgsql, Version=2.2.5.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>packages\Npgsql.2.2.5\lib\net45\Npgsql.dll</HintPath>
+    <Reference Include="Npgsql, Version=3.0.3.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <HintPath>packages\Npgsql.3.0.3\lib\net45\Npgsql.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="pgProvider">
       <HintPath>packages\pgProvider.1.8\lib\pgProvider.dll</HintPath>
@@ -282,6 +278,7 @@
     <Compile Include="ViewModels\Matters\MatterViewModel.cs" />
     <Compile Include="ViewModels\Matters\ResponsibleUserViewModel.cs" />
     <Compile Include="ViewModels\Notes\NoteNotificationViewModel.cs" />
+    <Compile Include="ViewModels\Notes\NoteTaskViewModel.cs" />
     <Compile Include="ViewModels\Notes\NoteViewModel.cs" />
     <Compile Include="ViewModels\PermissionsViewModel.cs" />
     <Compile Include="ViewModels\PropertiesMustMatchAttribute.cs" />

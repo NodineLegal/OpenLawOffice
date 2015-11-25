@@ -77,7 +77,7 @@ namespace OpenLawOffice.WebClient.ViewModels.Matters
 
         public List<ViewModels.Tasks.TaskViewModel> Tasks { get; set; }
         public List<ViewModels.Notes.NoteViewModel> Notes { get; set; }
-        public Dictionary<ViewModels.Tasks.TaskViewModel, List<ViewModels.Notes.NoteViewModel>> TaskNotes { get; set; }
+        public List<ViewModels.Notes.NoteTaskViewModel> TaskNotes { get; set; }
 
         public void BuildMappings()
         {

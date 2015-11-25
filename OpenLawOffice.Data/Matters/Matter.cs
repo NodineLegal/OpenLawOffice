@@ -243,6 +243,48 @@ namespace OpenLawOffice.Data.Matters
             return list;
         }
 
+        public static List<Common.Models.Notes.NoteTask> ListAllNotes(Common.Models.Matters.Matter model)
+        {
+            List<Common.Models.Notes.NoteTask> list = new List<Common.Models.Notes.NoteTask>();
+            IEnumerable<DBOs.Notes.NoteTask> ie = null;
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                ie = conn.Query<DBOs.Notes.NoteTask>(
+                    "SELECT \"note_id\", \"task_id\", \"note\".\"id\" AS \"note_id\", \"note_task\".\"id\" AS \"id\" " +
+                    //\"note_task\".\"id\", \"note_task\".\"created_by_user_pid\", \"note_task\".\"modified_by_user_pid\", \"note_task\".\"disabled_by_user_pid\", " +
+                    //"\"note_task\".\"utc_created\", \"note_task\".\"utc_modified\", \"note_task\".\"utc_disabled\", \"note\".\"id\", \"note_task\".\"id\" 
+                    "FROM \"note_task\" " + 
+                    "FULL OUTER JOIN \"note\" ON \"note\".\"id\"=\"note_task\".\"note_id\" " +
+                    "WHERE \"task_id\" IN (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId) OR " +
+	                "\"note\".\"id\" IN (SELECT \"note_id\" FROM \"note_matter\" WHERE \"matter_id\"=@MatterId) " +
+                    "ORDER BY \"note\".\"timestamp\" DESC", new { MatterId = model.Id });
+            }
+
+            foreach (DBOs.Notes.NoteTask dbo in ie)
+                list.Add(Mapper.Map<Common.Models.Notes.NoteTask>(dbo));
+
+            return list;
+        }
+
+        public static List<Common.Models.Notes.NoteTask> ListAllTaskNotes(Common.Models.Matters.Matter model)
+        {
+            List<Common.Models.Notes.NoteTask> list = new List<Common.Models.Notes.NoteTask>();
+            IEnumerable<DBOs.Notes.NoteTask> ie = null;
+            using (IDbConnection conn = Database.Instance.GetConnection())
+            {
+                ie = conn.Query<DBOs.Notes.NoteTask>(
+                    "SELECT * FROM \"note_task\" JOIN \"note\" ON \"note_task\".\"note_id\"=\"note\".\"id\"  " +
+                    "WHERE \"note_task\".\"utc_disabled\" is null AND \"task_id\" IN (SELECT \"task_id\" FROM \"task_matter\" WHERE \"matter_id\"=@MatterId) " +
+                    "ORDER BY note.timestamp DESC",
+                    new { MatterId = model.Id });
+            }
+
+            foreach (DBOs.Notes.NoteTask dbo in ie)
+                list.Add(Mapper.Map<Common.Models.Notes.NoteTask>(dbo));
+
+            return list;
+        }
+
         public static Common.Models.Matters.Matter Create(Common.Models.Matters.Matter model,
             Common.Models.Account.Users creator)
         {

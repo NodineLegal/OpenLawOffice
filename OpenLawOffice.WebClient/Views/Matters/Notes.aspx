@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<IEnumerable<OpenLawOffice.WebClient.ViewModels.Notes.NoteViewModel>>" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<IEnumerable<OpenLawOffice.WebClient.ViewModels.Notes.NoteTaskViewModel>>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
     Matter Notes
@@ -10,46 +10,19 @@
         <div id="current" class="one">Matter Notes<a id="pageInfo" class="btn-question" style="padding-left: 15px;">Help</a></div>
     </div>
 
-    <table class="listing_table">
-        <tr>
-            <th>
-                Title
-            </th>
-            <th>
-                Body
-            </th>
-            <th style="width: 20px;">
-            </th>
-        </tr>
-        <% bool altRow = true; 
-           foreach (var item in Model)
-           {
-               altRow = !altRow;
-               if (altRow)
-               { %> <tr class="tr_alternate"> <% }
-               else
-               { %> <tr> <% } %>
-            <td>
-                <%: Html.ActionLink(item.Title, "Details", "Notes", new { id = item.Id }, null)%>
-            </td>
-            <td>
-                <% if (item.Body.Length > 100)
-                   {
-                %>
-                <%: item.Body.Substring(0, 100)%>...
-                <% }
-                   else
-                   { %>
-                <%: item.Body%>
-                <% } %>
-            </td>
-            <td>
-                <%: Html.ActionLink("Edit", "Edit", "Notes", new { id = item.Id }, new { @class = "btn-edit", title = "Edit" })%>
-            </td>
-        </tr>
-        <% } %>
-    </table>
-    
+    <%
+    foreach (var item in Model)
+    { %>
+    <p>
+        <div>Date/Time: <%: item.Note.Timestamp %></div>
+        <div>Task: <% if (item.Task != null) { %>
+                    <%: Html.ActionLink(item.Task.Title, "Details", "Tasks", new { id = item.Task.Id }, null)%>
+                    <% } %></div>
+        <div>Title: <%: Html.ActionLink(item.Note.Title, "Details", "Notes", new { id = item.Note.Id }, null)%></div>
+        <div><%= item.Note.Body %></div>
+    </p><hr />
+    <% } %>
+        
     <div id="pageInfoDialog" title="Help">
         <p>
         <span style="font-weight: bold; text-decoration: underline;">Info:</span>
