@@ -976,7 +976,6 @@ namespace OpenLawOffice.WebClient.Controllers
         public ActionResult Notes(Guid id)
         {
             Common.Models.Matters.Matter matter;
-            ViewModels.Notes.NoteViewModel viewModel;
             List<ViewModels.Notes.NoteTaskViewModel> viewModelList;
 
             matter = Data.Matters.Matter.Get(id);
